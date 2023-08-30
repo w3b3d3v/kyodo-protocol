@@ -1,0 +1,105 @@
+body {
+    background-color: #FDFDFD;
+    color: #000000;
+    font-family: sans-serif;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* header {
+    background-color: #4C98E2;
+    color: #FDFDFD;
+    padding: 1em;
+  } */
+  
+  header h1 {
+    font-family: 'Studly', sans-serif;
+    text-shadow: 2px 2px 0px #000;
+    color: #5bffd3;
+    text-transform: uppercase;
+    font-size: 3em;
+    letter-spacing: 0.1em;
+    text-align: center;
+    /* text-shadow: 0px 0px 10px #000000; */
+    border-radius: 20px;
+  }
+  
+  .add-task {
+    margin: 2em;
+  }
+  
+  .add-task form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .add-task label {
+    display: block;
+    margin-bottom: 0.5em;
+  }
+  
+  .add-task input {
+    border: none;
+    border-radius: 0.5em;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0.5em;
+    margin-bottom: 1em;
+    width: 100%;
+  }
+  
+  .add-task button {
+    background-color: #775ce1;
+    border: none;
+    border-radius: 2.5em;
+    color: #000000;
+    font-weight: bold;
+    padding: 0.5em;
+    text-transform: uppercase;
+  }
+  
+  .add-task button:hover {
+    content: "Use esse botão para adicionar uma nova tarefa";
+    background-color: #775ce1;
+    cursor: pointer;
+  }
+  
+  .task-list {
+    margin: 2em;
+  }
+  
+  .task-list ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .task-list li {
+    background-color: #775CE1;
+    border-radius: 0.5em;
+    color: #FDFDFD;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    padding: 0.5em;
+  }
+  
+  .add-task-button {
+    background-color: #775ce1;
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    transform: scale(1.5);
+    transition: transform 0.2s;
+  }
+  
+  .add-task-button:hover {
+    transform: scale(1.2);
+    cursor: pointer;
+  }
+  
