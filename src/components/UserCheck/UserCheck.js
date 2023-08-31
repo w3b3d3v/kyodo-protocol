@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
-import { css } from "@emotion/react";
 import { BeatLoader } from "react-spinners";
 
 import AgreementContract from '../../contracts/AgreementContract.json';
@@ -9,11 +8,6 @@ import AgreementList from '../AgreementList/AgreementList';
 
 const contractABI = AgreementContract.abi;
 const contractAddress = '0x4C3073be445B97121ceE882D39299169fb22e1e5';
-
-const override = css`
-  display: block;
-  margin: 0 auto;
-`;
 
 function UserCheck(props) {
     const [isRegistered, setIsRegistered] = useState(false);
@@ -50,9 +44,11 @@ function UserCheck(props) {
   
     if (isLoading) {
         return (
+          <div className="loading-overlay">
             <div className="sweet-loading">
-                <BeatLoader color={"#36D7B7"} loading={isLoading} css={override} size={20} />
+              <BeatLoader loading={isLoading} size={50} />
             </div>
+          </div>
         );
     }
   

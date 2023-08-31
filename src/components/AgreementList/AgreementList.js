@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { css } from "@emotion/react";
 import { BeatLoader } from "react-spinners";
 import Web3 from 'web3';
+import "./AgreementList.css";
 import AgreementContract from '../../contracts/AgreementContract.json';
 
 const contractABI = AgreementContract.abi;
 const contractAddress = '0x4C3073be445B97121ceE882D39299169fb22e1e5';
-
-const override = css`
-  display: block;
-  margin: 0 auto;
-`;
 
 // TODO: Descobrir se o contrato esta bugado ou o front esta chamando usando um endereço diferente ou wtf
 
@@ -50,11 +45,13 @@ function AgreementList(props) {
     }, [contractABI, contractAddress]);    
   
     if (isLoading) {
-        return (
+      return (
+        <div className="loading-overlay">
           <div className="sweet-loading">
-            <BeatLoader color={"#36D7B7"} loading={isLoading} css={override} size={20} />
+            <BeatLoader loading={isLoading} size={50} />
           </div>
-        );
+        </div>
+      );
     }
   
     return (

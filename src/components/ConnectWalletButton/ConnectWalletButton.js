@@ -45,9 +45,11 @@ function ConnectWalletButton(props) {
       {props.account ? (
         <p>Conectado com a carteira {props.account}</p>
       ) : (
-        <button onClick={connectWallet}>Conectar carteira</button>
+        <button className="connect-wallet-button" onClick={connectWallet}>
+          Conectar carteira
+        </button>
       )}
-    </div>
+  </div>
   );
 }
 

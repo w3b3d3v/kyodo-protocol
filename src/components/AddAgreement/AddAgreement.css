@@ -1,4 +1,33 @@
-.add-task-form-button {
+/* App.css */
+
+.add-agreement-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 20px; 
+
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+}
+
+.add-agreement-form label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 18px; /* Increase font size for better readability */
+}
+
+.add-agreement-form input {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.add-agreement-form-button {
   background-color: #775ce1;
   color: #fff;
   width: 50px;
@@ -13,30 +42,31 @@
   margin-top: 10px;
 }
 
-.add-task-form-button:hover {
+.add-agreement-form-button:hover {
   transform: scale(1.2);
   cursor: pointer;
 }
 
-.add-agreement-form {
-  display: flex;
-  flex-direction: column;
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
+.transaction-info {
+  background-color: #fff;
   border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin-top: 20px;
 }
 
-.add-agreement-form label {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.add-agreement-form input {
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.transaction-info a {
+  display: inline-block;
+  background-color: #775ce1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  text-decoration: none;
   font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.transaction-info a:hover {
+  background-color: #634bc7;
 }

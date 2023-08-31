@@ -1,9 +1,8 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import Web3 from 'web3';
 import "./AddAgreement.css";
 import { BeatLoader } from "react-spinners";
-import { Link } from "react-router-dom";
 
 
 import AgreementContract from '../../contracts/AgreementContract.json';
@@ -19,10 +18,8 @@ function AddAgreementForm(props) {
   const [incentiveToken, setIncentiveToken] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
   const [paymentToken, setPaymentToken] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [transactionHash, setTransactionHash] = useState(null);
-
-  const inputRef = useRef(null);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -47,7 +44,7 @@ function AddAgreementForm(props) {
   }
 
   async function addAgreement() {
-    setIsProcessing(true);
+    setIsLoading(true);
 
     if (window.ethereum) {
       // Conectar à blockchain usando o provedor Ethereum
@@ -74,7 +71,7 @@ function AddAgreementForm(props) {
         console.error('Error creating agreement:', error);
       }
 
-      setIsProcessing(false);
+      setIsLoading(false);
 
       // Clear the form inputs after adding an agreement
       setTitle("");
@@ -88,30 +85,28 @@ function AddAgreementForm(props) {
     }
   }
 
-  if (isProcessing) {
+  if (isLoading) {
     return (
-      <div className="sweet-loading">
-        <BeatLoader color={"#36D7B7"} loading={isProcessing} size={20} />
+      <div className="loading-overlay">
+        <div className="sweet-loading">
+          <BeatLoader loading={isLoading} size={50} />
+        </div>
       </div>
     );
-  }
+}
 
   if (transactionHash) {
     return (
-      <div>
-        <p>Transaction successful! Transaction hash:</p>
-        <a
-          href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {transactionHash}
-        </a>
-        <br />
-        <br />
-        <br />
-        <Link to="/agreementslist">See AgreementList</Link>
-      </div>
+      <div className="transaction-info">
+          Agreement created! Transaction Hash:{" "}
+          <a
+            href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {transactionHash}
+          </a>
+        </div>
     );
   }
 
@@ -182,27 +177,10 @@ function AddAgreementForm(props) {
           onChange={(event) => setPaymentToken(event.target.value)}
         />
     
-        <button type="submit" className="add-task-form-button">
+        <button type="submit" className="add-agreement-form-button">
           <FaPlus />
         </button>
       </form>
-      {isProcessing && (
-        <div className="sweet-loading">
-          <BeatLoader color={"#36D7B7"} loading={isProcessing} size={20} />
-        </div>
-      )}
-      {transactionHash && (
-        <div className="transaction-info">
-          Agreement created! Transaction Hash:{" "}
-          <a
-            href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {transactionHash}
-          </a>
-        </div>
-      )}
     </div>
   );
 }
