@@ -62,6 +62,7 @@ function AgreementList(props) {
               <div key={index} className="card">
                 <h2>{agreement.title}</h2>
                 <p>{agreement.description}</p>
+                <p><strong>Status:</strong> {agreement.status}</p>
                 <p><strong>Developer:</strong> {agreement.developer}</p>
                 <p><strong>Skills:</strong> {agreement.skills.join(", ")}</p>
                 <p><strong>Incentive Amount:</strong> {Web3.utils.fromWei(agreement.tokenIncentive.amount.toString(), 'ether')} tokens</p>

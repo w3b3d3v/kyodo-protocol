@@ -1,11 +1,11 @@
 // routes.js
 import React from "react";
 import { Route, Routes} from "react-router-dom";
-import AddTaskForm from "./components/AddTaskForm/AddTaskForm";
+import AddAgreement from "./components/AddAgreement/AddAgreement";
 import UserCheck from './components/UserCheck/UserCheck';
 import AgreementList from './components/AgreementList/AgreementList';
 
-function Home(props) {
+function AgreementsList(props) {
   return (
     <div>
       <AgreementList agreementContract={props.account} />
@@ -22,25 +22,25 @@ const Layouts = (props) => {
         element={
           <UserCheck
             userAddress={props.account}
-            privateRoute={<Home />}
+            privateRoute={<AgreementsList />}
           />
         }
       />
       <Route
-        path="/home"
+        path="/agreementslist"
         element={
           <UserCheck
             userAddress={props.account}
-            privateRoute={<Home />}
+            privateRoute={<AgreementsList />}
           />
         }
       />
       <Route
-        path="/profile"
+        path="/addAgreement"
         element={
           <UserCheck
             userAddress={props.account}
-            privateRoute={<AddTaskForm />}
+            privateRoute={<AddAgreement />}
           />
         }
       />

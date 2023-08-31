@@ -14,6 +14,7 @@ async function main() {
     console.log(`
       Title: ${agreement.title}
       Description: ${agreement.description}
+      Status: ${agreement.status}
       Developer: ${agreement.developer}
       Skills: ${agreement.skills.join(", ")}
       Incentive Amount: ${ethers.utils.formatEther(agreement.tokenIncentive.amount)} tokens

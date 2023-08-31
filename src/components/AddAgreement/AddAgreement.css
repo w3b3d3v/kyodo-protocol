@@ -1,0 +1,42 @@
+.add-task-form-button {
+  background-color: #775ce1;
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s;
+  margin-top: 10px;
+}
+
+.add-task-form-button:hover {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.add-agreement-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.add-agreement-form label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.add-agreement-form input {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
