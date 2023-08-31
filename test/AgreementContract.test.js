@@ -37,7 +37,5 @@ describe("AgreementContract", function () {
     expect(agreements[0].tokenIncentive.tokenAddress).to.equal(incentiveToken);
     expect(agreements[0].payment.amount).to.equal(paymentAmount);
     expect(agreements[0].payment.tokenAddress).to.equal(paymentToken);
-
-    console.log("agreements: " + JSON.stringify(agreements));
   });
 });

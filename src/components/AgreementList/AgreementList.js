@@ -5,12 +5,14 @@ import Web3 from 'web3';
 import AgreementContract from '../../contracts/AgreementContract.json';
 
 const contractABI = AgreementContract.abi;
-const contractAddress = '0xB9348EBD819400CA1Ea6A8D25Ef03e74Eb858042';
+const contractAddress = '0x4C3073be445B97121ceE882D39299169fb22e1e5';
 
 const override = css`
   display: block;
   margin: 0 auto;
 `;
+
+// TODO: Descobrir se o contrato esta bugado ou o front esta chamando usando um endereço diferente ou wtf
 
 function AgreementList(props) {
     const [agreements, setAgreements] = useState([]);
@@ -26,11 +28,12 @@ function AgreementList(props) {
     
               // Criar uma instância do contrato usando o endereço e o ABI
               const contract = new web3.eth.Contract(contractABI, contractAddress);
-    
-              // Obter o número de acordos existentes
-              const agreementCount = await contract.methods.getAgreementCount().call();
-
-              let fetchedAgreements = await contract.methods.getAllAgreements().call()
+              const userAgreementIds = await contract.methods.getUserAgreements(window.ethereum.selectedAddress).call();
+              
+              const fetchedAgreements = await Promise.all(userAgreementIds.map(async (agreementId) => {
+                const agreement = await contract.methods.getAgreementById(agreementId).call();
+                return agreement;
+              }));
     
               setAgreements(fetchedAgreements);
             } else {

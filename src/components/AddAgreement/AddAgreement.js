@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 import AgreementContract from '../../contracts/AgreementContract.json';
 const contractABI = AgreementContract.abi;
-const contractAddress = '0xB9348EBD819400CA1Ea6A8D25Ef03e74Eb858042';
+const contractAddress = '0x4C3073be445B97121ceE882D39299169fb22e1e5';
 
 function AddAgreementForm(props) {
   const [title, setTitle] = useState("");
@@ -57,15 +57,6 @@ function AddAgreementForm(props) {
       const contract = new web3.eth.Contract(contractABI, contractAddress);
 
       try {
-        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-        if (accounts.length === 0) {
-          console.error('No connected wallet found.');
-          setIsProcessing(false);
-          return;
-        }
-
-        const from = accounts[0];
-
         const tx = await contract.methods.createAgreement(
           title,
           description,
@@ -75,8 +66,8 @@ function AddAgreementForm(props) {
           incentiveToken,
           paymentAmount,
           paymentToken
-        ).send({ from });
-
+        ).send({ from: window.ethereum.selectedAddress });
+      
         console.log(`Agreement "${title}" created. Transaction hash: ${tx.transactionHash}`);
         setTransactionHash(tx.transactionHash);
       } catch (error) {

@@ -8,15 +8,5 @@
     "incentiveToken": "0x8ca4528D876eDa758B829FBDDB9a4811D7DB959D",
     "paymentAmount": "5000000000000000000",
     "paymentToken": "0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e"
-  },
-  {
-    "title": "Agreement 2",
-    "description": "Description for Agreement 2",
-    "developer": "0x988d8063f521aa948FEc4AC1a4EDa72a5BdCBFb0",
-    "skills": ["Solidity"],
-    "incentiveAmount": "20000000000000000000",
-    "incentiveToken": "0x8ca4528D876eDa758B829FBDDB9a4811D7DB959D",
-    "paymentAmount": "8000000000000000000",
-    "paymentToken": "0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e"
-  }  
+  }
 ]

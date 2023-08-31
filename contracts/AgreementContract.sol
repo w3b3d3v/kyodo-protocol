@@ -23,6 +23,8 @@ contract AgreementContract {
 
     uint256 public nextAgreementId = 1;
     Agreement[] public agreements;
+    mapping(address => uint256[]) public userAgreements; // Mapping from user address to agreement IDs
+
 
     function createAgreement(
         string memory _title,
@@ -62,6 +64,7 @@ contract AgreementContract {
         });
 
         agreements.push(newAgreement);
+        userAgreements[msg.sender].push(nextAgreementId);
         nextAgreementId++;
     }
 
@@ -70,7 +73,15 @@ contract AgreementContract {
     }
 
     function getAllAgreements() external view returns (Agreement[] memory) {
-    return agreements;
-}
+        return agreements;
+    }
+     
+    function getUserAgreements(address _user) external view returns (uint256[] memory) {
+        return userAgreements[_user];
+    }
 
+    function getAgreementById(uint256 _id) external view returns (Agreement memory) {
+        require(_id > 0 && _id <= agreements.length, "Invalid agreement ID");
+        return agreements[_id - 1];
+    }
 }

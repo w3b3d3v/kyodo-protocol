@@ -5,7 +5,6 @@ const networkId = "0x13881";
 
 async function vefifyChain(){
   const chainId = window.ethereum.networkVersion;
-  console.log("chainId: " + chainId);
   if (chainId !== networkId && chainId !== "80001") {
     await window.ethereum.request({
       method: "wallet_addEthereumChain",

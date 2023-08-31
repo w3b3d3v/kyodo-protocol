@@ -5,6 +5,8 @@ import AddAgreement from "./components/AddAgreement/AddAgreement";
 import UserCheck from './components/UserCheck/UserCheck';
 import AgreementList from './components/AgreementList/AgreementList';
 
+//TODO: Props should not be agreementContract
+
 function AgreementsList(props) {
   return (
     <div>

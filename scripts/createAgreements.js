@@ -3,14 +3,19 @@ const path = require("path");
 const { ethers } = require("hardhat");
 
 async function main() {
-  const contractAddress = "0xB9348EBD819400CA1Ea6A8D25Ef03e74Eb858042"; // Substitua pelo endereço real do contrato AgreementContract
+  const contractAddress = "0xF80586D034A18597b933B80eb43805c46b483cA9"; // Substitua pelo endereço real do contrato AgreementContract
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
   const agreementContract = await AgreementContract.attach(contractAddress);
 
   const agreementsPath = path.join(__dirname, "assets", "agreements.json");
   const agreementsData = JSON.parse(fs.readFileSync(agreementsPath, "utf-8"));
 
-  for (const agreementData of agreementsData) {
+  const accounts = await ethers.getSigners();
+  const firstAccount = accounts[0];
+  const secondAccount = accounts[1];
+
+  for (let i = 0; i < agreementsData.length; i++) {
+    const agreementData = agreementsData[i];
     const {
       title,
       description,
@@ -22,7 +27,11 @@ async function main() {
       paymentToken,
     } = agreementData;
 
-    const tx = await agreementContract.createAgreement(
+    const signer = i % 2 === 0 ? firstAccount : secondAccount;
+
+    const agreementContractWithSigner = agreementContract.connect(signer);
+
+    const tx = await agreementContractWithSigner.createAgreement(
       title,
       description,
       developer,
@@ -44,4 +53,4 @@ main()
   .catch((error) => {
     console.error(error);
     process.exit(1);
-  });
+});
