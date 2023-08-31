@@ -70,3 +70,24 @@
 .transaction-info a:hover {
   background-color: #634bc7;
 }
+
+.select-input {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.token-option {
+  background-color: #fff;
+  color: #000;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  padding: 8px;
+  transition: background-color 0.2s;
+}
+
+.token-option:hover {
+  background-color: #f0f0f0;
+}

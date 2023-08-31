@@ -3,7 +3,7 @@ import { FaPlus } from "react-icons/fa";
 import Web3 from 'web3';
 import "./AddAgreement.css";
 import { BeatLoader } from "react-spinners";
-
+import tokens from '../assets/allowedTokens.json';
 
 import AgreementContract from '../../contracts/AgreementContract.json';
 const contractABI = AgreementContract.abi;
@@ -31,9 +31,9 @@ function AddAgreementForm(props) {
       developer.trim() === "" ||
       skills.trim() === "" ||
       incentiveAmount.trim() === "" ||
-      incentiveToken.trim() === "" ||
-      paymentAmount.trim() === "" ||
-      paymentToken.trim() === ""
+      !incentiveToken ||
+      !paymentAmount ||
+      !paymentToken
     ) {
       alert("Please fill in all fields.");
       return;
@@ -61,8 +61,8 @@ function AddAgreementForm(props) {
           skills.split(","),
           incentiveAmount,
           incentiveToken,
-          paymentAmount,
-          paymentToken
+          paymentAmount * 10 ** paymentToken.decimals,
+          paymentToken.address
         ).send({ from: window.ethereum.selectedAddress });
       
         console.log(`Agreement "${title}" created. Transaction hash: ${tx.transactionHash}`);
@@ -160,7 +160,27 @@ function AddAgreementForm(props) {
           value={incentiveToken}
           onChange={(event) => setIncentiveToken(event.target.value)}
         />
-    
+
+        <label htmlFor="payment-token-input">Payment Token:</label>
+        <select
+          id="payment-token-input"
+          value={paymentToken ? paymentToken.address : ''}
+          onChange={(event) => {
+            const selectedTokenAddress = event.target.value;
+            const selectedToken = tokens.find(token => token.address === selectedTokenAddress);
+            setPaymentToken(selectedToken);
+          }}
+          className="select-input"
+        >
+          <option value="">Selecione um token</option>
+          {tokens.map(token => (
+            <option key={token.address} value={token.address} className="token-option">
+              {token.name}
+            </option>
+          ))}
+        </select>
+
+
         <label htmlFor="payment-amount-input">Payment Amount:</label>
         <input
           type="number"
@@ -168,15 +188,7 @@ function AddAgreementForm(props) {
           value={paymentAmount}
           onChange={(event) => setPaymentAmount(event.target.value)}
         />
-    
-        <label htmlFor="payment-token-input">Payment Token:</label>
-        <input
-          type="text"
-          id="payment-token-input"
-          value={paymentToken}
-          onChange={(event) => setPaymentToken(event.target.value)}
-        />
-    
+
         <button type="submit" className="add-agreement-form-button">
           <FaPlus />
         </button>

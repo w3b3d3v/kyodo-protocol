@@ -4,6 +4,8 @@ import { Route, Routes } from "react-router-dom";
 import AddAgreement from "./components/AddAgreement/AddAgreement";
 import UserCheck from './components/UserCheck/UserCheck';
 
+// TODO: Passar contrato como prop para os componentes
+
 function Layouts(props) {
   return (
     <Routes>
