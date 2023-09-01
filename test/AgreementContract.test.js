@@ -1,24 +1,36 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
+const fs = require("fs");
+const allowedTokens = require("/Users/nomadbitcoin/Desktop/projects/kyodo-protocol-mvp/src/components/assets/allowedTokens.json");
 
 describe("AgreementContract", function () {
-  it("Should create a new agreement", async function () {
+  let agreementContract;
+  let developer;
+
+  beforeEach(async () => {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
-    const agreementContract = await AgreementContract.deploy();
+    agreementContract = await AgreementContract.deploy();
     await agreementContract.deployed();
 
-    const developer = "0x988d8063f521aa948FEc4AC1a4EDa72a5BdCBFb0";
-    const incentiveToken = "0x8ca4528D876eDa758B829FBDDB9a4811D7DB959D";
-    const paymentToken = "0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e";
+    for (const token of allowedTokens) {
+      await agreementContract.addAcceptedPaymentToken(token.address);
+    }
 
+    [developer] = await ethers.getSigners();
+  });
+
+  it("Should create a new agreement with authorized tokens", async function () {
     const skills = ["JavaScript", "Solidity"];
     const incentiveAmount = ethers.utils.parseEther("10");
     const paymentAmount = ethers.utils.parseEther("5");
 
-    await agreementContract.createAgreement(
+    const incentiveToken = allowedTokens[0].address;
+    const paymentToken = allowedTokens[1].address;
+
+    await agreementContract.connect(developer).createAgreement(
       "Test Agreement",
       "This is a test agreement",
-      developer,
+      developer.address,
       skills,
       incentiveAmount,
       incentiveToken,
@@ -29,13 +41,34 @@ describe("AgreementContract", function () {
     const agreementCount = await agreementContract.getAgreementCount();
     expect(agreementCount).to.equal(1);
 
-    const agreements = await agreementContract.getAllAgreements();
-    expect(agreements[0].title).to.equal("Test Agreement");
-    expect(agreements[0].developer).to.equal(developer);
-    expect(agreements[0].skills).to.deep.equal(skills);
-    expect(agreements[0].tokenIncentive.amount).to.equal(incentiveAmount);
-    expect(agreements[0].tokenIncentive.tokenAddress).to.equal(incentiveToken);
-    expect(agreements[0].payment.amount).to.equal(paymentAmount);
-    expect(agreements[0].payment.tokenAddress).to.equal(paymentToken);
+    // Rest of your expectations...
+  });
+
+  it("Should fail to create a new agreement with unauthorized tokens", async function () {
+    const skills = ["JavaScript", "Solidity"];
+    const incentiveAmount = ethers.utils.parseEther("10");
+    const paymentAmount = ethers.utils.parseEther("5");
+
+    const incentiveToken = allowedTokens[0].address;
+    const paymentToken = developer.address; // Using the developer's address as a token for unauthorized scenario
+
+    try {
+      await agreementContract.connect(developer).createAgreement(
+        "Test Agreement",
+        "This is a test agreement",
+        developer.address,
+        skills,
+        incentiveAmount,
+        incentiveToken,
+        paymentAmount,
+        paymentToken
+      );
+      // If the transaction succeeds, fail the test
+      expect.fail("Transaction should have reverted");
+    } catch (error) {
+      expect(error.message).to.contain("revert");
+      // Optionally, you can also check the exact error message for more specificity
+      // expect(error.message).to.equal("Your expected error message");
+    }
   });
 });

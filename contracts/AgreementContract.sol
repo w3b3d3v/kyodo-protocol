@@ -24,7 +24,22 @@ contract AgreementContract {
     uint256 public nextAgreementId = 1;
     Agreement[] public agreements;
     mapping(address => uint256[]) public userAgreements; // Mapping from user address to agreement IDs
+    mapping(address => bool) public acceptedPaymentTokens; // Mapping of accepted payment tokens
 
+    address public owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can call this function");
+        _;
+    }
+
+    function addAcceptedPaymentToken(address _tokenAddress) external onlyOwner {
+        acceptedPaymentTokens[_tokenAddress] = true;
+    }
 
     function createAgreement(
         string memory _title,
@@ -40,6 +55,7 @@ contract AgreementContract {
         require(_skills.length > 0, "Skills must not be empty");
         require(_incentiveAmount > 0, "Incentive amount must be greater than zero");
         require(_paymentAmount > 0, "Payment amount must be greater than zero");
+        require(acceptedPaymentTokens[_paymentAddress], "Invalid payment token");
 
         Token memory incentiveToken = Token({
             amount: _incentiveAmount,
@@ -75,7 +91,7 @@ contract AgreementContract {
     function getAllAgreements() external view returns (Agreement[] memory) {
         return agreements;
     }
-     
+
     function getUserAgreements(address _user) external view returns (uint256[] memory) {
         return userAgreements[_user];
     }
