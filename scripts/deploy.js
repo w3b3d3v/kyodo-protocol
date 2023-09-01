@@ -1,6 +1,5 @@
 const { ethers } = require("hardhat");
 const fs = require("fs");
-const path = require("path");
 
 async function main() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract");

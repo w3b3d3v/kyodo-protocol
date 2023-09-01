@@ -7,15 +7,13 @@ import tokens from '../assets/allowedTokens.json';
 
 import AgreementContract from '../../contracts/AgreementContract.json';
 const contractABI = AgreementContract.abi;
-const contractAddress = '0x4C3073be445B97121ceE882D39299169fb22e1e5';
+const contractAddress = '0x6372E5d03FFecb03cC1688776A57B8CA4baa2dEd';
 
 function AddAgreementForm(props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [developer, setDeveloper] = useState("");
   const [skills, setSkills] = useState("");
-  const [incentiveAmount, setIncentiveAmount] = useState("");
-  const [incentiveToken, setIncentiveToken] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
   const [paymentToken, setPaymentToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -30,8 +28,6 @@ function AddAgreementForm(props) {
       description.trim() === "" ||
       developer.trim() === "" ||
       skills.trim() === "" ||
-      incentiveAmount.trim() === "" ||
-      !incentiveToken ||
       !paymentAmount ||
       !paymentToken
     ) {
@@ -59,8 +55,6 @@ function AddAgreementForm(props) {
           description,
           developer,
           skills.split(","),
-          incentiveAmount,
-          incentiveToken,
           paymentAmount * 10 ** paymentToken.decimals,
           paymentToken.address
         ).send({ from: window.ethereum.selectedAddress });
@@ -78,8 +72,6 @@ function AddAgreementForm(props) {
       setDescription("");
       setDeveloper("");
       setSkills("");
-      setIncentiveAmount("");
-      setIncentiveToken("");
       setPaymentAmount("");
       setPaymentToken("");
     }
@@ -98,15 +90,20 @@ function AddAgreementForm(props) {
   if (transactionHash) {
     return (
       <div className="transaction-info">
-          Agreement created! Transaction Hash:{" "}
-          <a
-            href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {transactionHash}
-          </a>
-        </div>
+        Agreement created!
+        <br />
+        <br />
+        <a
+          href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          See Transaction
+        </a>
+        <br />
+        <br />
+        {/* <Link to="/agreementslist">View Agreements List</Link> */}
+      </div>
     );
   }
 
@@ -143,22 +140,6 @@ function AddAgreementForm(props) {
           id="skills-input"
           value={skills}
           onChange={(event) => setSkills(event.target.value)}
-        />
-    
-        <label htmlFor="incentive-amount-input">Incentive Amount:</label>
-        <input
-          type="number"
-          id="incentive-amount-input"
-          value={incentiveAmount}
-          onChange={(event) => setIncentiveAmount(event.target.value)}
-        />
-    
-        <label htmlFor="incentive-token-input">Incentive Token:</label>
-        <input
-          type="text"
-          id="incentive-token-input"
-          value={incentiveToken}
-          onChange={(event) => setIncentiveToken(event.target.value)}
         />
 
         <label htmlFor="payment-token-input">Payment Token:</label>

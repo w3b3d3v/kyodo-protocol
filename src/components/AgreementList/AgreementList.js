@@ -6,7 +6,7 @@ import AgreementContract from '../../contracts/AgreementContract.json';
 import tokens from '../assets/allowedTokens.json';
 
 const contractABI = AgreementContract.abi;
-const contractAddress = '0x4C3073be445B97121ceE882D39299169fb22e1e5';
+const contractAddress = '0x6372E5d03FFecb03cC1688776A57B8CA4baa2dEd';
 
 function AgreementList(props) {
     const [agreements, setAgreements] = useState([]);
@@ -72,8 +72,6 @@ function AgreementList(props) {
                 <p><strong>Status:</strong> {agreement.status}</p>
                 <p><strong>Developer:</strong> {agreement.developer}</p>
                 <p><strong>Skills:</strong> {agreement.skills.join(", ")}</p>
-                <p><strong>Incentive Amount:</strong> {agreement.tokenIncentive.amount.toString()}</p>
-                <p><strong>Incentive Token:</strong> {agreement.tokenIncentive.tokenAddress}</p>
                 <p><strong>Payment Amount:</strong> {adjustedPaymentAmount}</p>
                 <p><strong>Payment Token:</strong> {paymentTokenName}</p> {/* Display token name */}
               </div>
