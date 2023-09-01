@@ -26,6 +26,7 @@ contract AgreementContract {
     mapping(address => uint256[]) public userAgreements; // Mapping from user address to agreement IDs
     mapping(address => bool) public acceptedPaymentTokens; // Mapping of accepted payment tokens
 
+    Token public tokenIncentive; // Fixed tokenIncentive
     address public owner;
 
     constructor() {
@@ -46,21 +47,13 @@ contract AgreementContract {
         string memory _description,
         address _developer,
         string[] memory _skills,
-        uint256 _incentiveAmount,
-        address _incentiveAddress,
         uint256 _paymentAmount,
         address _paymentAddress
     ) external {
         require(_developer != address(0), "Developer address cannot be zero");
         require(_skills.length > 0, "Skills must not be empty");
-        require(_incentiveAmount > 0, "Incentive amount must be greater than zero");
         require(_paymentAmount > 0, "Payment amount must be greater than zero");
         require(acceptedPaymentTokens[_paymentAddress], "Invalid payment token");
-
-        Token memory incentiveToken = Token({
-            amount: _incentiveAmount,
-            tokenAddress: _incentiveAddress
-        });
 
         Token memory paymentToken = Token({
             amount: _paymentAmount,
@@ -75,7 +68,7 @@ contract AgreementContract {
             company: msg.sender,
             developer: _developer,
             skills: _skills,
-            tokenIncentive: incentiveToken,
+            tokenIncentive: tokenIncentive, // Use fixed tokenIncentive
             payment: paymentToken
         });
 
@@ -99,5 +92,12 @@ contract AgreementContract {
     function getAgreementById(uint256 _id) external view returns (Agreement memory) {
         require(_id > 0 && _id <= agreements.length, "Invalid agreement ID");
         return agreements[_id - 1];
+    }
+
+    function updateTokenIncentive(address _newTokenAddress, uint256 _newAmount) external onlyOwner {
+        tokenIncentive = Token({
+            amount: _newAmount,
+            tokenAddress: _newTokenAddress
+        });
     }
 }

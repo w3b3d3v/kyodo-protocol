@@ -32,8 +32,6 @@ describe("AgreementContract", function () {
       "This is a test agreement",
       developer.address,
       skills,
-      incentiveAmount,
-      incentiveToken,
       paymentAmount,
       paymentToken
     );
@@ -46,10 +44,7 @@ describe("AgreementContract", function () {
 
   it("Should fail to create a new agreement with unauthorized tokens", async function () {
     const skills = ["JavaScript", "Solidity"];
-    const incentiveAmount = ethers.utils.parseEther("10");
     const paymentAmount = ethers.utils.parseEther("5");
-
-    const incentiveToken = allowedTokens[0].address;
     const paymentToken = developer.address; // Using the developer's address as a token for unauthorized scenario
 
     try {
@@ -58,8 +53,6 @@ describe("AgreementContract", function () {
         "This is a test agreement",
         developer.address,
         skills,
-        incentiveAmount,
-        incentiveToken,
         paymentAmount,
         paymentToken
       );

@@ -23,7 +23,6 @@ describe("AgreementContract", function () {
 
   it("Should create agreements and retrieve user-specific agreements", async function () {
     // Use the first two allowed tokens for testing
-    const incentiveToken = allowedTokens[0].address;
     const paymentToken = allowedTokens[1].address;
 
     // Create agreements using different user addresses
@@ -32,8 +31,6 @@ describe("AgreementContract", function () {
       "Description 1",
       user1.address,
       ["Skill 1", "Skill 2"],
-      ethers.utils.parseEther("10"),
-      incentiveToken,
       ethers.utils.parseEther("5"),
       paymentToken
     );
@@ -43,8 +40,6 @@ describe("AgreementContract", function () {
       "Description 2",
       user2.address,
       ["Skill 3", "Skill 4"],
-      ethers.utils.parseEther("8"),
-      incentiveToken,
       ethers.utils.parseEther("4"),
       paymentToken
     );
@@ -62,7 +57,6 @@ describe("AgreementContract", function () {
 
     const user1Agreement = await agreementContract.getAgreementById(user1AgreementId);
     const user2Agreement = await agreementContract.getAgreementById(user2AgreementId);
-    console.log("user1AgreementId: " + user1Agreement)
 
     expect(user1Agreement.developer).to.equal(user1.address);
     expect(user2Agreement.developer).to.equal(user2.address);
