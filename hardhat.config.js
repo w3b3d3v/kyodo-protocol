@@ -12,12 +12,9 @@ const { TESTNET_ALCHEMY_URL } = process.env;
 module.exports = {
   solidity: "0.8.19",
   networks: {
-    // hardhat: {
-    //   accounts: [{
-    //     privateKey: WALLET_PRIVATE_KEY,
-    //     balance: "10000000000000000000000" // 10,000 ETH, por exemplo
-    //   }]
-    // },
+    testing: {
+      url: "http://127.0.0.1:8545/",
+    },
     mumbai: {
       url: TESTNET_ALCHEMY_URL,
       accounts: [`0x${WALLET_PRIVATE_KEY}`],

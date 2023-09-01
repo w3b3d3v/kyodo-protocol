@@ -7,7 +7,7 @@ import AddAgreement from "../AddAgreement/AddAgreement";
 import AgreementList from '../AgreementList/AgreementList';
 
 const contractABI = AgreementContract.abi;
-const contractAddress = '0x6372E5d03FFecb03cC1688776A57B8CA4baa2dEd';
+const contractAddress = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
 
 function UserCheck(props) {
     const [isRegistered, setIsRegistered] = useState(false);
