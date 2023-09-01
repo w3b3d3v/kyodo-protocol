@@ -1,5 +1,6 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
+const allowedTokens = require("/Users/nomadbitcoin/Desktop/projects/kyodo-protocol-mvp/src/components/assets/allowedTokens.json");
 
 describe("AgreementContract", function () {
   let agreementContract;
@@ -13,19 +14,25 @@ describe("AgreementContract", function () {
     await agreementContract.deployed();
 
     [owner, user1, user2] = await ethers.getSigners();
+
+    // Add allowed tokens to the contract
+    for (const token of allowedTokens) {
+      await agreementContract.addAcceptedPaymentToken(token.address);
+    }
   });
 
   it("Should create agreements and retrieve user-specific agreements", async function () {
+    // Use the first two allowed tokens for testing
+    const paymentToken = allowedTokens[1].address;
+
     // Create agreements using different user addresses
     await agreementContract.connect(user1).createAgreement(
       "Agreement 1",
       "Description 1",
       user1.address,
       ["Skill 1", "Skill 2"],
-      ethers.utils.parseEther("10"),
-      user1.address,
       ethers.utils.parseEther("5"),
-      user1.address
+      paymentToken
     );
 
     await agreementContract.connect(user2).createAgreement(
@@ -33,10 +40,8 @@ describe("AgreementContract", function () {
       "Description 2",
       user2.address,
       ["Skill 3", "Skill 4"],
-      ethers.utils.parseEther("8"),
-      user2.address,
       ethers.utils.parseEther("4"),
-      user2.address
+      paymentToken
     );
 
     // Get user agreements
@@ -55,5 +60,5 @@ describe("AgreementContract", function () {
 
     expect(user1Agreement.developer).to.equal(user1.address);
     expect(user2Agreement.developer).to.equal(user2.address);
-  });
+  });  
 });

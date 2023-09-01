@@ -1,4 +1,5 @@
 const { ethers } = require("hardhat");
+const fs = require("fs");
 
 async function main() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
@@ -7,6 +8,16 @@ async function main() {
   await contract.deployed();
 
   console.log("AgreementContract deployed to:", contract.address);
+
+  // Load allowedTokens.json
+  const allowedTokensData = fs.readFileSync("/Users/nomadbitcoin/Desktop/projects/kyodo-protocol-mvp/src/components/assets/allowedTokens.json", "utf8");
+  const allowedTokens = JSON.parse(allowedTokensData);
+
+  // Add allowed tokens to the contract
+  for (const token of allowedTokens) {
+    await contract.addAcceptedPaymentToken(token.address);
+    console.log(`Added ${token.name} (${token.address}) as an accepted payment token`);
+  }
 }
 
 main()
