@@ -1,8 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
+interface IERC20 {
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function decimals() external view returns (uint8);
+}
+
 contract AgreementContract {
-    enum AgreementStatus { Pending, Active, Completed }
+    enum AgreementStatus { Active, Completed }
 
     struct Token {
         uint256 amount;
@@ -28,6 +34,12 @@ contract AgreementContract {
 
     Token public tokenIncentive; // Fixed tokenIncentive
     address public owner;
+    address public kyodoTreasury;
+    address public communityDAO;
+
+    uint256 public feePercentage; // Fee percentage in basis points (1 basis point = 0.01%)
+    uint256 public kyodoTreasuryFee;
+    uint256 public communityDAOFee;
 
     constructor() {
         owner = msg.sender;
@@ -64,7 +76,7 @@ contract AgreementContract {
             id: nextAgreementId,
             title: _title,
             description: _description,
-            status: AgreementStatus.Pending,
+            status: AgreementStatus.Active,
             company: msg.sender,
             developer: _developer,
             skills: _skills,
@@ -99,5 +111,57 @@ contract AgreementContract {
             amount: _newAmount,
             tokenAddress: _newTokenAddress
         });
+    }
+
+    function makePayment(uint256 _agreementId) external {
+        require(_agreementId > 0 && _agreementId <= agreements.length, "Invalid agreement ID");
+        Agreement storage agreement = agreements[_agreementId - 1];
+
+        uint256 totalFeeBasisPoints;
+        uint256 totalFee;
+        uint256 kyodoTreasuryShare;
+        uint256 communityDAOShare;
+        uint256 developerPayment;
+
+        require(agreement.status == AgreementStatus.Active, "Agreement is not active");
+
+        Token storage paymentToken = agreement.payment;
+        IERC20 token = IERC20(paymentToken.tokenAddress);
+
+        uint256 totalPaymentAmount = paymentToken.amount;
+
+        unchecked {
+            totalFeeBasisPoints = feePercentage * 1000;
+            totalFee = (totalFeeBasisPoints * totalPaymentAmount) / (10**6);
+            kyodoTreasuryShare = (totalFee * kyodoTreasuryFee) / 1000;
+            communityDAOShare = totalFee - kyodoTreasuryShare;
+            developerPayment = totalPaymentAmount - totalFee;
+        }
+        require(
+            token.transferFrom(msg.sender, address(this), totalPaymentAmount),
+            "User must approve the amount of the agreement"
+        );
+
+        token.transferFrom(msg.sender, address(this), totalPaymentAmount);
+        token.transfer(kyodoTreasury, kyodoTreasuryShare);
+        token.transfer(communityDAO, communityDAOShare);
+        token.transfer(agreement.developer, developerPayment);
+
+        agreement.status = AgreementStatus.Completed;
+
+    }
+
+    function getDecimals(address _tokenAddress) internal view returns (uint256) {
+        // Call the ERC20 token contract to get the number of decimals
+        IERC20 token = IERC20(_tokenAddress);
+        return token.decimals();
+    }
+
+    function setFees(uint256 _feePercentage, uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external onlyOwner {
+        require(_feePercentage >= 0 && _feePercentage <= 10000, "Invalid fee percentage");
+
+        feePercentage = _feePercentage;
+        kyodoTreasuryFee = _kyodoTreasuryFee;
+        communityDAOFee = _communityDAOFee;
     }
 }

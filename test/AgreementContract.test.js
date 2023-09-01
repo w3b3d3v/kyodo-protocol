@@ -21,10 +21,7 @@ describe("AgreementContract", function () {
 
   it("Should create a new agreement with authorized tokens", async function () {
     const skills = ["JavaScript", "Solidity"];
-    const incentiveAmount = ethers.utils.parseEther("10");
     const paymentAmount = ethers.utils.parseEther("5");
-
-    const incentiveToken = allowedTokens[0].address;
     const paymentToken = allowedTokens[1].address;
 
     await agreementContract.connect(developer).createAgreement(
