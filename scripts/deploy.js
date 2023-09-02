@@ -10,7 +10,7 @@ async function main() {
   console.log("AgreementContract deployed to:", contract.address);
 
   // Load allowedTokens.json
-  const allowedTokensData = fs.readFileSync("/Users/nomadbitcoin/Desktop/projects/kyodo-protocol-mvp/src/components/assets/allowedTokens.json", "utf8");
+  const allowedTokensData = fs.readFileSync("src/assets/allowedTokens.json", "utf8");
   const allowedTokens = JSON.parse(allowedTokensData);
 
   // Add allowed tokens to the contract

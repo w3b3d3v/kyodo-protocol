@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const allowedTokens = require("/Users/nomadbitcoin/Desktop/projects/kyodo-protocol-mvp/src/components/assets/allowedTokens.json");
+const allowedTokens = require("src/assets/allowedTokens.json");
 
 const TOTAL_FEE = 20; // using 1000 basis points for fee calculation
 const PROTOCOL_FEE = 500; // using 1000 basis points for fee calculation

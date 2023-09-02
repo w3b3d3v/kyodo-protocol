@@ -3,12 +3,12 @@ import { FaPlus } from "react-icons/fa";
 import Web3 from 'web3';
 import "./AddAgreement.css";
 import { BeatLoader } from "react-spinners";
-import tokens from '../assets/allowedTokens.json';
+import tokens from '../../assets/allowedTokens.json';
 import { BigNumber } from 'bignumber.js';
 
 import AgreementContract from '../../contracts/AgreementContract.json';
 const contractABI = AgreementContract.abi;
-const contractAddress = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
+const contractAddress = '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82';
 
 function AddAgreementForm(props) {
   const [title, setTitle] = useState("");

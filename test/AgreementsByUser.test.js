@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const allowedTokens = require("/Users/nomadbitcoin/Desktop/projects/kyodo-protocol-mvp/src/components/assets/allowedTokens.json");
+const allowedTokens = require("src/assets/allowedTokens.json");
 
 describe("AgreementContract", function () {
   let agreementContract;
