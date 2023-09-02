@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const allowedTokens = require("src/assets/allowedTokens.json");
+const allowedTokens = require("../src/assets/allowedTokens.json");
 
 const TOTAL_FEE = 20; // using 1000 basis points for fee calculation
 const PROTOCOL_FEE = 500; // using 1000 basis points for fee calculation
@@ -24,7 +24,7 @@ describe("AgreementContract", function () {
     // Set accepted payment tokens
     for (const token of allowedTokens) {
         await agreementContract.addAcceptedPaymentToken(token.address);
-      }
+    }
 
     // Set values for fees and addresses
     await agreementContract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE); // Example fee values
@@ -35,30 +35,45 @@ describe("AgreementContract", function () {
   });
 
   it("Should make a payment and distribute fees", async function () {  
-    const paymentToken = allowedTokens[0].address;
+    const paymentToken = allowedTokens[3].address;
+    const TokenContract = await ethers.getContractFactory("testToken");
+    const tokenContract = await TokenContract.attach(paymentToken);
+    const paymentAmount = ethers.utils.parseEther("100")
 
     // Create agreements using different user addresses
-    await agreementContract.connect(user1).createAgreement(
+    await agreementContract.connect(owner).createAgreement(
       "Agreement 1",
       "Description 1",
-      user1.address,
+      developer.address,
       ["Skill 1", "Skill 2"],
-      100000000,
+      paymentAmount,
       paymentToken
     );
 
-    const user1Agreements = await agreementContract.connect(user1).getUserAgreements(user1.address);
-    const user1AgreementId = user1Agreements[0];
-    const user1Agreement = await agreementContract.getAgreementById(user1AgreementId);
-    await agreementContract.makePayment(user1AgreementId)
+    const initialDeveloperBalance = await tokenContract.balanceOf(developer.address);
+    const initialKyodoTreasuryBalance = await tokenContract.balanceOf("0x516E98eb5C1D826FCca399b8D8B13BD8e4E12bC8");
+    const initialCommunityDAOBalance = await tokenContract.balanceOf("0x19E776E2ff69d8E6600c776d3f1Ef4586606805F");
+  
+    const ownerAgreements = await agreementContract.connect(owner).getUserAgreements(owner.address);
+    const ownerAgreementId = ownerAgreements[0];
+    await tokenContract.approve(agreementContract.address, paymentAmount);
+    await agreementContract.makePayment(ownerAgreementId)
+  
+    const updatedAgreement = await agreementContract.getAgreementById(ownerAgreementId);
+    expect(updatedAgreement.status).to.equal(1); // Assuming status codes: 0 for created, 1 for paid, etc.
 
-    // Approve the contract to spend user's tokens
-    // await IERC20(paymentToken).approve(agreementContract.address, paymentAmount);
-  
-    // Call the makePayment function
-    // await agreementContract.connect(developer).makePayment(agreementId);
-  
-    // Perform assertions to check if payments and fee distribution are correct
-    // You can use "expect" statements to verify token balances and status changes
+    const totalFeeAmount = paymentAmount.mul(TOTAL_FEE).div(1000);
+    
+    const finalDeveloperBalance = await tokenContract.balanceOf(developer.address);
+    const finalKyodoTreasuryBalance = await tokenContract.balanceOf("0x516E98eb5C1D826FCca399b8D8B13BD8e4E12bC8");
+    const finalCommunityDAOBalance = await tokenContract.balanceOf("0x19E776E2ff69d8E6600c776d3f1Ef4586606805F");
+    
+    const expectedDeveloperIncrease = paymentAmount.sub(paymentAmount.mul(TOTAL_FEE).div(1000)); // Subtracting the total fee
+    const expectedKyodoTreasuryIncrease = totalFeeAmount.mul(PROTOCOL_FEE).div(1000);
+    const expectedCommunityDAOIncrease = totalFeeAmount.mul(COMMUNITY_FEE).div(1000);
+    
+    expect(finalDeveloperBalance).to.equal(initialDeveloperBalance.add(expectedDeveloperIncrease));
+    expect(finalKyodoTreasuryBalance).to.equal(initialKyodoTreasuryBalance.add(expectedKyodoTreasuryIncrease));
+    expect(finalCommunityDAOBalance).to.equal(initialCommunityDAOBalance.add(expectedCommunityDAOIncrease));
   });
 });

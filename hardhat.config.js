@@ -10,6 +10,7 @@ const { TESTNET_ALCHEMY_URL } = process.env;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
+  defaultNetwork: "testing",
   solidity: "0.8.19",
   networks: {
     testing: {

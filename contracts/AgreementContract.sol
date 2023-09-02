@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
+import "hardhat/console.sol";
+
 interface IERC20 {
     function transfer(address recipient, uint256 amount) external returns (bool);
     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
@@ -34,8 +36,8 @@ contract AgreementContract {
 
     Token public tokenIncentive; // Fixed tokenIncentive
     address public owner;
-    address public kyodoTreasury;
-    address public communityDAO;
+    address public kyodoTreasury = 0x516E98eb5C1D826FCca399b8D8B13BD8e4E12bC8;
+    address public communityDAO = 0x19E776E2ff69d8E6600c776d3f1Ef4586606805F;
 
     uint256 public feePercentage; // Fee percentage in basis points (1 basis point = 0.01%)
     uint256 public kyodoTreasuryFee;
@@ -137,18 +139,17 @@ contract AgreementContract {
             communityDAOShare = totalFee - kyodoTreasuryShare;
             developerPayment = totalPaymentAmount - totalFee;
         }
+
         require(
             token.transferFrom(msg.sender, address(this), totalPaymentAmount),
             "User must approve the amount of the agreement"
         );
 
-        token.transferFrom(msg.sender, address(this), totalPaymentAmount);
         token.transfer(kyodoTreasury, kyodoTreasuryShare);
         token.transfer(communityDAO, communityDAOShare);
         token.transfer(agreement.developer, developerPayment);
 
         agreement.status = AgreementStatus.Completed;
-
     }
 
     function getDecimals(address _tokenAddress) internal view returns (uint256) {
