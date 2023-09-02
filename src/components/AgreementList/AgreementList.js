@@ -1,27 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { BeatLoader } from "react-spinners";
-import Web3 from 'web3';
 import "./AgreementList.css";
-import AgreementContract from '../../contracts/AgreementContract.json';
 import tokens from '../../assets/allowedTokens.json';
-
-const contractABI = AgreementContract.abi;
-const contractAddress = '0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82';
+import { useContract } from '../../ContractContext';
 
 function AgreementList(props) {
     const [agreements, setAgreements] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    const { contract, loading } = useContract();
   
     useEffect(() => {
         async function fetchAgreements() {
           try {
             // Verificar se o provedor Ethereum está presente
             if (window.ethereum) {
-              // Conectar à blockchain usando o provedor Ethereum
-              const web3 = new Web3(window.ethereum);
-    
-              // Criar uma instância do contrato usando o endereço e o ABI
-              const contract = new web3.eth.Contract(contractABI, contractAddress);
               const userAgreementIds = await contract.methods.getUserAgreements(window.ethereum.selectedAddress).call();
               
               const fetchedAgreements = await Promise.all(userAgreementIds.map(async (agreementId) => {
@@ -41,7 +34,7 @@ function AgreementList(props) {
         }
     
         fetchAgreements();
-    }, [contractABI, contractAddress]);    
+    }, []);    
   
     if (isLoading) {
       return (
