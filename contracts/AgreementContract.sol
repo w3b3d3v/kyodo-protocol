@@ -37,15 +37,17 @@ contract AgreementContract {
 
     Token public tokenIncentive; // Fixed tokenIncentive
     address public owner;
-    address public kyodoTreasury = 0x516E98eb5C1D826FCca399b8D8B13BD8e4E12bC8;
-    address public communityDAO = 0x19E776E2ff69d8E6600c776d3f1Ef4586606805F;
+    address public kyodoTreasury;
+    address public communityDAO;
 
     uint256 public feePercentage; // Fee percentage in basis points (1 basis point = 0.01%)
     uint256 public kyodoTreasuryFee;
     uint256 public communityDAOFee;
 
-    constructor() {
+    constructor(address _kyodoTreasury, address _communityDAO) {
         owner = msg.sender;
+        kyodoTreasury = _kyodoTreasury;
+        communityDAO = _communityDAO;
     }
 
     modifier onlyOwner() {
@@ -157,12 +159,6 @@ contract AgreementContract {
         if (agreement.totalPaid >= paymentToken.amount) {
             agreement.status = AgreementStatus.Completed;
         }
-    }
-
-    function getDecimals(address _tokenAddress) internal view returns (uint256) {
-        // Call the ERC20 token contract to get the number of decimals
-        IERC20 token = IERC20(_tokenAddress);
-        return token.decimals();
     }
 
     function setFees(uint256 _feePercentage, uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external onlyOwner {

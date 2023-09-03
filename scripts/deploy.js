@@ -23,8 +23,13 @@ function updateConfig(contractAddress) {
 }
 
 async function main() {
+  const configPath = path.join(__dirname, "../src/config.json");
+  let configData = fs.readFileSync(configPath, "utf8");
+
+  configData = JSON.parse(configData);
+
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
-  const contract = await AgreementContract.deploy();
+  contract = await AgreementContract.deploy(configData.kyodoTreasury, configData.communityDAO);
 
   await contract.deployed();
 
