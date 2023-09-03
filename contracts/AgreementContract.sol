@@ -27,6 +27,7 @@ contract AgreementContract {
         string[] skills;
         Token tokenIncentive;
         Token payment;
+        uint256 totalPaid;
     }
 
     uint256 public nextAgreementId = 1;
@@ -83,7 +84,8 @@ contract AgreementContract {
             developer: _developer,
             skills: _skills,
             tokenIncentive: tokenIncentive, // Use fixed tokenIncentive
-            payment: paymentToken
+            payment: paymentToken,
+            totalPaid: 0
         });
 
         agreements.push(newAgreement);
@@ -115,7 +117,7 @@ contract AgreementContract {
         });
     }
 
-    function makePayment(uint256 _agreementId) external {
+    function makePayment(uint256 _agreementId, uint256 _amountToPay) external {
         require(_agreementId > 0 && _agreementId <= agreements.length, "Invalid agreement ID");
         Agreement storage agreement = agreements[_agreementId - 1];
 
@@ -130,18 +132,19 @@ contract AgreementContract {
         Token storage paymentToken = agreement.payment;
         IERC20 token = IERC20(paymentToken.tokenAddress);
 
-        uint256 totalPaymentAmount = paymentToken.amount;
+        uint256 remainingAmount = paymentToken.amount - agreement.totalPaid;
+        require(_amountToPay > 0 && _amountToPay <= remainingAmount, "Invalid payment amount");
 
         unchecked {
             totalFeeBasisPoints = feePercentage * 1000;
-            totalFee = (totalFeeBasisPoints * totalPaymentAmount) / (10**6);
+            totalFee = (totalFeeBasisPoints * _amountToPay) / (10**6);
             kyodoTreasuryShare = (totalFee * kyodoTreasuryFee) / 1000;
             communityDAOShare = totalFee - kyodoTreasuryShare;
-            developerPayment = totalPaymentAmount - totalFee;
+            developerPayment = _amountToPay - totalFee;
         }
 
         require(
-            token.transferFrom(msg.sender, address(this), totalPaymentAmount),
+            token.transferFrom(msg.sender, address(this), _amountToPay),
             "User must approve the amount of the agreement"
         );
 
@@ -149,7 +152,11 @@ contract AgreementContract {
         token.transfer(communityDAO, communityDAOShare);
         token.transfer(agreement.developer, developerPayment);
 
-        agreement.status = AgreementStatus.Completed;
+        agreement.totalPaid += _amountToPay;
+
+        if (agreement.totalPaid >= paymentToken.amount) {
+            agreement.status = AgreementStatus.Completed;
+        }
     }
 
     function getDecimals(address _tokenAddress) internal view returns (uint256) {
