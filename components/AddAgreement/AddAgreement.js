@@ -5,6 +5,8 @@ import styles from "./AddAgreement.module.css"
 
 import { BeatLoader } from "react-spinners"
 import tokens from "../../public/allowedTokens.json"
+import { ethers } from "ethers"
+const BigNumber = ethers.BigNumber
 
 function AddAgreementForm(props) {
   const [title, setTitle] = useState("")
@@ -41,8 +43,8 @@ function AddAgreementForm(props) {
     setIsLoading(true)
 
     if (window.ethereum) {
-      const paymentAmountInWei = new BigNumber(paymentAmount)
-        .times(new BigNumber(10).pow(paymentToken.decimals))
+      const paymentAmountInWei = BigNumber.from(paymentAmount)
+        .mul(BigNumber.from(10).pow(paymentToken.decimals))
         .toString()
 
       try {
