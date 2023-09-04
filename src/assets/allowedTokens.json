@@ -1,0 +1,26 @@
+[
+  {
+    "address": "0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e",
+    "logo": "src/components/assets/usd-coin-usdc-logo.svg",
+    "name": "USDC",
+    "decimals": 6
+  },
+  {
+    "address": "0x001B3B4d0F3714Ca98ba10F6042DaEbF0B1B7b6F",
+    "logo": "src/components/assets/multi-collateral-dai-dai-logo.svg",
+    "name": "DAI",
+    "decimals": 18
+  },
+  {
+    "address": "0xBD21A10F619BE90d6066c941b04e340841F1F989",
+    "logo": "src/components/assets/tether-usdt-logo.svg",
+    "name": "USDT",
+    "decimals": 6
+  },
+  {
+    "address": "0x2135b360D32B17fAEE573BDE47C75e5e34bdC875",
+    "logo": "src/components/assets/your-token-logo.svg",
+    "name": "fakeStable",
+    "decimals": 18
+  }
+]

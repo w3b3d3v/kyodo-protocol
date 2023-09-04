@@ -1,27 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import { BeatLoader } from "react-spinners";
-import Web3 from 'web3';
 import "./AgreementList.css";
-import AgreementContract from '../../contracts/AgreementContract.json';
-import tokens from '../assets/allowedTokens.json';
+import tokens from '../../assets/allowedTokens.json';
+import { useContract } from '../../ContractContext';
+import { BigNumber } from 'bignumber.js';
 
-const contractABI = AgreementContract.abi;
-const contractAddress = '0x6372E5d03FFecb03cC1688776A57B8CA4baa2dEd';
+// TODO: Check allowance before transaction
+// Handle Promise while transaction runs
+// Show correct Total Paid based in a defined currency base
 
 function AgreementList(props) {
     const [agreements, setAgreements] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [showPaymentInput, setShowPaymentInput] = useState(null);
+    const [paymentValue, setPaymentValue] = useState('');
+    const { contract, loading } = useContract();
+
+    const handlePayClick = (index) => {
+      setShowPaymentInput(index);
+    };
+  
+    const handlePaymentValueChange = (e) => {
+      setPaymentValue(parseInt(e.target.value));
+    };
+
+    const handleMakePayment = async (agreementId, totalAmount, totalPaid, paymentToken) => {      
+      const paymentAmountInWei = new BigNumber(paymentValue)
+                .times(new BigNumber(10).pow(paymentToken.decimals))
+                .toString();
+
+      if (parseInt(paymentAmountInWei) <= 0 || parseInt(paymentAmountInWei) > parseInt(totalAmount) || (parseInt(paymentAmountInWei) + parseInt(totalPaid) > parseInt(totalAmount))) {
+        alert('Invalid payment amount.');
+        return;
+      }
+      try {
+        // Verificar se o provedor Ethereum está presente
+        if (window.ethereum) {
+          const tx = await contract.methods.makePayment(
+            agreementId, 
+            paymentAmountInWei
+          ).send({ from: window.ethereum.selectedAddress });
+
+        } else {
+          console.error('Provedor Ethereum não encontrado!');
+        }
+      } catch (error) {
+        console.error('Erro ao fazer pagamento', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
   
     useEffect(() => {
         async function fetchAgreements() {
           try {
             // Verificar se o provedor Ethereum está presente
             if (window.ethereum) {
-              // Conectar à blockchain usando o provedor Ethereum
-              const web3 = new Web3(window.ethereum);
-    
-              // Criar uma instância do contrato usando o endereço e o ABI
-              const contract = new web3.eth.Contract(contractABI, contractAddress);
               const userAgreementIds = await contract.methods.getUserAgreements(window.ethereum.selectedAddress).call();
               
               const fetchedAgreements = await Promise.all(userAgreementIds.map(async (agreementId) => {
@@ -41,7 +75,7 @@ function AgreementList(props) {
         }
     
         fetchAgreements();
-    }, [contractABI, contractAddress]);    
+    }, []);    
   
     if (isLoading) {
       return (
@@ -60,7 +94,6 @@ function AgreementList(props) {
           {agreements.map((agreement, index) => {
             const paymentToken = tokens.find(token => token.address === agreement.payment.tokenAddress);
             const paymentTokenName = paymentToken ? paymentToken.name : 'Unknown Token';
-    
             const adjustedPaymentAmount = paymentToken
               ? agreement.payment.amount / 10 ** paymentToken.decimals
               : agreement.payment.amount;
@@ -69,17 +102,38 @@ function AgreementList(props) {
               <div key={index} className="card">
                 <h2>{agreement.title}</h2>
                 <p>{agreement.description}</p>
-                <p><strong>Status:</strong> {agreement.status}</p>
+                <p><strong>Status:</strong>
+                {Number(agreement.status) === 0 ? 
+                  <>
+                    <button onClick={() => handlePayClick(index)}> Pay Agreement</button>
+                    <br></br>
+                    {showPaymentInput === index && (
+                      <>
+                        <input 
+                          type="number" 
+                          value={paymentValue}
+                          onChange={handlePaymentValueChange}
+                        />
+                        <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)}>Confirm Payment</button>
+                      </>
+                    )}
+                  </> : 
+                  (Number(agreement.status) === 1 ? ' Completed' : agreement.status)
+                }
+              </p>
                 <p><strong>Developer:</strong> {agreement.developer}</p>
                 <p><strong>Skills:</strong> {agreement.skills.join(", ")}</p>
                 <p><strong>Payment Amount:</strong> {adjustedPaymentAmount}</p>
                 <p><strong>Payment Token:</strong> {paymentTokenName}</p> {/* Display token name */}
+                {Number(agreement.status) !== 1 && <p><strong>Total Paid:</strong> {agreement.totalPaid}</p>}
               </div>
             );
           })}
         </div>
       </div>
     );
+    
+    
 }
   
 export default AgreementList;

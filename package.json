@@ -1,5 +1,5 @@
 {
-  "name": "kyodo-protocol-mvp",
+  "name": "kyodo-protocol",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

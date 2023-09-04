@@ -1,13 +1,10 @@
+import { useContract } from '../../ContractContext';
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import Web3 from 'web3';
 import "./AddAgreement.css";
 import { BeatLoader } from "react-spinners";
-import tokens from '../assets/allowedTokens.json';
-
-import AgreementContract from '../../contracts/AgreementContract.json';
-const contractABI = AgreementContract.abi;
-const contractAddress = '0x6372E5d03FFecb03cC1688776A57B8CA4baa2dEd';
+import tokens from '../../assets/allowedTokens.json';
+import { BigNumber } from 'bignumber.js';
 
 function AddAgreementForm(props) {
   const [title, setTitle] = useState("");
@@ -18,6 +15,8 @@ function AddAgreementForm(props) {
   const [paymentToken, setPaymentToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [transactionHash, setTransactionHash] = useState(null);
+  const { contract, loading } = useContract();
+  
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -43,11 +42,9 @@ function AddAgreementForm(props) {
     setIsLoading(true);
 
     if (window.ethereum) {
-      // Conectar à blockchain usando o provedor Ethereum
-      const web3 = new Web3(window.ethereum);
-    
-      // Criar uma instância do contrato usando o endereço e o ABI
-      const contract = new web3.eth.Contract(contractABI, contractAddress);
+      const paymentAmountInWei = new BigNumber(paymentAmount)
+                .times(new BigNumber(10).pow(paymentToken.decimals))
+                .toString();
 
       try {
         const tx = await contract.methods.createAgreement(
@@ -55,7 +52,7 @@ function AddAgreementForm(props) {
           description,
           developer,
           skills.split(","),
-          paymentAmount * 10 ** paymentToken.decimals,
+          paymentAmountInWei,
           paymentToken.address
         ).send({ from: window.ethereum.selectedAddress });
       
@@ -167,7 +164,7 @@ function AddAgreementForm(props) {
           type="number"
           id="payment-amount-input"
           value={paymentAmount}
-          onChange={(event) => setPaymentAmount(event.target.value)}
+          onChange={(event) => setPaymentAmount(parseInt(event.target.value))}
         />
 
         <button type="submit" className="add-agreement-form-button">

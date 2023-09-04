@@ -3,25 +3,26 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import AddAgreement from "./components/AddAgreement/AddAgreement";
 import UserCheck from './components/UserCheck/UserCheck';
-
-// TODO: Passar contrato como prop para os componentes
+import { ContractProvider } from './ContractContext'; 
 
 function Layouts(props) {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={<UserCheck userAddress={props.account} />}
-      />
-      <Route
-        path="/agreementslist"
-        element={<UserCheck userAddress={props.account} />}
-      />
-      <Route
-        path="/addagreement"
-        element={<AddAgreement userAddress={props.account} />}
-      />
-    </Routes>
+    <ContractProvider>
+      <Routes>
+        <Route
+          path="/"
+          element={<UserCheck />}
+        />
+        <Route
+          path="/agreementslist"
+          element={<UserCheck />}
+        />
+        <Route
+          path="/addagreement"
+          element={<AddAgreement />}
+        />
+      </Routes>
+    </ContractProvider>
   );
 }
 

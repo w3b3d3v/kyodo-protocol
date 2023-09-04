@@ -1,16 +1,23 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const allowedTokens = require("/Users/nomadbitcoin/Desktop/projects/kyodo-protocol-mvp/src/components/assets/allowedTokens.json");
+const fs = require("fs");
+const path = require("path");
+const allowedTokens = require("../src/assets/allowedTokens.json");
 
-describe("AgreementContract", function () {
+describe("AgreementsByUser", function () {
   let agreementContract;
   let owner;
   let user1;
   let user2;
 
+  const configPath = path.join(__dirname, "../src/config.json");
+  let configData = fs.readFileSync(configPath, "utf8");
+
+  configData = JSON.parse(configData);
+
   beforeEach(async function () {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
-    agreementContract = await AgreementContract.deploy();
+    agreementContract = await AgreementContract.deploy(configData.kyodoTreasury, configData.communityDAO);
     await agreementContract.deployed();
 
     [owner, user1, user2] = await ethers.getSigners();
