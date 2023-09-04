@@ -5,46 +5,50 @@ const networkId = "0x13881";
 const customChainId = "0x7A69";
 
 async function vefifyChain() {
-  const testEnv = (process.env.NODE_ENV !== "production"); //TODO: move this to .env (Is broken for some reason)
-  console.log("testEnv", testEnv);
+  const testEnv = false // (process.env.NODE_ENV !== "production"); //TODO: move this to .env (Is broken for some reason)
+  console.log("testEnv", testEnv)
 
-  const chainId = window.ethereum.networkVersion;
+  const chainId = window.ethereum.networkVersion
 
   if (testEnv) {
-    if (chainId !== customChainId && chainId !== "31337"){
+    if (chainId !== customChainId && chainId !== "31337") {
       await window.ethereum.request({
         method: "wallet_addEthereumChain",
-        params: [{
-          chainId: customChainId,
-          rpcUrls: ["http://localhost:8545"], // Update with your custom RPC URL
-          chainName: "Hardhat",
-          nativeCurrency: {
-            name: "ETH",
-            symbol: "HETH",
-            decimals: 18,
+        params: [
+          {
+            chainId: customChainId,
+            rpcUrls: ["http://localhost:8545"], // Update with your custom RPC URL
+            chainName: "Hardhat",
+            nativeCurrency: {
+              name: "ETH",
+              symbol: "HETH",
+              decimals: 18,
+            },
           },
-        }],
-      });
+        ],
+      })
     }
   } else {
     if (chainId !== networkId && chainId !== "80001") {
       await window.ethereum.request({
         method: "wallet_addEthereumChain",
-        params: [{
-          chainId: networkId,
-          rpcUrls: ["https://rpc-mumbai.maticvigil.com/"],
-          chainName: "Matic Mumbai Testnet",
-          nativeCurrency: {
-            name: "Matic",
-            symbol: "MATIC",
-            decimals: 18,
+        params: [
+          {
+            chainId: networkId,
+            rpcUrls: ["https://rpc-mumbai.maticvigil.com/"],
+            chainName: "Matic Mumbai Testnet",
+            nativeCurrency: {
+              name: "Matic",
+              symbol: "MATIC",
+              decimals: 18,
+            },
+            blockExplorerUrls: ["https://explorer-mumbai.maticvigil.com/"],
           },
-          blockExplorerUrls: ["https://explorer-mumbai.maticvigil.com/"],
-        }],
-      });
+        ],
+      })
     }
   }
-  }
+}
 
 function ConnectWalletButton(props) {
 

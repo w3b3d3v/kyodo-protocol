@@ -4,7 +4,7 @@ const path = require("path");
 
 function copyABI() {
   const sourcePath = path.join(__dirname, "../artifacts/contracts/AgreementContract.sol/AgreementContract.json");
-  const destinationPath = path.join(__dirname, "../src/contracts/AgreementContract.json");
+  const destinationPath = path.join(__dirname, "../components/contracts/AgreementContract.json")
 
   const sourceData = fs.readFileSync(sourcePath, "utf8");
   fs.writeFileSync(destinationPath, sourceData);

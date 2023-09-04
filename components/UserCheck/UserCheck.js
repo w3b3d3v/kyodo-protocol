@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BeatLoader } from "react-spinners";
 import AddAgreement from "../AddAgreement/AddAgreement";
 import AgreementList from '../AgreementList/AgreementList';
-import { useContract } from '../../ContractContext';
+import { useContract } from "../ContractContext"
 
 function UserCheck(props) {
     const [isRegistered, setIsRegistered] = useState(false);

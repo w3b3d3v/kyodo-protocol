@@ -2,66 +2,37 @@
   "name": "kyodo-protocol",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
-    "@chakra-ui/react": "^2.8.0",
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
-    "@testing-library/user-event": "^13.5.0",
-    "csv-parse": "^5.5.0",
-    "csv-parser": "^3.0.0",
     "dotenv": "^16.0.3",
-    "framer-motion": "^10.16.2",
     "hardhat": "^2.12.6",
     "hardhat-gas-reporter": "^1.0.9",
     "hardhat-jest-plugin": "^0.0.6",
-    "jest": "^29.4.1",
-    "jest-html-reporter": "^3.7.0",
-    "js-cookie": "^3.0.1",
-    "react": "^18.2.0",
-    "react-burger-menu": "^3.0.9",
-    "react-dom": "^18.2.0",
-    "react-icons": "^4.7.1",
-    "react-router-dom": "^6.8.1",
-    "react-scripts": "5.0.1",
+    "next": "13.4.19",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-icons": "^4.10.1",
     "react-spinners": "^0.13.8",
     "sol2uml": "^2.4.3",
     "solidity-docgen": "^0.5.16",
-    "web-vitals": "^2.1.4",
-    "web3": "^1.8.2"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "jest",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "web3": "^4.1.1"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.1",
     "@nomiclabs/hardhat-etherscan": "^3.1.7",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
-    "babel-jest": "^29.4.3",
+    "@testing-library/user-event": "^13.5.0",
+    "eslint": "8.48.0",
+    "eslint-config-next": "13.4.19",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^27.5.1",
-    "jest-css-modules-transform": "^4.4.2",
+    "jest": "^29.4.1",
+    "jest-html-reporter": "^3.7.0",
     "react-test-renderer": "^18.2.0",
     "solc-0.8": "npm:solc@^0.8.18"
   }

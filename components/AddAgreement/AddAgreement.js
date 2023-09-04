@@ -1,25 +1,24 @@
-import { useContract } from '../../ContractContext';
-import { useState } from "react";
-import { FaPlus } from "react-icons/fa";
-import "./AddAgreement.css";
-import { BeatLoader } from "react-spinners";
-import tokens from '../../assets/allowedTokens.json';
-import { BigNumber } from 'bignumber.js';
+import { useContract } from "../ContractContext"
+import { useState } from "react"
+import { FaPlus } from "react-icons/fa"
+import styles from "./AddAgreement.module.css"
+
+import { BeatLoader } from "react-spinners"
+import tokens from "../../public/allowedTokens.json"
 
 function AddAgreementForm(props) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [developer, setDeveloper] = useState("");
-  const [skills, setSkills] = useState("");
-  const [paymentAmount, setPaymentAmount] = useState("");
-  const [paymentToken, setPaymentToken] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [transactionHash, setTransactionHash] = useState(null);
-  const { contract, loading } = useContract();
-  
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [developer, setDeveloper] = useState("")
+  const [skills, setSkills] = useState("")
+  const [paymentAmount, setPaymentAmount] = useState("")
+  const [paymentToken, setPaymentToken] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [transactionHash, setTransactionHash] = useState(null)
+  const { contract, loading } = useContract()
 
   async function handleSubmit(event) {
-    event.preventDefault();
+    event.preventDefault()
 
     // Check if any required fields are empty
     if (
@@ -30,63 +29,65 @@ function AddAgreementForm(props) {
       !paymentAmount ||
       !paymentToken
     ) {
-      alert("Please fill in all fields.");
-      return;
+      alert("Please fill in all fields.")
+      return
     }
 
     // Call the function to add an agreement
-    await addAgreement();
+    await addAgreement()
   }
 
   async function addAgreement() {
-    setIsLoading(true);
+    setIsLoading(true)
 
     if (window.ethereum) {
       const paymentAmountInWei = new BigNumber(paymentAmount)
-                .times(new BigNumber(10).pow(paymentToken.decimals))
-                .toString();
+        .times(new BigNumber(10).pow(paymentToken.decimals))
+        .toString()
 
       try {
-        const tx = await contract.methods.createAgreement(
-          title,
-          description,
-          developer,
-          skills.split(","),
-          paymentAmountInWei,
-          paymentToken.address
-        ).send({ from: window.ethereum.selectedAddress });
-      
-        console.log(`Agreement "${title}" created. Transaction hash: ${tx.transactionHash}`);
-        setTransactionHash(tx.transactionHash);
+        const tx = await contract.methods
+          .createAgreement(
+            title,
+            description,
+            developer,
+            skills.split(","),
+            paymentAmountInWei,
+            paymentToken.address
+          )
+          .send({ from: window.ethereum.selectedAddress })
+
+        console.log(`Agreement "${title}" created. Transaction hash: ${tx.transactionHash}`)
+        setTransactionHash(tx.transactionHash)
       } catch (error) {
-        console.error('Error creating agreement:', error);
+        console.error("Error creating agreement:", error)
       }
 
-      setIsLoading(false);
+      setIsLoading(false)
 
       // Clear the form inputs after adding an agreement
-      setTitle("");
-      setDescription("");
-      setDeveloper("");
-      setSkills("");
-      setPaymentAmount("");
-      setPaymentToken("");
+      setTitle("")
+      setDescription("")
+      setDeveloper("")
+      setSkills("")
+      setPaymentAmount("")
+      setPaymentToken("")
     }
   }
 
   if (isLoading) {
     return (
-      <div className="loading-overlay">
-        <div className="sweet-loading">
+      <div className={styles["loading-overlay"]}>
+        <div className={styles["sweet-loading"]}>
           <BeatLoader loading={isLoading} size={50} />
         </div>
       </div>
-    );
-}
+    )
+  }
 
   if (transactionHash) {
     return (
-      <div className="transaction-info">
+      <div className={styles["transaction-info"]}>
         Agreement created!
         <br />
         <br />
@@ -101,12 +102,12 @@ function AddAgreementForm(props) {
         <br />
         {/* <Link to="/agreementslist">View Agreements List</Link> */}
       </div>
-    );
+    )
   }
 
   return (
-    <div className="add-agreement-form-container">
-        <form className="add-agreement-form" onSubmit={handleSubmit}>
+    <div className={styles["add-agreement-form-container"]}>
+      <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>
         <label htmlFor="title-input">Title:</label>
         <input
           type="text"
@@ -114,7 +115,7 @@ function AddAgreementForm(props) {
           value={title}
           onChange={(event) => setTitle(event.target.value)}
         />
-    
+
         <label htmlFor="description-input">Description:</label>
         <input
           type="text"
@@ -122,7 +123,7 @@ function AddAgreementForm(props) {
           value={description}
           onChange={(event) => setDescription(event.target.value)}
         />
-    
+
         <label htmlFor="developer-input">Developer:</label>
         <input
           type="text"
@@ -130,7 +131,7 @@ function AddAgreementForm(props) {
           value={developer}
           onChange={(event) => setDeveloper(event.target.value)}
         />
-    
+
         <label htmlFor="skills-input">Skills:</label>
         <input
           type="text"
@@ -142,22 +143,21 @@ function AddAgreementForm(props) {
         <label htmlFor="payment-token-input">Payment Token:</label>
         <select
           id="payment-token-input"
-          value={paymentToken ? paymentToken.address : ''}
+          value={paymentToken ? paymentToken.address : ""}
           onChange={(event) => {
-            const selectedTokenAddress = event.target.value;
-            const selectedToken = tokens.find(token => token.address === selectedTokenAddress);
-            setPaymentToken(selectedToken);
+            const selectedTokenAddress = event.target.value
+            const selectedToken = tokens.find((token) => token.address === selectedTokenAddress)
+            setPaymentToken(selectedToken)
           }}
-          className="select-input"
+          className={styles["select-input"]}
         >
           <option value="">Selecione um token</option>
-          {tokens.map(token => (
-            <option key={token.address} value={token.address} className="token-option">
+          {tokens.map((token) => (
+            <option key={token.address} value={token.address} className={styles["token-option"]}>
               {token.name}
             </option>
           ))}
         </select>
-
 
         <label htmlFor="payment-amount-input">Payment Amount:</label>
         <input
@@ -167,12 +167,12 @@ function AddAgreementForm(props) {
           onChange={(event) => setPaymentAmount(parseInt(event.target.value))}
         />
 
-        <button type="submit" className="add-agreement-form-button">
+        <button type="submit" className={styles["add-agreement-form-button"]}>
           <FaPlus />
         </button>
       </form>
     </div>
-  );
+  )
 }
 
-export default AddAgreementForm;
+export default AddAgreementForm

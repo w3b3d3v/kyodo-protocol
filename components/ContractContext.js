@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import Web3 from 'web3';
 import AgreementContract from './contracts/AgreementContract.json';
-import config from './config.json';
+import config from "../src/config.json"
 
 // Cria o contexto
 const ContractContext = createContext(null);

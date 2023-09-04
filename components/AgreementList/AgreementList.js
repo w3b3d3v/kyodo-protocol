@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BeatLoader } from "react-spinners";
-import "./AgreementList.css";
-import tokens from '../../assets/allowedTokens.json';
-import { useContract } from '../../ContractContext';
-import { BigNumber } from 'bignumber.js';
+import "./AgreementList.module.css"
+import tokens from "../../public/allowedTokens.json"
+import { useContract } from "../../components/ContractContext"
 
 // TODO: Check allowance before transaction
 // Handle Promise while transaction runs
