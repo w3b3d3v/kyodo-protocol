@@ -5,9 +5,8 @@ const networkId = "0x13881";
 const customChainId = "0x7A69";
 
 async function vefifyChain() {
-  const testEnv = false // (process.env.NODE_ENV !== "production"); //TODO: move this to .env (Is broken for some reason)
-  console.log("testEnv", testEnv)
-
+  const testEnv = (process.env.NODE_ENV !== "production"); //TODO: move this to .env (Is broken for some reason)
+  // const testEnv = false;
   const chainId = window.ethereum.networkVersion
 
   if (testEnv) {

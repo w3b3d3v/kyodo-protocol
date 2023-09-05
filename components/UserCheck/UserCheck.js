@@ -17,10 +17,10 @@ function UserCheck(props) {
               // Verificar se o provedor Ethereum está presente
               if (window.ethereum) {
                 // Verificar se o usuário possui acordos
-                const userAgreementIds = await contract.methods.getUserAgreements(window.ethereum.selectedAddress).call();
+                const userAgreementIds = await contract.getUserAgreements(window.ethereum.selectedAddress);
       
                 // Defina isRegistered como verdadeiro se o usuário tiver acordos
-                setIsRegistered(userAgreementIds.length > 0);
+                setIsRegistered(userAgreementIds.toString().length > 0);
               } else {
                 console.error('Provedor Ethereum não encontrado!');
               }

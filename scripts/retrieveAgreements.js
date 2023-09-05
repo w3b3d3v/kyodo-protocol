@@ -1,15 +1,20 @@
 const { ethers } = require("hardhat");
+const fs = require("fs");
+const path = require("path");
+
+const configPath = path.join(__dirname, "../src/config.json");
+let configData = fs.readFileSync(configPath, "utf8");
+
+configData = JSON.parse(configData);
+const contractAddress = configData.contractAgreement;
 
 async function main() {
-  const contractAddress = "0xF80586D034A18597b933B80eb43805c46b483cA9"; // Substitua pelo endereço real do contrato AgreementContract
+
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
   const agreementContract = await AgreementContract.attach(contractAddress);
 
-  // const agreementCount = await agreementContract.getAgreementCount();
-  // console.log(`Total agreements: ${agreementCount}`);
-
   const agreements = await agreementContract.getAllAgreements();
-  console.log("Agreements:");
+  console.log("All Agreements:");
   agreements.forEach((agreement) => {
     console.log(`
       Title: ${agreement.title}
@@ -18,20 +23,20 @@ async function main() {
       Developer: ${agreement.developer}
       Company: ${agreement.company}
       Skills: ${agreement.skills.join(", ")}
-      Incentive Amount: ${ethers.utils.formatEther(agreement.tokenIncentive.amount)} tokens
-      Incentive Token: ${agreement.tokenIncentive.tokenAddress}
       Payment Amount: ${ethers.utils.formatEther(agreement.payment.amount)} tokens
       Payment Token: ${agreement.payment.tokenAddress}
+      Total Paid: ${agreement.totalPaid}
     `);
   });
 }
 
-async function getUserAgreements(userAddress) {
-  const contractAddress = "0xF80586D034A18597b933B80eb43805c46b483cA9"; // Substitua pelo endereço real do contrato AgreementContract
+async function getUserAgreements() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
   const agreementContract = await AgreementContract.attach(contractAddress);
 
-  const userAgreementIds = await agreementContract.getUserAgreements();
+  const accounts = await ethers.getSigners();
+  const userAddress = accounts[0].address
+  const userAgreementIds = await agreementContract.getUserAgreements(userAddress);
 
   console.log(`Agreements for user at address ${userAddress}:`);
 
@@ -44,20 +49,19 @@ async function getUserAgreements(userAddress) {
       Status: ${agreement.status}
       Developer: ${agreement.developer}
       Skills: ${agreement.skills.join(", ")}
-      Incentive Amount: ${ethers.utils.formatEther(agreement.tokenIncentive.amount)} tokens
-      Incentive Token: ${agreement.tokenIncentive.tokenAddress}
       Payment Amount: ${ethers.utils.formatEther(agreement.payment.amount)} tokens
       Payment Token: ${agreement.payment.tokenAddress}
+      Total Paid: ${agreement.totalPaid}
     `);
   }
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-});
+// main()
+//   .then(() => process.exit(0))
+//   .catch((error) => {
+//     console.error(error);
+//     process.exit(1);
+// });
 
 getUserAgreements()
   .then(() => process.exit(0))

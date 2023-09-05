@@ -48,7 +48,7 @@ function AddAgreementForm(props) {
         .toString()
 
       try {
-        const tx = await contract.methods
+        const tx = await contract
           .createAgreement(
             title,
             description,
@@ -57,7 +57,6 @@ function AddAgreementForm(props) {
             paymentAmountInWei,
             paymentToken.address
           )
-          .send({ from: window.ethereum.selectedAddress })
 
         console.log(`Agreement "${title}" created. Transaction hash: ${tx.transactionHash}`)
         setTransactionHash(tx.transactionHash)
@@ -79,8 +78,8 @@ function AddAgreementForm(props) {
 
   if (isLoading) {
     return (
-      <div className={styles["loading-overlay"]}>
-        <div className={styles["sweet-loading"]}>
+      <div className="loading-overlay">
+        <div className="sweet-loading">
           <BeatLoader loading={isLoading} size={50} />
         </div>
       </div>
@@ -177,4 +176,4 @@ function AddAgreementForm(props) {
   )
 }
 
-export default AddAgreementForm
+export default AddAgreementForm;

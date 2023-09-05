@@ -9,11 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "bignumber.js": "^9.1.2",
     "dotenv": "^16.0.3",
+    "ethersjs": "^0.0.1-security",
     "hardhat": "^2.12.6",
     "hardhat-gas-reporter": "^1.0.9",
     "hardhat-jest-plugin": "^0.0.6",
-    "next": "13.4.19",
+    "next": "^13.4.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
@@ -25,6 +27,7 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.1",
     "@nomiclabs/hardhat-etherscan": "^3.1.7",
+    "@openzeppelin/contracts": "^4.9.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^13.5.0",

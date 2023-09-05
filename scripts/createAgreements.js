@@ -2,8 +2,13 @@ const fs = require("fs");
 const path = require("path");
 const { ethers } = require("hardhat");
 
+const configPath = path.join(__dirname, "../src/config.json");
+let configData = fs.readFileSync(configPath, "utf8");
+
+configData = JSON.parse(configData);
+const contractAddress = configData.contractAgreement;
+
 async function main() {
-  const contractAddress = "0xF80586D034A18597b933B80eb43805c46b483cA9"; // Substitua pelo endereço real do contrato AgreementContract
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
   const agreementContract = await AgreementContract.attach(contractAddress);
 
@@ -11,42 +16,46 @@ async function main() {
   const agreementsData = JSON.parse(fs.readFileSync(agreementsPath, "utf-8"));
 
   const accounts = await ethers.getSigners();
-  const firstAccount = accounts[0];
-  const secondAccount = accounts[1];
+  
+  const numberOfAccounts = 1; // Quantidade de contas para serem usadas
+  
+  if (numberOfAccounts > accounts.length) {
+    console.log("Número de contas especificadas é maior do que as contas disponíveis.");
+    return;
+  }
 
   for (let i = 0; i < agreementsData.length; i++) {
     const agreementData = agreementsData[i];
     const {
       title,
       description,
-      developer,
       skills,
-      incentiveAmount,
-      incentiveToken,
       paymentAmount,
       paymentToken,
     } = agreementData;
 
-    const signer = i % 2 === 0 ? firstAccount : secondAccount;
+    const signer = accounts[i % numberOfAccounts]; // Agora usando numberOfAccounts para loop
 
     const agreementContractWithSigner = agreementContract.connect(signer);
 
+    // Utilizando signer.address como valor para 'developer'
     const tx = await agreementContractWithSigner.createAgreement(
-      title,
+      "New Agreement",
       description,
-      developer,
+      signer.address,
       skills,
-      incentiveAmount,
-      incentiveToken,
       paymentAmount,
-      paymentToken
+      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
     );
 
     await tx.wait(); // Aguarda a transação ser minerada
 
-    console.log(`Agreement "${title}" created. Transaction hash: ${tx.hash}`);
+    // Imprimindo o endereço da conta que realmente executou a transação
+    console.log(`Agreement "${title}" created. User: ${signer.address} Transaction hash: ${tx.hash}`);
   }
 }
+
+
 
 main()
   .then(() => process.exit(0))

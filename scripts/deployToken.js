@@ -14,7 +14,7 @@ async function main() {
     console.log("Token deployed to:", token.address);
 
     // Carregar e ler o arquivo allowedTokens.json
-    const allowedTokensPath = 'src/assets/allowedTokens.json';
+    const allowedTokensPath = 'public/allowedTokens.json';
     const allowedTokensData = fs.readFileSync(allowedTokensPath, 'utf8');
     const allowedTokens = JSON.parse(allowedTokensData);
 

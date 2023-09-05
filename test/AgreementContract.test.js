@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const fs = require("fs");
 const path = require("path");
-const allowedTokens = require("../src/assets/allowedTokens.json");
+const allowedTokens = require("../public/allowedTokens.json");
 
 describe("AgreementContract", function () {
   let agreementContract;

@@ -2,9 +2,13 @@ const { ethers } = require("hardhat");
 const fs = require("fs");
 const path = require("path");
 
+const TOTAL_FEE = 20; // using 1000 basis points for fee calculation
+const PROTOCOL_FEE = 500; // using 1000 basis points for fee calculation
+const COMMUNITY_FEE = 500; // using 1000 basis points for fee calculation
+
 function copyABI() {
   const sourcePath = path.join(__dirname, "../artifacts/contracts/AgreementContract.sol/AgreementContract.json");
-  const destinationPath = path.join(__dirname, "../components/contracts/AgreementContract.json")
+  const destinationPath = path.join(__dirname, "../components/contracts/AgreementContract.json");
 
   const sourceData = fs.readFileSync(sourcePath, "utf8");
   fs.writeFileSync(destinationPath, sourceData);
@@ -42,7 +46,7 @@ async function main() {
   updateConfig(contract.address);
 
   // Load allowedTokens.json
-  const allowedTokensData = fs.readFileSync("src/assets/allowedTokens.json", "utf8");
+  const allowedTokensData = fs.readFileSync("public/allowedTokens.json", "utf8");
   const allowedTokens = JSON.parse(allowedTokensData);
 
   // Add allowed tokens to the contract
@@ -50,6 +54,8 @@ async function main() {
     await contract.addAcceptedPaymentToken(token.address);
     console.log(`Added ${token.name} (${token.address}) as an accepted payment token`);
   }
+
+  await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
 }
 
 main()
