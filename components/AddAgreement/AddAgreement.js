@@ -1,6 +1,6 @@
 import { useContract } from "../ContractContext"
 import { useState } from "react"
-import styles from "./AddAgreement.module.css"
+import styles from "./AddAgreement.module.scss"
 
 import { BeatLoader } from "react-spinners"
 import tokens from "../../public/allowedTokens.json"
