@@ -2,13 +2,13 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 describe("W3DVault", function () {
-  let W3DVault, w3dVault, Token, token, admin, user1, user2;
+  let W3DStableVault, w3dVault, Token, token, admin, user1, user2;
 
   beforeEach(async function () {
     // Contract deployment
-    W3DVault = await ethers.getContractFactory("W3DVault");
+    W3DStableVault = await ethers.getContractFactory("W3DStableVault");
     [admin, user1, user2] = await ethers.getSigners();
-    w3dVault = await W3DVault.deploy(admin.address, "W3DVaultToken", "W3DV");
+    w3dVault = await W3DStableVault.deploy(admin.address, "W3DStableVaultToken", "W3DSV");
     await w3dVault.deployed();
 
     // Deploy mock token
@@ -21,7 +21,7 @@ describe("W3DVault", function () {
     await token.connect(admin).transfer(user2.address, ethers.utils.parseEther("100")); // Transfer 100 tokens to user2
 
 
-    // Approve the W3DVault contract to spend tokens on behalf of user1
+    // Approve the W3DStableVault contract to spend tokens on behalf of user1
     await token.connect(user1).approve(w3dVault.address, ethers.utils.parseEther("1000")); // Approve 1000 tokens
   });
 
@@ -30,12 +30,12 @@ describe("W3DVault", function () {
         const depositAmount = ethers.utils.parseUnits("1", 8); // 1 token with 8 decimals
         const expectedVaultAmount = ethers.utils.parseUnits("1", 18); // Expected to be 1 token but with 18 decimals
       
-        await w3dVault.connect(user1).deposit(depositAmount, token.address);
+        await w3dVault.connect(user1).deposit(depositAmount, token.address, user1.address);
         
         const userBalance = await w3dVault.balanceOf(user1.address);
         expect(userBalance).to.equal(expectedVaultAmount);
       
-        await expect(w3dVault.connect(user1).deposit(depositAmount, token.address))
+        await expect(w3dVault.connect(user1).deposit(depositAmount, token.address, user1.address))
           .to.emit(w3dVault, "BalanceUpdated")
           .withArgs(expectedVaultAmount);
       });
@@ -45,7 +45,7 @@ describe("W3DVault", function () {
 
       const amount = ethers.utils.parseEther("1");
 
-      await expect(w3dVault.connect(user1).deposit(amount, token.address)).to.be.revertedWith("Pausable: paused");
+      await expect(w3dVault.connect(user1).deposit(amount, token.address, user1.address)).to.be.revertedWith("Pausable: paused");
     });
   });
 });
