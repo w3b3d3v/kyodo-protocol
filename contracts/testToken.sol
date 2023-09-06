@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.1;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -43,5 +43,9 @@ contract testToken is ERC20, AccessControl, Pausable {
     
     function unpause() external onlyAdmin() whenPaused() {
         _unpause();
+    }
+    
+    function decimals() public view virtual override returns (uint8) {
+        return 8;
     }
 }
