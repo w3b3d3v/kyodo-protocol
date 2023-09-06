@@ -18,7 +18,7 @@
     "decimals": 6
   },
   {
-    "address": "0x21915b79E1d334499272521a3508061354D13FF0",
+    "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
     "logo": "src/components/assets/your-token-logo.svg",
     "name": "fakeStable",
     "decimals": 18
