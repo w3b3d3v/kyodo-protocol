@@ -1,6 +1,5 @@
 import { useContract } from "../ContractContext"
 import { useState } from "react"
-import { FaPlus } from "react-icons/fa"
 import styles from "./AddAgreement.module.css"
 
 import { BeatLoader } from "react-spinners"
@@ -109,71 +108,88 @@ function AddAgreementForm(props) {
   return (
     <div className={styles["add-agreement-form-container"]}>
       <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>
-        <label htmlFor="title-input">Title:</label>
-        <input
-          type="text"
-          id="title-input"
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-        />
 
-        <label htmlFor="description-input">Description:</label>
-        <input
-          type="text"
-          id="description-input"
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-        />
+        <section className={styles["columns"]}>
 
-        <label htmlFor="developer-input">Developer:</label>
-        <input
-          type="text"
-          id="developer-input"
-          value={developer}
-          onChange={(event) => setDeveloper(event.target.value)}
-        />
+          <div className={styles["col-01"]}>
 
-        <label htmlFor="skills-input">Skills:</label>
-        <input
-          type="text"
-          id="skills-input"
-          value={skills}
-          onChange={(event) => setSkills(event.target.value)}
-        />
+            <label htmlFor="title-input">Title:</label>
+            <input
+              type="text"
+              id="title-input"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+            />
 
-        <label htmlFor="payment-token-input">Payment Token:</label>
-        <select
-          id="payment-token-input"
-          value={paymentToken ? paymentToken.address : ""}
-          onChange={(event) => {
-            const selectedTokenAddress = event.target.value
-            const selectedToken = tokens.find((token) => token.address === selectedTokenAddress)
-            setPaymentToken(selectedToken)
-          }}
-          className={styles["select-input"]}
-        >
-          <option value="">Selecione um token</option>
-          {tokens.map((token) => (
-            <option key={token.address} value={token.address} className={styles["token-option"]}>
-              {token.name}
-            </option>
-          ))}
-        </select>
+            <label htmlFor="developer-input">Professional wallet:</label>
+            <input
+              type="text"
+              id="developer-input"
+              value={developer}
+              onChange={(event) => setDeveloper(event.target.value)}
+            />
 
-        <label htmlFor="payment-amount-input">Payment Amount:</label>
-        <input
-          type="number"
-          id="payment-amount-input"
-          value={paymentAmount}
-          onChange={(event) => setPaymentAmount(parseInt(event.target.value))}
-        />
+            <label htmlFor="payment-token-input">Payment Token:</label>
+            <select
+              id="payment-token-input"
+              value={paymentToken ? paymentToken.address : ""}
+              onChange={(event) => {
+                const selectedTokenAddress = event.target.value
+                const selectedToken = tokens.find((token) => token.address === selectedTokenAddress)
+                setPaymentToken(selectedToken)
+              }}
+              className={styles["select-input"]}
+            >
+              <option value="">Selecione um token</option>
+              {tokens.map((token) => (
+                <option key={token.address} value={token.address} className={styles["token-option"]}>
+                  {token.name}
+                </option>
+              ))}
+            </select>
 
-        <button type="submit" className={styles["add-agreement-form-button"]}>
-          <FaPlus />
-        </button>
+            <label htmlFor="payment-amount-input">Payment Amount:</label>
+            <input
+              type="number"
+              id="payment-amount-input"
+              value={paymentAmount}
+              onChange={(event) => setPaymentAmount(parseInt(event.target.value))}
+            />
+
+          </div>
+
+          <div className={styles["col-02"]}>
+
+            <label htmlFor="description-input">Description:</label>
+            <input
+              type="text"
+              id="description-input"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
+
+            <label htmlFor="skills-input">Skills:</label>
+            <input
+              type="text"
+              id="skills-input"
+              value={skills}
+              onChange={(event) => setSkills(event.target.value)}
+            />
+
+          </div>
+
+        </section>
+
+        <section className={styles["form-footer"]}>
+          <button type="submit" className={styles["add-agreement-form-button"]}>
+            <div>Add</div>
+          </button>
+        </section>
+
       </form>
     </div>
   )
 }
 
 export default AddAgreementForm;
+

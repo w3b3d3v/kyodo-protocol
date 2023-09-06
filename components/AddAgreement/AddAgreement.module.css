@@ -1,51 +1,93 @@
-/* App.css */
+/* Form */
 
 .add-agreement-form {
-  display: flex;
-  flex-direction: column;
-  max-width: 800px;
+  max-width: 615px;
   margin: 0 auto;
-  margin-top: 20px; 
+  margin-top: 60px;
+}
 
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 16px;
+.columns {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.col-01,
+.col-02 {
+  width: 45%;
 }
 
 .add-agreement-form label {
   font-weight: bold;
-  margin-bottom: 5px;
-  font-size: 18px; /* Increase font size for better readability */
+  font-size: 13px;
+}
+
+.add-agreement-form input,
+.select-input {
+  width: 100%;
+  padding: 0 15px;
+  border: 1px solid #1E2326;
+  background: #101315;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #fff;
+  box-sizing: border-box;
+  height: 40px;
+  line-height: 40px;
+  display: block;
+  margin: 8px 0 22px;
 }
 
 .add-agreement-form input {
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
+  
+}
+
+.select-input {
+
+}
+
+
+/* Form footer */
+
+.form-footer {
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 25px;
+  border-top: 1px solid #1E2326;
+  display: block;
 }
 
 .add-agreement-form-button {
-  background-color: #775ce1;
-  color: #fff;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  background: linear-gradient(to right, #A3C987, #F69783, #78BCEE);
+  display: inline-block;
+  border-radius: 30px;
   border: none;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: transform 0.2s;
-  margin-top: 10px;
+  padding: 0;
 }
 
-.add-agreement-form-button:hover {
-  transform: scale(1.2);
+.add-agreement-form-button div {
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: bold;
+  background: #060606;
+  height: 38px;
+  line-height: 35px;
+  display: inline-block;
+  font-size: 14px;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 0 30px;
+  color: #fff;
+  margin: 2px;
   cursor: pointer;
 }
+
+.add-agreement-form-button div:hover {
+  opacity: .8;
+}
+
+
+/* Transaction */
 
 .transaction-info {
   background-color: #fff;
@@ -71,14 +113,6 @@
   background-color: #634bc7;
 }
 
-.select-input {
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
 .token-option {
   background-color: #fff;
   color: #000;
@@ -90,4 +124,26 @@
 
 .token-option:hover {
   background-color: #f0f0f0;
+}
+
+
+/* Mobile */
+
+@media only screen and (max-width: 800px) {
+
+  .add-agreement-form {
+    max-width: 100%;
+    padding: 20px;
+    margin-top: 30px;
+  }
+
+  .columns {
+    display: block;
+  }
+  
+  .col-01,
+  .col-02 {
+    width: 100%;
+  }
+
 }
