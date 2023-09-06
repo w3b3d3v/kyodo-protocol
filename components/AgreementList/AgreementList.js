@@ -1,30 +1,70 @@
 import React, { useState, useEffect } from 'react';
+import { useContract } from "../../components/ContractContext"
 import { BeatLoader } from "react-spinners";
+import { ethers } from "ethers";
 import "./AgreementList.module.css"
 import tokens from "../../public/allowedTokens.json"
-import { useContract } from "../../components/ContractContext"
+import ERC20 from '../contracts/ERC20.json';
 import styles from "./AgreementList.module.css"
 import BigNumber from 'bignumber.js';
 
-// TODO: Check allowance before transaction
-// Handle Promise while transaction runs
-// Show correct Total Paid based in a defined currency base
+// TODO: Handle Promise while transaction runs
+// TODO: Show correct Total Paid based in a defined currency base
 
 function AgreementList(props) {
   const [agreements, setAgreements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showPaymentInput, setShowPaymentInput] = useState(null);
   const [paymentValue, setPaymentValue] = useState('');
+  const [isAllowanceSufficient, setIsAllowanceSufficient] = useState(false);
   const { contract, loading } = useContract();
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
 
+  const checkAllowance = async (userAddress, contractAddress, paymentTokenAddress, amount) => {
+    const tokenContract = new ethers.Contract(paymentTokenAddress, ERC20.abi, provider);
+    const allowance = await tokenContract.allowance(userAddress, contractAddress);
+    if (isNaN(amount) || amount === null || amount === undefined) {
+      setIsAllowanceSufficient(false);
+      return;
+    }
+    setIsAllowanceSufficient(ethers.BigNumber.from(allowance).gte(amount));
+  };
+
+  const handleApprove = async (amount, paymentToken, spender) => {
+    try {
+      // Converter o valor para a menor unidade do token (geralmente wei para tokens ERC-20)
+      const amountInWei = new BigNumber(amount)
+        .times(new BigNumber(10).pow(paymentToken.decimals))
+        .toString();
+
+      const TokenContract = new ethers.Contract(paymentToken.address, ERC20.abi, provider.getSigner());
+      console.log("TokenContract", paymentToken.address)
+      const tx = await TokenContract.approve(spender, amountInWei);
+      await tx.wait();
+  
+      console.log(`Approval successful for amount: ${amount}`);
+    } catch (error) {
+      console.error('Error approving token:', error);
+    }
+  };
+  
   const handlePayClick = (index) => {
     setShowPaymentInput(index);
   };
 
-  const handlePaymentValueChange = (e) => {
-    setPaymentValue(parseInt(e.target.value));
+  const handlePaymentValueChange = async (e, paymentToken) => {
+    const value = parseInt(e.target.value);
+    if (isNaN(value)) {
+      setPaymentValue('');  // ou algum valor padrão
+    } else {
+      setPaymentValue(value);
+      const paymentAmountInWei = new BigNumber(value)
+        .times(new BigNumber(10).pow(paymentToken.decimals))
+        .toString();
+      await checkAllowance(window.ethereum.selectedAddress, contract.address, paymentToken.address, paymentAmountInWei);
+    }
   };
-
+  
   const handleMakePayment = async (agreementId, totalAmount, totalPaid, paymentToken) => {      
     const paymentAmountInWei = new BigNumber(paymentValue)
               .times(new BigNumber(10).pow(paymentToken.decimals))
@@ -116,9 +156,14 @@ function AgreementList(props) {
                       <input 
                         type="number" 
                         value={paymentValue}
-                        onChange={handlePaymentValueChange}
+                        onChange={(e) => handlePaymentValueChange(e, paymentToken)}
                       />
+                    {isAllowanceSufficient ? (
                       <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)}>Confirm Payment</button>
+                    ) : (
+                      <button onClick={() => handleApprove(paymentValue, paymentToken, contract.address)}>Approve</button>
+                    )}
+
                     </>
                   )}
                 </> : 
