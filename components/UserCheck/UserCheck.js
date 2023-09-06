@@ -18,7 +18,7 @@ function UserCheck(props) {
               if (window.ethereum) {
                 // Verificar se o usuário possui acordos
                 const userAgreementIds = await contract.getUserAgreements(window.ethereum.selectedAddress);
-      
+
                 // Defina isRegistered como verdadeiro se o usuário tiver acordos
                 setIsRegistered(userAgreementIds.toString().length > 0);
               } else {

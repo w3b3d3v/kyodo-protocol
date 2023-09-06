@@ -1,66 +1,46 @@
-const fs = require('fs');
 const { ethers } = require("hardhat");
-const allowedTokens = require("../public/allowedTokens.json");
+require('dotenv').config({ path: './.env.development.local' });
 
-const fs = require("fs");
-const path = require("path");
+const AGREEMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS
+const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
-const configPath = path.join(__dirname, "../src/config.json");
-let configData = fs.readFileSync(configPath, "utf8");
-
-configData = JSON.parse(configData);
-const contractAddress = configData.contractAgreement;
-
-const TOTAL_FEE = 20; // using 1000 basis points for fee calculation
-const PROTOCOL_FEE = 500; // using 1000 basis points for fee calculation
-const COMMUNITY_FEE = 500; // using 1000 basis points for fee calculation
-
-async function main() {
+async function payUserAgreement() {
+  const [signer] = await ethers.getSigners();
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
-  const agreementContract = await AgreementContract.attach(contractAddress);
+  const agreementContract = await AgreementContract.attach(AGREEMENT_CONTRACT_ADDRESS);
 
-  // const [owner, developer, user1, user2] = await ethers.getSigners();
+  // Obter a lista de acordos do usuário
+  let userAgreements = await agreementContract.connect(signer).getUserAgreements(signer.address);
+  userAgreements = userAgreements.map(id => id.toString());
 
-  // Set accepted payment tokens
-  // for (const token of allowedTokens) {
-  //   await agreementContract.addAcceptedPaymentToken(token.address);
-  // }
+  // Verificar se o usuário tem algum acordo
+  if (userAgreements.length === 0) {
+    console.log("Nenhum acordo encontrado para o usuário.");
+    return;
+  }
 
-  // Set values for fees and addresses
-  // await agreementContract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE); // Example fee values
-  await agreementContract.addAcceptedPaymentToken("0x523fF109F29125C52217B5631bd4cA129e2f4d8B");
+  // Obter o ID do primeiro acordo
+  const firstAgreementId = userAgreements[0];
 
-  // const paymentToken = allowedTokens[3].address;
-  // const TokenContract = await ethers.getContractFactory("testToken");
-  // const tokenContract = await TokenContract.attach(paymentToken);
-  // const paymentAmount = ethers.utils.parseEther("5");
+  // Obter detalhes do primeiro acordo para saber o valor e o token de pagamento
+  const agreementDetails = await agreementContract.getAgreementById(firstAgreementId);
+  const paymentAmount = agreementDetails.payment.amount.toString(); // ou qualquer outra lógica para determinar o valor do pagamento
+  const paymentTokenAddress = agreementDetails.paymentToken;
 
-  // // Create agreements using different user addresses
-  // await agreementContract.connect(owner).createAgreement(
-  //   "Agreement 1",
-  //   "Description 1",
-  //   owner.address,
-  //   ["Skill 1", "Skill 2"],
-  //   paymentAmount,
-  //   paymentToken
-  // );
+  // Anexar ao contrato do token
+  const TokenContract = await ethers.getContractFactory("testToken");
+  const tokenContract = await TokenContract.attach(FAKE_STABLE_ADDRESS);
 
-  // const ownerAgreements = await agreementContract.connect(owner).getUserAgreements(owner.address);
-  // const ownerAgreementId = ownerAgreements[0];
-  // const ownerAgreement = await agreementContract.getAgreementById(ownerAgreementId);
+  // Aprovar o contrato de acordo para fazer o pagamento
+  await tokenContract.connect(signer).approve(agreementContract.address, paymentAmount);
 
-  // Approve the contract to spend user's tokens
-  // await tokenContract.approve(agreementContract.address, paymentAmount);
-  // console.log("Approval: ", await tokenContract.allowance(owner.address, agreementContract.address));
-  // await agreementContract.makePayment(ownerAgreementId, paymentAmount);
+  // Fazer o pagamento
+  await agreementContract.connect(signer).makePayment(firstAgreementId, paymentAmount);
 
-  // Call the makePayment function
-  // await agreementContract.connect(developer).makePayment(agreementId);
-
-  // Perform further actions or assertions here
+  console.log(`Pagamento de ${paymentAmount} tokens feito para o acordo com ID ${firstAgreementId}.`);
 }
 
-main()
+payUserAgreement()
   .then(() => process.exit(0))
   .catch(error => {
     console.error(error);

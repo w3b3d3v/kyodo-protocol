@@ -1,17 +1,12 @@
 const { ethers } = require("hardhat");
-const fs = require("fs");
-const path = require("path");
+require('dotenv').config({ path: './.env.development.local' });
 
-const configPath = path.join(__dirname, "../src/config.json");
-let configData = fs.readFileSync(configPath, "utf8");
+const AGREEMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS
 
-configData = JSON.parse(configData);
-const contractAddress = configData.contractAgreement;
-
-async function main() {
+async function getAllAgreements() {
 
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
-  const agreementContract = await AgreementContract.attach(contractAddress);
+  const agreementContract = await AgreementContract.attach(AGREEMENT_CONTRACT_ADDRESS);
 
   const agreements = await agreementContract.getAllAgreements();
   console.log("All Agreements:");
@@ -32,7 +27,7 @@ async function main() {
 
 async function getUserAgreements() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
-  const agreementContract = await AgreementContract.attach(contractAddress);
+  const agreementContract = await AgreementContract.attach(AGREEMENT_CONTRACT_ADDRESS);
 
   const accounts = await ethers.getSigners();
   const userAddress = accounts[0].address
@@ -56,7 +51,7 @@ async function getUserAgreements() {
   }
 }
 
-// main()
+// getAllAgreements()
 //   .then(() => process.exit(0))
 //   .catch((error) => {
 //     console.error(error);

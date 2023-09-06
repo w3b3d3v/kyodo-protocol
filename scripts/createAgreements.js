@@ -1,16 +1,14 @@
 const fs = require("fs");
 const path = require("path");
 const { ethers } = require("hardhat");
+require('dotenv').config({ path: './.env.development.local' });
 
-const configPath = path.join(__dirname, "../src/config.json");
-let configData = fs.readFileSync(configPath, "utf8");
-
-configData = JSON.parse(configData);
-const contractAddress = configData.contractAgreement;
+const AGREEMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS
+const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
 async function main() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
-  const agreementContract = await AgreementContract.attach(contractAddress);
+  const agreementContract = await AgreementContract.attach(AGREEMENT_CONTRACT_ADDRESS);
 
   const agreementsPath = path.join(__dirname, "assets", "agreements.json");
   const agreementsData = JSON.parse(fs.readFileSync(agreementsPath, "utf-8"));
@@ -31,7 +29,6 @@ async function main() {
       description,
       skills,
       paymentAmount,
-      paymentToken,
     } = agreementData;
 
     const signer = accounts[i % numberOfAccounts]; // Agora usando numberOfAccounts para loop
@@ -45,7 +42,7 @@ async function main() {
       signer.address,
       skills,
       paymentAmount,
-      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+      FAKE_STABLE_ADDRESS
     );
 
     await tx.wait(); // Aguarda a transação ser minerada
@@ -54,8 +51,6 @@ async function main() {
     console.log(`Agreement "${title}" created. User: ${signer.address} Transaction hash: ${tx.hash}`);
   }
 }
-
-
 
 main()
   .then(() => process.exit(0))

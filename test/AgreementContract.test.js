@@ -1,26 +1,21 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const fs = require("fs");
-const path = require("path");
-const allowedTokens = require("../public/allowedTokens.json");
+require('dotenv').config({ path: './.env.development.local' });
+
+const KYODO_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS
+const COMMUNITY_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
+const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
 describe("AgreementContract", function () {
   let agreementContract;
   let developer;
 
-  const configPath = path.join(__dirname, "../src/config.json");
-  let configData = fs.readFileSync(configPath, "utf8");
-
-  configData = JSON.parse(configData);
-
   beforeEach(async () => {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
-    agreementContract = await AgreementContract.deploy(configData.kyodoTreasury, configData.communityDAO);
+    agreementContract = await AgreementContract.deploy(KYODO_TREASURY_ADDRESS, COMMUNITY_TREASURY_ADDRESS);
     await agreementContract.deployed();
 
-    for (const token of allowedTokens) {
-      await agreementContract.addAcceptedPaymentToken(token.address);
-    }
+    await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);
 
     [developer] = await ethers.getSigners();
   });
@@ -28,7 +23,7 @@ describe("AgreementContract", function () {
   it("Should create a new agreement with authorized tokens", async function () {
     const skills = ["JavaScript", "Solidity"];
     const paymentAmount = ethers.utils.parseEther("5");
-    const paymentToken = allowedTokens[1].address;
+    const paymentToken = FAKE_STABLE_ADDRESS;
 
     await agreementContract.connect(developer).createAgreement(
       "Test Agreement",

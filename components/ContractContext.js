@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import {Web3} from 'web3';
 import AgreementContract from './contracts/AgreementContract.json';
-import config from "../src/config.json"
 import { ethers } from "ethers";
 
 // Cria o contexto
@@ -21,8 +19,7 @@ export function ContractProvider({ children }) {
     async function initializeContract() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contractABI = AgreementContract.abi;
-      const contractAddress = config.contractAgreement;
-      const newContract = new ethers.Contract(contractAddress, contractABI, provider.getSigner());
+      const newContract = new ethers.Contract(process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS, contractABI, provider.getSigner());
       setContract(newContract);
       setLoading(false);
     }

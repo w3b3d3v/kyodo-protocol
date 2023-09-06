@@ -1,5 +1,3 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
 ## Getting Started
 
 First, run the development server:
@@ -12,23 +10,50 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## 1 - Setting Up Local Blockchain with Hardhat
+Run a Hardhat node:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+```bash
+npx hardhat node
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+The node will generate some accounts. Add the first one to Metamask.
+> **_NOTE:_** Note: Use the first account to avoid errors.
 
-## Learn More
+## 2 - Environment Setup
+Make sure you have an `.env.development.local` file in your root directory. A template file named `.env.development.local.sample` is provided. Rename it to `.env.development.local`
 
-To learn more about Next.js, take a look at the following resources:
+To run tests or deploy contracts on the Mumbai test network, you'll need to set up the appropriate environment variables in the `.env` file in your root directory. A template file named `.env.sample` is provided. Rename it to `.env`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 3 - Deploying Smart Contracts
+Deploy the Agreement contract and the fake Stablecoin:
+```bash
+npx hardhat run scripts/deploy.js
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+# 🌟 Interacting with Smart Contracts 🌟
+You can interact with the smart contracts either through the frontend application or by running the following scripts:
 
-## Deploy on Vercel
+### Via Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Create an agreement:
+```bash
+npx hardhat run scripts/createAgreements.js
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Retrieve all agreements or the user (deployer) agreements:
+```bash
+npx hardhat run scripts/retrieveAgreements.js
+```
+
+Pay for the agreement you've created:
+```bash
+npx hardhat run scripts/payAgreements.js
+```
+
+### Via Frontend
+To pay for the agreement through the user interface, you need to allow the contract first, as the logic to check allowance through the UI is not implemented yet:
+
+```bash
+npx hardhat run scripts/allow.js
+```

@@ -1,18 +1,15 @@
 const { ethers } = require("hardhat");
+require('dotenv').config({ path: './.env.development.local' });
 
-const fs = require("fs");
-const path = require("path");
-
-const configPath = path.join(__dirname, "../src/config.json");
-let configData = fs.readFileSync(configPath, "utf8");
-
-configData = JSON.parse(configData);
-const contractAddress = configData.contractAgreement;
+const AGREEMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS
+const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
 async function main() {
     const TokenContract = await ethers.getContractFactory("testToken");
-    const token = await TokenContract.attach("0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512");
-    const tx = await token.approve(contractAddress, "100000000000000000000")
+    const token = await TokenContract.attach(FAKE_STABLE_ADDRESS);
+    console.log(`Aprovando o fakeStable ${FAKE_STABLE_ADDRESS} para o agreementContract ${AGREEMENT_CONTRACT_ADDRESS}`);
+    const tx = await token.approve(AGREEMENT_CONTRACT_ADDRESS, "100000000000000000000")
+    console.log("Aprovação bem-sucedida: ", tx.hash);
 }
 
 main()

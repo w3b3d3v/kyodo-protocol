@@ -1,8 +1,9 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const fs = require("fs");
-const path = require("path");
-const allowedTokens = require("../public/allowedTokens.json");
+
+const KYODO_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS
+const COMMUNITY_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
+const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
 describe("AgreementsByUser", function () {
   let agreementContract;
@@ -10,27 +11,19 @@ describe("AgreementsByUser", function () {
   let user1;
   let user2;
 
-  const configPath = path.join(__dirname, "../src/config.json");
-  let configData = fs.readFileSync(configPath, "utf8");
-
-  configData = JSON.parse(configData);
-
   beforeEach(async function () {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
-    agreementContract = await AgreementContract.deploy(configData.kyodoTreasury, configData.communityDAO);
+    agreementContract = await AgreementContract.deploy(KYODO_TREASURY_ADDRESS, COMMUNITY_TREASURY_ADDRESS);
     await agreementContract.deployed();
 
     [owner, user1, user2] = await ethers.getSigners();
 
-    // Add allowed tokens to the contract
-    for (const token of allowedTokens) {
-      await agreementContract.addAcceptedPaymentToken(token.address);
-    }
+    await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);
   });
 
   it("Should create agreements and retrieve user-specific agreements", async function () {
     // Use the first two allowed tokens for testing
-    const paymentToken = allowedTokens[1].address;
+    const paymentToken = FAKE_STABLE_ADDRESS;
 
     // Create agreements using different user addresses
     await agreementContract.connect(user1).createAgreement(

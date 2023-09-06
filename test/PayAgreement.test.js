@@ -1,13 +1,12 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const fs = require("fs");
-const path = require("path");
-const allowedTokens = require("../public/allowedTokens.json");
 
 const TOTAL_FEE = 20; // using 1000 basis points for fee calculation
 const PROTOCOL_FEE = 500; // using 1000 basis points for fee calculation
 const COMMUNITY_FEE = 500; // using 1000 basis points for fee calculation
-
+const KYODO_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS
+const COMMUNITY_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
+const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
 describe("PayAgreement", function () {
   let agreementContract;
@@ -16,29 +15,20 @@ describe("PayAgreement", function () {
   let user2;
   let developer;
 
-  const configPath = path.join(__dirname, "../src/config.json");
-  let configData = fs.readFileSync(configPath, "utf8");
-  configData = JSON.parse(configData);
-  const KYODO_TREASURY_ADDRESS = configData.kyodoTreasury;
-  const COMMUNITY_DAO_ADDRESS = configData.communityDAO
-
   beforeEach(async function () {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
-    agreementContract = await AgreementContract.deploy(KYODO_TREASURY_ADDRESS, COMMUNITY_DAO_ADDRESS);
+    agreementContract = await AgreementContract.deploy(KYODO_TREASURY_ADDRESS, COMMUNITY_TREASURY_ADDRESS);
     await agreementContract.deployed();
 
     [owner, developer, user1, user2] = await ethers.getSigners();
 
-    // Set accepted payment tokens
-    for (const token of allowedTokens) {
-        await agreementContract.addAcceptedPaymentToken(token.address);
-    }
+    await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);
 
     await agreementContract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE); // Example fee values
   });
 
   it("Should make a payment and distribute fees", async function () {  
-    const paymentToken = allowedTokens[3].address;
+    const paymentToken = FAKE_STABLE_ADDRESS;
     const TokenContract = await ethers.getContractFactory("testToken");
     const tokenContract = await TokenContract.attach(paymentToken);
     const paymentAmount = ethers.utils.parseEther("100")
@@ -55,7 +45,7 @@ describe("PayAgreement", function () {
 
     const initialDeveloperBalance = await tokenContract.balanceOf(developer.address);
     const initialKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS);
-    const initialCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_DAO_ADDRESS);
+    const initialCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS);
   
     const ownerAgreements = await agreementContract.connect(owner).getUserAgreements(owner.address);
     const ownerAgreementId = ownerAgreements[0];
@@ -69,7 +59,7 @@ describe("PayAgreement", function () {
     
     const finalDeveloperBalance = await tokenContract.balanceOf(developer.address);
     const finalKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS);
-    const finalCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_DAO_ADDRESS);
+    const finalCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS);
     
     const expectedDeveloperIncrease = paymentAmount.sub(paymentAmount.mul(TOTAL_FEE).div(1000)); // Subtracting the total fee
     const expectedKyodoTreasuryIncrease = totalFeeAmount.mul(PROTOCOL_FEE).div(1000);
@@ -81,7 +71,7 @@ describe("PayAgreement", function () {
   });
 
   it("Should make a partial payment and distribute fees", async function () {
-    const paymentToken = allowedTokens[3].address;
+    const paymentToken = FAKE_STABLE_ADDRESS;
     const TokenContract = await ethers.getContractFactory("testToken");
     const tokenContract = await TokenContract.attach(paymentToken);
     const paymentAmount = ethers.utils.parseEther("100");
@@ -98,7 +88,7 @@ describe("PayAgreement", function () {
 
     const initialDeveloperBalance = await tokenContract.balanceOf(developer.address);
     const initialKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS);
-    const initialCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_DAO_ADDRESS);
+    const initialCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS);
 
     const ownerAgreements = await agreementContract.connect(owner).getUserAgreements(owner.address);
     const ownerAgreementId = ownerAgreements[0];
@@ -112,7 +102,7 @@ describe("PayAgreement", function () {
     
     const finalDeveloperBalance = await tokenContract.balanceOf(developer.address);
     const finalKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS);
-    const finalCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_DAO_ADDRESS);
+    const finalCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS);
     
     const expectedDeveloperIncrease = partialPaymentAmount.sub(partialPaymentAmount.mul(TOTAL_FEE).div(1000));
     const expectedKyodoTreasuryIncrease = totalFeeAmount.mul(PROTOCOL_FEE).div(1000);
