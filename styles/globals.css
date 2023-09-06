@@ -1,11 +1,12 @@
 body {
-    background-color: #FDFDFD;
-    color: #000000;
-    font-family: sans-serif;
-    font-size: 16px;
-    margin: 0;
-    padding: 0;
-  }
+  background: #060606;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 16px;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 .loading-overlay {
   position: fixed;
