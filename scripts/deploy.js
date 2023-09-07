@@ -6,6 +6,7 @@ require('dotenv').config({ path: './.env.development.local' });
 const TOTAL_FEE = 20; // using 1000 basis points for fee calculation
 const PROTOCOL_FEE = 500; // using 1000 basis points for fee calculation
 const COMMUNITY_FEE = 500; // using 1000 basis points for fee calculation
+const FAKE_STABLE_DECIMALS = 18;
 
 function copyABI() {
   const sourcePath = path.join(__dirname, "../artifacts/contracts/AgreementContract.sol/AgreementContract.json");
@@ -16,14 +17,15 @@ function copyABI() {
   console.log(`Copied ABI to ${destinationPath}`);
 }
 
-function updateConfig(agreementContractAddress, fakeStableAddress) {
+function updateConfig(agreementContractAddress, fakeStableAddress, w3dVaultAddress) {
   const envPath = path.join(__dirname, '../.env.development.local');
   let envData = fs.readFileSync(envPath, 'utf8');
   const lines = envData.split('\n');
 
   const keysToUpdate = {
     'NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS': agreementContractAddress,
-    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress
+    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
+    'NEXT_PUBLIC_W3D_STABLE_VAULT_ADDRESS': w3dVaultAddress
   };
 
   Object.keys(keysToUpdate).forEach(key => {
@@ -51,7 +53,7 @@ async function deployAgreementsContract() {
   .deploy
   (
     process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS, 
-    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
+    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS,
   );
 
   await contract.deployed();
@@ -68,10 +70,11 @@ async function deployAgreementsContract() {
   // Add allowed tokens to the contract
   for (const token of allowedTokens) {
     await contract.addAcceptedPaymentToken(token.address);
-    console.log(`Added ${token.name} (${token.address}) as an accepted payment token`);
+    // console.log(`Added ${token.name} (${token.address}) as an accepted payment token`);
   }
 
   await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
+  await contract.setW3DStableVaultAddress(process.env.NEXT_PUBLIC_W3D_STABLE_VAULT_ADDRESS);
   return contract.address
 }
 
@@ -82,7 +85,7 @@ async function deployToken() {
 
   // Deploy do token com 1 milhão de supply
   const Token = await ethers.getContractFactory("testToken");
-  const token = await Token.deploy(ethers.utils.parseEther("1000000")); // 1 milhão de tokens
+  const token = await Token.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS);
   await token.deployed();
 
   console.log("Token deployed to:", token.address);
@@ -99,7 +102,7 @@ async function deployToken() {
       lastToken.address = token.address; // Atualizar o endereço do token
       lastToken.logo = "src/components/assets/your-token-logo.svg"; // Atualizar o caminho do logo
       lastToken.name = "fakeStable"; // Atualizar o nome do token
-      lastToken.decimals = 18; // Atualizar o número de casas decimais conforme necessário
+      lastToken.decimals = FAKE_STABLE_DECIMALS; // Atualizar o número de casas decimais conforme necessário
 
       // Escrever a lista atualizada de tokens de volta no arquivo allowedTokens.json
       const updatedAllowedTokensData = JSON.stringify(allowedTokens, null, 2);
@@ -112,11 +115,23 @@ async function deployToken() {
   }
 }
 
+async function deployW3DStableVault() {
+  const W3DStableVault = await ethers.getContractFactory("W3DStableVault");
+  const [admin] = await ethers.getSigners();
+  const w3dVault = await W3DStableVault.deploy(admin.address, "W3DStableVaultToken", "W3DSV");
+  await w3dVault.deployed();
+
+  console.log("W3DStableVault deployed to:", w3dVault.address);
+  return w3dVault.address;
+}
+
+
 async function main() {
   try {
     const tokenAddress = await deployToken();
+    const w3dVaultAddress = await deployW3DStableVault();  
     const agreementAddress = await deployAgreementsContract();
-    updateConfig(agreementAddress, tokenAddress);
+    updateConfig(agreementAddress, tokenAddress, w3dVaultAddress); 
     process.exit(0);
   } catch (error) {
     console.error(error);

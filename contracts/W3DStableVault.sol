@@ -38,12 +38,15 @@ contract W3DStableVault is ReentrancyGuard, W3DAdmin, ERC20 {
      * It then transfers the asset from the sender to the vault and mints vault tokens for the beneficiary.
      * The vault's balance is also updated.
      */
-    function deposit(uint256 amount, address _asset, address _beneficiary) external nonReentrant() whenNotPaused() {
+    function deposit(uint256 amount, address _asset, address _beneficiary) external nonReentrant() whenNotPaused() returns(bool){
         uint correctedAmount = _correctAmount(amount, _asset);
+        console.log("amount: ", amount);
+        console.log("correctedAmount: ", correctedAmount);
 
         IERC20(_asset).safeTransferFrom(msg.sender, address(this), amount);
         _mint(_beneficiary, correctedAmount);
         _increaseBalance(correctedAmount);
+        return true;
     }
 
     /**

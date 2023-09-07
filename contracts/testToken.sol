@@ -6,12 +6,15 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
 contract testToken is ERC20, AccessControl, Pausable {
+    uint8 private _decimals;
+
     event NewAdminAdded(address indexed new_admin);
     event RemovedAdmin(address indexed removed_admin);
     
-    constructor(uint256 initialSupply) ERC20("testToken", "TTO") {
+    constructor(uint256 initialSupply, uint8 decimals) ERC20("testToken", "TTO") {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _mint(msg.sender, initialSupply);
+        _decimals = decimals;
     }
 
     modifier onlyAdmin() {
@@ -45,7 +48,7 @@ contract testToken is ERC20, AccessControl, Pausable {
         _unpause();
     }
     
-    function decimals() public view virtual override returns (uint8) {
-        return 8;
+    function decimals() public view override returns(uint8){
+        return _decimals;
     }
 }
