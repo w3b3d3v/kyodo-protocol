@@ -1,6 +1,8 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
+const FAKE_STABLE_DECIMALS = 18;
+
 describe("W3DVault", function () {
   let W3DStableVault, w3dVault, Token, token, admin, user1, user2;
 
@@ -13,7 +15,7 @@ describe("W3DVault", function () {
 
     // Deploy mock token
     Token = await ethers.getContractFactory("testToken");
-    token = await Token.deploy(ethers.utils.parseEther("1000000")); // 1 million tokens
+    token = await Token.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS); // 1 million tokens
     await token.deployed();
 
       // Transfer some tokens from admin to user1 and user2
@@ -27,7 +29,7 @@ describe("W3DVault", function () {
 
   describe("Deposit", function () {
     it("Should allow a user to make a deposit", async function () {
-        const depositAmount = ethers.utils.parseUnits("1", 8); // 1 token with 8 decimals
+        const depositAmount = ethers.utils.parseUnits("1", FAKE_STABLE_DECIMALS); // 1 token with 8 decimals
         const expectedVaultAmount = ethers.utils.parseUnits("1", 18); // Expected to be 1 token but with 18 decimals
       
         await w3dVault.connect(user1).deposit(depositAmount, token.address, user1.address);

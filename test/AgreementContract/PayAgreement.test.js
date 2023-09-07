@@ -6,13 +6,11 @@ const PROTOCOL_FEE = 500; // using 1000 basis points for fee calculation
 const COMMUNITY_FEE = 500; // using 1000 basis points for fee calculation
 const KYODO_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS
 const COMMUNITY_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
-const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
+const FAKE_STABLE_DECIMALS = 8;
 
 describe("PayAgreement", function () {
   let agreementContract;
   let owner;
-  let user1;
-  let user2;
   let developer;
 
   beforeEach(async function () {
@@ -22,16 +20,22 @@ describe("PayAgreement", function () {
 
     [owner, developer, user1, user2] = await ethers.getSigners();
 
-    await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);
+    const TokenContract = await ethers.getContractFactory("testToken");
+    tokenContract = await TokenContract.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS);
+    paymentToken = tokenContract.address;
 
-    await agreementContract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE); // Example fee values
+    await agreementContract.addAcceptedPaymentToken(tokenContract.address);
+    await agreementContract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
+
+    const W3DStableVault = await ethers.getContractFactory("W3DStableVault");
+    w3dVault = await W3DStableVault.deploy(owner.address, "W3DStableVaultToken", "W3DSV");
+    await w3dVault.deployed();
+
+    await agreementContract.setW3DStableVaultAddress(w3dVault.address);
   });
 
   it("Should make a payment and distribute fees", async function () {  
-    const paymentToken = FAKE_STABLE_ADDRESS;
-    const TokenContract = await ethers.getContractFactory("testToken");
-    const tokenContract = await TokenContract.attach(paymentToken);
-    const paymentAmount = ethers.utils.parseEther("100")
+    const paymentAmount = ethers.utils.parseUnits("100", FAKE_STABLE_DECIMALS)
 
     // Create agreements using different user addresses
     await agreementContract.connect(owner).createAgreement(
@@ -57,23 +61,25 @@ describe("PayAgreement", function () {
 
     const totalFeeAmount = paymentAmount.mul(TOTAL_FEE).div(1000);
     
-    const finalDeveloperBalance = await tokenContract.balanceOf(developer.address);
+    const finalDeveloperVaultBalance = await w3dVault.balanceOf(developer.address);
     const finalKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS);
     const finalCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS);
     
-    const expectedDeveloperIncrease = paymentAmount.sub(paymentAmount.mul(TOTAL_FEE).div(1000)); // Subtracting the total fee
+    let expectedDeveloperIncrease = paymentAmount.sub(paymentAmount.mul(TOTAL_FEE).div(1000)); // Subtracting the total fee
+    if (FAKE_STABLE_DECIMALS !== 18) {
+        const adjustFactor = ethers.BigNumber.from(10).pow(18 - FAKE_STABLE_DECIMALS);
+        expectedDeveloperIncrease = expectedDeveloperIncrease.mul(adjustFactor);
+    }
+    
     const expectedKyodoTreasuryIncrease = totalFeeAmount.mul(PROTOCOL_FEE).div(1000);
     const expectedCommunityDAOIncrease = totalFeeAmount.mul(COMMUNITY_FEE).div(1000);
     
-    expect(finalDeveloperBalance).to.equal(initialDeveloperBalance.add(expectedDeveloperIncrease));
+    expect(finalDeveloperVaultBalance).to.equal(initialDeveloperBalance.add(expectedDeveloperIncrease));
     expect(finalKyodoTreasuryBalance).to.equal(initialKyodoTreasuryBalance.add(expectedKyodoTreasuryIncrease));
     expect(finalCommunityDAOBalance).to.equal(initialCommunityDAOBalance.add(expectedCommunityDAOIncrease));
   });
 
   it("Should make a partial payment and distribute fees", async function () {
-    const paymentToken = FAKE_STABLE_ADDRESS;
-    const TokenContract = await ethers.getContractFactory("testToken");
-    const tokenContract = await TokenContract.attach(paymentToken);
     const paymentAmount = ethers.utils.parseEther("100");
     const partialPaymentAmount = ethers.utils.parseEther("50");
 
@@ -85,6 +91,8 @@ describe("PayAgreement", function () {
         paymentAmount,
         paymentToken
     );
+
+    const initialVaultBalance = await w3dVault.vaultBalance();
 
     const initialDeveloperBalance = await tokenContract.balanceOf(developer.address);
     const initialKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS);
@@ -100,16 +108,23 @@ describe("PayAgreement", function () {
 
     const totalFeeAmount = partialPaymentAmount.mul(TOTAL_FEE).div(1000);
     
-    const finalDeveloperBalance = await tokenContract.balanceOf(developer.address);
+    const finalDeveloperVaultBalance = await w3dVault.balanceOf(developer.address);
     const finalKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS);
     const finalCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS);
     
-    const expectedDeveloperIncrease = partialPaymentAmount.sub(partialPaymentAmount.mul(TOTAL_FEE).div(1000));
+    let expectedDeveloperIncrease = partialPaymentAmount.sub(partialPaymentAmount.mul(TOTAL_FEE).div(1000));
+    if (FAKE_STABLE_DECIMALS !== 18) {
+        const adjustFactor = ethers.BigNumber.from(10).pow(18 - FAKE_STABLE_DECIMALS);
+        expectedDeveloperIncrease = expectedDeveloperIncrease.mul(adjustFactor);
+    }
     const expectedKyodoTreasuryIncrease = totalFeeAmount.mul(PROTOCOL_FEE).div(1000);
     const expectedCommunityDAOIncrease = totalFeeAmount.mul(COMMUNITY_FEE).div(1000);
     
-    expect(finalDeveloperBalance).to.equal(initialDeveloperBalance.add(expectedDeveloperIncrease));
+    expect(finalDeveloperVaultBalance).to.equal(initialDeveloperBalance.add(expectedDeveloperIncrease));
     expect(finalKyodoTreasuryBalance).to.equal(initialKyodoTreasuryBalance.add(expectedKyodoTreasuryIncrease));
     expect(finalCommunityDAOBalance).to.equal(initialCommunityDAOBalance.add(expectedCommunityDAOIncrease));
+
+    const finalVaultBalance = await w3dVault.vaultBalance();
+    expect(finalVaultBalance).to.equal(initialVaultBalance.add(expectedDeveloperIncrease));
   });
 });
