@@ -1,14 +1,10 @@
 /* App.css */
 
 .agreement-list {
-  max-width: 800px;
+  width: 615px;
+  max-width: 615px;
   margin: 0 auto;
-  padding: 20px;
-}
-
-.card-list {
-  display: grid;
-  gap: 20px;
+  padding: 100px 0;
 }
 
 .card {
