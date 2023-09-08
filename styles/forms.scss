@@ -1,0 +1,29 @@
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0 15px;
+  border: 1px solid #1E2326;
+  background: #101315;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #fff;
+  box-sizing: border-box;
+  display: block;
+  margin: 8px 0 22px;
+}
+
+input,
+select {
+  height: 40px;
+  line-height: 40px;
+}
+
+textarea {
+  padding-top: 17px;
+  padding-bottom: 17px;
+  max-width: 100%;
+  min-width: 100%;
+  min-height: 129px;
+  max-height: 218px;
+}
