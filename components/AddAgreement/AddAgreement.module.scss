@@ -121,9 +121,8 @@
 @media only screen and (max-width: 800px) {
 
   .add-agreement-form {
+    width: 100%;
     max-width: 100%;
-    padding: 20px;
-    margin-top: 30px;
   }
 
   .columns {
@@ -134,5 +133,4 @@
   .col-02 {
     width: 100%;
   }
-
 }

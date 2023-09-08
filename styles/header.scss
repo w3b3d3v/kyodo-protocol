@@ -7,7 +7,7 @@ HEADER
   width: 100%;
   height: 60px;
   background: rgba($white, 1);
-  position: fixed;
+  position: fixed; 
   left: 0;
   top: 0;
   @extend %clearfix;
@@ -29,7 +29,6 @@ HEADER
 
   @media #{$smartphones-1} {
     margin-bottom: 0;
-    margin-top: 5px;
   }
 
   > a img {
