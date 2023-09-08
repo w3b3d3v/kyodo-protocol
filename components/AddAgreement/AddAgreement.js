@@ -1,6 +1,6 @@
 import { useContract } from "../ContractContext"
 import { useState } from "react"
-import styles from "./AddAgreement.module.scss"
+import styles from "./AddAgreement.module.css"
 
 import { BeatLoader } from "react-spinners"
 import tokens from "../../public/allowedTokens.json"
@@ -163,12 +163,12 @@ function AddAgreementForm(props) {
           <div className={"col-02"}>
 
             <label htmlFor="description-input">Description:</label>
-            <input
+            <textarea
               type="text"
               id="description-input"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-            />
+            ></textarea>
 
             <label htmlFor="skills-input">Skills:</label>
             <input

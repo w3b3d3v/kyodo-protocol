@@ -11,30 +11,6 @@
   font-size: 13px;
 }
 
-.add-agreement-form input,
-.select-input {
-  width: 100%;
-  padding: 0 15px;
-  border: 1px solid #1E2326;
-  background: #101315;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #fff;
-  box-sizing: border-box;
-  height: 40px;
-  line-height: 40px;
-  display: block;
-  margin: 8px 0 22px;
-}
-
-.add-agreement-form input {
-  
-}
-
-.select-input {
-
-}
-
 
 /* Form footer */
 
