@@ -132,23 +132,25 @@ function AddAgreementForm(props) {
             />
 
             <label htmlFor="payment-token-input">Payment Token:</label>
-            <select
-              id="payment-token-input"
-              value={paymentToken ? paymentToken.address : ""}
-              onChange={(event) => {
-                const selectedTokenAddress = event.target.value
-                const selectedToken = tokens.find((token) => token.address === selectedTokenAddress)
-                setPaymentToken(selectedToken)
-              }}
-              className={styles["select-input"]}
-            >
-              <option value="">Selecione um token</option>
-              {tokens.map((token) => (
-                <option key={token.address} value={token.address} className={styles["token-option"]}>
-                  {token.name}
-                </option>
-              ))}
-            </select>
+            <div class="select">
+              <select
+                id="payment-token-input"
+                value={paymentToken ? paymentToken.address : ""}
+                onChange={(event) => {
+                  const selectedTokenAddress = event.target.value
+                  const selectedToken = tokens.find((token) => token.address === selectedTokenAddress)
+                  setPaymentToken(selectedToken)
+                }}
+                className={styles["select-input"]}
+              >
+                <option value="">Selecione um token</option>
+                {tokens.map((token) => (
+                  <option key={token.address} value={token.address} className={styles["token-option"]}>
+                    {token.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <label htmlFor="payment-amount-input">Payment Amount:</label>
             <input
