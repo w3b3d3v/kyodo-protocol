@@ -20,6 +20,9 @@ HEADER
   }
 }
 
+
+// Logo
+
 .logo {
   float: left;
   margin-top: 13px;
@@ -35,6 +38,37 @@ HEADER
     @media #{$smartphones-1} {
       width: 100px;
     }
+  }
+}
+
+
+// User wallet
+
+.user-wallet {
+  border-radius: 15px;
+  padding: 0 15px;
+  height: 30px;
+  line-height: 30px;
+  float: right;
+  font-size: $font-small;
+  font-weight: normal;
+  border: 1px solid $light-gray;
+  margin-top: 14px;
+  color: $medium-blue;
+
+  img {
+    float: right;
+    margin: 5px 0 0 15px;
+  }
+
+  span {
+    width: 7px;
+    height: 7px;
+    border-radius: 5px;
+    background: $green;
+    text-indent: -9999px;
+    float: right;
+    margin: 11px 0 0 5px;
   }
 }
 
