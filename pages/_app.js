@@ -1,4 +1,4 @@
-import '../styles/globals.css'
+import '../styles/globals.scss'
 import { ContractProvider } from "../components/ContractContext"
 import {
   ConnectWalletButton,

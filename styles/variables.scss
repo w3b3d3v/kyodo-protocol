@@ -1,0 +1,72 @@
+/**
+VARS AND MIXINS
+===========================
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@400;700&display=swap');
+
+
+$sans-serif:     "Geologica", Arial, Helvetica, sans-serif;
+$headings:       "Geologica", Arial, Helvetica, sans-serif;
+
+
+/* COLORS */
+
+// Basics
+$white:           #fff;
+$black:           #000;
+$red:             red;
+
+// Branding
+$brand-green:     #A3C987;
+$brand-red:       #F69783;
+$brand-blue:      #78BCEE;
+
+// Blues
+$dark-blue:       #060A0F;
+$medium-blue:     #2B526B;
+
+// Grays
+$light-gray:      #E6EDF1;
+$medium-gray:     #85A8BE;
+
+// Dark mode
+$dark-gray:       #060606;
+$dark-gray-2:     #111;
+
+
+/* FONT SIZES */
+
+$font-small:      11px;
+
+$font-medium:     13px;
+$font-medium-2:   15px;
+$font-medium-3:   17px;
+
+$font-large:      19px;
+$font-large-2:    21px;
+
+$font-big:        25px;
+$font-big-2:      27px;
+$font-big-3:      30px;
+$font-big-4:      33px;
+
+$font-bigger:     37px;
+$font-bigger-2:   45px;
+
+
+/* BREAKPOINTS */
+
+$tablets:         "only screen and (max-width: 1000px)";
+$smartphones-1:   "only screen and (max-width: 800px)";
+
+
+/* MIXINS */
+
+%clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}

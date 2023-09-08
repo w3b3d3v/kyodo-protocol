@@ -1,20 +1,9 @@
 /* Form */
 
 .add-agreement-form {
+  width: 615px;
   max-width: 615px;
   margin: 0 auto;
-  margin-top: 60px;
-}
-
-.columns {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-}
-
-.col-01,
-.col-02 {
-  width: 45%;
 }
 
 .add-agreement-form label {
