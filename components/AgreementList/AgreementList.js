@@ -6,6 +6,7 @@ import tokens from "../../public/allowedTokens.json"
 import ERC20 from '../contracts/ERC20.json';
 import styles from "./AgreementList.module.css"
 import BigNumber from 'bignumber.js';
+import { useAccount } from "../AccountContext"
 
 // TODO: Handle Promise while transaction runs
 // TODO: Show correct Total Paid based in a defined currency base
@@ -18,6 +19,7 @@ function AgreementList(props) {
   const [isAllowanceSufficient, setIsAllowanceSufficient] = useState(false);
   const { contract, loading } = useAgreementContract();
   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const { account } = useAccount();
 
   const checkAllowance = async (userAddress, contractAddress, paymentTokenAddress, amount) => {
     const tokenContract = new ethers.Contract(paymentTokenAddress, ERC20.abi, provider);
@@ -115,7 +117,7 @@ function AgreementList(props) {
       }
   
       fetchAgreements();
-  }, []);    
+  }, [account]);    
 
   if (isLoading) {
     return (
