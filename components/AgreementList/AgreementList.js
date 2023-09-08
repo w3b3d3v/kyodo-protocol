@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useContract } from "../../components/ContractContext"
+import { useAgreementContract } from "../../components/ContractContext"
 import { BeatLoader } from "react-spinners";
 import { ethers } from "ethers";
 import tokens from "../../public/allowedTokens.json"
@@ -16,7 +16,7 @@ function AgreementList(props) {
   const [showPaymentInput, setShowPaymentInput] = useState(null);
   const [paymentValue, setPaymentValue] = useState('');
   const [isAllowanceSufficient, setIsAllowanceSufficient] = useState(false);
-  const { contract, loading } = useContract();
+  const { contract, loading } = useAgreementContract();
   const provider = new ethers.providers.Web3Provider(window.ethereum);
 
   const checkAllowance = async (userAddress, contractAddress, paymentTokenAddress, amount) => {

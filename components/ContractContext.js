@@ -1,16 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AgreementContract from './contracts/AgreementContract.json';
+import VaultContract from './contracts/W3DStableVault.json';
 import { ethers } from "ethers";
 
-// Create the context
-const ContractContext = createContext(null);
+// Agreement Contract Context
+const AgreementContractContext = createContext(null);
 
-// Custom Hook to use context
-export function useContract() {
-  return useContext(ContractContext);
+export function useAgreementContract() {
+  return useContext(AgreementContractContext);
 }
 
-export function ContractProvider({ children }) {
+export function AgreementContractProvider({ children }) {
   const [contract, setContract] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -27,8 +27,38 @@ export function ContractProvider({ children }) {
   }, []);
 
   return (
-    <ContractContext.Provider value={{ contract, loading }}>
+    <AgreementContractContext.Provider value={{ contract, loading }}>
       {children}
-    </ContractContext.Provider>
+    </AgreementContractContext.Provider>
+  );
+}
+
+// Vault Contract Context
+const VaultContractContext = createContext(null);
+
+export function useVaultContract() {
+  return useContext(VaultContractContext);
+}
+
+export function VaultContractProvider({ children }) {
+  const [contractVault, setContractVault] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function initializeContract() {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const contractABI = VaultContract.abi;
+      const newContract = new ethers.Contract(process.env.NEXT_PUBLIC_VAULT_CONTRACT_ADDRESS, contractABI, provider.getSigner());
+      setContractVault(newContract);
+      setLoading(false);
+    }
+
+    initializeContract();
+  }, []);
+
+  return (
+    <VaultContractContext.Provider value={{ contractVault, loading }}>
+      {children}
+    </VaultContractContext.Provider>
   );
 }
