@@ -48,7 +48,7 @@ export function VaultContractProvider({ children }) {
     async function initializeContract() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contractABI = VaultContract.abi;
-      const newContract = new ethers.Contract(process.env.NEXT_PUBLIC_VAULT_CONTRACT_ADDRESS, contractABI, provider.getSigner());
+      const newContract = new ethers.Contract(process.env.NEXT_PUBLIC_W3D_STABLE_VAULT_ADDRESS, contractABI, provider.getSigner());
       setContractVault(newContract);
       setLoading(false);
     }

@@ -1,6 +1,5 @@
 import React from "react";
-import Web3 from "web3";
-import Image from 'next/image'
+import { ethers } from "ethers";
 
 const networkId = "0x13881";
 const customChainId = "0x7A69";
@@ -56,8 +55,8 @@ function ConnectWalletButton(props) {
     if (window.ethereum) {
       try {
         await window.ethereum.request({ method: "eth_requestAccounts" });
-        const web3 = new Web3(window.ethereum);
-        const accounts = await web3.eth.getAccounts();
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const accounts = await provider.listAccounts();
         await vefifyChain()
         props.updateAccount(accounts[0]);
       } catch (error) {
