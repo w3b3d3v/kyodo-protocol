@@ -12,6 +12,18 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <header className={"main-header"}>
+        <div className={"holder"}>
+          <Image
+            src="/logo.svg"
+            alt="Kyodo Protocol logo"
+            width={120}
+            height={32}
+            className={"logo"}
+          />
+        </div>
+      </header>
+
       <main className={styles.main}>
         <UserCheck />
       </main>

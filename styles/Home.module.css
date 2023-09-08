@@ -5,6 +5,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 100px 0;
+  box-sizing: border-box;
 }
 
 .title a {
