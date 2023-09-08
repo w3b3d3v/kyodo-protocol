@@ -1,34 +1,35 @@
 /* App.css */
 
 .agreement-list {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .card-list {
-    display: grid;
-    gap: 20px;
-  }
-  
-  .card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 16px;
-  }
-  
-  .card h2 {
-    font-size: 24px;
-    margin-bottom: 8px;
-  }
-  
-  .card p {
-    font-size: 16px;
-    margin-bottom: 4px;
-  }
-  
-  .card strong {
-    font-weight: bold;
-  }
-  
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card-list {
+  display: grid;
+  gap: 20px;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+}
+
+.card h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.card p {
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.card strong {
+  font-weight: bold;
+}

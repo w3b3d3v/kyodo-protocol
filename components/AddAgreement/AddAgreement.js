@@ -87,6 +87,7 @@ function AddAgreementForm(props) {
 
   if (transactionHash) {
     return (
+      
       <div className={styles["transaction-info"]}>
         Agreement created!
         <br />
