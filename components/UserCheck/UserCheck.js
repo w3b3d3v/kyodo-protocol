@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { BeatLoader } from "react-spinners";
 import AddAgreement from "../AddAgreement/AddAgreement";
 import AgreementList from '../AgreementList/AgreementList';
-import { useContract } from "../ContractContext"
+import { useAgreementContract } from "../ContractContext"
 
 function UserCheck(props) {
     const [isRegistered, setIsRegistered] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const { contract, loading } = useContract();
+    const { contract, loading } = useAgreementContract();
   
     useEffect(() => {
         // Só executar se loading for false

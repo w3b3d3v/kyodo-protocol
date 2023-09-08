@@ -1,4 +1,4 @@
-import { useContract } from "../ContractContext"
+import { useAgreementContract } from "../ContractContext"
 import { useState } from "react"
 import styles from "./AddAgreement.module.css"
 import Image from 'next/image'
@@ -16,7 +16,7 @@ function AddAgreementForm(props) {
   const [paymentToken, setPaymentToken] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [transactionHash, setTransactionHash] = useState(null)
-  const { contract, loading } = useContract()
+  const { contract, loading } = useAgreementContract()
 
   async function handleSubmit(event) {
     event.preventDefault()

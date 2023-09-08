@@ -1,6 +1,5 @@
-import '../styles/globals.scss'
-import Image from 'next/image'
-import { ContractProvider } from "../components/ContractContext"
+import '../styles/globals.css'
+import { VaultContractProvider, AgreementContractProvider } from "../components/ContractContext";
 import {
   ConnectWalletButton,
   vefifyChain,
@@ -34,9 +33,7 @@ function MyApp({ Component, pageProps }) {
   }, [account])
 
   return account ? (
-
-    <ContractProvider>
-
+    <AgreementContractProvider>
       <header className={"main-header"}>
         <div className={"holder"}>
           <Image
@@ -75,9 +72,7 @@ function MyApp({ Component, pageProps }) {
           />
         </a>
       </footer>
-
-    </ContractProvider>
-
+    </AgreementContractProvider>
   ) : (
     <ConnectWalletButton account={account} updateAccount={updateAccount} />
   )
