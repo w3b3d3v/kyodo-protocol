@@ -8,8 +8,9 @@
 }
 
 .card {
-  background-color: #fff;
-  border-radius: 8px;
+  border: 1px solid #1E2326;
+  background: #101315;
+  border-radius: 6px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   padding: 16px;
 }
@@ -17,15 +18,42 @@
 .card h2 {
   font-size: 24px;
   margin-bottom: 8px;
-  color: #333;
+  color: #fff;
 }
 
 .card p {
-  font-size: 16px;
-  margin-bottom: 4px;
-  color: #333;
+  font-size: 15px;
+  margin: 0;
+  color: #fff;
+  line-height: 28px;
+}
+
+.card button {
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #85A8BE;
+  background: none;
+  border: 1px solid #85A8BE;
+  border-radius: 4px;
+  height: 22px;
+  line-height: 19px;
 }
 
 .card strong {
   font-weight: bold;
+  color: #777;
 }
+
+
+/* Mobile */
+
+@media only screen and (max-width: 800px) {
+
+  .agreement-list {
+    width: 90%;
+    margin: auto;
+    max-width: 100%;
+  }
+}
+
