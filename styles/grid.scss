@@ -1,0 +1,59 @@
+/**
+GRID
+===========================
+*/
+
+.holder {
+  width: 85%;
+  max-width: 1080px;
+  margin: auto;
+
+  @media #{$smartphones-1} {
+    width: 90%;
+  }
+}
+
+.columns,
+.columns-3 {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+
+  @media #{$smartphones-1} {
+    display: block;
+  }
+}
+
+
+/* Two columns */
+
+.columns {
+
+  @media #{$smartphones-1} {
+    display: block;
+  }
+
+  .col-01,
+  .col-02 {
+    width: 45%;
+  
+    @media #{$smartphones-1} {
+      width: 100%;    
+    }
+  }
+}
+
+
+/* Three columns */
+
+.columns-3 {
+
+  > div {
+    width: 30%;
+  
+    @media #{$smartphones-1} {
+      width: 100%;
+      margin-top: 60px;
+    }
+  }
+}
