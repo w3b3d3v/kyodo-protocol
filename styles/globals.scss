@@ -12,6 +12,7 @@ GLOBAL
 @import "header";
 @import "components";
 @import "forms";
+@import "footer";
 
 
 // Generic elements
@@ -43,12 +44,3 @@ h1 {
   letter-spacing: -1px;
 }
 
-footer {
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  text-align: center;
-  background: rgba($white, .04);
-  padding: 10px 5px 6px 5px;
-}
