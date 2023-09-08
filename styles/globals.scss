@@ -24,6 +24,24 @@ body {
   margin: 0;
 }
 
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  margin: 0 0 55px 0;
+  font-size: $font-big;
+  letter-spacing: -1px;
+}
+
 footer {
   width: 100%;
   position: fixed;

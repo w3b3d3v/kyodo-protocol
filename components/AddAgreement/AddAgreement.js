@@ -109,6 +109,8 @@ function AddAgreementForm(props) {
     <div className={styles["add-agreement-form-container"]}>
       <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>
 
+        <h1>Add agreement</h1>
+
         <section className={"columns"}>
 
           <div className={"col-01"}>
