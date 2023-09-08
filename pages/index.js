@@ -21,6 +21,16 @@ export default function Home() {
             height={32}
             className={"logo"}
           />
+          <div className={"user-wallet"}>
+            4cb4...4c25
+            <span>Status</span>
+            <Image
+              src="/metamask.svg"
+              alt="Metamask icon"
+              width={22}
+              height={19}
+            />
+          </div>
         </div>
       </header>
 
