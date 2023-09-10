@@ -40,8 +40,8 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
      */
     function deposit(uint256 amount, address _asset, address _beneficiary) external nonReentrant() whenNotPaused() returns(bool){
         uint correctedAmount = _correctAmount(amount, _asset);
-        console.log("amount: ", amount);
-        console.log("correctedAmount: ", correctedAmount);
+        console.log("Deposit amount: ", amount);
+        console.log("Deposit correctedAmount: ", correctedAmount);
 
         IERC20(_asset).safeTransferFrom(msg.sender, address(this), amount);
         _mint(_beneficiary, correctedAmount);
@@ -88,5 +88,36 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
 
     function vaultBalance() public view returns(uint256){
         return _vaultBalance;
+    }
+
+    function _decreaseBalance(uint256 amount) private {
+        require(_vaultBalance >= amount, "Insufficient vault balance");
+        unchecked {
+            _vaultBalance -= amount;
+        }
+
+        emit BalanceUpdated(amount);
+    }
+
+    /**
+     * @notice Withdraws an asset from the Vault and burns the vault tokens.
+     * @param amount The amount of the asset to withdraw.
+     * @param _asset The address of the asset token being withdrawn.
+     * 
+     * @dev This function allows a user to withdraw assets from the vault. 
+     * The function first corrects the asset amount to have 18 decimal places, if it doesn't already.
+     * It then burns the vault tokens from the sender and transfers the asset back to the sender.
+     * The vault's balance is also updated.
+     */
+    function withdraw(uint256 amount, address _asset) external nonReentrant() whenNotPaused() returns(bool){
+        uint correctedAmount = _correctAmount(amount, _asset);
+        console.log("Withdraw amount: ", amount);
+        console.log("Withdraw correctedAmount: ", correctedAmount);
+
+        require(balanceOf(msg.sender) >= correctedAmount, "Insufficient balance");
+        _burn(msg.sender, correctedAmount);
+        IERC20(_asset).safeTransfer(msg.sender, amount);
+        _decreaseBalance(correctedAmount);
+        return true;
     }
 }
