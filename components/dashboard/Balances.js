@@ -10,7 +10,41 @@ function Balances(props) {
   const { contract, loading } = useVaultContract();
   const { account } = useAccount();
   const [userBalances, setUserBalances] = useState([]);
+  const [showRedeemInput, setShowRedeemInput] = useState(null);
+  const [redeemValue, setRedeemValue] = useState('');
 
+  const handleRedeemClick = (index) => {
+    setShowRedeemInput(index);
+  };  
+
+  const handleRedeemValueChange = (e, balance) => {
+    const inputAmount = parseFloat(e.target.value);
+    if (isNaN(inputAmount)) {
+      setRedeemValue('');
+    } else {
+      setRedeemValue(inputAmount.toString());
+      const redeemAmountInWei = ethers.utils.parseUnits(inputAmount.toString(), balance.tokenDecimals);
+      
+      if (redeemAmountInWei.gt(balance.amount)) {
+        alert("You cannot redeem more than your balance!");
+        setRedeemValue(''); // Reset the input value
+      }
+    }
+  };
+
+  const handleWithdraw = async (amount, balance) => {
+    const redeemAmountInWei = ethers.utils.parseUnits(amount.toString(), balance.tokenDecimals);
+    try {
+      console.log("redeemAmountInWei", redeemAmountInWei.toString());
+      console.log("balance.tokenAddress", balance.tokenAddress);
+      console.log("contract", contract);
+      const tx = await contract.withdraw(redeemAmountInWei, process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS)
+      console.log("tx", tx);
+    } catch (error) {
+      console.error("Error during withdrawal:", error);
+    }
+  };
+  
   useEffect(() => {
     if (!loading) {
       async function fetchUserBalances() {
@@ -49,10 +83,6 @@ function Balances(props) {
     }
   }, [loading]);
 
-  const handleRedeemClick = () => {
-    alert("Future feature");
-  };
-
   const handleInvestClick = () => {
     alert("Future feature");
   };
@@ -78,7 +108,19 @@ function Balances(props) {
             </a>
             <p><strong>Balance:</strong> {ethers.utils.formatUnits(balance.amount.toString(), balance.tokenDecimals)}</p>
             <div className={styles["button-group"]}>
-              <button onClick={handleRedeemClick} className={styles["button"]}>Redeem</button>
+            <button onClick={() => handleRedeemClick(index)}>Redeem</button>
+              {showRedeemInput === index && (
+                <>
+                  <input 
+                    type="number" 
+                    value={redeemValue}
+                    onChange={(e) => handleRedeemValueChange(e, balance)} // Você precisará obter o saldo do usuário para este token
+                  />
+                  <br></br>
+                  <button onClick={() => handleWithdraw(redeemValue, balance)}>Confirm Redeem</button>
+                </>
+              )}
+              <br></br>
               <button onClick={handleInvestClick} className={styles["button"]}>Invest</button>
             </div>
           </div>
