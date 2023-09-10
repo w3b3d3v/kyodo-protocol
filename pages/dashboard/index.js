@@ -1,5 +1,5 @@
-import { VaultContractProvider } from "../../components/ContractContext";
-import Balances from '../../components/dashboard/Balances';
+import { VaultContractProvider } from "../../contexts/ContractContext";
+import Balances from '../../components/Dashboard/Balances';
 
 function Dashboard() {
   return (
