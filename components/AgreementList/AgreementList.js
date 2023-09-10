@@ -1,34 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { useAgreementContract } from "../../components/ContractContext"
 import { BeatLoader } from "react-spinners";
 import { ethers } from "ethers";
 import tokens from "../../public/allowedTokens.json"
-import ERC20 from '../contracts/ERC20.json';
+import ERC20 from '../../contexts/contracts/ERC20.json';
 import styles from "./AgreementList.module.css"
 import BigNumber from 'bignumber.js';
-import { useAccount } from "../AccountContext"
+import { useAccount } from "../../contexts/AccountContext"
+import { useAgreementContract } from "../../contexts/ContractContext"
+import "./AgreementList.module.css"
 
 // TODO: Handle Promise while transaction runs
 // TODO: Show correct Total Paid based in a defined currency base
+// TODO: Update after transaction
 
 function AgreementList(props) {
-  const [agreements, setAgreements] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showPaymentInput, setShowPaymentInput] = useState(null);
-  const [paymentValue, setPaymentValue] = useState('');
-  const [isAllowanceSufficient, setIsAllowanceSufficient] = useState(false);
+  const { account } = useAccount();
   const { contract, loading } = useAgreementContract();
   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const { account } = useAccount();
+  const [agreements, setAgreements] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [paymentValue, setPaymentValue] = useState('');
+  const [showPaymentInput, setShowPaymentInput] = useState(null);
+  const [isAllowanceSufficient, setIsAllowanceSufficient] = useState(false);
+  const [userAllowance, setUserAllowance] = useState(null);
 
-  const checkAllowance = async (userAddress, contractAddress, paymentTokenAddress, amount) => {
+  const checkAllowance = async (userAddress, contractAddress, paymentTokenAddress) => {
     const tokenContract = new ethers.Contract(paymentTokenAddress, ERC20.abi, provider);
     const allowance = await tokenContract.allowance(userAddress, contractAddress);
-    if (isNaN(amount) || amount === null || amount === undefined) {
-      setIsAllowanceSufficient(false);
-      return;
-    }
-    setIsAllowanceSufficient(ethers.BigNumber.from(allowance).gte(amount));
+    setUserAllowance(new BigNumber(allowance.toString()))
   };
 
   const handleApprove = async (amount, paymentToken, spender) => {
@@ -49,8 +48,9 @@ function AgreementList(props) {
     }
   };
   
-  const handlePayClick = (index) => {
+  const handlePayClick = (index, paymentToken) => {
     setShowPaymentInput(index);
+    checkAllowance(account, contract.address, paymentToken.address);
   };
 
   const handlePaymentValueChange = async (e, paymentToken) => {
@@ -62,7 +62,8 @@ function AgreementList(props) {
       const paymentAmountInWei = new BigNumber(value)
         .times(new BigNumber(10).pow(paymentToken.decimals))
         .toString();
-      await checkAllowance(window.ethereum.selectedAddress, contract.address, paymentToken.address, paymentAmountInWei);
+    
+    setIsAllowanceSufficient(userAllowance.isGreaterThanOrEqualTo(paymentAmountInWei));
     }
   };
   
@@ -146,7 +147,6 @@ function AgreementList(props) {
 
           return (
             <div key={index} className={styles["card"]}>
-
               <h2>{agreement.title}</h2>
 
               <div className={styles["wallet-key"]}>
@@ -173,15 +173,15 @@ function AgreementList(props) {
                           value={paymentValue}
                           onChange={(e) => handlePaymentValueChange(e, paymentToken)}
                         />
-                      {isAllowanceSufficient ? (
-                        <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)} className={styles["confirm-btn"]}>
-                          Confirm payment
-                        </button>
-                      ) : (
-                        <button onClick={() => handleApprove(paymentValue, paymentToken, contract.address)} className={styles["approve-btn"]}>
-                          Approve payment
-                        </button>
-                      )}
+                    {isAllowanceSufficient ? (
+                      <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)} className={styles["confirm-btn"]}>
+                        Confirm Payment
+                      </button>
+                    ) : (
+                      <button onClick={() => handleApprove(paymentValue, paymentToken, contract.address)} className={styles["approve-btn"]}>
+                        Approve
+                      </button>
+                    )}
                       </>
                     )}
                   </> : 
