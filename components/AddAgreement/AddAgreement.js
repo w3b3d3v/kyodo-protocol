@@ -1,4 +1,4 @@
-import { useAgreementContract } from "../ContractContext"
+import { useAgreementContract } from "../../contexts/ContractContext"
 import { useState } from "react"
 import styles from "./AddAgreement.module.css"
 import Image from 'next/image'
