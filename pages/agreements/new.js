@@ -1,5 +1,10 @@
 import AddAgreement from "../../components/AddAgreement/AddAgreement"
+import { AgreementContractProvider } from "../../contexts/ContractContext";
 
 export default function NewAgreement() {
-  return <AddAgreement />
+  return (
+    <AgreementContractProvider>
+    <AddAgreement />
+    </AgreementContractProvider>
+  )
 }

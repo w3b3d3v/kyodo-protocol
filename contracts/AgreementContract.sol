@@ -162,7 +162,6 @@ contract AgreementContract {
         token.approve(address(stableVault), developerPayment);
         stableVault.deposit(developerPayment, address(token), agreement.developer);
 
-
         agreement.totalPaid += _amountToPay;
 
         if (agreement.totalPaid >= paymentToken.amount) {
