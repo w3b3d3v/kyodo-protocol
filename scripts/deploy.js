@@ -10,7 +10,7 @@ const FAKE_STABLE_DECIMALS = 18;
 
 function copyABI() {
   const sourcePath = path.join(__dirname, "../artifacts/contracts/AgreementContract.sol/AgreementContract.json");
-  const destinationPath = path.join(__dirname, "../components/contracts/AgreementContract.json");
+  const destinationPath = path.join(__dirname, "../contexts/contracts/AgreementContract.json");
 
   const sourceData = fs.readFileSync(sourcePath, "utf8");
   fs.writeFileSync(destinationPath, sourceData);
@@ -73,7 +73,6 @@ async function deployAgreementsContract(communityVaultAddress) {
 
   await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE)
   await contract.setStableVaultAddress(communityVaultAddress)
-  return contract.address
 }
 
 async function deployToken() {
