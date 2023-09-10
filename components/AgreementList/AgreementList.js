@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { BeatLoader } from "react-spinners";
 import { ethers } from "ethers";
 import tokens from "../../public/allowedTokens.json"
-import ERC20 from '../../contexts/contracts/ERC20.json';
 import styles from "./AgreementList.module.css"
 import BigNumber from 'bignumber.js';
 import { useAccount } from "../../contexts/AccountContext"
 import { useAgreementContract } from "../../contexts/ContractContext"
 import "./AgreementList.module.css"
+import ERC20Token from '../../utils/ERC20Token';
 
 // TODO: Handle Promise while transaction runs
 // TODO: Show correct Total Paid based in a defined currency base
@@ -25,7 +25,7 @@ function AgreementList(props) {
   const [userAllowance, setUserAllowance] = useState(null);
 
   const checkAllowance = async (userAddress, contractAddress, paymentTokenAddress) => {
-    const tokenContract = new ethers.Contract(paymentTokenAddress, ERC20.abi, provider);
+    const tokenContract = new ERC20Token(paymentTokenAddress);
     const allowance = await tokenContract.allowance(userAddress, contractAddress);
     setUserAllowance(new BigNumber(allowance.toString()))
   };
@@ -37,9 +37,8 @@ function AgreementList(props) {
         .times(new BigNumber(10).pow(paymentToken.decimals))
         .toString();
 
-      const TokenContract = new ethers.Contract(paymentToken.address, ERC20.abi, provider.getSigner());
-      console.log("TokenContract", paymentToken.address)
-      const tx = await TokenContract.approve(spender, amountInWei);
+      const tokenContract = new ERC20Token(paymentToken.address);
+      const tx = await tokenContract.approve(spender, amountInWei);
       await tx.wait();
   
       console.log(`Approval successful for amount: ${amount}`);
