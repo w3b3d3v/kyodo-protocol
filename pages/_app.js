@@ -1,5 +1,5 @@
 import '../styles/globals.css'
-import { AccountProvider} from "../components/AccountContext";
+import { AccountProvider} from "../contexts/AccountContext";
 
 import React from "react"
 
