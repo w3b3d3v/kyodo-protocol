@@ -2,13 +2,13 @@
 Agreement values are defined in stabletcoins but in the future can be paid with any currency.
 
 Functions:
-Cria agreements
+Create agreements
 Store agreements
 
 Receive payments and send them to Vault.
 Distribute Incentives for agreements made.
 
-# W3D Vault
+# Comunity Vault
 Stores the balances of professionals in USD.
 Tokens being minted in a 1:1 ratio
 

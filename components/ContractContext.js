@@ -2,15 +2,14 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import AgreementContract from './contracts/AgreementContract.json';
 import { ethers } from "ethers";
 
-// Cria o contexto
+// Create the context
 const ContractContext = createContext(null);
 
-// Hook personalizado para usar o contexto
+// Custom Hook to use context
 export function useContract() {
   return useContext(ContractContext);
 }
 
-// Provedor de contexto
 export function ContractProvider({ children }) {
   const [contract, setContract] = useState(null);
   const [loading, setLoading] = useState(true);
