@@ -116,15 +116,16 @@ function AgreementList(props) {
               <div className={styles["card-footer"]}>
                 {Number(agreement.status) === 0 ? 
                   <>
-                    <a onClick={() => handlePayClick(index)}>Pay Agreement</a>
+                    <a onClick={() => handlePayClick(index)}>Pay agreement</a>
                     {showPaymentInput === index && (
                       <>
                         <input 
                           type="number" 
                           value={paymentValue}
                           onChange={handlePaymentValueChange}
+                          onKeyDown="false"
                         />
-                        <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)}>Confirm Payment</button>
+                        <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)}>Confirm payment</button>
                       </>
                     )}
                   </> : 

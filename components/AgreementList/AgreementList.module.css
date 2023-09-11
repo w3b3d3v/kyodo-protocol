@@ -46,10 +46,19 @@
 }
 
 .card input {
-  width: 100px;
+  width: 76px;
   display: inline-block;
-  margin: 0;
+  height: 26px;
+  margin: 17px 0 0 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0 7px;
+  font-size: 11px;
+  position: relative;
+  z-index: 200;
 }
+
+
 
 .card-footer {
   background: #0D0D0D;
@@ -63,24 +72,50 @@
   padding-left: 25px;
 }
 
-.card a {
+.card a,
+.card button {
   font-size: 11px;
   font-weight: bold;
-  color: #85A8BE;
+  color: #E6EDF1;
   display: inline-block;
   background: none;
   border: 1px solid #85A8BE;
-  border-radius: 10px;
-  height: 19px;
-  line-height: 18px;
+  background-color: #0D0D0D;
+  border-radius: 20px;
   padding: 0 9px;
   cursor: pointer;
-  margin-top: 19px;
 }
 
-.card a:hover {
-  border-color: #fff;
+.card a:hover,
+.card button:hover  {
   color: #fff;
+  border-color: #fff;
+}
+
+.card a {
+  color: #E6EDF1;
+  border: 1px solid #85A8BE;
+  height: 24px;
+  line-height: 23px;
+  position: absolute;
+  left: 25px;
+  top: 17px;
+  z-index: 100;
+}
+
+.card button {
+  color: #fff;
+  border: 1px solid #7BB651;
+  height: 26px;
+  line-height: 23px;
+  box-shadow: 0 0 7px #060606;
+  padding-right: 10px;
+  position: absolute;
+  left: 100px;
+  top: 17px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  z-index: 200;
 }
 
 .card strong {
