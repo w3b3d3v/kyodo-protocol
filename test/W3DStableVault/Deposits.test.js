@@ -4,13 +4,13 @@ const { ethers } = require("hardhat");
 const FAKE_STABLE_DECIMALS = 18;
 
 describe("W3DVault", function () {
-  let W3DStableVault, w3dVault, Token, token, admin, user1, user2;
+  let StableVault, w3dVault, Token, token, admin, user1, user2;
 
   beforeEach(async function () {
     // Contract deployment
-    W3DStableVault = await ethers.getContractFactory("W3DStableVault");
+    StableVault = await ethers.getContractFactory("StableVault");
     [admin, user1, user2] = await ethers.getSigners();
-    w3dVault = await W3DStableVault.deploy(admin.address, "W3DStableVaultToken", "W3DSV");
+    w3dVault = await StableVault.deploy(admin.address, "StableVaultToken", "W3DSV");
     await w3dVault.deployed();
 
     // Deploy mock token
@@ -23,7 +23,7 @@ describe("W3DVault", function () {
     await token.connect(admin).transfer(user2.address, ethers.utils.parseEther("100")); // Transfer 100 tokens to user2
 
 
-    // Approve the W3DStableVault contract to spend tokens on behalf of user1
+    // Approve the StableVault contract to spend tokens on behalf of user1
     await token.connect(user1).approve(w3dVault.address, ethers.utils.parseEther("1000")); // Approve 1000 tokens
   });
 

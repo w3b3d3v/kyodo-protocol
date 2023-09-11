@@ -74,7 +74,7 @@ async function deployAgreementsContract() {
   }
 
   await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
-  await contract.setW3DStableVaultAddress(process.env.NEXT_PUBLIC_W3D_STABLE_VAULT_ADDRESS);
+  await contract.setStableVaultAddress(process.env.NEXT_PUBLIC_W3D_STABLE_VAULT_ADDRESS);
   return contract.address
 }
 
@@ -115,13 +115,13 @@ async function deployToken() {
   }
 }
 
-async function deployW3DStableVault() {
-  const W3DStableVault = await ethers.getContractFactory("W3DStableVault");
+async function deployStableVault() {
+  const StableVault = await ethers.getContractFactory("StableVault");
   const [admin] = await ethers.getSigners();
-  const w3dVault = await W3DStableVault.deploy(admin.address, "W3DStableVaultToken", "W3DSV");
+  const w3dVault = await StableVault.deploy(admin.address, "StableVaultToken", "W3DSV");
   await w3dVault.deployed();
 
-  console.log("W3DStableVault deployed to:", w3dVault.address);
+  console.log("StableVault deployed to:", w3dVault.address);
   return w3dVault.address;
 }
 
@@ -129,7 +129,7 @@ async function deployW3DStableVault() {
 async function main() {
   try {
     const tokenAddress = await deployToken();
-    const w3dVaultAddress = await deployW3DStableVault();  
+    const w3dVaultAddress = await deployStableVault();  
     const agreementAddress = await deployAgreementsContract();
     updateConfig(agreementAddress, tokenAddress, w3dVaultAddress); 
     process.exit(0);

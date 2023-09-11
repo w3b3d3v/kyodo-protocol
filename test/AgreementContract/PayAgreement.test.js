@@ -27,11 +27,11 @@ describe("PayAgreement", function () {
     await agreementContract.addAcceptedPaymentToken(tokenContract.address);
     await agreementContract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
 
-    const W3DStableVault = await ethers.getContractFactory("W3DStableVault");
-    w3dVault = await W3DStableVault.deploy(owner.address, "W3DStableVaultToken", "W3DSV");
+    const StableVault = await ethers.getContractFactory("StableVault");
+    w3dVault = await StableVault.deploy(owner.address, "StableVaultToken", "W3DSV");
     await w3dVault.deployed();
 
-    await agreementContract.setW3DStableVaultAddress(w3dVault.address);
+    await agreementContract.setStableVaultAddress(w3dVault.address);
   });
 
   it("Should make a payment and distribute fees", async function () {  

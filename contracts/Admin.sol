@@ -5,7 +5,7 @@ pragma solidity 0.8.1;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
-contract W3DAdmin is AccessControl, Pausable {
+contract Admin is AccessControl, Pausable {
     event NewAdminAdded(address indexed new_admin);
     event RemovedAdmin(address indexed removed_admin);
 

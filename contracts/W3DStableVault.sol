@@ -7,11 +7,11 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "./W3DAdmin.sol";
+import "./Admin.sol";
 
 // TODO: Unchecked in all mathematical operations
 
-contract W3DStableVault is ReentrancyGuard, W3DAdmin, ERC20 {
+contract StableVault is ReentrancyGuard, Admin, ERC20 {
     uint256 private _vaultBalance;
     
     using SafeERC20 for IERC20;
@@ -24,7 +24,7 @@ contract W3DStableVault is ReentrancyGuard, W3DAdmin, ERC20 {
         string memory tokenSymbol
     ) 
     ERC20(tokenName, 
-    tokenSymbol) W3DAdmin(admin) 
+    tokenSymbol) Admin(admin) 
     {}
 
     /**

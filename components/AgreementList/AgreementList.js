@@ -32,7 +32,7 @@ function AgreementList(props) {
 
   const handleApprove = async (amount, paymentToken, spender) => {
     try {
-      // Converter o valor para a menor unidade do token (geralmente wei para tokens ERC-20)
+    
       const amountInWei = new BigNumber(amount)
         .times(new BigNumber(10).pow(paymentToken.decimals))
         .toString();
@@ -55,7 +55,7 @@ function AgreementList(props) {
   const handlePaymentValueChange = async (e, paymentToken) => {
     const value = parseInt(e.target.value);
     if (isNaN(value)) {
-      setPaymentValue('');  // ou algum valor padrão
+      setPaymentValue('');
     } else {
       setPaymentValue(value);
       const paymentAmountInWei = new BigNumber(value)
@@ -76,7 +76,6 @@ function AgreementList(props) {
       return;
     }
     try {
-      // Verificar se o provedor Ethereum está presente
       if (window.ethereum) {
         const tx = await contract.makePayment(
           agreementId, 
@@ -96,7 +95,6 @@ function AgreementList(props) {
   useEffect(() => {
       async function fetchAgreements() {
         try {
-          // Verificar se o provedor Ethereum está presente
           if (window.ethereum) {
             const userAgreementIds = await contract.getUserAgreements(window.ethereum.selectedAddress);
             const stringIds = userAgreementIds.map(id => id.toString());
