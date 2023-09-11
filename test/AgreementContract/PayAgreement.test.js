@@ -14,117 +14,141 @@ describe("PayAgreement", function () {
   let developer;
 
   beforeEach(async function () {
-    const AgreementContract = await ethers.getContractFactory("AgreementContract");
-    agreementContract = await AgreementContract.deploy(KYODO_TREASURY_ADDRESS, COMMUNITY_TREASURY_ADDRESS);
-    await agreementContract.deployed();
+    const AgreementContract = await ethers.getContractFactory("AgreementContract")
+    agreementContract = await AgreementContract.deploy(
+      KYODO_TREASURY_ADDRESS,
+      COMMUNITY_TREASURY_ADDRESS
+    )
+    await agreementContract.deployed()
 
-    [owner, developer, user1, user2] = await ethers.getSigners();
+    ;[owner, developer, user1, user2] = await ethers.getSigners()
 
-    const TokenContract = await ethers.getContractFactory("testToken");
-    tokenContract = await TokenContract.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS);
-    paymentToken = tokenContract.address;
+    const TokenContract = await ethers.getContractFactory("testToken")
+    tokenContract = await TokenContract.deploy(
+      ethers.utils.parseEther("1000000"),
+      FAKE_STABLE_DECIMALS
+    )
+    paymentToken = tokenContract.address
 
-    await agreementContract.addAcceptedPaymentToken(tokenContract.address);
-    await agreementContract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
+    await agreementContract.addAcceptedPaymentToken(tokenContract.address)
+    await agreementContract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE)
 
-    const StableVault = await ethers.getContractFactory("StableVault");
-    w3dVault = await StableVault.deploy(owner.address, "StableVaultToken", "W3DSV");
-    await w3dVault.deployed();
+    const StableVault = await ethers.getContractFactory("StableVault")
+    communityVault = await StableVault.deploy(owner.address, "StableVaultToken", "COMMSV")
+    await communityVault.deployed()
 
-    await agreementContract.setStableVaultAddress(w3dVault.address);
-  });
+    await agreementContract.setStableVaultAddress(communityVault.address)
+  })
 
-  it("Should make a payment and distribute fees", async function () {  
+  it("Should make a payment and distribute fees", async function () {
     const paymentAmount = ethers.utils.parseUnits("100", FAKE_STABLE_DECIMALS)
 
     // Create agreements using different user addresses
-    await agreementContract.connect(owner).createAgreement(
-      "Agreement 1",
-      "Description 1",
-      developer.address,
-      ["Skill 1", "Skill 2"],
-      paymentAmount,
-      paymentToken
-    );
-
-    const initialDeveloperBalance = await tokenContract.balanceOf(developer.address);
-    const initialKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS);
-    const initialCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS);
-  
-    const ownerAgreements = await agreementContract.connect(owner).getUserAgreements(owner.address);
-    const ownerAgreementId = ownerAgreements[0];
-    await tokenContract.approve(agreementContract.address, paymentAmount);
-    await agreementContract.makePayment(ownerAgreementId, paymentAmount)
-  
-    const updatedAgreement = await agreementContract.getAgreementById(ownerAgreementId);
-    expect(updatedAgreement.status).to.equal(1); // Assuming status codes: 0 for created, 1 for paid, etc.
-
-    const totalFeeAmount = paymentAmount.mul(TOTAL_FEE).div(1000);
-    
-    const finalDeveloperVaultBalance = await w3dVault.balanceOf(developer.address);
-    const finalKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS);
-    const finalCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS);
-    
-    let expectedDeveloperIncrease = paymentAmount.sub(paymentAmount.mul(TOTAL_FEE).div(1000)); // Subtracting the total fee
-    if (FAKE_STABLE_DECIMALS !== 18) {
-        const adjustFactor = ethers.BigNumber.from(10).pow(18 - FAKE_STABLE_DECIMALS);
-        expectedDeveloperIncrease = expectedDeveloperIncrease.mul(adjustFactor);
-    }
-    
-    const expectedKyodoTreasuryIncrease = totalFeeAmount.mul(PROTOCOL_FEE).div(1000);
-    const expectedCommunityDAOIncrease = totalFeeAmount.mul(COMMUNITY_FEE).div(1000);
-    
-    expect(finalDeveloperVaultBalance).to.equal(initialDeveloperBalance.add(expectedDeveloperIncrease));
-    expect(finalKyodoTreasuryBalance).to.equal(initialKyodoTreasuryBalance.add(expectedKyodoTreasuryIncrease));
-    expect(finalCommunityDAOBalance).to.equal(initialCommunityDAOBalance.add(expectedCommunityDAOIncrease));
-  });
-
-  it("Should make a partial payment and distribute fees", async function () {
-    const paymentAmount = ethers.utils.parseEther("100");
-    const partialPaymentAmount = ethers.utils.parseEther("50");
-
-    await agreementContract.connect(owner).createAgreement(
+    await agreementContract
+      .connect(owner)
+      .createAgreement(
         "Agreement 1",
         "Description 1",
         developer.address,
         ["Skill 1", "Skill 2"],
         paymentAmount,
         paymentToken
-    );
+      )
 
-    const initialVaultBalance = await w3dVault.vaultBalance();
+    const initialDeveloperBalance = await tokenContract.balanceOf(developer.address)
+    const initialKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS)
+    const initialCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS)
 
-    const initialDeveloperBalance = await tokenContract.balanceOf(developer.address);
-    const initialKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS);
-    const initialCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS);
+    const ownerAgreements = await agreementContract.connect(owner).getUserAgreements(owner.address)
+    const ownerAgreementId = ownerAgreements[0]
+    await tokenContract.approve(agreementContract.address, paymentAmount)
+    await agreementContract.makePayment(ownerAgreementId, paymentAmount)
 
-    const ownerAgreements = await agreementContract.connect(owner).getUserAgreements(owner.address);
-    const ownerAgreementId = ownerAgreements[0];
-    await tokenContract.approve(agreementContract.address, paymentAmount);
-    await agreementContract.makePayment(ownerAgreementId, partialPaymentAmount);
+    const updatedAgreement = await agreementContract.getAgreementById(ownerAgreementId)
+    expect(updatedAgreement.status).to.equal(1) // Assuming status codes: 0 for created, 1 for paid, etc.
 
-    const updatedAgreement = await agreementContract.getAgreementById(ownerAgreementId);
-    expect(updatedAgreement.status).to.equal(0); // Still active
+    const totalFeeAmount = paymentAmount.mul(TOTAL_FEE).div(1000)
 
-    const totalFeeAmount = partialPaymentAmount.mul(TOTAL_FEE).div(1000);
-    
-    const finalDeveloperVaultBalance = await w3dVault.balanceOf(developer.address);
-    const finalKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS);
-    const finalCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS);
-    
-    let expectedDeveloperIncrease = partialPaymentAmount.sub(partialPaymentAmount.mul(TOTAL_FEE).div(1000));
+    const finalDeveloperVaultBalance = await communityVault.balanceOf(developer.address)
+    const finalKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS)
+    const finalCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS)
+
+    let expectedDeveloperIncrease = paymentAmount.sub(paymentAmount.mul(TOTAL_FEE).div(1000)) // Subtracting the total fee
     if (FAKE_STABLE_DECIMALS !== 18) {
-        const adjustFactor = ethers.BigNumber.from(10).pow(18 - FAKE_STABLE_DECIMALS);
-        expectedDeveloperIncrease = expectedDeveloperIncrease.mul(adjustFactor);
+      const adjustFactor = ethers.BigNumber.from(10).pow(18 - FAKE_STABLE_DECIMALS)
+      expectedDeveloperIncrease = expectedDeveloperIncrease.mul(adjustFactor)
     }
-    const expectedKyodoTreasuryIncrease = totalFeeAmount.mul(PROTOCOL_FEE).div(1000);
-    const expectedCommunityDAOIncrease = totalFeeAmount.mul(COMMUNITY_FEE).div(1000);
-    
-    expect(finalDeveloperVaultBalance).to.equal(initialDeveloperBalance.add(expectedDeveloperIncrease));
-    expect(finalKyodoTreasuryBalance).to.equal(initialKyodoTreasuryBalance.add(expectedKyodoTreasuryIncrease));
-    expect(finalCommunityDAOBalance).to.equal(initialCommunityDAOBalance.add(expectedCommunityDAOIncrease));
 
-    const finalVaultBalance = await w3dVault.vaultBalance();
-    expect(finalVaultBalance).to.equal(initialVaultBalance.add(expectedDeveloperIncrease));
-  });
+    const expectedKyodoTreasuryIncrease = totalFeeAmount.mul(PROTOCOL_FEE).div(1000)
+    const expectedCommunityDAOIncrease = totalFeeAmount.mul(COMMUNITY_FEE).div(1000)
+
+    expect(finalDeveloperVaultBalance).to.equal(
+      initialDeveloperBalance.add(expectedDeveloperIncrease)
+    )
+    expect(finalKyodoTreasuryBalance).to.equal(
+      initialKyodoTreasuryBalance.add(expectedKyodoTreasuryIncrease)
+    )
+    expect(finalCommunityDAOBalance).to.equal(
+      initialCommunityDAOBalance.add(expectedCommunityDAOIncrease)
+    )
+  })
+
+  it("Should make a partial payment and distribute fees", async function () {
+    const paymentAmount = ethers.utils.parseEther("100")
+    const partialPaymentAmount = ethers.utils.parseEther("50")
+
+    await agreementContract
+      .connect(owner)
+      .createAgreement(
+        "Agreement 1",
+        "Description 1",
+        developer.address,
+        ["Skill 1", "Skill 2"],
+        paymentAmount,
+        paymentToken
+      )
+
+    const initialVaultBalance = await communityVault.vaultBalance()
+
+    const initialDeveloperBalance = await tokenContract.balanceOf(developer.address)
+    const initialKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS)
+    const initialCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS)
+
+    const ownerAgreements = await agreementContract.connect(owner).getUserAgreements(owner.address)
+    const ownerAgreementId = ownerAgreements[0]
+    await tokenContract.approve(agreementContract.address, paymentAmount)
+    await agreementContract.makePayment(ownerAgreementId, partialPaymentAmount)
+
+    const updatedAgreement = await agreementContract.getAgreementById(ownerAgreementId)
+    expect(updatedAgreement.status).to.equal(0) // Still active
+
+    const totalFeeAmount = partialPaymentAmount.mul(TOTAL_FEE).div(1000)
+
+    const finalDeveloperVaultBalance = await communityVault.balanceOf(developer.address)
+    const finalKyodoTreasuryBalance = await tokenContract.balanceOf(KYODO_TREASURY_ADDRESS)
+    const finalCommunityDAOBalance = await tokenContract.balanceOf(COMMUNITY_TREASURY_ADDRESS)
+
+    let expectedDeveloperIncrease = partialPaymentAmount.sub(
+      partialPaymentAmount.mul(TOTAL_FEE).div(1000)
+    )
+    if (FAKE_STABLE_DECIMALS !== 18) {
+      const adjustFactor = ethers.BigNumber.from(10).pow(18 - FAKE_STABLE_DECIMALS)
+      expectedDeveloperIncrease = expectedDeveloperIncrease.mul(adjustFactor)
+    }
+    const expectedKyodoTreasuryIncrease = totalFeeAmount.mul(PROTOCOL_FEE).div(1000)
+    const expectedCommunityDAOIncrease = totalFeeAmount.mul(COMMUNITY_FEE).div(1000)
+
+    expect(finalDeveloperVaultBalance).to.equal(
+      initialDeveloperBalance.add(expectedDeveloperIncrease)
+    )
+    expect(finalKyodoTreasuryBalance).to.equal(
+      initialKyodoTreasuryBalance.add(expectedKyodoTreasuryIncrease)
+    )
+    expect(finalCommunityDAOBalance).to.equal(
+      initialCommunityDAOBalance.add(expectedCommunityDAOIncrease)
+    )
+
+    const finalVaultBalance = await communityVault.vaultBalance()
+    expect(finalVaultBalance).to.equal(initialVaultBalance.add(expectedDeveloperIncrease))
+  })
 });

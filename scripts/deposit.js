@@ -4,7 +4,7 @@ async function main() {
   // Deploy StableVault contract
   const StableVaultFactory = await ethers.getContractFactory("StableVault");
   const [admin, user1, user2] = await ethers.getSigners();
-  const StableVault = await StableVaultFactory.deploy(admin.address, "StableVaultToken", "W3DV");
+  const StableVault = await StableVaultFactory.deploy(admin.address, "StableVaultToken", "COMMSV")
   await StableVault.deployed();
   console.log("StableVault deployed to:", StableVault.address);
 
