@@ -1,4 +1,5 @@
 import '../styles/globals.scss'
+import Image from 'next/image'
 import { ContractProvider } from "../components/ContractContext"
 import {
   ConnectWalletButton,
@@ -33,9 +34,50 @@ function MyApp({ Component, pageProps }) {
   }, [account])
 
   return account ? (
+
     <ContractProvider>
+
+      <header className={"main-header"}>
+        <div className={"holder"}>
+          <Image
+            src="/logo.svg"
+            alt="Kyodo Protocol logo"
+            width={120}
+            height={32}
+            className={"logo"}
+          />
+          <div className={"user-wallet"}>
+            4cb4...4c25
+            <span>Status</span>
+            <Image
+              src="/metamask.svg"
+              alt="Metamask icon"
+              width={22}
+              height={19}
+            />
+          </div>
+        </div>
+      </header>
+
       <Component {...pageProps} />
+
+      <footer className={"footer"}>
+        <a
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            src="/web3dev.svg"
+            alt="WEB3DEV Logo"
+            width={20}
+            height={31}
+          />
+        </a>
+      </footer>
+
     </ContractProvider>
+
   ) : (
     <ConnectWalletButton account={account} updateAccount={updateAccount} />
   )
