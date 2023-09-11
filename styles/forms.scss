@@ -7,7 +7,6 @@ input,
 textarea,
 .select {
   width: 100%;
-  padding: 0 15px;
   border: 1px solid #1E2326;
   background: #101315;
   border-radius: 6px;
@@ -17,12 +16,17 @@ textarea,
   display: block;
   margin: 8px 0 22px;
   height: 40px;
+}
+
+input,
+.select {
   line-height: 40px;
+  padding: 0 15px;
 }
 
 textarea {
-  padding-top: 17px;
-  padding-bottom: 17px;
+  padding: 12px 15px;
+  line-height: 22px;
   max-width: 100%;
   min-width: 100%;
   min-height: 129px;
