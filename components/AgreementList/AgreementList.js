@@ -100,37 +100,37 @@ function AgreementList(props) {
           const adjustedPaymentAmount = paymentToken
           ? String(BigInt(agreement.payment.amount) / BigInt(10 ** paymentToken.decimals))
           : String(BigInt(agreement.payment.amount));
-        
-  
           return (
             <div key={index} className={styles["card"]}>
               <h2>{agreement.title}</h2>
-              <p>{agreement.description}</p>
-              <p><strong>Status:</strong>
-              {Number(agreement.status) === 0 ? 
-                <>
-                  <button onClick={() => handlePayClick(index)}> Pay Agreement</button>
-                  <br></br>
-                  {showPaymentInput === index && (
-                    <>
-                      <input 
-                        type="number" 
-                        value={paymentValue}
-                        onChange={handlePaymentValueChange}
-                      />
-                      <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)}>Confirm Payment</button>
-                    </>
-                  )}
-                </> : 
-                (Number(agreement.status) === 1 ? ' Completed' : agreement.status)
-              }
-            </p>
-              <p><strong>Developer:</strong> {agreement.developer}</p>
+              <div className={styles["wallet-key"]}>
+                {agreement.developer}
+              </div>
+              <p className={styles["card-desc"]}>
+                {agreement.description}
+              </p>
               <p><strong>Skills:</strong> {agreement.skills.join(", ")}</p>
               <p><strong>Payment Amount:</strong> {adjustedPaymentAmount}</p>
               <p><strong>Payment Token:</strong> {paymentTokenName}</p> {/* Display token name */}
               {Number(agreement.status) !== 1 && <p><strong>Total Paid:</strong> {agreement.totalPaid.toString()}</p>}
-
+              <div className={styles["card-footer"]}>
+                {Number(agreement.status) === 0 ? 
+                  <>
+                    <a onClick={() => handlePayClick(index)}>Pay Agreement</a>
+                    {showPaymentInput === index && (
+                      <>
+                        <input 
+                          type="number" 
+                          value={paymentValue}
+                          onChange={handlePaymentValueChange}
+                        />
+                        <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)}>Confirm Payment</button>
+                      </>
+                    )}
+                  </> : 
+                  (Number(agreement.status) === 1 ? ' Completed' : agreement.status)
+                }
+              </div>
             </div>
           );
         })}
