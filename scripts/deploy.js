@@ -47,11 +47,11 @@ function updateConfig(agreementContractAddress, fakeStableAddress, communityVaul
   console.log(`Updated contract addresses in ${envPath}`)
 }
 
-async function deployAgreementsContract() {
+async function deployAgreementsContract(communityVaultAddress) {
   const AgreementContract = await ethers.getContractFactory("AgreementContract")
   contract = await AgreementContract.deploy(
     process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS,
-    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
+    communityVaultAddress
   )
 
   await contract.deployed()
@@ -72,7 +72,7 @@ async function deployAgreementsContract() {
   }
 
   await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE)
-  await contract.setStableVaultAddress(process.env.NEXT_PUBLIC_COMMUNITY_STABLE_VAULT_ADDRESS)
+  await contract.setStableVaultAddress(communityVaultAddress)
   return contract.address
 }
 
@@ -126,7 +126,7 @@ async function main() {
   try {
     const tokenAddress = await deployToken()
     const communityVaultAddress = await deployStableVault()
-    const agreementAddress = await deployAgreementsContract()
+    const agreementAddress = await deployAgreementsContract(communityVaultAddress)
     updateConfig(agreementAddress, tokenAddress, communityVaultAddress)
     process.exit(0)
   } catch (error) {
