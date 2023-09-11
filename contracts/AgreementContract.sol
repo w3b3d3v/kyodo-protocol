@@ -10,7 +10,7 @@ interface IERC20 {
     function decimals() external view returns (uint8);
 }
 
-interface IW3DStableVault {
+interface IStableVault {
     function deposit(uint256 amount, address _asset, address _beneficiary) external;
 }
 
@@ -41,7 +41,7 @@ contract AgreementContract {
     mapping(address => bool) public acceptedPaymentTokens; // Mapping of accepted payment tokens
 
     Token public tokenIncentive;
-    IW3DStableVault public W3DStableVault;
+    IStableVault public stableVault;
     address public owner;
     address public kyodoTreasury;
     address public communityDAO;
@@ -159,8 +159,8 @@ contract AgreementContract {
         token.transfer(kyodoTreasury, kyodoTreasuryShare);
         token.transfer(communityDAO, communityDAOShare);
         
-        token.approve(address(W3DStableVault), developerPayment);
-        W3DStableVault.deposit(developerPayment, address(token), agreement.developer);
+        token.approve(address(stableVault), developerPayment);
+        stableVault.deposit(developerPayment, address(token), agreement.developer);
 
 
         agreement.totalPaid += _amountToPay;
@@ -178,7 +178,7 @@ contract AgreementContract {
         communityDAOFee = _communityDAOFee;
     }
 
-    function setW3DStableVaultAddress(address _W3DStableVaultAddress) external onlyOwner {
-        W3DStableVault = IW3DStableVault(_W3DStableVaultAddress);
+    function setStableVaultAddress(address _StableVaultAddress) external onlyOwner {
+        stableVault = IStableVault(_StableVaultAddress);
     }
 }
