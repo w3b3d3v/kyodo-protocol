@@ -1,6 +1,4 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import UserCheck from "../components/UserCheck/UserCheck"
 
 export default function Home() {
