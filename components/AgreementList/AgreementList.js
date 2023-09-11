@@ -123,7 +123,6 @@ function AgreementList(props) {
                           type="number" 
                           value={paymentValue}
                           onChange={handlePaymentValueChange}
-                          onKeyDown="false"
                         />
                         <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)}>Confirm payment</button>
                       </>
