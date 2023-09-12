@@ -91,17 +91,23 @@ function AgreementList(props) {
   }
 
   return (
+
     <div className={styles["agreement-list"]}>
       <h1>Agreements</h1>
       <div className={styles["card-list"]}>
+
         {agreements.map((agreement, index) => {
+
           const paymentToken = tokens.find(token => token.address === agreement.payment.tokenAddress);
           const paymentTokenName = paymentToken ? paymentToken.name : 'Unknown Token';
           const adjustedPaymentAmount = paymentToken
+
           ? String(BigInt(agreement.payment.amount) / BigInt(10 ** paymentToken.decimals))
           : String(BigInt(agreement.payment.amount));
+
           return (
             <div key={index} className={styles["card"]}>
+
               <h2>{agreement.title}</h2>
               <div className={styles["wallet-key"]}>
                 {agreement.developer}
@@ -109,10 +115,13 @@ function AgreementList(props) {
               <p className={styles["card-desc"]}>
                 {agreement.description}
               </p>
+
               <p><strong>Skills:</strong> {agreement.skills.join(", ")}</p>
               <p><strong>Payment Amount:</strong> {adjustedPaymentAmount}</p>
               <p><strong>Payment Token:</strong> {paymentTokenName}</p> {/* Display token name */}
+
               {Number(agreement.status) !== 1 && <p><strong>Total Paid:</strong> {agreement.totalPaid.toString()}</p>}
+              
               <div className={styles["card-footer"]}>
                 {Number(agreement.status) === 0 ? 
                   <>
@@ -131,6 +140,7 @@ function AgreementList(props) {
                   (Number(agreement.status) === 1 ? ' Completed' : agreement.status)
                 }
               </div>
+
             </div>
           );
         })}
