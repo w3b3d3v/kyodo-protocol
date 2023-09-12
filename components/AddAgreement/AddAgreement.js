@@ -87,11 +87,8 @@ function AddAgreementForm(props) {
 
   if (transactionHash) {
     return (
-      
       <div className={styles["transaction-info"]}>
         Agreement created!
-        <br />
-        <br />
         <a
           href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
           target="_blank"
@@ -99,9 +96,6 @@ function AddAgreementForm(props) {
         >
           See Transaction
         </a>
-        <br />
-        <br />
-        {/* <Link to="/agreementslist">View Agreements List</Link> */}
       </div>
     )
   }
