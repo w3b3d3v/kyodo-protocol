@@ -3,31 +3,33 @@ require("@nomiclabs/hardhat-etherscan");
 require('dotenv').config();
 require("hardhat-jest-plugin");
 require("hardhat-gas-reporter");
-
-const { WALLET_PRIVATE_KEY } = process.env;
-const { POLYGONSCAN_API_KEY } = process.env;
-const { TESTNET_ALCHEMY_URL } = process.env;
+require('hardhat-contract-sizer');
 
 /** @type import('hardhat/config').HardhatUserConfig */
 
 let config = {
   defaultNetwork: "testing",
-  solidity: "0.8.19",
+  solidity: "0.8.1",
+  settings: {
+    optimizer: {
+      enabled: false,
+      runs: 200
+    }
+  },
   networks: {
     testing: {
       url: "http://127.0.0.1:8545/",
-    },
+    }
   },
-  etherscan: {
-    apiKey: POLYGONSCAN_API_KEY,
+  contractSizer: {
+    alphaSort: false,
+    disambiguatePaths: false,
+    runOnCompile: false,
+    strict: true,
   },
-}
-
-if (WALLET_PRIVATE_KEY) {
-  config.networks.mumbai = {
-    url: TESTNET_ALCHEMY_URL,
-    accounts: [`0x${WALLET_PRIVATE_KEY}`],
+  gasReporter: {
+    enabled: false,
   }
-}
+};
 
-module.exports = config
+module.exports = config;

@@ -20,7 +20,7 @@ yarn install
 2. [Setting Up Local Blockchain](#2---setting-up-local-blockchain)
 3. [Deploying Smart Contracts](#3---deploying-smart-contracts)
 4. [Run the Development Server](#4---run-the-development-server)
-5. [Interacting with Smart Contracts](#🌟-interacting-with-smart-contracts-🌟)
+5. [Interacting with Smart Contracts](#-🌟-interacting-with-smart-contracts-🌟)
 6. [Contribution](#contribution)
 7. [Contact](#contact)
 8. [License](#license)

@@ -1,12 +1,17 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.19;
+pragma solidity 0.8.1;
 
 import "hardhat/console.sol";
 
 interface IERC20 {
     function transfer(address recipient, uint256 amount) external returns (bool);
     function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
     function decimals() external view returns (uint8);
+}
+
+interface IStableVault {
+    function deposit(uint256 amount, address _asset, address _beneficiary) external;
 }
 
 contract AgreementContract {
@@ -35,7 +40,8 @@ contract AgreementContract {
     mapping(address => uint256[]) public userAgreements; // Mapping from user address to agreement IDs
     mapping(address => bool) public acceptedPaymentTokens; // Mapping of accepted payment tokens
 
-    Token public tokenIncentive; // Fixed tokenIncentive
+    Token public tokenIncentive;
+    IStableVault public stableVault;
     address public owner;
     address public kyodoTreasury;
     address public communityDAO;
@@ -152,7 +158,10 @@ contract AgreementContract {
 
         token.transfer(kyodoTreasury, kyodoTreasuryShare);
         token.transfer(communityDAO, communityDAOShare);
-        token.transfer(agreement.developer, developerPayment);
+        
+        token.approve(address(stableVault), developerPayment);
+        stableVault.deposit(developerPayment, address(token), agreement.developer);
+
 
         agreement.totalPaid += _amountToPay;
 
@@ -162,10 +171,14 @@ contract AgreementContract {
     }
 
     function setFees(uint256 _feePercentage, uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external onlyOwner {
-        require(_feePercentage >= 0 && _feePercentage <= 10000, "Invalid fee percentage");
+        require(_feePercentage >= 0 && _feePercentage <= 1000, "Invalid fee percentage");
 
         feePercentage = _feePercentage;
         kyodoTreasuryFee = _kyodoTreasuryFee;
         communityDAOFee = _communityDAOFee;
+    }
+
+    function setStableVaultAddress(address _StableVaultAddress) external onlyOwner {
+        stableVault = IStableVault(_StableVaultAddress);
     }
 }
