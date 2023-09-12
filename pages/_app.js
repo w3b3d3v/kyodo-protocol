@@ -47,8 +47,8 @@ function MyApp({ Component, pageProps }) {
             className={"logo"}
           />
           <div className={"user-wallet"}>
-            4cb4...4c25
-            <span>Status</span>
+            <em>4cb4...4c25</em>
+            <span className={"wallet-on"}>Status</span>
             <Image
               src="/metamask.svg"
               alt="Metamask icon"

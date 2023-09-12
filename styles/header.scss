@@ -35,7 +35,7 @@ HEADER
 
 .user-wallet {
   border-radius: 15px;
-  padding: 0 15px;
+  padding: 0 15px 0 0;
   height: 30px;
   line-height: 30px;
   float: right;
@@ -50,14 +50,26 @@ HEADER
     margin: 5px 0 0 15px;
   }
 
+  em {
+    font-style: normal;
+    padding-left: 15px;
+  }
+
   span {
     width: 7px;
     height: 7px;
     border-radius: 5px;
-    background: $green;
     text-indent: -9999px;
     float: right;
     margin: 11px 0 0 5px;
   }
+}
+
+.wallet-on {
+  background: $green;
+}
+
+.wallet-off {
+  background: #C6DBE8;
 }
 
