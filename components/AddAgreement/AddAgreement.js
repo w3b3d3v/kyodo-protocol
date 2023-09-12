@@ -1,7 +1,7 @@
 import { useContract } from "../ContractContext"
 import { useState } from "react"
 import styles from "./AddAgreement.module.css"
-
+import Image from 'next/image'
 import { BeatLoader } from "react-spinners"
 import tokens from "../../public/allowedTokens.json"
 import { ethers } from "ethers"
@@ -88,7 +88,14 @@ function AddAgreementForm(props) {
   if (transactionHash) {
     return (
       <div className={styles["transaction-info"]}>
-        Agreement created!
+        <p>
+          <Image
+            src="/success-icon.svg"
+            width={20}
+            height={20}
+          />
+          Agreement created!
+        </p>
         <a
           href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
           target="_blank"
@@ -101,7 +108,25 @@ function AddAgreementForm(props) {
   }
 
   return (
+    
     <div className={styles["add-agreement-form-container"]}>
+
+      <div className={styles["flash-success"]}>
+        <p>
+          <Image
+            src="/success-icon.svg"
+            width={20}
+            height={20}
+          />
+          Agreement created!
+        </p>
+        <a
+          href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
+          rel="noopener noreferrer"
+        >
+          See Transaction
+        </a>
+      </div>
 
       <h1>Add agreement</h1>
 

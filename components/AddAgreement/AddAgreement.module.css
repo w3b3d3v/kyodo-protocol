@@ -53,6 +53,47 @@
 }
 
 
+/* Flash messages */
+
+.flash-success,
+.transaction-info {
+  width: 100%;
+  background-color: #1C2124;
+  border-bottom: 3px solid #7BB651;
+  height: 45px;
+  line-height: 43px;
+  font-size: 13px;
+  box-sizing: border-box;
+  padding: 0 3%;
+}
+
+.flash-success img,
+.transaction-info img {
+  float: left;
+  margin: 11px 10px 0 0;
+}
+
+.flash-success p,
+.transaction-info p {
+  margin: 0;
+  float: left;
+}
+
+.flash-success a,
+.transaction-info a {
+  color: #E6EDF1;
+  text-decoration: none;
+  font-size: 12px;
+  text-align: right;
+  float: right;
+}
+
+.flash-success a:hover,
+.transaction-info a:hover {
+  color: #fff;
+}
+
+
 /* Transaction */
 
 .transaction-info {
