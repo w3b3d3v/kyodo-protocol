@@ -116,11 +116,11 @@ function AgreementList(props) {
                 {agreement.description}
               </div>
 
-              <p><strong>Skills:</strong> {agreement.skills.join(", ")}</p>
-              <p><strong>Payment Amount:</strong> {adjustedPaymentAmount}</p>
-              <p><strong>Payment Token:</strong> {paymentTokenName}</p> {/* Display token name */}
+              <p><strong>Skills</strong> {agreement.skills.join(", ")}</p>
+              <p><strong>Payment amount</strong> {adjustedPaymentAmount}</p>
+              <p><strong>Payment token</strong> {paymentTokenName}</p> {/* Display token name */}
 
-              {Number(agreement.status) !== 1 && <p><strong>Total Paid:</strong> {agreement.totalPaid.toString()}</p>}
+              {Number(agreement.status) !== 1 && <p><strong>Total paid</strong> {agreement.totalPaid.toString()}</p>}
               
               <div className={styles["card-footer"]}>
                 {Number(agreement.status) === 0 ? 
