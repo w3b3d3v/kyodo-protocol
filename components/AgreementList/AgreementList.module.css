@@ -1,7 +1,7 @@
 /* App.css */
 
 .agreement-list {
-  width: 615px;
+  width: 500px;
   max-width: 615px;
   margin: 0 auto;
 }
@@ -33,6 +33,7 @@
   font-size: 11px;
   color: #999;
   margin-bottom: 15px;
+  font-weight: 300;
 }
 
 .card p {
@@ -43,6 +44,9 @@
 
 .card-desc {
   margin-bottom: 12px;
+  font-size: 12px;
+  color: #fff;
+  line-height: 20px;
 }
 
 .card input {

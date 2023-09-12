@@ -112,9 +112,9 @@ function AgreementList(props) {
               <div className={styles["wallet-key"]}>
                 {agreement.developer}
               </div>
-              <p className={styles["card-desc"]}>
+              <div className={styles["card-desc"]}>
                 {agreement.description}
-              </p>
+              </div>
 
               <p><strong>Skills:</strong> {agreement.skills.join(", ")}</p>
               <p><strong>Payment Amount:</strong> {adjustedPaymentAmount}</p>
