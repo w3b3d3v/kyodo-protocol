@@ -14,10 +14,10 @@ COMPONENTS
   
   h2 {
     margin: 10px 0 35px 0;
-    font-weight: normal;
-    font-size: $font-big-2;
+    font-weight: 300;
+    font-size: $font-big-3;
     color: $light-gray;
-    line-height: 41px;
+    line-height: 44px;
 
     @media #{$smartphones-1} {
       font-size: $font-large-2;
@@ -27,11 +27,12 @@ COMPONENTS
 
     strong {
       color: $white;
+      font-weight: 600;
     }
   }
 
   > img {
-    width: 250px;
+    width: 350px;
     margin-top: 100px;
 
     @media #{$smartphones-1} {
@@ -44,7 +45,7 @@ COMPONENTS
 .connect-wallet {
   border-radius: 30px;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
   background: #060606;
   height: 38px;
   line-height: 35px;
@@ -60,6 +61,7 @@ COMPONENTS
 
   &:hover {
     border-color: $white;
+    box-shadow: 0 0 500px rgba($medium-gray, .3);
   }
 }
 

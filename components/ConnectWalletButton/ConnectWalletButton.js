@@ -95,7 +95,7 @@ function ConnectWalletButton(props) {
           width={500}
           height={105}
         />
-        <h2><strong>Sustainable Business Model</strong> for <strong>Service Communities</strong> and <strong>DAOs</strong> with <strong>Enhanced Privacy</strong> through <strong>Zero Knowledge Proofs</strong>.</h2>
+        <h2>We envision a world with self-sustaining communities that generate substantial value and benefits for their members</h2>
         {props.account ? (
           <p>Conectado com a carteira {props.account}</p>
         ) : (
