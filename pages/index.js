@@ -12,8 +12,6 @@ export default function Home() {
       <main>
         <UserCheck />
       </main>
-      <footer className={styles.footer}>
-      </footer>
     </div>
   )
 }
