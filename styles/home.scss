@@ -13,14 +13,30 @@ COMPONENTS
   }
   
   h2 {
-    margin: 100px 0 35px 0;
+    margin: 10px 0 35px 0;
     font-weight: normal;
     font-size: $font-big-2;
     color: $light-gray;
     line-height: 41px;
 
+    @media #{$smartphones-1} {
+      font-size: $font-large-2;
+      line-height: 34px;
+      margin-top: 0;
+    }
+
     strong {
       color: $white;
+    }
+  }
+
+  > img {
+    width: 250px;
+    margin-top: 100px;
+
+    @media #{$smartphones-1} {
+      width: 160px;
+      margin-top: 50px;
     }
   }
 }
@@ -41,6 +57,10 @@ COMPONENTS
   margin: 2px;
   cursor: pointer;
   border: 2px solid $medium-gray;
+
+  &:hover {
+    border-color: $white;
+  }
 }
 
 .loading-overlay {
