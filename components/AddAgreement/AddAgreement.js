@@ -168,19 +168,17 @@ function AddAgreementForm(props) {
 
             <label htmlFor="description-input">Description:</label>
             <textarea
-              type="text"
               id="description-input"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
             ></textarea>
 
             <label htmlFor="skills-input">Skills:</label>
-            <input
-              type="text"
+            <textarea
               id="skills-input"
               value={skills}
               onChange={(event) => setSkills(event.target.value)}
-            />
+            ></textarea>
 
           </div>
 
