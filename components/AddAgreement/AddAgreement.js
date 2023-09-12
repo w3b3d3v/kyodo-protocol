@@ -111,23 +111,6 @@ function AddAgreementForm(props) {
     
     <div className={styles["add-agreement-form-container"]}>
 
-      <div className={styles["flash-success"]}>
-        <p>
-          <Image
-            src="/success-icon.svg"
-            width={20}
-            height={20}
-          />
-          Agreement created!
-        </p>
-        <a
-          href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
-          rel="noopener noreferrer"
-        >
-          See Transaction
-        </a>
-      </div>
-
       <h1>Add agreement</h1>
 
       <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>
