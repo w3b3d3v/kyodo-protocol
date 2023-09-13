@@ -90,12 +90,7 @@ function ConnectWalletButton(props) {
         </div>
       </header>
       <div className={"holder home-entry"}>
-        <Image
-          src="/home-art.svg"
-          width={500}
-          height={105}
-        />
-        <h2>We envision a world with self-sustaining communities that generate substantial value and benefits for their members</h2>
+        <h2>Connect your wallet to start</h2>
         {props.account ? (
           <p>Conectado com a carteira {props.account}</p>
         ) : (
