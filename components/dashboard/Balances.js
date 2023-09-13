@@ -36,11 +36,40 @@ function Balances(props) {
   };
 
   async function fetchPaidAgreements() {
-    const filter = contract.filters.PaymentMade(null, account);
-    const agreements = await contract.queryFilter(filter);
-    setPaidAgreements(agreements);
-    console.log("agreements", agreements)
+    const companyFilter = contract.filters.PaymentMade(account, null);
+    const professionalFilter = contract.filters.PaymentMade(null, account);
+
+    const companyAgreements = await contract.queryFilter(companyFilter);
+    const professionalAgreements = await contract.queryFilter(professionalFilter);
+    console.log("companyAgreements", companyAgreements);
+    console.log("professionalAgreements", professionalAgreements);
+
+    const allAgreements = [...companyAgreements, ...professionalAgreements];
+
+    setPaidAgreements(allAgreements.map(event => ({
+      ...event.args,
+      transactionHash: event.transactionHash
+    })));
   }
+
+  function renderPaidAgreements() {
+    return paidAgreements.map((agreement, index) => (
+        <div key={index} className={styles["card"]}>
+            <h2>Agreement ID: {agreement.agreementId.toString()}</h2>
+            {console.log(agreement)}
+            <p>
+                <strong>Status:</strong> {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? "Paid" : "Received"}
+            </p>
+            <p>
+                <strong>Amount: {ethers.utils.formatUnits(agreement.amount, 18)} USD </strong> 
+            </p>
+            <a href={`https://polygonscan.com/tx/${agreement.transactionHash}`} target="_blank" rel="noopener noreferrer">
+            {agreement.transactionHash}
+            </a>
+        </div>
+    ));
+  }
+
 
   async function fetchUserBalances() {
     const tokenAddresses = [
@@ -137,6 +166,10 @@ function Balances(props) {
             </div>
           </div>
         ))}
+        <h1>Paid Agreements</h1>
+        <div className={styles["card-list"]}>
+            {renderPaidAgreements()}
+        </div>
       </div>
     </div>
   );
