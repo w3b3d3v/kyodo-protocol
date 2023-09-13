@@ -88,21 +88,23 @@ function AddAgreementForm(props) {
   if (transactionHash) {
     return (
       <div className={styles["transaction-info"]}>
-        <p>
-          <Image
-            src="/success-icon.svg"
-            width={20}
-            height={20}
-          />
-          Agreement created!
-        </p>
-        <a
-          href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          See Transaction
-        </a>
+        <div className={styles["holder"]}>
+          <p>
+            <Image
+              src="/success-icon.svg"
+              width={20}
+              height={20}
+            />
+            Agreement created!
+          </p>
+          <a
+            href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            See Transaction
+          </a>
+        </div>
       </div>
     )
   }
