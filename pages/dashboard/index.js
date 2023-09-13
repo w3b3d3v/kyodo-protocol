@@ -1,11 +1,13 @@
-import { VaultContractProvider } from "../../contexts/ContractContext";
-import Balances from '../../components/Dashboard/Balances';
+import { VaultContractProvider, AgreementContractProvider } from "../../contexts/ContractContext";
+import Balances from '../../components/dashboard/Balances.js';
 
 function Dashboard() {
   return (
-    <VaultContractProvider>
-      <Balances />
-    </VaultContractProvider>
+    <AgreementContractProvider>
+      <VaultContractProvider>
+        <Balances />
+      </VaultContractProvider>
+    </AgreementContractProvider>
   )
 }
   

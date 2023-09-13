@@ -16,7 +16,6 @@ import ERC20Token from '../../utils/ERC20Token';
 function AgreementList(props) {
   const { account } = useAccount();
   const { contract, loading } = useAgreementContract();
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
   const [agreements, setAgreements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [paymentValue, setPaymentValue] = useState('');
@@ -147,7 +146,6 @@ function AgreementList(props) {
           return (
             <div key={index} className={styles["card"]}>
               <h2>{agreement.title}</h2>
-
               <div className={styles["wallet-key"]}>
                 {agreement.developer}
               </div>
@@ -187,7 +185,6 @@ function AgreementList(props) {
                   (Number(agreement.status) === 1 ? ' Completed' : agreement.status)
                 }
               </div>
-
             </div>
           );
         })}

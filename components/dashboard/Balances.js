@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
 import { BeatLoader } from "react-spinners";
-import { useVaultContract } from "../../contexts/ContractContext";
+import { useVaultContract, useAgreementContract } from "../../contexts/ContractContext";
 import { useAccount } from "../../contexts/AccountContext";
 import ERC20Token from '../../utils/ERC20Token';
 import styles from "./Dashboard.module.css"
 import { ethers } from "ethers";
 
 function Balances(props) {
-  const { contract, loading } = useVaultContract();
+  const { vaultContract, vaultLoading } = useVaultContract();
+  const { contract, loading } = useAgreementContract();
   const { account } = useAccount();
   const [userBalances, setUserBalances] = useState([]);
   const [showRedeemInput, setShowRedeemInput] = useState(null);
   const [redeemValue, setRedeemValue] = useState('');
+  const [paidAgreements, setPaidAgreements] = useState([]);
+
 
   const handleRedeemClick = (index) => {
     setShowRedeemInput(index);
@@ -32,13 +35,50 @@ function Balances(props) {
     }
   };
 
+  async function fetchPaidAgreements() {
+    const filter = contract.filters.PaymentMade(null, account);
+    const agreements = await contract.queryFilter(filter);
+    setPaidAgreements(agreements);
+    console.log("agreements", agreements)
+  }
+
+  async function fetchUserBalances() {
+    const tokenAddresses = [
+      process.env.NEXT_PUBLIC_W3D_STABLE_VAULT_ADDRESS, 
+      process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
+    ]
+    const balances = [];
+
+    for (let address of tokenAddresses) {
+      try {
+        const tokenContract = new ERC20Token(address);
+        const balance = await tokenContract.balanceOf(account);
+        const symbol = await tokenContract.symbol();
+        const name = await tokenContract.name();
+        const decimals = await tokenContract.decimals();
+
+        if (balance > 0) {
+          balances.push({
+            tokenAddress: address,
+            tokenSymbol: symbol,
+            tokenDecimals: decimals,
+            tokenName: name,
+            amount: balance,
+          });
+        }
+      } catch (error) {
+        console.error(`Erro ao obter saldo para o token ${address}:`, error);
+      }
+    }
+
+    setUserBalances(balances);
+  }
+
+
   const handleWithdraw = async (amount, balance) => {
     const redeemAmountInWei = ethers.utils.parseUnits(amount.toString(), balance.tokenDecimals);
     try {
-      console.log("redeemAmountInWei", redeemAmountInWei.toString());
-      console.log("balance.tokenAddress", balance.tokenAddress);
-      console.log("contract", contract);
-      const tx = await contract.withdraw(redeemAmountInWei, process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS)
+      const tx = await vaultContract.withdraw(redeemAmountInWei, process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS)
       console.log("tx", tx);
     } catch (error) {
       console.error("Error during withdrawal:", error);
@@ -46,52 +86,24 @@ function Balances(props) {
   };
   
   useEffect(() => {
-    if (!loading) {
-      async function fetchUserBalances() {
-        const tokenAddresses = [
-          process.env.NEXT_PUBLIC_W3D_STABLE_VAULT_ADDRESS, 
-          process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
-        ]
-        const balances = [];
-
-        for (let address of tokenAddresses) {
-          try {
-            const tokenContract = new ERC20Token(address);
-            const balance = await tokenContract.balanceOf(account);
-            const symbol = await tokenContract.symbol();
-            const name = await tokenContract.name();
-            const decimals = await tokenContract.decimals();
-
-            if (balance > 0) {
-              balances.push({
-                tokenAddress: address,
-                tokenSymbol: symbol,
-                tokenDecimals: decimals,
-                tokenName: name,
-                amount: balance,
-              });
-            }
-          } catch (error) {
-            console.error(`Erro ao obter saldo para o token ${address}:`, error);
-          }
-        }
-
-        setUserBalances(balances);
-      }
-
+    if (!vaultLoading) {
       fetchUserBalances();
     }
-  }, [loading]);
+
+    if (!loading) {
+      fetchPaidAgreements()
+    }
+  }, [vaultLoading]);
 
   const handleInvestClick = () => {
     alert("Future feature");
   };
 
-  if (loading) {
+  if (vaultLoading) {
     return (
       <div className="loading-overlay">
         <div className="sweet-loading">
-          <BeatLoader loading={loading} size={50} />
+          <BeatLoader loading={vaultLoading} size={50} />
         </div>
       </div>
     );

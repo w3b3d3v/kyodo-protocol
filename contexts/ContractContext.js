@@ -41,8 +41,8 @@ export function useVaultContract() {
 }
 
 export function VaultContractProvider({ children }) {
-  const [contract, setContract] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [vaultContract, setContract] = useState(null);
+  const [vaultLoading, setLoading] = useState(true);
 
   useEffect(() => {
     async function initializeContract() {
@@ -57,7 +57,7 @@ export function VaultContractProvider({ children }) {
   }, []);
 
   return (
-    <VaultContractContext.Provider value={{ contract, loading }}>
+    <VaultContractContext.Provider value={{ vaultContract, vaultLoading }}>
       {children}
     </VaultContractContext.Provider>
   );
