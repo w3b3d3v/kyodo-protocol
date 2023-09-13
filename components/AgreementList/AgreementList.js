@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useContract } from "../../components/ContractContext"
 import { BeatLoader } from "react-spinners";
 import { ethers } from "ethers";
-import "./AgreementList.module.css"
 import tokens from "../../public/allowedTokens.json"
 import ERC20 from '../contracts/ERC20.json';
 import styles from "./AgreementList.module.css"
@@ -170,9 +169,17 @@ function AgreementList(props) {
                         <input 
                           type="number" 
                           value={paymentValue}
-                          onChange={handlePaymentValueChange}
+                          onChange={(e) => handlePaymentValueChange(e, paymentToken)}
                         />
-                        <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)}>Confirm payment</button>
+                      {isAllowanceSufficient ? (
+                        <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)} className={styles["confirm-btn"]}>
+                          Confirm payment
+                        </button>
+                      ) : (
+                        <button onClick={() => handleApprove(paymentValue, paymentToken, contract.address)} className={styles["approve-btn"]}>
+                          Approve payment
+                        </button>
+                      )}
                       </>
                     )}
                   </> : 

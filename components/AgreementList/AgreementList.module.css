@@ -111,12 +111,6 @@
   cursor: pointer;
 }
 
-.card a:hover,
-.card button:hover  {
-  color: #fff;
-  border-color: #fff;
-}
-
 .card a {
   color: #E6EDF1;
   border: 1px solid #85A8BE;
@@ -130,10 +124,7 @@
 
 .card button {
   color: #fff;
-  border: 1px solid #7BB651;
   height: 26px;
-  line-height: 23px;
-  box-shadow: 0 0 7px #060606;
   padding-right: 10px;
   position: absolute;
   left: 100px;
@@ -141,6 +132,20 @@
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   z-index: 200;
+}
+
+.card button.confirm-btn {
+  border-color: #7BB651;
+}
+
+.card button.approve-btn {
+  border-color: #B378EE;
+}
+
+.card a:hover,
+.card button:hover  {
+  color: #fff;
+  border-color: #fff;
 }
 
 
