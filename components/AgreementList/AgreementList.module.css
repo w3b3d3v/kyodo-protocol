@@ -1,48 +1,151 @@
 /* App.css */
 
 .agreement-list {
-  width: 615px;
+  width: 500px;
   max-width: 615px;
+  padding-bottom: 100px;
   margin: 0 auto;
-  padding: 100px 0;
+}
+
+.agreement-list h1 {
+  margin: 45px 0 35px 0;
+}
+
+.card-list {
+  margin: 0;
 }
 
 .card {
-  border: 1px solid #1E2326;
-  background: #101315;
+  border: 2px solid #1E2326;
   border-radius: 6px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 16px;
+  box-sizing: border-box;
+  padding: 25px;
+  padding-top: 22px;
+  padding-bottom: 78px;
+  position: relative;
 }
 
 .card h2 {
-  font-size: 24px;
-  margin-bottom: 8px;
+  font-size: 20px;
+  margin-bottom: 5px;
   color: #fff;
+}
+
+.wallet-key {
+  font-size: 11px;
+  color: #999;
+  margin-bottom: 15px;
+  background: #161616;
+  border: 1px solid #1A1A1A;
+  padding: 3px 5px;
+  border-radius: 4px;
+  display: inline-block;
+  font-weight: 300;
 }
 
 .card p {
-  font-size: 15px;
-  margin: 0;
+  font-size: 12px;
   color: #fff;
-  line-height: 28px;
+  line-height: 22px;
+}
+
+.card p strong {
+  width: 130px;
+  display: inline-block;
+  font-weight: 600;
+  color: #85A8BE;
+}
+
+.card-desc {
+  border-bottom: 1px solid #0D0D0D;
+  margin-bottom: 17px;
+  padding-bottom: 17px;
+  font-size: 12px;
+  color: #fff;
+  line-height: 20px;
+}
+
+.card input {
+  width: 76px;
+  display: inline-block;
+  height: 26px;
+  margin: 17px 0 0 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0 7px;
+  font-size: 11px;
+  position: relative;
+  z-index: 200;
+}
+
+.card input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.card-footer {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  background: #0D0D0D;
+  height: 60px;
+  position: absolute;
+  box-sizing: border-box;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding-left: 25px;
+}
+
+.card a,
+.card button {
+  font-size: 11px;
+  font-weight: bold;
+  color: #E6EDF1;
+  display: inline-block;
+  background: none;
+  border: 1px solid #85A8BE;
+  background-color: #0D0D0D;
+  border-radius: 20px;
+  padding: 0 9px;
+  cursor: pointer;
+}
+
+.card a {
+  color: #E6EDF1;
+  border: 1px solid #85A8BE;
+  height: 24px;
+  line-height: 23px;
+  position: absolute;
+  left: 25px;
+  top: 17px;
+  z-index: 100;
 }
 
 .card button {
-  margin-left: 10px;
-  font-size: 12px;
-  font-weight: bold;
-  color: #85A8BE;
-  background: none;
-  border: 1px solid #85A8BE;
-  border-radius: 4px;
-  height: 22px;
-  line-height: 19px;
+  color: #fff;
+  height: 26px;
+  padding-right: 10px;
+  position: absolute;
+  left: 100px;
+  top: 17px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  z-index: 200;
 }
 
-.card strong {
-  font-weight: bold;
-  color: #777;
+.card button.confirm-btn {
+  border-color: #7BB651;
+}
+
+.card button.approve-btn {
+  border-color: #B378EE;
+}
+
+.card a:hover,
+.card button:hover  {
+  color: #fff;
+  border-color: #fff;
 }
 
 

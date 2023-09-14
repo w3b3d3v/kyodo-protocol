@@ -7,7 +7,6 @@ input,
 textarea,
 .select {
   width: 100%;
-  padding: 0 15px;
   border: 1px solid #1E2326;
   background: #101315;
   border-radius: 6px;
@@ -17,12 +16,17 @@ textarea,
   display: block;
   margin: 8px 0 22px;
   height: 40px;
+}
+
+input,
+.select {
   line-height: 40px;
+  padding: 0 15px;
 }
 
 textarea {
-  padding-top: 17px;
-  padding-bottom: 17px;
+  padding: 12px 15px;
+  line-height: 22px;
   max-width: 100%;
   min-width: 100%;
   min-height: 129px;
@@ -64,10 +68,20 @@ select {
   grid-template-areas: "select";
   align-items: center;
   position: relative;
+  line-height: 38px;
+  padding: 0;
 
   select,
   &::after {
     grid-area: select;
+  }
+
+  select { 
+    width: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding-left: 18px;
   }
 
   &:not(.select--multiple)::after {
@@ -77,5 +91,12 @@ select {
     height: 0.5em;
     background-color: var(--select-arrow);
     clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    margin-right: 15px;
+  }
+
+  option {
+    background-color: #101315;
+    color: $white;
+    font-size: 14px;
   }
 }

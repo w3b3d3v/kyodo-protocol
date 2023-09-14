@@ -3,6 +3,7 @@
 .add-agreement-form {
   width: 615px;
   max-width: 615px;
+  padding-bottom: 100px;
   margin: 0 auto;
 }
 
@@ -33,7 +34,7 @@
 .add-agreement-form-button div {
   border-radius: 30px;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
   background: #060606;
   height: 38px;
   line-height: 35px;
@@ -52,30 +53,69 @@
 }
 
 
+/* Flash messages */
+
+.flash-success,
+.transaction-info {
+  width: 100%;
+  background-color: #1C2124;
+  border-bottom: 3px solid #7BB651;
+  height: 45px;
+  line-height: 43px;
+  font-size: 13px;
+  box-sizing: border-box;
+  padding: 0 3%;
+}
+
+.flash-success img,
+.transaction-info img {
+  float: left;
+  margin: 11px 10px 0 0;
+}
+
+.flash-success p,
+.transaction-info p {
+  margin: 0;
+  float: left;
+}
+
+.flash-success a,
+.transaction-info a {
+  color: #E6EDF1;
+  text-decoration: none;
+  font-size: 12px;
+  text-align: right;
+  float: right;
+}
+
+.flash-success a:hover,
+.transaction-info a:hover {
+  color: #fff;
+}
+
+
 /* Transaction */
 
 .transaction-info {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 16px;
-  margin-top: 20px;
+  border-top: 3px solid #7BB651;
+  background-color: #2B526B;
+  border-radius: 6px;
+  height: 45px;
+  line-height: 45px;
+  position: fixed;
+  left: 30px;
+  bottom: 30px;
 }
 
 .transaction-info a {
-  display: inline-block;
-  background-color: #775ce1;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
+  color: #8F989D;
   text-decoration: none;
-  font-size: 16px;
-  transition: background-color 0.2s;
+  font-size: 12px;
+  text-align: right;
 }
 
 .transaction-info a:hover {
-  background-color: #634bc7;
+  color: #fff;
 }
 
 .token-option {
@@ -97,7 +137,7 @@
 @media only screen and (max-width: 800px) {
 
   .add-agreement-form {
-    width: 100%;
+    width: 90%;
     max-width: 100%;
   }
 

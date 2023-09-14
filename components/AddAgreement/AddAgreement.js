@@ -1,7 +1,7 @@
 import { useContract } from "../ContractContext"
 import { useState } from "react"
 import styles from "./AddAgreement.module.css"
-
+import Image from 'next/image'
 import { BeatLoader } from "react-spinners"
 import tokens from "../../public/allowedTokens.json"
 import { ethers } from "ethers"
@@ -87,30 +87,35 @@ function AddAgreementForm(props) {
 
   if (transactionHash) {
     return (
-      
       <div className={styles["transaction-info"]}>
-        Agreement created!
-        <br />
-        <br />
-        <a
-          href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          See Transaction
-        </a>
-        <br />
-        <br />
-        {/* <Link to="/agreementslist">View Agreements List</Link> */}
+        <div className={styles["holder"]}>
+          <p>
+            <Image
+              src="/success-icon.svg"
+              width={20}
+              height={20}
+            />
+            Agreement created!
+          </p>
+          <a
+            href={`https://mumbai.polygonscan.com/tx/${transactionHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            See Transaction
+          </a>
+        </div>
       </div>
     )
   }
 
   return (
+    
     <div className={styles["add-agreement-form-container"]}>
-      <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>
 
-        <h1>Add agreement</h1>
+      <h1>Add agreement</h1>
+
+      <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>
 
         <section className={"columns"}>
 
@@ -167,19 +172,17 @@ function AddAgreementForm(props) {
 
             <label htmlFor="description-input">Description:</label>
             <textarea
-              type="text"
               id="description-input"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
             ></textarea>
 
             <label htmlFor="skills-input">Skills:</label>
-            <input
-              type="text"
+            <textarea
               id="skills-input"
               value={skills}
               onChange={(event) => setSkills(event.target.value)}
-            />
+            ></textarea>
 
           </div>
 
