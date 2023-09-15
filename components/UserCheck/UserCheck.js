@@ -10,16 +10,12 @@ function UserCheck(props) {
     const { contract, loading } = useAgreementContract();
   
     useEffect(() => {
-        // Só executar se loading for false
         if (!loading) {
           async function checkUserRegistration() {
             try {
-              // Verificar se o provedor Ethereum está presente
               if (window.ethereum) {
-                // Verificar se o usuário possui acordos
                 const userAgreementIds = await contract.getUserAgreements(window.ethereum.selectedAddress);
 
-                // Defina isRegistered como verdadeiro se o usuário tiver acordos
                 setIsRegistered(userAgreementIds.toString().length > 0);
               } else {
                 console.error('Provedor Ethereum não encontrado!');
@@ -33,7 +29,7 @@ function UserCheck(props) {
       
           checkUserRegistration();
         }
-      }, [loading]);  // Adiciona loading como uma dependência
+      }, [loading]); 
   
     if (isLoading) {
         return (

@@ -52,7 +52,7 @@ function AgreementList(props) {
   };
 
   const handlePaymentValueChange = async (e, paymentToken) => {
-    const value = parseInt(e.target.value);
+    const value = parseFloat(e.target.value);
     if (isNaN(value)) {
       setPaymentValue('');
     } else {
@@ -157,12 +157,17 @@ function AgreementList(props) {
               <p><strong>Payment amount</strong> {adjustedPaymentAmount}</p>
               <p><strong>Payment token</strong> {paymentTokenName}</p> {/* Display token name */}
 
-              {Number(agreement.status) !== 1 && <p><strong>Total paid</strong> {agreement.totalPaid.toString()}</p>}
-              
+              {Number(agreement.status) !== 1 && (
+                <p>
+                  <strong>Total paid</strong> 
+                  {parseFloat(ethers.utils.formatUnits(agreement.totalPaid, 18)).toFixed(2).replace(/\.00$/, '')} USD
+                </p>
+              )}
+
               <div className={styles["card-footer"]}>
                 {Number(agreement.status) === 0 ? 
                   <>
-                    <a onClick={() => handlePayClick(index)}>Pay agreement</a>
+                    <a onClick={() => handlePayClick(index, paymentToken)}>Pay agreement</a>
                     {showPaymentInput === index && (
                       <>
                         <input 
@@ -170,15 +175,15 @@ function AgreementList(props) {
                           value={paymentValue}
                           onChange={(e) => handlePaymentValueChange(e, paymentToken)}
                         />
-                    {isAllowanceSufficient ? (
-                      <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)} className={styles["confirm-btn"]}>
-                        Confirm Payment
-                      </button>
-                    ) : (
-                      <button onClick={() => handleApprove(paymentValue, paymentToken, contract.address)} className={styles["approve-btn"]}>
-                        Approve
-                      </button>
-                    )}
+                      {isAllowanceSufficient ? (
+                        <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)} className={styles["confirm-btn"]}>
+                          Confirm payment
+                        </button>
+                      ) : (
+                        <button onClick={() => handleApprove(paymentValue, paymentToken, contract.address)} className={styles["approve-btn"]}>
+                          Approve payment
+                        </button>
+                      )}
                       </>
                     )}
                   </> : 

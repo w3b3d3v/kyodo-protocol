@@ -3,9 +3,9 @@ const fs = require("fs");
 const path = require("path");
 require('dotenv').config({ path: './.env.development.local' });
 
-const TOTAL_FEE = 20; // using 1000 basis points for fee calculation
-const PROTOCOL_FEE = 500; // using 1000 basis points for fee calculation
-const COMMUNITY_FEE = 500; // using 1000 basis points for fee calculation
+const TOTAL_FEE = 20;
+const PROTOCOL_FEE = 500;
+const COMMUNITY_FEE = 500;
 const FAKE_STABLE_DECIMALS = 18;
 
 function copyABI() {
@@ -17,120 +17,125 @@ function copyABI() {
   console.log(`Copied ABI to ${destinationPath}`);
 }
 
-function updateConfig(agreementContractAddress, fakeStableAddress, communityVaultAddress) {
-  const envPath = path.join(__dirname, "../.env.development.local")
-  let envData = fs.readFileSync(envPath, "utf8")
-  const lines = envData.split("\n")
+function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress) {
+  const envPath = path.join(__dirname, '../.env.development.local');
+  let envData = fs.readFileSync(envPath, 'utf8');
+  const lines = envData.split('\n');
 
   const keysToUpdate = {
-    NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS: agreementContractAddress,
-    NEXT_PUBLIC_FAKE_STABLE_ADDRESS: fakeStableAddress,
-    NEXT_PUBLIC_COMMUNITY_STABLE_VAULT_ADDRESS: communityVaultAddress,
-  }
+    'NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS': agreementContractAddress,
+    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
+    'NEXT_PUBLIC_STABLE_VAULT_ADDRESS': vaultAddress
+  };
 
-  Object.keys(keysToUpdate).forEach((key) => {
-    let found = false
+  Object.keys(keysToUpdate).forEach(key => {
+    let found = false;
     for (let i = 0; i < lines.length; i++) {
       if (lines[i].startsWith(`${key}=`)) {
-        lines[i] = `${key}=${keysToUpdate[key]}`
-        found = true
-        break
+        lines[i] = `${key}=${keysToUpdate[key]}`;
+        found = true;
+        break;
       }
     }
     if (!found) {
-      lines.push(`${key}=${keysToUpdate[key]}`)
+      lines.push(`${key}=${keysToUpdate[key]}`);
     }
-  })
+  });
 
-  envData = lines.join("\n")
-  fs.writeFileSync(envPath, envData)
-  console.log(`Updated contract addresses in ${envPath}`)
+  envData = lines.join('\n');
+  fs.writeFileSync(envPath, envData);
+  console.log(`Updated contract addresses in ${envPath}`);
 }
 
-async function deployAgreementsContract(communityVaultAddress) {
-  const AgreementContract = await ethers.getContractFactory("AgreementContract")
-  contract = await AgreementContract.deploy(
-    process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS,
-    communityVaultAddress
-  )
+async function deployAgreementsContract(vaultAddress) {
+  const AgreementContract = await ethers.getContractFactory("AgreementContract");
+  contract = await AgreementContract
+  .deploy
+  (
+    process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS, 
+    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS,
+  );
 
-  await contract.deployed()
+  await contract.deployed();
 
-  console.log("AgreementContract deployed to:", contract.address)
+  console.log("AgreementContract deployed to:", contract.address);
 
-  // Copy ABI
-  copyABI()
 
-  // Load allowedTokens.json
-  const allowedTokensData = fs.readFileSync("public/allowedTokens.json", "utf8")
-  const allowedTokens = JSON.parse(allowedTokensData)
+  copyABI();
 
-  // Add allowed tokens to the contract
+
+  const allowedTokensData = fs.readFileSync("public/allowedTokens.json", "utf8");
+  const allowedTokens = JSON.parse(allowedTokensData);
+
+
   for (const token of allowedTokens) {
-    await contract.addAcceptedPaymentToken(token.address)
-    // console.log(`Added ${token.name} (${token.address}) as an accepted payment token`);
+    await contract.addAcceptedPaymentToken(token.address);
+  
   }
 
-  await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE)
-  await contract.setStableVaultAddress(communityVaultAddress)
+  await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
+  await contract.setStableVaultAddress(vaultAddress);
+  return contract.address
 }
 
 async function deployToken() {
-  const [deployer] = await ethers.getSigners()
+  const [deployer] = await ethers.getSigners();
 
-  console.log("Deploying contracts with the account:", deployer.address)
+  console.log("Deploying contracts with the account:", deployer.address);
 
-  // Deploy do token com 1 milhão de supply
-  const Token = await ethers.getContractFactory("testToken")
-  const token = await Token.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS)
-  await token.deployed()
 
-  console.log("Token deployed to:", token.address)
+  const Token = await ethers.getContractFactory("fakeStable");
+  const token = await Token.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS);
+  await token.deployed();
 
-  // Carregar e ler o arquivo allowedTokens.json
-  const allowedTokensPath = "public/allowedTokens.json"
-  const allowedTokensData = fs.readFileSync(allowedTokensPath, "utf8")
-  const allowedTokens = JSON.parse(allowedTokensData)
+  console.log("Token deployed to:", token.address);
 
-  // check if there is at least one token in the list
+
+  const allowedTokensPath = 'public/allowedTokens.json';
+  const allowedTokensData = fs.readFileSync(allowedTokensPath, 'utf8');
+  const allowedTokens = JSON.parse(allowedTokensData);
+
+
   if (allowedTokens.length > 0) {
-    // update the values of the last token in the list
-    const lastToken = allowedTokens[allowedTokens.length - 1]
-    lastToken.address = token.address //update token address
-    lastToken.logo = "src/components/assets/your-token-logo.svg" // update logo path
-    lastToken.name = "fakeStable" // update token name
-    lastToken.decimals = FAKE_STABLE_DECIMALS
+    
+      const lastToken = allowedTokens[allowedTokens.length - 1];
+      lastToken.address = token.address;
+      lastToken.logo = "src/components/assets/your-token-logo.svg";
+      lastToken.name = "fakeStable";
+      lastToken.decimals = FAKE_STABLE_DECIMALS;
 
-    const updatedAllowedTokensData = JSON.stringify(allowedTokens, null, 2)
-    fs.writeFileSync(allowedTokensPath, updatedAllowedTokensData, "utf8")
+    
+      const updatedAllowedTokensData = JSON.stringify(allowedTokens, null, 2);
+      fs.writeFileSync(allowedTokensPath, updatedAllowedTokensData, 'utf8');
 
-    console.log("Last token in allowedTokens.json updated")
-    return token.address
+      console.log("Last token in allowedTokens.json updated");
+      return token.address
   } else {
-    console.log("No tokens found in allowedTokens.json")
+      console.log("No tokens found in allowedTokens.json");
   }
 }
 
 async function deployStableVault() {
-  const StableVault = await ethers.getContractFactory("StableVault")
-  const [admin] = await ethers.getSigners()
-  const communityVault = await StableVault.deploy(admin.address, "StableVaultToken", "COMMSV")
-  await communityVault.deployed()
+  const StableVault = await ethers.getContractFactory("StableVault");
+  const [admin] = await ethers.getSigners();
+  const vault = await StableVault.deploy(admin.address, "StableVaultToken", "STBLV");
+  await vault.deployed();
 
-  console.log("StableVault deployed to:", communityVault.address)
-  return communityVault.address
+  console.log("StableVault deployed to:", vault.address);
+  return vault.address;
 }
+
 
 async function main() {
   try {
-    const tokenAddress = await deployToken()
-    const communityVaultAddress = await deployStableVault()
-    const agreementAddress = await deployAgreementsContract(communityVaultAddress)
-    updateConfig(agreementAddress, tokenAddress, communityVaultAddress)
-    process.exit(0)
+    const tokenAddress = await deployToken();
+    const vaultAddress = await deployStableVault();  
+    const agreementAddress = await deployAgreementsContract(vaultAddress);
+    updateConfig(agreementAddress, tokenAddress, vaultAddress); 
+    process.exit(0);
   } catch (error) {
-    console.error(error)
-    process.exit(1)
+    console.error(error);
+    process.exit(1);
   }
 }
 

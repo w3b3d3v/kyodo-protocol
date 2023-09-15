@@ -15,7 +15,6 @@ const mockEthereum = {
 
 describe("ConnectWalletButton", () => {
   it("displays the connect wallet button if the user has not connected their wallet", () => {
-    // Simulando a presença do objeto `window.ethereum`
     window.ethereum = mockEthereum;
 
     act(() => {

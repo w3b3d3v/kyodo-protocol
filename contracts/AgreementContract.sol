@@ -28,7 +28,7 @@ contract AgreementContract {
         string description;
         AgreementStatus status;
         address company;
-        address developer;
+        address professional;
         string[] skills;
         Token tokenIncentive;
         Token payment;
@@ -41,7 +41,7 @@ contract AgreementContract {
     mapping(address => bool) public acceptedPaymentTokens; // Mapping of accepted payment tokens
 
     Token public tokenIncentive;
-    IStableVault public stableVault;
+    IStableVault public StableVault;
     address public owner;
     address public kyodoTreasury;
     address public communityDAO;
@@ -49,6 +49,20 @@ contract AgreementContract {
     uint256 public feePercentage; // Fee percentage in basis points (1 basis point = 0.01%)
     uint256 public kyodoTreasuryFee;
     uint256 public communityDAOFee;
+
+    event AgreementCreated(
+        address indexed company,
+        address indexed professional, 
+        uint256 agreementId, 
+        uint256 amount
+    );
+    
+    event PaymentMade(
+        address indexed company,
+        address indexed professional, 
+        uint256 agreementId, 
+        uint256 amount
+    );
 
     constructor(address _kyodoTreasury, address _communityDAO) {
         owner = msg.sender;
@@ -68,12 +82,12 @@ contract AgreementContract {
     function createAgreement(
         string memory _title,
         string memory _description,
-        address _developer,
+        address _professional,
         string[] memory _skills,
         uint256 _paymentAmount,
         address _paymentAddress
     ) external {
-        require(_developer != address(0), "Developer address cannot be zero");
+        require(_professional != address(0), "Professional address cannot be zero");
         require(_skills.length > 0, "Skills must not be empty");
         require(_paymentAmount > 0, "Payment amount must be greater than zero");
         require(acceptedPaymentTokens[_paymentAddress], "Invalid payment token");
@@ -89,7 +103,7 @@ contract AgreementContract {
             description: _description,
             status: AgreementStatus.Active,
             company: msg.sender,
-            developer: _developer,
+            professional: _professional,
             skills: _skills,
             tokenIncentive: tokenIncentive, // Use fixed tokenIncentive
             payment: paymentToken,
@@ -98,6 +112,7 @@ contract AgreementContract {
 
         agreements.push(newAgreement);
         userAgreements[msg.sender].push(nextAgreementId);
+        emit AgreementCreated(msg.sender, _professional, nextAgreementId, _paymentAmount);
         nextAgreementId++;
     }
 
@@ -133,7 +148,7 @@ contract AgreementContract {
         uint256 totalFee;
         uint256 kyodoTreasuryShare;
         uint256 communityDAOShare;
-        uint256 developerPayment;
+        uint256 professionalPayment;
 
         require(agreement.status == AgreementStatus.Active, "Agreement is not active");
 
@@ -148,7 +163,7 @@ contract AgreementContract {
             totalFee = (totalFeeBasisPoints * _amountToPay) / (10**6);
             kyodoTreasuryShare = (totalFee * kyodoTreasuryFee) / 1000;
             communityDAOShare = totalFee - kyodoTreasuryShare;
-            developerPayment = _amountToPay - totalFee;
+            professionalPayment = _amountToPay - totalFee;
         }
 
         require(
@@ -159,14 +174,16 @@ contract AgreementContract {
         token.transfer(kyodoTreasury, kyodoTreasuryShare);
         token.transfer(communityDAO, communityDAOShare);
         
-        token.approve(address(stableVault), developerPayment);
-        stableVault.deposit(developerPayment, address(token), agreement.developer);
+        token.approve(address(StableVault), professionalPayment);
+        StableVault.deposit(professionalPayment, address(token), agreement.professional);
 
         agreement.totalPaid += _amountToPay;
 
         if (agreement.totalPaid >= paymentToken.amount) {
             agreement.status = AgreementStatus.Completed;
         }
+
+        emit PaymentMade(msg.sender, agreement.professional, _agreementId, _amountToPay);
     }
 
     function setFees(uint256 _feePercentage, uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external onlyOwner {
@@ -178,6 +195,6 @@ contract AgreementContract {
     }
 
     function setStableVaultAddress(address _StableVaultAddress) external onlyOwner {
-        stableVault = IStableVault(_StableVaultAddress);
+        StableVault = IStableVault(_StableVaultAddress);
     }
 }

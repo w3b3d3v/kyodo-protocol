@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "W3DStableVault",
-  "sourceName": "contracts/W3DStableVault.sol",
+  "contractName": "StableVault",
+  "sourceName": "contracts/StableVault.sol",
   "abi": [
     {
       "inputs": [
