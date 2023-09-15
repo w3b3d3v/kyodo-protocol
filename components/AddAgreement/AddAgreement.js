@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { useAgreementContract } from "../../contexts/ContractContext"
 import { useState } from "react"
 import styles from "./AddAgreement.module.css"
@@ -17,6 +18,7 @@ function AddAgreementForm(props) {
   const [isLoading, setIsLoading] = useState(false)
   const [transactionHash, setTransactionHash] = useState(null)
   const { contract, loading } = useAgreementContract()
+  const router = useRouter()
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -56,9 +58,9 @@ function AddAgreementForm(props) {
             paymentAmountInWei,
             paymentToken.address
           )
+        await tx.wait()
 
-        console.log(`Agreement "${title}" created. Transaction hash: ${tx.transactionHash}`)
-        setTransactionHash(tx.transactionHash)
+        router.push('/agreements')
       } catch (error) {
         console.error("Error creating agreement:", error)
       }
