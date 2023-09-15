@@ -3,18 +3,18 @@ const { ethers } = require("hardhat");
 
 const FAKE_STABLE_DECIMALS = 18;
 
-describe("W3DVault", function () {
-    let W3DStableVault, w3dVault, Token, token, admin, user1, user2;
+describe("vault", function () {
+    let StableVault, vault, Token, token, admin, user1, user2;
 
     beforeEach(async function () {
     // Contract deployment
-    W3DStableVault = await ethers.getContractFactory("W3DStableVault");
+    StableVault = await ethers.getContractFactory("StableVault");
     [admin, user1, user2] = await ethers.getSigners();
-    w3dVault = await W3DStableVault.deploy(admin.address, "W3DStableVaultToken", "W3DSV");
-    await w3dVault.deployed();
+    vault = await StableVault.deploy(admin.address, "StableVaultToken", "STBLV");
+    await vault.deployed();
 
     // Deploy mock token
-    Token = await ethers.getContractFactory("testToken");
+    Token = await ethers.getContractFactory("fakeStable");
     token = await Token.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS); // 1 million tokens
     await token.deployed();
 
@@ -23,8 +23,8 @@ describe("W3DVault", function () {
     await token.connect(admin).transfer(user2.address, ethers.utils.parseEther("100")); // Transfer 100 tokens to user2
 
 
-    // Approve the W3DStableVault contract to spend tokens on behalf of user1
-    await token.connect(user1).approve(w3dVault.address, ethers.utils.parseEther("1000")); // Approve 1000 tokens
+    // Approve the StableVault contract to spend tokens on behalf of user1
+    await token.connect(user1).approve(vault.address, ethers.utils.parseEther("1000")); // Approve 1000 tokens
     });
 
     describe("Withdraw", function () {
@@ -33,18 +33,18 @@ describe("W3DVault", function () {
             const expectedVaultAmount = ethers.utils.parseUnits("1", 18); // Expected to be 1 token but with 18 decimals
 
             // First, the user deposits
-            await w3dVault.connect(user1).deposit(depositAmount, token.address, user1.address);
-            const userBalanceBeforeWithdraw = await w3dVault.balanceOf(user1.address);
+            await vault.connect(user1).deposit(depositAmount, token.address, user1.address);
+            const userBalanceBeforeWithdraw = await vault.balanceOf(user1.address);
             expect(userBalanceBeforeWithdraw).to.equal(expectedVaultAmount);
 
             // Now, the user withdraws
-            await w3dVault.connect(user1).withdraw(depositAmount, token.address);
-            const userBalanceAfterWithdraw = await w3dVault.balanceOf(user1.address);
+            await vault.connect(user1).withdraw(depositAmount, token.address);
+            const userBalanceAfterWithdraw = await vault.balanceOf(user1.address);
             expect(userBalanceAfterWithdraw).to.equal(0); // Assuming the user withdraws all their funds
 
-            await w3dVault.connect(user1).deposit(depositAmount, token.address, user1.address);
-            await expect(w3dVault.connect(user1).withdraw(depositAmount, token.address))
-                .to.emit(w3dVault, "BalanceUpdated")
+            await vault.connect(user1).deposit(depositAmount, token.address, user1.address);
+            await expect(vault.connect(user1).withdraw(depositAmount, token.address))
+                .to.emit(vault, "BalanceUpdated")
                 .withArgs(depositAmount);
         });
 
@@ -53,18 +53,18 @@ describe("W3DVault", function () {
             const overdrawAmount = ethers.utils.parseUnits("2", FAKE_STABLE_DECIMALS); // 2 tokens with 8 decimals
 
             // First, the user deposits
-            await w3dVault.connect(user1).deposit(depositAmount, token.address, user1.address);
+            await vault.connect(user1).deposit(depositAmount, token.address, user1.address);
 
             // Now, the user tries to overdraw
-            await expect(w3dVault.connect(user1).withdraw(overdrawAmount, token.address)).to.be.revertedWith("Insufficient balance");
+            await expect(vault.connect(user1).withdraw(overdrawAmount, token.address)).to.be.revertedWith("Insufficient balance");
         });
 
         it("Should fail if the contract is paused", async function () {
-            await w3dVault.connect(admin).pause(); // Assuming you have a pause function
+            await vault.connect(admin).pause(); // Assuming you have a pause function
 
             const amount = ethers.utils.parseEther("1");
 
-            await expect(w3dVault.connect(user1).withdraw(amount, token.address)).to.be.revertedWith("Pausable: paused");
+            await expect(vault.connect(user1).withdraw(amount, token.address)).to.be.revertedWith("Pausable: paused");
         });
     });
 });

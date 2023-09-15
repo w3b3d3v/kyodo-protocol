@@ -138,7 +138,7 @@ function AddAgreementForm(props) {
             />
 
             <label htmlFor="payment-token-input">Payment Token:</label>
-            <div class="select">
+            <div className="select">
               <select
                 id="payment-token-input"
                 value={paymentToken ? paymentToken.address : ""}

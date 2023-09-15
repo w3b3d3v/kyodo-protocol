@@ -58,7 +58,7 @@ describe("AgreementsByUser", function () {
     const user1Agreement = await agreementContract.getAgreementById(user1AgreementId);
     const user2Agreement = await agreementContract.getAgreementById(user2AgreementId);
 
-    expect(user1Agreement.developer).to.equal(user1.address);
-    expect(user2Agreement.developer).to.equal(user2.address);
+    expect(user1Agreement.professional).to.equal(user1.address);
+    expect(user2Agreement.professional).to.equal(user2.address);
   });  
 });

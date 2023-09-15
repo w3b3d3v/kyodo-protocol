@@ -26,12 +26,6 @@ function Balances(props) {
       setRedeemValue('');
     } else {
       setRedeemValue(inputAmount.toString());
-      const redeemAmountInWei = ethers.utils.parseUnits(inputAmount.toString(), balance.tokenDecimals);
-      
-      if (redeemAmountInWei.gt(balance.amount)) {
-        alert("You cannot redeem more than your balance!");
-        setRedeemValue(''); // Reset the input value
-      }
     }
   };
 
@@ -41,8 +35,6 @@ function Balances(props) {
 
     const companyAgreements = await contract.queryFilter(companyFilter);
     const professionalAgreements = await contract.queryFilter(professionalFilter);
-    console.log("companyAgreements", companyAgreements);
-    console.log("professionalAgreements", professionalAgreements);
 
     const allAgreements = [...companyAgreements, ...professionalAgreements];
 
@@ -54,26 +46,26 @@ function Balances(props) {
 
   function renderPaidAgreements() {
     return paidAgreements.map((agreement, index) => (
-        <div key={index} className={styles["card"]}>
-            <h2>Agreement ID: {agreement.agreementId.toString()}</h2>
-            {console.log(agreement)}
-            <p>
-                <strong>Status:</strong> {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? "Paid" : "Received"}
-            </p>
-            <p>
-                <strong>Amount: {ethers.utils.formatUnits(agreement.amount, 18)} USD </strong> 
-            </p>
-            <a href={`https://polygonscan.com/tx/${agreement.transactionHash}`} target="_blank" rel="noopener noreferrer">
-            {agreement.transactionHash}
-            </a>
+      <div key={index} className={styles["card"]}>
+        <h2>Agreement ID: {agreement.agreementId.toString()}</h2>
+        <p>
+          <strong>Status:</strong> {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? "Paid" : "Received"}
+        </p>
+        <p>
+          <strong>Amount:</strong> {parseFloat(ethers.utils.formatUnits(agreement.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD
+        </p>
+        <div className={styles["card-footer"]}>
+          <a href={`https://polygonscan.com/tx/${agreement.transactionHash}`} target="_blank" rel="noopener noreferrer" className={styles["confirm-btn"]}>
+            View on Polygonscan
+          </a>
         </div>
+      </div>
     ));
-  }
-
+  }  
 
   async function fetchUserBalances() {
     const tokenAddresses = [
-      process.env.NEXT_PUBLIC_W3D_STABLE_VAULT_ADDRESS, 
+      process.env.NEXT_PUBLIC_STABLE_VAULT_ADDRESS, 
       process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
     ]
     const balances = [];
@@ -106,9 +98,13 @@ function Balances(props) {
 
   const handleWithdraw = async (amount, balance) => {
     const redeemAmountInWei = ethers.utils.parseUnits(amount.toString(), balance.tokenDecimals);
+      
+      if (redeemAmountInWei.gt(balance.amount)) {
+        alert("You cannot redeem more than your balance!");
+        setRedeemValue(''); // Reset the input value
+      }
     try {
       const tx = await vaultContract.withdraw(redeemAmountInWei, process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS)
-      console.log("tx", tx);
     } catch (error) {
       console.error("Error during withdrawal:", error);
     }
@@ -144,12 +140,13 @@ function Balances(props) {
       <div className={styles["card-list"]}>
         {userBalances.map((balance, index) => (
           <div key={index} className={styles["card"]}>
-            <a href={`https://polygonscan.com/token/${balance.tokenAddress}`} target="_blank" rel="noopener noreferrer">
               <h2>{balance.tokenName} ({balance.tokenSymbol})</h2>
-            </a>
-            <p><strong>Balance:</strong> {ethers.utils.formatUnits(balance.amount.toString(), balance.tokenDecimals)}</p>
-            <div className={styles["button-group"]}>
-            <button onClick={() => handleRedeemClick(index)}>Redeem</button>
+            <p>
+              <strong>Balance</strong> 
+              {parseFloat(ethers.utils.formatUnits(balance.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD
+            </p>
+            <div className={styles["card-footer"]}>
+              <a onClick={() => handleRedeemClick(index)}>Redeem</a>
               {showRedeemInput === index && (
                 <>
                   <input 
@@ -157,22 +154,19 @@ function Balances(props) {
                     value={redeemValue}
                     onChange={(e) => handleRedeemValueChange(e, balance)} // Você precisará obter o saldo do usuário para este token
                   />
-                  <br></br>
-                  <button onClick={() => handleWithdraw(redeemValue, balance)}>Confirm Redeem</button>
+                  <button onClick={() => handleWithdraw(redeemValue, balance)} className={styles["confirm-btn"]}>Confirm Redeem</button>
                 </>
               )}
-              <br></br>
-              <button onClick={handleInvestClick} className={styles["button"]}>Invest</button>
             </div>
           </div>
         ))}
-        <h1>Paid Agreements</h1>
+        <h1>Payments</h1>
         <div className={styles["card-list"]}>
             {renderPaidAgreements()}
         </div>
       </div>
     </div>
-  );
+  );  
 }
 
 export default Balances;

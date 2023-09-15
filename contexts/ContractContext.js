@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AgreementContract from './contracts/AgreementContract.json';
-import VaultContract from './contracts/W3DStableVault.json';
+import VaultContract from './contracts/StableVault.json';
 import { ethers } from "ethers";
 
 // Agreement Contract Context
@@ -48,7 +48,7 @@ export function VaultContractProvider({ children }) {
     async function initializeContract() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contractABI = VaultContract.abi;
-      const newContract = new ethers.Contract(process.env.NEXT_PUBLIC_W3D_STABLE_VAULT_ADDRESS, contractABI, provider.getSigner());
+      const newContract = new ethers.Contract(process.env.NEXT_PUBLIC_STABLE_VAULT_ADDRESS, contractABI, provider.getSigner());
       setContract(newContract);
       setLoading(false);
     }

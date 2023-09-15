@@ -4,12 +4,12 @@ async function main() {
   // Deploy StableVault contract
   const StableVaultFactory = await ethers.getContractFactory("StableVault");
   const [admin, user1, user2] = await ethers.getSigners();
-  const StableVault = await StableVaultFactory.deploy(admin.address, "StableVaultToken", "COMMSV")
+  const StableVault = await StableVaultFactory.deploy(admin.address, "StableVaultToken", "STBLV");
   await StableVault.deployed();
   console.log("StableVault deployed to:", StableVault.address);
 
   // Deploy mock token
-  const TokenFactory = await ethers.getContractFactory("testToken");
+  const TokenFactory = await ethers.getContractFactory("fakeStable");
   const token = await TokenFactory.deploy(ethers.utils.parseEther("1000000")); // 1 million tokens
   await token.deployed();
   console.log("Token deployed to:", token.address);

@@ -15,7 +15,7 @@ async function main() {
 
   const accounts = await ethers.getSigners();
   
-  const numberOfAccounts = 1; // Quantidade de contas para serem usadas
+  const numberOfAccounts = 1; 
   
   if (numberOfAccounts > accounts.length) {
     console.log("Número de contas especificadas é maior do que as contas disponíveis.");
@@ -31,11 +31,11 @@ async function main() {
       paymentAmount,
     } = agreementData;
 
-    const signer = accounts[i % numberOfAccounts]; // Agora usando numberOfAccounts para loop
+    const signer = accounts[i % numberOfAccounts]; 
 
     const agreementContractWithSigner = agreementContract.connect(signer);
 
-    // Utilizando signer.address como valor para 'developer'
+    
     const tx = await agreementContractWithSigner.createAgreement(
       "New Agreement",
       description,
@@ -45,9 +45,9 @@ async function main() {
       FAKE_STABLE_ADDRESS
     );
 
-    await tx.wait(); // Aguarda a transação ser minerada
+    await tx.wait(); 
 
-    // Imprimindo o endereço da conta que realmente executou a transação
+    
     console.log(`Agreement "${title}" created. User: ${signer.address} Transaction hash: ${tx.hash}`);
   }
 }
