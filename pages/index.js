@@ -8,7 +8,7 @@ export default function Home() {
         <meta name="description" content="The Future of Work Powered by Communities" />
         <link rel="icon" href="/logo192.png" />
       </Head>
-      <main className={styles.main}>
+      <main>
         Home
       </main>
     </div>

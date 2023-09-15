@@ -14,6 +14,7 @@ function Balances(props) {
   const [showRedeemInput, setShowRedeemInput] = useState(null);
   const [redeemValue, setRedeemValue] = useState('');
   const [paidAgreements, setPaidAgreements] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
 
   const handleRedeemClick = (index) => {
@@ -88,7 +89,7 @@ function Balances(props) {
           });
         }
       } catch (error) {
-        console.error(`Erro ao obter saldo para o token ${address}:`, error);
+        console.error(`Error when retrieving balance for ${address}:`, error);
       }
     }
 
@@ -104,13 +105,21 @@ function Balances(props) {
         setRedeemValue(''); // Reset the input value
       }
     try {
+      setIsLoading(true);
       const tx = await vaultContract.withdraw(redeemAmountInWei, process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS)
+      tx.wait();
     } catch (error) {
       console.error("Error during withdrawal:", error);
+    }finally {
+      fetchPaidAgreements();
+      fetchUserBalances();
+      setIsLoading(false);
+      setShowRedeemInput(false);
     }
   };
   
   useEffect(() => {
+    setIsLoading(true);
     if (!vaultLoading) {
       fetchUserBalances();
     }
@@ -118,20 +127,21 @@ function Balances(props) {
     if (!loading) {
       fetchPaidAgreements()
     }
+    setIsLoading(false);
   }, [vaultLoading]);
 
   const handleInvestClick = () => {
     alert("Future feature");
   };
 
-  if (vaultLoading) {
+  if (isLoading) {
     return (
-      <div className="loading-overlay">
-        <div className="sweet-loading">
-          <BeatLoader loading={vaultLoading} size={50} />
+      <div className={"loading-overlay"}>
+        <div className={"sweet-loading"}>
+          <BeatLoader loading={isLoading} size={50} />
         </div>
       </div>
-    );
+    )
   }
 
   return (
