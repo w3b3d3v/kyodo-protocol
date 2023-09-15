@@ -138,10 +138,6 @@
   border-color: #7BB651;
 }
 
-.card button.approve-btn {
-  border-color: #B378EE;
-}
-
 .card a:hover,
 .card button:hover  {
   color: #fff;

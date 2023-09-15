@@ -59,10 +59,11 @@ function AddAgreementForm(props) {
             paymentToken.address
           )
         await tx.wait()
-
-        router.push('/agreements')
       } catch (error) {
         console.error("Error creating agreement:", error)
+      } finally {
+        setIsLoading(false)
+        router.push('/agreements')
       }
 
       setIsLoading(false)
