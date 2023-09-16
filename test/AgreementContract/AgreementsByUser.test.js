@@ -23,7 +23,6 @@ describe("AgreementsByUser", function () {
 
   it("Should create agreements and retrieve user-specific agreements", async function () {
     // Use the first two allowed tokens for testing
-    const paymentToken = FAKE_STABLE_ADDRESS;
 
     // Create agreements using different user addresses
     await agreementContract.connect(user1).createAgreement(
@@ -32,7 +31,6 @@ describe("AgreementsByUser", function () {
       user1.address,
       ["Skill 1", "Skill 2"],
       ethers.utils.parseEther("5"),
-      paymentToken
     );
 
     await agreementContract.connect(user2).createAgreement(
@@ -41,7 +39,6 @@ describe("AgreementsByUser", function () {
       user2.address,
       ["Skill 3", "Skill 4"],
       ethers.utils.parseEther("4"),
-      paymentToken
     );
 
     // Get user agreements

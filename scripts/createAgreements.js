@@ -39,10 +39,9 @@ async function main() {
     const tx = await agreementContractWithSigner.createAgreement(
       "New Agreement",
       description,
-      signer.address,
+      "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", // Second test wallet
       skills,
-      paymentAmount,
-      FAKE_STABLE_ADDRESS
+      paymentAmount
     );
 
     await tx.wait(); 

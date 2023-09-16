@@ -23,6 +23,7 @@
   padding-top: 22px;
   padding-bottom: 78px;
   position: relative;
+  height: 310px;
 }
 
 .card h2 {
@@ -87,7 +88,7 @@
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
   background: #0D0D0D;
-  height: 60px;
+  height: 100px;
   position: absolute;
   box-sizing: border-box;
   bottom: 0;

@@ -84,17 +84,16 @@ contract AgreementContract {
         string memory _description,
         address _professional,
         string[] memory _skills,
-        uint256 _paymentAmount,
-        address _paymentAddress
+        uint256 _paymentAmount
     ) external {
         require(_professional != address(0), "Professional address cannot be zero");
         require(_skills.length > 0, "Skills must not be empty");
         require(_paymentAmount > 0, "Payment amount must be greater than zero");
-        require(acceptedPaymentTokens[_paymentAddress], "Invalid payment token");
+        
 
         Token memory paymentToken = Token({
             amount: _paymentAmount,
-            tokenAddress: _paymentAddress
+            tokenAddress: address(0)
         });
 
         Agreement memory newAgreement = Agreement({
@@ -140,8 +139,9 @@ contract AgreementContract {
         });
     }
 
-    function makePayment(uint256 _agreementId, uint256 _amountToPay) external {
+    function makePayment(uint256 _agreementId, uint256 _amountToPay, address _paymentAddress) external {
         require(_agreementId > 0 && _agreementId <= agreements.length, "Invalid agreement ID");
+        require(acceptedPaymentTokens[_paymentAddress], "Invalid payment token");
         Agreement storage agreement = agreements[_agreementId - 1];
 
         uint256 totalFeeBasisPoints;
@@ -150,13 +150,7 @@ contract AgreementContract {
         uint256 communityDAOShare;
         uint256 professionalPayment;
 
-        require(agreement.status == AgreementStatus.Active, "Agreement is not active");
-
-        Token storage paymentToken = agreement.payment;
-        IERC20 token = IERC20(paymentToken.tokenAddress);
-
-        uint256 remainingAmount = paymentToken.amount - agreement.totalPaid;
-        require(_amountToPay > 0 && _amountToPay <= remainingAmount, "Invalid payment amount");
+        IERC20 token = IERC20(_paymentAddress);
 
         unchecked {
             totalFeeBasisPoints = feePercentage * 1000;
@@ -177,12 +171,10 @@ contract AgreementContract {
         token.approve(address(StableVault), professionalPayment);
         StableVault.deposit(professionalPayment, address(token), agreement.professional);
 
-        agreement.totalPaid += _amountToPay;
-
-        if (agreement.totalPaid >= paymentToken.amount) {
-            agreement.status = AgreementStatus.Completed;
+        unchecked {
+            agreement.totalPaid += _amountToPay;
         }
-
+        
         emit PaymentMade(msg.sender, agreement.professional, _agreementId, _amountToPay);
     }
 
