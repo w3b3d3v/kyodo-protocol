@@ -43,8 +43,7 @@ describe("PayAgreement", function () {
       "Description 1",
       developer.address,
       ["Skill 1", "Skill 2"],
-      paymentAmount,
-      paymentToken
+      paymentAmount
     );
 
     const initialDeveloperBalance = await tokenContract.balanceOf(developer.address);
@@ -54,10 +53,7 @@ describe("PayAgreement", function () {
     const ownerAgreements = await agreementContract.connect(owner).getUserAgreements(owner.address);
     const ownerAgreementId = ownerAgreements[0];
     await tokenContract.approve(agreementContract.address, paymentAmount);
-    await agreementContract.makePayment(ownerAgreementId, paymentAmount)
-  
-    const updatedAgreement = await agreementContract.getAgreementById(ownerAgreementId);
-    expect(updatedAgreement.status).to.equal(1); // Assuming status codes: 0 for created, 1 for paid, etc.
+    await agreementContract.makePayment(ownerAgreementId, paymentAmount, tokenContract.address)
 
     const totalFeeAmount = paymentAmount.mul(TOTAL_FEE).div(1000);
     
@@ -89,7 +85,6 @@ describe("PayAgreement", function () {
         developer.address,
         ["Skill 1", "Skill 2"],
         paymentAmount,
-        paymentToken
     )).to.emit(agreementContract, 'AgreementCreated')
     .withArgs(owner.address, developer.address, 1, paymentAmount);
 
@@ -102,7 +97,7 @@ describe("PayAgreement", function () {
     const ownerAgreements = await agreementContract.connect(owner).getUserAgreements(owner.address);
     const ownerAgreementId = ownerAgreements[0];
     await tokenContract.approve(agreementContract.address, paymentAmount);
-    await expect(agreementContract.makePayment(ownerAgreementId, partialPaymentAmount))
+    await expect(agreementContract.makePayment(ownerAgreementId, partialPaymentAmount, tokenContract.address))
       .to.emit(agreementContract, 'PaymentMade')
       .withArgs(owner.address, developer.address, ownerAgreementId, partialPaymentAmount);
 

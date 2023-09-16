@@ -4,7 +4,6 @@ import { useState } from "react"
 import styles from "./AddAgreement.module.css"
 import Image from 'next/image'
 import { BeatLoader } from "react-spinners"
-import tokens from "../../public/allowedTokens.json"
 import { ethers } from "ethers"
 const BigNumber = ethers.BigNumber
 
@@ -14,7 +13,6 @@ function AddAgreementForm(props) {
   const [developer, setDeveloper] = useState("")
   const [skills, setSkills] = useState("")
   const [paymentAmount, setPaymentAmount] = useState("")
-  const [paymentToken, setPaymentToken] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [transactionHash, setTransactionHash] = useState(null)
   const { contract, loading } = useAgreementContract()
@@ -29,8 +27,7 @@ function AddAgreementForm(props) {
       description.trim() === "" ||
       developer.trim() === "" ||
       skills.trim() === "" ||
-      !paymentAmount ||
-      !paymentToken
+      !paymentAmount
     ) {
       alert("Please fill in all fields.")
       return
@@ -45,7 +42,7 @@ function AddAgreementForm(props) {
 
     if (window.ethereum) {
       const paymentAmountInWei = BigNumber.from(paymentAmount)
-        .mul(BigNumber.from(10).pow(paymentToken.decimals))
+        .mul(BigNumber.from(10).pow(18))
         .toString()
 
       try {
@@ -56,7 +53,6 @@ function AddAgreementForm(props) {
             developer,
             skills.split(","),
             paymentAmountInWei,
-            paymentToken.address
           )
         await tx.wait()
       } catch (error) {
@@ -74,7 +70,6 @@ function AddAgreementForm(props) {
       setDeveloper("")
       setSkills("")
       setPaymentAmount("")
-      setPaymentToken("")
     }
   }
 
@@ -139,28 +134,6 @@ function AddAgreementForm(props) {
               value={developer}
               onChange={(event) => setDeveloper(event.target.value)}
             />
-
-            <label htmlFor="payment-token-input">Payment Token:</label>
-            <div className="select">
-              <select
-                id="payment-token-input"
-                value={paymentToken ? paymentToken.address : ""}
-                onChange={(event) => {
-                  const selectedTokenAddress = event.target.value
-                  const selectedToken = tokens.find((token) => token.address === selectedTokenAddress)
-                  setPaymentToken(selectedToken)
-                }}
-                className={styles["select-input"]}
-              >
-                <option value="">Selecione um token</option>
-                {tokens.map((token) => (
-                  <option key={token.address} value={token.address} className={styles["token-option"]}>
-                    {token.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             <label htmlFor="payment-amount-input">Payment Amount:</label>
             <input
               type="number"

@@ -18,19 +18,19 @@ function AgreementList(props) {
   const [showPaymentInput, setShowPaymentInput] = useState(null);
   const [isAllowanceSufficient, setIsAllowanceSufficient] = useState(false);
   const [userAllowance, setUserAllowance] = useState(null);
+  const [selectedPaymentToken, setSelectedPaymentToken] = useState(null);
 
 
-  const checkAllowance = async (userAddress, contractAddress, paymentTokenAddress) => {
-    const tokenContract = new ERC20Token(paymentTokenAddress);
+  const checkAllowance = async (userAddress, contractAddress, selectedToken) => {
+    const tokenContract = new ERC20Token(selectedToken.address);
     const allowance = await tokenContract.allowance(userAddress, contractAddress);
     setUserAllowance(ethers.BigNumber.from(allowance.toString()))
   };
 
-  const handleApprove = async (amount, paymentToken, spender) => {
+  const handleApprove = async (amount, spender) => {
     try {
-    
-      const amountInWei = ethers.utils.parseUnits(amount.toString(), paymentToken.decimals)
-      const tokenContract = new ERC20Token(paymentToken.address);
+      const amountInWei = ethers.utils.parseUnits(amount.toString(), selectedPaymentToken.decimals)
+      const tokenContract = new ERC20Token(selectedPaymentToken.address);
       const tx = await tokenContract.approve(spender, amountInWei);
       await tx.wait();
   
@@ -40,25 +40,25 @@ function AgreementList(props) {
     }
   };
   
-  const handlePayClick = (index, paymentToken) => {
+  const handlePayClick = (index) => {
     setShowPaymentInput(index);
-    checkAllowance(account, contract.address, paymentToken.address);
   };
 
-  const handlePaymentValueChange = async (e, paymentToken) => {
+  const handlePaymentValueChange = async (e) => {
     const value = parseFloat(e.target.value);
     if (isNaN(value)) {
       setPaymentValue('');
     } else {
       setPaymentValue(value);
-      const paymentAmountInWei = ethers.utils.parseUnits(value.toString(), paymentToken.decimals)
+      const paymentAmountInWei = ethers.utils.parseUnits(value.toString(), selectedPaymentToken.decimals)
       setIsAllowanceSufficient(userAllowance.gte(paymentAmountInWei));
     }
   };
   
-  const handleMakePayment = async (agreementId, totalAmount, totalPaid, paymentToken) => {      
-      setIsLoading(true)  
-      const paymentAmountInWei = ethers.utils.parseUnits(paymentValue.toString(), paymentToken.decimals)
+  const handleMakePayment = async (agreementId) => {      
+    console.log("selectedPaymentToken", selectedPaymentToken)
+    setIsLoading(true)  
+      const paymentAmountInWei = ethers.utils.parseUnits(paymentValue.toString(), selectedPaymentToken.decimals)
 
       if (parseFloat(paymentAmountInWei) <= 0) {
         alert('Invalid payment amount.');
@@ -66,13 +66,14 @@ function AgreementList(props) {
       }
 
       if (!isAllowanceSufficient) {
-        await handleApprove(paymentValue, paymentToken, contract.address);
+        await handleApprove(paymentValue, contract.address);
       }
 
       try {
         const tx = await contract.makePayment(
           agreementId, 
-          paymentAmountInWei
+          paymentAmountInWei,
+          selectedPaymentToken.address
         );
         await tx.wait();
       } catch (error) {
@@ -123,9 +124,6 @@ function AgreementList(props) {
       <div className={styles["card-list"]}>
 
         {agreements.map((agreement, index) => {
-          const paymentToken = tokens.find(token => token.address === agreement.payment.tokenAddress);
-          const paymentTokenName = paymentToken ? paymentToken.name : 'Unknown Token';
-
           return (
             <div key={index} className={styles["card"]}>
               <h2>{agreement.title}</h2>
@@ -141,7 +139,6 @@ function AgreementList(props) {
                 <strong>Payment amount</strong> 
                 {parseFloat(ethers.utils.formatUnits(agreement.payment.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD
               </p>
-              <p><strong>Payment token</strong> {paymentTokenName}</p> {/* Display token name */}
               <p>
                 <strong>Total paid</strong> 
                 {parseFloat(ethers.utils.formatUnits(agreement.totalPaid, 18)).toFixed(2).replace(/\.00$/, '')} USD
@@ -149,17 +146,36 @@ function AgreementList(props) {
 
               <div className={styles["card-footer"]}>
                 <>
-                  <a onClick={() => handlePayClick(index, paymentToken)}>Pay agreement</a>
+                  <a onClick={() => handlePayClick(index)}>Pay agreement</a>
                   {showPaymentInput === index && (
                     <>
                       <input 
                         type="number" 
                         value={paymentValue}
-                        onChange={(e) => handlePaymentValueChange(e, paymentToken)}
+                        onChange={(e) => handlePaymentValueChange(e)}
                       />
-                      <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid, paymentToken)} className={styles["confirm-btn"]}>
+                      <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid)} className={styles["confirm-btn"]}>
                         Confirm payment
                       </button>
+                      <div className="select">
+                      <select
+                        value={selectedPaymentToken ? selectedPaymentToken.address : ""}
+                        onChange={(event) => {
+                          const selectedTokenAddress = event.target.value;
+                          const selectedToken = tokens.find((token) => token.address === selectedTokenAddress);
+                          checkAllowance(account, contract.address, selectedToken);
+                          setSelectedPaymentToken(selectedToken);
+                        }}
+                        className={styles["select-input"]}
+                      >
+                        <option value="">Select a token</option>
+                        {tokens.map((token) => (
+                          <option key={token.address} value={token.address} className={styles["token-option"]}>
+                            {token.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     </>
                   )}
                 </>
