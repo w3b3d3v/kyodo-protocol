@@ -20,11 +20,16 @@ GLOBAL
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: rgb(6,6,6);
-  background: linear-gradient(180deg, rgba(6,6,6,1) 69%, rgba(18,18,18,1) 100%);
   font-family: $sans-serif;
   color: $white;
+  height: 100%;
   margin: 0;
+}
+
+#__next {
+  height: 100vh;
+  background: rgb(6,6,6);
+  background: linear-gradient(180deg, rgba(6,6,6,1) 69%, rgba(18,18,18,1) 100%);
 }
 
 h1,
