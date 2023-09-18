@@ -16,7 +16,6 @@ function AgreementList(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [paymentValue, setPaymentValue] = useState('');
   const [showPaymentInput, setShowPaymentInput] = useState(null);
-  const [isAllowanceSufficient, setIsAllowanceSufficient] = useState(false);
   const [userAllowance, setUserAllowance] = useState(null);
   const [selectedPaymentToken, setSelectedPaymentToken] = useState(null);
 
@@ -50,39 +49,41 @@ function AgreementList(props) {
       setPaymentValue('');
     } else {
       setPaymentValue(value);
-      const paymentAmountInWei = ethers.utils.parseUnits(value.toString(), selectedPaymentToken.decimals)
-      setIsAllowanceSufficient(userAllowance.gte(paymentAmountInWei));
     }
   };
   
   const handleMakePayment = async (agreementId) => {      
-    console.log("selectedPaymentToken", selectedPaymentToken)
+    if (!selectedPaymentToken) {
+      alert('Please select a valid token to process payment.');
+      return;
+    }
+
+    const paymentAmountInWei = ethers.utils.parseUnits(paymentValue.toString(), selectedPaymentToken.decimals)
+    if (parseFloat(paymentAmountInWei) <= 0) {
+      alert('Invalid payment amount.');
+      return;
+    }
+    
     setIsLoading(true)  
-      const paymentAmountInWei = ethers.utils.parseUnits(paymentValue.toString(), selectedPaymentToken.decimals)
 
-      if (parseFloat(paymentAmountInWei) <= 0) {
-        alert('Invalid payment amount.');
-        return;
-      }
+    if (!userAllowance.gte(paymentAmountInWei)) {
+      await handleApprove(paymentValue, contract.address);
+    }
 
-      if (!isAllowanceSufficient) {
-        await handleApprove(paymentValue, contract.address);
-      }
-
-      try {
-        const tx = await contract.makePayment(
-          agreementId, 
-          paymentAmountInWei,
-          selectedPaymentToken.address
-        );
-        await tx.wait();
-      } catch (error) {
-        console.error('Error when making payment', error);
-      } finally {
-        setIsLoading(false);
-        fetchAgreements();
-        setShowPaymentInput(false);
-      }
+    try {
+      const tx = await contract.makePayment(
+        agreementId, 
+        paymentAmountInWei,
+        selectedPaymentToken.address
+      );
+      await tx.wait();
+    } catch (error) {
+      console.error('Error when making payment', error);
+    } finally {
+      setIsLoading(false);
+      fetchAgreements();
+      setShowPaymentInput(false);
+    }
   };
 
   async function fetchAgreements() {
