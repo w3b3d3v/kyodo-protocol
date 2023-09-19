@@ -17,7 +17,7 @@ describe("AgreementContract", function () {
 
     await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);
 
-    [developer] = await ethers.getSigners();
+    [developer, addr1] = await ethers.getSigners();
   });
 
   it("Should create a new agreement with authorized tokens", async function () {
@@ -27,12 +27,25 @@ describe("AgreementContract", function () {
     await agreementContract.connect(developer).createAgreement(
       "Test Agreement",
       "This is a test agreement",
-      developer.address,
+      addr1.address,
       skills,
       paymentAmount,
     );
 
     const agreementCount = await agreementContract.getAgreementCount();
     expect(agreementCount).to.equal(1);
+  });
+
+  it("Should fail if the professional is the same as company", async function () {
+    const skills = ["JavaScript", "Solidity"];
+    const paymentAmount = ethers.utils.parseEther("5");
+
+    await expect(agreementContract.connect(developer).createAgreement(
+      "Test Agreement",
+      "This is a test agreement",
+      developer.address,
+      skills,
+      paymentAmount,
+    )).to.be.revertedWith("Professional address cannot be the same as company")
   });
 });

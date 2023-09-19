@@ -28,7 +28,7 @@ describe("AgreementsByUser", function () {
     await agreementContract.connect(user1).createAgreement(
       "Agreement 1",
       "Description 1",
-      user1.address,
+      user2.address,
       ["Skill 1", "Skill 2"],
       ethers.utils.parseEther("5"),
     );
@@ -36,7 +36,7 @@ describe("AgreementsByUser", function () {
     await agreementContract.connect(user2).createAgreement(
       "Agreement 2",
       "Description 2",
-      user2.address,
+      user1.address,
       ["Skill 3", "Skill 4"],
       ethers.utils.parseEther("4"),
     );
@@ -55,7 +55,7 @@ describe("AgreementsByUser", function () {
     const user1Agreement = await agreementContract.getAgreementById(user1AgreementId);
     const user2Agreement = await agreementContract.getAgreementById(user2AgreementId);
 
-    expect(user1Agreement.professional).to.equal(user1.address);
-    expect(user2Agreement.professional).to.equal(user2.address);
+    expect(user1Agreement.professional).to.equal(user2.address);
+    expect(user2Agreement.professional).to.equal(user1.address);
   });  
 });
