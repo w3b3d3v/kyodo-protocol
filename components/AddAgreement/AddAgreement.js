@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router'
 import { useAgreementContract } from "../../contexts/ContractContext"
+import { useAccount } from "../../contexts/AccountContext"
 import { useState } from "react"
 import styles from "./AddAgreement.module.css"
 import Image from 'next/image'
 import { BeatLoader } from "react-spinners"
 import { ethers } from "ethers"
-const BigNumber = ethers.BigNumber
 import * as Yup from 'yup';
 
 function AddAgreementForm(props) {
@@ -19,15 +19,19 @@ function AddAgreementForm(props) {
   const { contract, loading } = useAgreementContract()
   const [formErrors, setFormErrors] = useState({});
   const router = useRouter()
+  const { account } = useAccount();
 
   const AgreementSchema = Yup.object().shape({
     title: Yup.string()
       .required('Title is required'),
     description: Yup.string()
       .required('Description is required'),
-    professional: Yup.string()
+      professional: Yup.string()
       .required('Professional is required')
-      .matches(/^0x[a-fA-F0-9]{40}$/, 'Professional must be a valid Ethereum address'),
+      .matches(/^0x[a-fA-F0-9]{40}$/, 'Professional must be a valid Ethereum address')
+      .test('is-not-company', 'Professional address cannot be the same as the agreement owner or company', function(value) {
+        return value.toLowerCase() !== account.toLowerCase();
+      }),
     skills: Yup.string()
       .required('Skills are required')
       .test('is-comma-separated', 'Skills should be comma-separated', value => {
@@ -53,7 +57,9 @@ function AddAgreementForm(props) {
             professional,
             skills,
             paymentAmount,
-        }, { abortEarly: false });  
+        }, { 
+          abortEarly: false
+        });  
         setFormErrors({});  
         await addAgreement();
     } catch (errors) {
@@ -71,9 +77,7 @@ function AddAgreementForm(props) {
     setIsLoading(true)
 
     if (window.ethereum) {
-      const paymentAmountInWei = BigNumber.from(paymentAmount)
-        .mul(BigNumber.from(10).pow(18))
-        .toString()
+      const paymentAmountInWei = ethers.utils.parseUnits(paymentAmount.toString(), 18);
 
       try {
         const tx = await contract

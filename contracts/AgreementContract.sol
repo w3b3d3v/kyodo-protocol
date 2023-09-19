@@ -89,7 +89,7 @@ contract AgreementContract {
         require(_professional != address(0), "Professional address cannot be zero");
         require(_skills.length > 0, "Skills must not be empty");
         require(_paymentAmount > 0, "Payment amount must be greater than zero");
-        
+        require(_professional != msg.sender, "Professional address cannot be the same as company");
 
         Token memory paymentToken = Token({
             amount: _paymentAmount,
