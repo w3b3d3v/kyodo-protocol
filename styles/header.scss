@@ -8,6 +8,31 @@ HEADER
   height: 60px;
   background: rgba($white, 1);
   @extend %clearfix;
+
+  nav {
+    float: right;
+    margin-top: 14px;
+  }
+
+  li {
+    list-style-type: none;
+    display: inline-block;
+    margin-right: 30px;
+  }
+
+  a {
+    height: 30px;
+    line-height: 30px;
+    float: right;
+    font-size: $font-medium;
+    font-weight: normal;
+    color: $dark-blue;
+    text-decoration: none;
+
+    &:hover {
+      color: $medium-blue;
+    }
+  }
 }
 
 
@@ -43,7 +68,7 @@ HEADER
   font-weight: normal;
   border: 1px solid $light-gray;
   margin-top: 14px;
-  color: $medium-blue;
+  color: #5F7482;
 
   img {
     float: right;

@@ -26,7 +26,7 @@ function Header() {
             className={"logo"}
           />
           <div className={"user-wallet"}>
-          <em>{formatAddress(account)}</em>
+            <em>{formatAddress(account)}</em>
             <span className={"wallet-on"}>Status</span>
             <Image
               src="/metamask.svg"
@@ -35,6 +35,20 @@ function Header() {
               height={19}
             />
           </div>
+          <nav>
+            <ul>
+              <li>
+                <a href="/">
+                  Home    
+                </a>                  
+              </li>
+              <li>
+                <a href="/agreements">
+                  Agreements    
+                </a>                  
+              </li>
+            </ul>
+          </nav>
         </div>
       </header>
     </AccountProvider>
