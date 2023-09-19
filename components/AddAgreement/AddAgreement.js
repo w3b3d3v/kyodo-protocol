@@ -119,7 +119,7 @@ function AddAgreementForm(props) {
 
           <div className={"col-01"}>
 
-            <label htmlFor="title-input">Title:</label>
+            <label htmlFor="title-input">Title</label>
             <input
               type="text"
               id="title-input"
@@ -127,7 +127,7 @@ function AddAgreementForm(props) {
               onChange={(event) => setTitle(event.target.value)}
             />
 
-            <label htmlFor="developer-input">Professional wallet:</label>
+            <label htmlFor="developer-input">Professional wallet</label>
             <input
               type="text"
               id="developer-input"
@@ -135,7 +135,7 @@ function AddAgreementForm(props) {
               onChange={(event) => setDeveloper(event.target.value)}
             />
             
-            <label htmlFor="payment-amount-input">Payment Amount:</label>
+            <label htmlFor="payment-amount-input">Payment amount</label>
             <input
               type="number"
               id="payment-amount-input"
@@ -147,14 +147,14 @@ function AddAgreementForm(props) {
 
           <div className={"col-02"}>
 
-            <label htmlFor="description-input">Description:</label>
+            <label htmlFor="description-input">Description</label>
             <textarea
               id="description-input"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
             ></textarea>
 
-            <label htmlFor="skills-input">Skills:</label>
+            <label htmlFor="skills-input">Skills</label>
             <textarea
               id="skills-input"
               value={skills}
