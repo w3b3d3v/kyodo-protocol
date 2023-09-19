@@ -5,6 +5,7 @@ import { useAccount } from "../../contexts/AccountContext";
 import ERC20Token from '../../utils/ERC20Token';
 import styles from "./Dashboard.module.css"
 import { ethers } from "ethers";
+import Payments from './Payments';
 
 function Balances(props) {
   const { vaultContract, vaultLoading } = useVaultContract();
@@ -170,10 +171,7 @@ function Balances(props) {
             </div>
           </div>
         ))}
-        <h1>Payments</h1>
-        <div className={styles["card-list"]}>
-            {renderPaidAgreements()}
-        </div>
+        <Payments limit={2} />
       </div>
     </div>
   );  
