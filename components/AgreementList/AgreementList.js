@@ -7,6 +7,7 @@ import { useAccount } from "../../contexts/AccountContext"
 import { useAgreementContract } from "../../contexts/ContractContext"
 import "./AgreementList.module.css"
 import ERC20Token from '../../utils/ERC20Token';
+import { useRouter } from 'next/router'
 
 
 function AgreementList(props) {
@@ -18,6 +19,7 @@ function AgreementList(props) {
   const [showPaymentInput, setShowPaymentInput] = useState(null);
   const [userAllowance, setUserAllowance] = useState(null);
   const [selectedPaymentToken, setSelectedPaymentToken] = useState(null);
+  const router = useRouter()
 
 
   const checkAllowance = async (userAddress, contractAddress, selectedToken) => {
@@ -41,6 +43,10 @@ function AgreementList(props) {
   
   const handlePayClick = (index) => {
     setShowPaymentInput(index);
+  };
+
+  const handleNewAgreement = (index) => {
+    router.push('/agreements/new')
   };
 
   const handlePaymentValueChange = async (e) => {
@@ -122,6 +128,9 @@ function AgreementList(props) {
 
     <div className={styles["agreement-list"]}>
       <h1>Agreements</h1>
+      <button onClick={() => handleNewAgreement()} className={styles["confirm-btn"]}>
+          New Agreement
+      </button>
       <div className={styles["card-list"]}>
 
         {agreements.map((agreement, index) => {
