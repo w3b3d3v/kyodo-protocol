@@ -17,7 +17,7 @@ async function payUserAgreement() {
     return;
   }
 
-  const firstAgreementId = userAgreements[0];
+  const firstAgreementId = userAgreements[2];
 
   const agreementDetails = await agreementContract.getAgreementById(firstAgreementId);
   const paymentAmount = agreementDetails.payment.amount.toString()
@@ -28,7 +28,7 @@ async function payUserAgreement() {
 
   await tokenContract.connect(signer).approve(agreementContract.address, paymentAmount);
 
-  await agreementContract.connect(signer).makePayment(firstAgreementId, paymentAmount);
+  await agreementContract.connect(signer).makePayment(firstAgreementId, paymentAmount, FAKE_STABLE_ADDRESS);
 
   console.log(`Pagamento de ${paymentAmount} tokens feito para o acordo com ID ${firstAgreementId}.`);
 }
