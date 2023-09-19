@@ -149,15 +149,7 @@ function AgreementList(props) {
                   <a onClick={() => handlePayClick(index)}>Pay agreement</a>
                   {showPaymentInput === index && (
                     <>
-                      <input 
-                        type="number" 
-                        value={paymentValue}
-                        onChange={(e) => handlePaymentValueChange(e)}
-                      />
-                      <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid)} className={styles["confirm-btn"]}>
-                        Confirm payment
-                      </button>
-                      <div className="select">
+                      <div className={styles["opened-items"]}>
                         <select
                           value={selectedPaymentToken ? selectedPaymentToken.address : ""}
                           onChange={(event) => {
@@ -175,6 +167,14 @@ function AgreementList(props) {
                             </option>
                           ))}
                         </select>
+                        <input 
+                          type="number" 
+                          value={paymentValue}
+                          onChange={(e) => handlePaymentValueChange(e)}
+                        />
+                        <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid)} className={styles["confirm-btn"]}>
+                          Confirm
+                        </button>
                       </div>
                     </>
                   )}
