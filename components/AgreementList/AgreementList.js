@@ -126,15 +126,22 @@ function AgreementList(props) {
         {agreements.map((agreement, index) => {
           return (
             <div key={index} className={styles["card"]}>
-              <h2>{agreement.title}</h2>
-              <div className={styles["wallet-key"]}>
-                {agreement.developer}
+
+              <div key={index} className={styles["card-heading"]}>
+                <h2>{agreement.title}</h2>
+                <div className={styles["wallet-key"]}>
+                  {agreement.developer}
+                </div>
               </div>
+
               <div className={styles["card-desc"]}>
                 {agreement.description}
               </div>
 
-              <p><strong>Skills</strong> {agreement.skills.join(", ")}</p>
+              <p className={styles["skills-section"]}>
+                <strong>Skills</strong> <span>{agreement.skills.join(", ")}</span>
+              </p>
+              
               <p>
                 <strong>Payment amount</strong> 
                 {parseFloat(ethers.utils.formatUnits(agreement.payment.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD
@@ -149,33 +156,33 @@ function AgreementList(props) {
                   <a onClick={() => handlePayClick(index)}>Pay agreement</a>
                   {showPaymentInput === index && (
                     <>
-                      <input 
-                        type="number" 
-                        value={paymentValue}
-                        onChange={(e) => handlePaymentValueChange(e)}
-                      />
-                      <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid)} className={styles["confirm-btn"]}>
-                        Confirm payment
-                      </button>
-                      <div className="select">
-                      <select
-                        value={selectedPaymentToken ? selectedPaymentToken.address : ""}
-                        onChange={(event) => {
-                          const selectedTokenAddress = event.target.value;
-                          const selectedToken = tokens.find((token) => token.address === selectedTokenAddress);
-                          checkAllowance(account, contract.address, selectedToken);
-                          setSelectedPaymentToken(selectedToken);
-                        }}
-                        className={styles["select-input"]}
-                      >
-                        <option value="">Select a token</option>
-                        {tokens.map((token) => (
-                          <option key={token.address} value={token.address} className={styles["token-option"]}>
-                            {token.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                      <div className={styles["opened-items"]}>
+                        <select
+                          value={selectedPaymentToken ? selectedPaymentToken.address : ""}
+                          onChange={(event) => {
+                            const selectedTokenAddress = event.target.value;
+                            const selectedToken = tokens.find((token) => token.address === selectedTokenAddress);
+                            checkAllowance(account, contract.address, selectedToken);
+                            setSelectedPaymentToken(selectedToken);
+                          }}
+                          className={styles["select-input"]}
+                        >
+                          <option value="">Select a token</option>
+                          {tokens.map((token) => (
+                            <option key={token.address} value={token.address} className={styles["token-option"]}>
+                              {token.name}
+                            </option>
+                          ))}
+                        </select>
+                        <input 
+                          type="number" 
+                          value={paymentValue}
+                          onChange={(e) => handlePaymentValueChange(e)}
+                        />
+                        <button onClick={() => handleMakePayment(agreement.id, agreement.payment.amount, agreement.totalPaid)} className={styles["confirm-btn"]}>
+                          Confirm
+                        </button>
+                      </div>
                     </>
                   )}
                 </>

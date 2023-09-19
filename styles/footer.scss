@@ -5,11 +5,66 @@ GLOBAL
 
 footer {
   width: 100%;
+  height: 50px;
   position: fixed;
   bottom: 0;
   left: 0;
-  text-align: center;
-  background: #1a1a1a;
-  padding: 10px 5px 6px 5px;
+  background: rgba($medium-blue, .07);
+  font-size: $font-medium;
   z-index: 600;
+  @extend %clearfix;
+
+  @media #{$smartphones-1} {
+    height: auto;
+    padding: 10px 0 20px 0;
+    position: inherit;
+  }
+
+  p {
+    margin: 18px 0 0 0;
+    float: left;
+
+    @media #{$smartphones-1} {
+      float: none;
+    }
+
+    img {
+      float: left;
+      margin: -6px 12px 0 0;
+    }
+  }
+
+  ul {
+    float: right;
+
+    @media #{$smartphones-1} {
+      border-top: 1px solid rgba($white, .1);
+      float: none;
+      margin-top: 27px;
+      padding-top: 15px;
+    }
+  }
+
+  li {
+    list-style-type: none;
+    margin-left: 25px;
+    display: inline-block;
+    line-height: 50px;
+
+    @media #{$smartphones-1} {
+      display: block;
+      margin-left: 0;
+      line-height: 25px;
+    }
+  }
+
+  a {
+    color: $normal-gray;
+    text-decoration: none;
+
+    &:hover {
+      color: $white;
+      opacity: 1;
+    }
+  }
 }

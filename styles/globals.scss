@@ -17,12 +17,16 @@ GLOBAL
 
 // Generic elements
 
+html {
+  min-height: 100%;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: $sans-serif;
   background: rgb(6,6,6);
   background: linear-gradient(180deg, rgba(6,6,6,1) 69%, rgba(18,18,18,1) 100%);
-  font-family: $sans-serif;
   color: $white;
   margin: 0;
 }
@@ -47,7 +51,7 @@ li {
 
 h1 {
   text-align: center;
-  margin: 50px 0 40px 0;
+  margin: 55px 0 50px 0;
   font-size: $font-big;
   letter-spacing: -1px;
 }

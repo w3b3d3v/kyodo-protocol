@@ -16,19 +16,33 @@
 }
 
 .card {
-  border: 2px solid #1E2326;
+  border: 1px solid #1E2326;
   border-radius: 6px;
   box-sizing: border-box;
-  padding: 25px;
-  padding-top: 22px;
-  padding-bottom: 78px;
+  background: rgba(43, 82, 107, .07);
+  padding: 75px 25px 80px 25px;
   position: relative;
-  height: 310px;
+}
+
+
+/* Card heading */
+
+.card-heading {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  background: rgba(255, 255, 255, 0.01);
+  height: 75px;
+  position: absolute;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0 25px;
 }
 
 .card h2 {
   font-size: 20px;
-  margin-bottom: 5px;
+  margin: 15px 0 5px 0;
   color: #fff;
 }
 
@@ -36,13 +50,41 @@
   font-size: 11px;
   color: #999;
   margin-bottom: 15px;
-  background: #161616;
-  border: 1px solid #1A1A1A;
-  padding: 3px 5px;
-  border-radius: 4px;
   display: inline-block;
   font-weight: 300;
 }
+
+
+/* Card description */
+
+.card-desc {
+  border-bottom: 1px solid #181A1C;
+  padding-bottom: 20px;
+  margin-top: 17px;
+  font-size: 12px;
+  color: #fff;
+  line-height: 20px;
+}
+
+
+/* Skills */
+
+.skills-section {
+  margin: 23px 0 21px 0;
+}
+
+.skills-section span {
+  display: inline-block;
+  padding: 0 10px;
+  border: 1px solid #85A8BE;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+
+/* Values */
 
 .card p {
   font-size: 12px;
@@ -57,38 +99,18 @@
   color: #85A8BE;
 }
 
-.card-desc {
-  border-bottom: 1px solid #0D0D0D;
-  margin-bottom: 17px;
-  padding-bottom: 17px;
-  font-size: 12px;
-  color: #fff;
-  line-height: 20px;
+.total-paid {
+
 }
 
-.card input {
-  width: 76px;
-  display: inline-block;
-  height: 26px;
-  margin: 17px 0 0 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  padding: 0 7px;
-  font-size: 11px;
-  position: relative;
-  z-index: 200;
-}
 
-.card input:focus {
-  outline: none;
-  box-shadow: none;
-}
+/* Card footer */
 
 .card-footer {
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
-  background: #0D0D0D;
-  height: 100px;
+  background: rgba(255, 255, 255, 0.01);
+  height: 60px;
   position: absolute;
   box-sizing: border-box;
   bottom: 0;
@@ -98,51 +120,78 @@
   padding-left: 25px;
 }
 
-.card a,
-.card button {
+.opened-items {
+  position: absolute;
+  left: 25px;
+  top: 17px;
+  z-index: 300;
+}
+
+.card-footer input,
+.card-footer select {
+  display: inline-block;
+  height: 26px;
+  border-radius: 4px;
+  padding: 0 7px;
+  font-size: 11px;
+  margin: 0;
+}
+
+.card-footer select {
+  width: 120px;
+  margin-right: 7px;
+  background-color: #151A1C;
+}
+
+.card-footer input {
+  width: 160px;
+}
+
+.card-footer input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.card-footer a,
+.card-footer button {
   font-size: 11px;
   font-weight: bold;
   color: #E6EDF1;
   display: inline-block;
-  background: none;
-  border: 1px solid #85A8BE;
-  background-color: #0D0D0D;
-  border-radius: 20px;
-  padding: 0 9px;
+  border-radius: 4px;
+  padding: 0 10px;
   cursor: pointer;
 }
 
-.card a {
+.card-footer a {
   color: #E6EDF1;
-  border: 1px solid #85A8BE;
   height: 24px;
+  background: none;
+  border: 1px solid #85A8BE;
+  background-color: #0D0D0D;
   line-height: 23px;
+  z-index: 100;
   position: absolute;
   left: 25px;
   top: 17px;
-  z-index: 100;
-}
-
-.card button {
-  color: #fff;
-  height: 26px;
-  padding-right: 10px;
-  position: absolute;
-  left: 100px;
-  top: 17px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
   z-index: 200;
 }
 
-.card button.confirm-btn {
-  border-color: #7BB651;
+.card-footer a:hover {
+  border-color: #fff;
 }
 
-.card a:hover,
-.card button:hover  {
+.card-footer button {
   color: #fff;
-  border-color: #fff;
+  border: 1px solid #789C5D;
+  background: #789C5D;
+  margin-left: 7px;
+  display: inline-block;
+  height: 25px;
+}
+
+.card-footer button:hover {
+  opacity: .8;
 }
 
 

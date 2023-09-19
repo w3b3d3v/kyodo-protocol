@@ -37,12 +37,12 @@
   font-weight: 600;
   background: #060606;
   height: 38px;
-  line-height: 35px;
+  line-height: 36px;
   display: inline-block;
   font-size: 14px;
   text-align: center;
   box-sizing: border-box;
-  padding: 0 30px;
+  padding: 0 35px;
   color: #fff;
   margin: 2px;
   cursor: pointer;
@@ -139,6 +139,7 @@
   .add-agreement-form {
     width: 90%;
     max-width: 100%;
+    padding-bottom: 70px;
   }
 
   .columns {
