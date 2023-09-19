@@ -158,24 +158,24 @@ function AgreementList(props) {
                         Confirm payment
                       </button>
                       <div className="select">
-                      <select
-                        value={selectedPaymentToken ? selectedPaymentToken.address : ""}
-                        onChange={(event) => {
-                          const selectedTokenAddress = event.target.value;
-                          const selectedToken = tokens.find((token) => token.address === selectedTokenAddress);
-                          checkAllowance(account, contract.address, selectedToken);
-                          setSelectedPaymentToken(selectedToken);
-                        }}
-                        className={styles["select-input"]}
-                      >
-                        <option value="">Select a token</option>
-                        {tokens.map((token) => (
-                          <option key={token.address} value={token.address} className={styles["token-option"]}>
-                            {token.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                        <select
+                          value={selectedPaymentToken ? selectedPaymentToken.address : ""}
+                          onChange={(event) => {
+                            const selectedTokenAddress = event.target.value;
+                            const selectedToken = tokens.find((token) => token.address === selectedTokenAddress);
+                            checkAllowance(account, contract.address, selectedToken);
+                            setSelectedPaymentToken(selectedToken);
+                          }}
+                          className={styles["select-input"]}
+                        >
+                          <option value="">Select a token</option>
+                          {tokens.map((token) => (
+                            <option key={token.address} value={token.address} className={styles["token-option"]}>
+                              {token.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </>
                   )}
                 </>

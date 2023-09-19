@@ -11,8 +11,7 @@ form {
 }
 
 input,
-textarea,
-.select {
+textarea {
   width: 100%;
   border: 1px solid $dark-blue-2;
   background: rgba($medium-blue, .07);
@@ -25,8 +24,7 @@ textarea,
   height: 40px;
 }
 
-input,
-.select {
+input {
   line-height: 40px;
   padding: 0 15px;
 }
@@ -38,71 +36,4 @@ textarea {
   min-width: 100%;
   min-height: 84px;
   max-height: 140px;
-}
-
-
-// Custom select
-
-:root {
-  --select-border: $medium-blue;
-  --select-arrow: var(--select-border);
-}
-
-select {
-  appearance: none;
-  background-color: transparent;
-  border: none;
-  padding: 0 1em 0 0;
-  margin: 0;
-  width: 100%;
-  font-family: inherit;
-  font-size: inherit;
-  cursor: inherit;
-  line-height: inherit;
-  z-index: 1;
-  color: $white;
-
-  &::-ms-expand {
-    display: none;
-  }
-
-  outline: none;
-}
-
-.select {
-  display: grid;
-  grid-template-areas: "select";
-  align-items: center;
-  position: relative;
-  line-height: 38px;
-  padding: 0;
-
-  select,
-  &::after {
-    grid-area: select;
-  }
-
-  select { 
-    width: 100%;
-    position: absolute;
-    left: 0;
-    right: 0;
-    padding-left: 18px;
-  }
-
-  &:not(.select--multiple)::after {
-    content: "";
-    justify-self: end;
-    width: 0.8em;
-    height: 0.5em;
-    background-color: var(--select-arrow);
-    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
-    margin-right: 15px;
-  }
-
-  option {
-    background-color: #101315;
-    color: $white;
-    font-size: 14px;
-  }
 }
