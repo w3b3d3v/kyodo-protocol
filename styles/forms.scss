@@ -3,6 +3,14 @@ FORMS
 ===========================
 */
 
+form {
+
+  label {
+
+    color: $light-gray;
+  }
+}
+
 input,
 textarea,
 .select {
