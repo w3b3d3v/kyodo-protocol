@@ -60,6 +60,36 @@ function MyApp({ Component, pageProps }) {
     <AccountProvider>
       <Header />
       <Component {...pageProps} />
+      <footer>
+        <div className={"holder"}>
+          <p>
+            <Image
+              src="/web3dev.svg"
+              alt="WEB3DEV"
+              width={17}
+              height={27}
+            />
+            &copy; 2023 WEB3DEV
+          </p>
+          <ul>
+            <li>
+              <a href="https://www.kyodoprotocol.xyz/code-of-conduct.html">
+                Code of conduct 
+              </a>
+            </li>
+            <li>
+              <a href="https://www.kyodoprotocol.xyz/privacy-policy.html">
+                Privacy policy
+              </a>
+            </li>
+            <li>
+              <a href="https://www.kyodoprotocol.xyz/terms-of-use.html">
+                Terms of use
+              </a>        
+            </li>
+          </ul>
+        </div>
+      </footer>
     </AccountProvider>
   );
 }
