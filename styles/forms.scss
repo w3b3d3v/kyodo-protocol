@@ -6,7 +6,6 @@ FORMS
 form {
 
   label {
-
     color: $light-gray;
   }
 }
@@ -15,8 +14,8 @@ input,
 textarea,
 .select {
   width: 100%;
-  border: 1px solid #1E2326;
-  background: rgba(#2B526B, .07);
+  border: 1px solid $dark-blue-2;
+  background: rgba($medium-blue, .07);
   border-radius: 6px;
   font-size: 14px;
   color: #fff;
@@ -45,8 +44,7 @@ textarea {
 // Custom select
 
 :root {
-  --select-border: #777;
-  --select-focus: blue;
+  --select-border: $medium-blue;
   --select-arrow: var(--select-border);
 }
 
