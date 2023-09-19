@@ -73,17 +73,17 @@ function MyApp({ Component, pageProps }) {
           </p>
           <ul>
             <li>
-              <a href="https://www.kyodoprotocol.xyz/code-of-conduct.html">
+              <a href="https://www.kyodoprotocol.xyz/code-of-conduct.html" target="_blank">
                 Code of conduct 
               </a>
             </li>
             <li>
-              <a href="https://www.kyodoprotocol.xyz/privacy-policy.html">
+              <a href="https://www.kyodoprotocol.xyz/privacy-policy.html" target="_blank">
                 Privacy policy
               </a>
             </li>
             <li>
-              <a href="https://www.kyodoprotocol.xyz/terms-of-use.html">
+              <a href="https://www.kyodoprotocol.xyz/terms-of-use.html" target="_blank">
                 Terms of use
               </a>        
             </li>

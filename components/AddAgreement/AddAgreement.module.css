@@ -139,6 +139,7 @@
   .add-agreement-form {
     width: 90%;
     max-width: 100%;
+    padding-bottom: 70px;
   }
 
   .columns {

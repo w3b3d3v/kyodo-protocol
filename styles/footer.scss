@@ -12,10 +12,21 @@ footer {
   background: rgba($medium-blue, .07);
   font-size: $font-medium;
   z-index: 600;
+  @extend %clearfix;
+
+  @media #{$smartphones-1} {
+    height: auto;
+    padding: 10px 0 20px 0;
+    position: inherit;
+  }
 
   p {
     margin: 18px 0 0 0;
     float: left;
+
+    @media #{$smartphones-1} {
+      float: none;
+    }
 
     img {
       float: left;
@@ -25,6 +36,13 @@ footer {
 
   ul {
     float: right;
+
+    @media #{$smartphones-1} {
+      border-top: 1px solid rgba($white, .1);
+      float: none;
+      margin-top: 27px;
+      padding-top: 15px;
+    }
   }
 
   li {
@@ -32,6 +50,12 @@ footer {
     margin-left: 25px;
     display: inline-block;
     line-height: 50px;
+
+    @media #{$smartphones-1} {
+      display: block;
+      margin-left: 0;
+      line-height: 25px;
+    }
   }
 
   a {
