@@ -134,6 +134,7 @@ function AddAgreementForm(props) {
               value={developer}
               onChange={(event) => setDeveloper(event.target.value)}
             />
+            
             <label htmlFor="payment-amount-input">Payment Amount:</label>
             <input
               type="number"
@@ -176,4 +177,3 @@ function AddAgreementForm(props) {
 }
 
 export default AddAgreementForm;
-

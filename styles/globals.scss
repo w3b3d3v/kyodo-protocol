@@ -17,19 +17,18 @@ GLOBAL
 
 // Generic elements
 
+html {
+  min-height: 100%;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: $sans-serif;
-  color: $white;
-  height: 100%;
-  margin: 0;
-}
-
-#__next {
-  height: 100vh;
   background: rgb(6,6,6);
   background: linear-gradient(180deg, rgba(6,6,6,1) 69%, rgba(18,18,18,1) 100%);
+  color: $white;
+  margin: 0;
 }
 
 h1,
