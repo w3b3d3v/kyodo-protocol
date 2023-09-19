@@ -140,7 +140,7 @@ function AgreementList(props) {
               <div key={index} className={styles["card-heading"]}>
                 <h2>{agreement.title}</h2>
                 <div className={styles["wallet-key"]}>
-                  {agreement.developer}
+                  {agreement.professional}
                 </div>
               </div>
 
