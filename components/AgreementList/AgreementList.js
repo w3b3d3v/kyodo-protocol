@@ -126,15 +126,22 @@ function AgreementList(props) {
         {agreements.map((agreement, index) => {
           return (
             <div key={index} className={styles["card"]}>
-              <h2>{agreement.title}</h2>
-              <div className={styles["wallet-key"]}>
-                {agreement.developer}
+
+              <div key={index} className={styles["card-heading"]}>
+                <h2>{agreement.title}</h2>
+                <div className={styles["wallet-key"]}>
+                  {agreement.developer}
+                </div>
               </div>
+
               <div className={styles["card-desc"]}>
                 {agreement.description}
               </div>
 
-              <p><strong>Skills</strong> {agreement.skills.join(", ")}</p>
+              <p className={styles["skills-section"]}>
+                <strong>Skills</strong> <span>{agreement.skills.join(", ")}</span>
+              </p>
+              
               <p>
                 <strong>Payment amount</strong> 
                 {parseFloat(ethers.utils.formatUnits(agreement.payment.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD
