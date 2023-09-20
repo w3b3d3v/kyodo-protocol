@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BeatLoader } from "react-spinners";
-import { useVaultContract, useAgreementContract } from "../../contexts/ContractContext";
+import { useVaultContract } from "../../contexts/ContractContext";
 import { useAccount } from "../../contexts/AccountContext";
 import ERC20Token from '../../utils/ERC20Token';
 import styles from "./Dashboard.module.css"
@@ -9,20 +9,17 @@ import Payments from './Payments';
 
 function Balances(props) {
   const { vaultContract, vaultLoading } = useVaultContract();
-  const { contract, loading } = useAgreementContract();
   const { account } = useAccount();
   const [userBalances, setUserBalances] = useState([]);
   const [showRedeemInput, setShowRedeemInput] = useState(null);
   const [redeemValue, setRedeemValue] = useState('');
-  const [paidAgreements, setPaidAgreements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-
+  
   const handleRedeemClick = (index) => {
     setShowRedeemInput(index);
   };  
 
-  const handleRedeemValueChange = (e, balance) => {
+  const handleRedeemValueChange = (e) => {
     const inputAmount = parseFloat(e.target.value);
     if (isNaN(inputAmount)) {
       setRedeemValue('');
@@ -31,44 +28,34 @@ function Balances(props) {
     }
   };
 
-  async function fetchPaidAgreements() {
-    const companyFilter = contract.filters.PaymentMade(account, null);
-    const professionalFilter = contract.filters.PaymentMade(null, account);
+  const handleWithdrawal = async (user, amount, asset) => {
+    if (user.toLowerCase() == account.toLowerCase()) {
+    if (!localStorage.getItem(asset)) {
+        const tokenContract = new ERC20Token(asset);
+        const symbol = await tokenContract.symbol();
+        const decimals = await tokenContract.decimals();
 
-    const companyAgreements = await contract.queryFilter(companyFilter);
-    const professionalAgreements = await contract.queryFilter(professionalFilter);
+        await window.ethereum
+        .request({
+            method: "wallet_watchAsset",
+            params: {
+                type: "ERC20",
+                options: {
+                    address: asset,
+                    symbol: symbol,
+                    decimals: decimals,
+                },
+            },
+        });
+        localStorage.setItem(asset, 'added');
+      }
+    }
+  };
 
-    const allAgreements = [...companyAgreements, ...professionalAgreements];
-
-    setPaidAgreements(allAgreements.map(event => ({
-      ...event.args,
-      transactionHash: event.transactionHash
-    })));
-  }
-
-  function renderPaidAgreements() {
-    return paidAgreements.map((agreement, index) => (
-      <div key={index} className={styles["card"]}>
-        <h2>Agreement ID: {agreement.agreementId.toString()}</h2>
-        <p>
-          <strong>Status:</strong> {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? "Paid" : "Received"}
-        </p>
-        <p>
-          <strong>Amount:</strong> {parseFloat(ethers.utils.formatUnits(agreement.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD
-        </p>
-        <div className={styles["card-footer"]}>
-          <a href={`https://polygonscan.com/tx/${agreement.transactionHash}`} target="_blank" rel="noopener noreferrer" className={styles["confirm-btn"]}>
-            View on Polygonscan
-          </a>
-        </div>
-      </div>
-    ));
-  }  
 
   async function fetchUserBalances() {
     const tokenAddresses = [
-      process.env.NEXT_PUBLIC_STABLE_VAULT_ADDRESS, 
-      process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
+      process.env.NEXT_PUBLIC_STABLE_VAULT_ADDRESS
     ]
     const balances = [];
 
@@ -76,16 +63,12 @@ function Balances(props) {
       try {
         const tokenContract = new ERC20Token(address);
         const balance = await tokenContract.balanceOf(account);
-        const symbol = await tokenContract.symbol();
-        const name = await tokenContract.name();
         const decimals = await tokenContract.decimals();
 
         if (balance > 0) {
           balances.push({
             tokenAddress: address,
-            tokenSymbol: symbol,
             tokenDecimals: decimals,
-            tokenName: name,
             amount: balance,
           });
         }
@@ -97,7 +80,6 @@ function Balances(props) {
     setUserBalances(balances);
   }
 
-
   const handleWithdraw = async (amount, balance) => {
     const redeemAmountInWei = ethers.utils.parseUnits(amount.toString(), balance.tokenDecimals);
       
@@ -108,28 +90,40 @@ function Balances(props) {
     try {
       setIsLoading(true);
       const tx = await vaultContract.withdraw(redeemAmountInWei, process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS)
-      tx.wait();
+      await tx.wait();
+      await fetchUserBalances();
     } catch (error) {
       console.error("Error during withdrawal:", error);
-    }finally {
-      fetchPaidAgreements();
-      fetchUserBalances();
-      setIsLoading(false);
+    } finally {
       setShowRedeemInput(false);
+      setIsLoading(false);
     }
   };
   
   useEffect(() => {
     setIsLoading(true);
-    if (!vaultLoading) {
-      fetchUserBalances();
-    }
 
-    if (!loading) {
-      fetchPaidAgreements()
-    }
-    setIsLoading(false);
+    const fetchData = async () => {
+        try {
+            if (!vaultLoading) {
+                await fetchUserBalances();
+                vaultContract.on("Withdrawal", handleWithdrawal);
+                
+                return () => {
+                    vaultContract.off("Withdrawal", handleWithdrawal);
+                };
+            }
+        } catch (error) {
+            console.error("Erro ao buscar dados:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    fetchData();
   }, [vaultLoading]);
+
+
 
   const handleInvestClick = () => {
     alert("Future feature");
@@ -147,23 +141,26 @@ function Balances(props) {
 
   return (
     <div className={styles["balance-list"]}>
-      <h1>Balances</h1>
+      {userBalances.length > 0 && (
+        <h1>Balances</h1>
+      )}
       <div className={styles["card-list"]}>
         {userBalances.map((balance, index) => (
           <div key={index} className={styles["card"]}>
-              <h2>{balance.tokenName} ({balance.tokenSymbol})</h2>
             <p>
               <strong>Balance</strong> 
               {parseFloat(ethers.utils.formatUnits(balance.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD
             </p>
             <div className={styles["card-footer"]}>
-              <a onClick={() => handleRedeemClick(index)}>Redeem</a>
+              {showRedeemInput !== index && (
+                <a onClick={() => handleRedeemClick(index)}>Redeem</a>
+              )}
               {showRedeemInput === index && (
                 <>
                   <input 
                     type="number" 
                     value={redeemValue}
-                    onChange={(e) => handleRedeemValueChange(e, balance)} // Você precisará obter o saldo do usuário para este token
+                    onChange={(e) => handleRedeemValueChange(e)}
                   />
                   <button onClick={() => handleWithdraw(redeemValue, balance)} className={styles["confirm-btn"]}>Confirm Redeem</button>
                 </>
@@ -174,7 +171,8 @@ function Balances(props) {
         <Payments limit={2} />
       </div>
     </div>
-  );  
+  );
+  
 }
 
 export default Balances;

@@ -24,7 +24,6 @@ function Payments ({ limit }) {
     }
 
     async function fetchPaidAgreements() {
-        console.log("paidAgreements",paidAgreements)
         const companyFilter = contract.filters.PaymentMade(account, null);
         const professionalFilter = contract.filters.PaymentMade(null, account);
 
