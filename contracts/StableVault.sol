@@ -17,6 +17,7 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
     using SafeERC20 for IERC20;
 
     event BalanceUpdated(uint256 _vaultBalance);
+    event Withdrawal(address indexed user, uint256 amount, address indexed asset);
 
     constructor(
         address admin, 
@@ -111,13 +112,13 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
      */
     function withdraw(uint256 amount, address _asset) external nonReentrant() whenNotPaused() returns(bool){
         uint correctedAmount = _correctAmount(amount, _asset);
-        console.log("Withdraw amount: ", amount);
-        console.log("Withdraw correctedAmount: ", correctedAmount);
 
         require(balanceOf(msg.sender) >= correctedAmount, "Insufficient balance");
         _burn(msg.sender, correctedAmount);
         IERC20(_asset).safeTransfer(msg.sender, amount);
         _decreaseBalance(correctedAmount);
+
+        emit Withdrawal(msg.sender, correctedAmount, _asset);
         return true;
     }
 }

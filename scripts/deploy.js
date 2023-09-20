@@ -14,7 +14,16 @@ function copyABI() {
 
   const sourceData = fs.readFileSync(sourcePath, "utf8");
   fs.writeFileSync(destinationPath, sourceData);
-  console.log(`Copied ABI to ${destinationPath}`);
+  console.log(`Copied AgreementContract ABI to ${destinationPath}`);
+}
+
+function copyVaultABI() {
+  const sourcePath = path.join(__dirname, "../artifacts/contracts/StableVault.sol/StableVault.json");
+  const destinationPath = path.join(__dirname, "../contexts/contracts/StableVault.json");
+
+  const sourceData = fs.readFileSync(sourcePath, "utf8");
+  fs.writeFileSync(destinationPath, sourceData);
+  console.log(`Copied StableVault ABI to ${destinationPath}`);
 }
 
 function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress) {
@@ -122,6 +131,7 @@ async function deployStableVault() {
   await vault.deployed();
 
   console.log("StableVault deployed to:", vault.address);
+  copyVaultABI();
   return vault.address;
 }
 
