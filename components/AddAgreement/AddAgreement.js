@@ -158,20 +158,52 @@ function AddAgreementForm(props) {
             ></textarea>
 
             <label htmlFor="skills-input">Skills</label>
-            <textarea
-              id="skills-input"
-              value={skills}
-              onChange={(event) => setSkills(event.target.value)}
-            ></textarea>
-
-            <div className={"skill-item"}>
-              <span>Front-end Development</span>
+            <div className={"skills-field"}>
+              <input
+                type="text"
+                id="skill-value"
+                placeholder="%"
+              />
+              <input
+                type="text"
+                id="skills-input"
+                value={skills}
+                onChange={(event) => setSkills(event.target.value)}
+              />
+            </div>
+            <a href="#" className={"add-skill-btn"}>
               <Image
-                src="/close.svg"
+                src="/add.svg"
                 width={16}
                 height={16}
               />
-            </div>
+              <span>add</span>
+            </a>
+
+            <ul className={"skills-list"}>
+              <li>
+                <div className={"skill-item"}>
+                  <span>Dev Ops</span>
+                  <Image
+                    src="/close.svg"
+                    width={16}
+                    height={16}
+                  />
+                </div>
+                <em>30%</em>
+              </li>
+              <li>
+                <div className={"skill-item"}>
+                  <span>Quality Assurance</span>
+                  <Image
+                    src="/close.svg"
+                    width={16}
+                    height={16}
+                  />
+                </div>
+                <em>20%</em>
+              </li>
+            </ul>
 
           </div>
 

@@ -3,7 +3,7 @@
 .add-agreement-form {
   width: 615px;
   max-width: 615px;
-  padding-bottom: 100px;
+  padding-bottom: 110px;
   margin: 0 auto;
 }
 
@@ -18,20 +18,20 @@
 
 .amount-field span {
   position: absolute;
-  left: 0;
-  font-size: 14px;
+  font-size: 13px;
   color: #CCDDE2;
   display: inline-block;
   background-color: #1E2326;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
   padding: 0 15px;
   height: 40px;
   line-height: 40px;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  left: 0;
 }
 
 .amount-field input {
-  padding-left: 75px;
+  padding-left: 70px;
 }
 
 
@@ -40,7 +40,7 @@
 .form-footer {
   text-align: center;
   padding-top: 20px;
-  margin-top: 25px;
+  margin-top: 55px;
   border-top: 1px solid #1E2326;
   display: block;
 }
