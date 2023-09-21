@@ -164,6 +164,15 @@ function AddAgreementForm(props) {
               onChange={(event) => setSkills(event.target.value)}
             ></textarea>
 
+            <div className={"skill-item"}>
+              <span>Front-end Development</span>
+              <Image
+                src="/close.svg"
+                width={16}
+                height={16}
+              />
+            </div>
+
           </div>
 
         </section>
