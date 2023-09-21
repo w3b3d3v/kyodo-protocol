@@ -10,9 +10,9 @@ export default function Home() {
       </Head>
       <main>
         <section className="user-home">
-          <h1>Hi, Josy</h1>
+          <h1>GM, mate!</h1>
           <ul className="home-calls">
-            <li>
+            <li className="disabled">
               <h2>Complete your profile to be visible</h2>
               <div className="progressbar">
                 <div></div>
@@ -21,11 +21,11 @@ export default function Home() {
               <a href="#">Complete profile</a>
             </li>
             <li>
-              <h2>Validate your experience</h2>
-              <p>With ZKP you can prove your skills and experience minting a NFT to display it in your profile.</p>
-              <a href="#">Start validating</a>
+              <h2>Add an agreement</h2>
+              <p>Start adding your first agreement.</p>
+              <a href="#">Add agreement</a>
             </li>
-            <li>
+            <li className="disabled">
               <h2>Refer and<br></br> earn</h2>
               <p>Professionals or contractors that refer the usage of Kyodo, can earn a % of paid value to the protocol.</p>
               <a href="#">Get referral link</a>
