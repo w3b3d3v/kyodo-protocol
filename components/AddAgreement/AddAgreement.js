@@ -157,7 +157,10 @@ function AddAgreementForm(props) {
               onChange={(event) => setDescription(event.target.value)}
             ></textarea>
 
-            <label htmlFor="skills-input">Skills</label>
+            <label htmlFor="skills-input" className={"skill-lv"}>
+              Skills
+              <span>Lv.</span>
+            </label>
             <div className={"skills-field"}>
               <input
                 type="text"
