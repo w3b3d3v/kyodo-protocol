@@ -45,7 +45,7 @@ describe("agreement_program", () => {
     // Add your test here.
     const tx = await program.methods.initializeAgreement(agreement, amount).accounts({
       agreement: agreementAddress.publicKey,
-      user: provider.wallet.publicKey,
+      company: provider.wallet.publicKey,
       agreementIdCounter: idAddress.publicKey,
       systemProgram: anchor.web3.SystemProgram.programId,
     }).signers([agreementAddress]).rpc();
@@ -71,7 +71,7 @@ describe("agreement_program", () => {
     // Add your test here.
     const tx = await program.methods.initializeAgreement(agreement, amount).accounts({
       agreement: agreementAddress.publicKey,
-      user: provider.wallet.publicKey,
+      company: provider.wallet.publicKey,
       agreementIdCounter: idAddress.publicKey,
       systemProgram: anchor.web3.SystemProgram.programId,
     }).signers([agreementAddress]).rpc();
