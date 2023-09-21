@@ -17,7 +17,9 @@ export function useAccountSolana() {
     return useContext(AccountContext);
 }
 
-export const SolanaAdapter = ({ children }) => {    
+export const SolanaAdapter = ({ children }) => {
+    const [account, setAccount] = useState(null);
+
     const AccountContext = createContext();
     // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
     const network = WalletAdapterNetwork.Testnet;
@@ -47,9 +49,11 @@ export const SolanaAdapter = ({ children }) => {
     return (
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
-                    <WalletModalProvider>
+                <AccountContext.Provider value={{ account, setAccount }}>
+                    <WalletModalProvider setAccount={setAccount} account={account}>
                       {children}
                     </WalletModalProvider>
+                </AccountContext.Provider>
             </WalletProvider>
         </ConnectionProvider>
     );
