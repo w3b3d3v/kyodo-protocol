@@ -9,7 +9,7 @@ export default function Home() {
         <link rel="icon" href="/logo192.png" />
       </Head>
       <main>
-        <section className="holder">
+        <section className="user-home">
           <h1>Hi, Josy</h1>
           <ul className="home-calls">
             <li>

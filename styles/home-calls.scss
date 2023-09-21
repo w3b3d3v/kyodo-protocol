@@ -3,6 +3,25 @@ HOME CALL
 ===========================
 */
 
+.user-home {
+  width: 615px;
+  max-width: 615px;
+  margin: 0 auto;
+  padding-bottom: 110px;
+
+  h1 {
+    font-size: $font-bigger-2;
+    text-align: left;
+  }
+}
+
 .home-calls {
-  background-color: red;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+
+  li {
+    list-style-type: none;
+    width: 30%;
+  }
 }
