@@ -157,7 +157,7 @@ function AgreementList(props) {
                 {parseFloat(ethers.utils.formatUnits(agreement.payment.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD
               </p>
               <p>
-                <strong>Total paid</strong> 
+                <strong className={styles["total-paid"]}>Total paid</strong> 
                 {parseFloat(ethers.utils.formatUnits(agreement.totalPaid, 18)).toFixed(2).replace(/\.00$/, '')} USD
               </p>
 
