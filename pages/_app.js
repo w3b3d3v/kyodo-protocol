@@ -5,8 +5,10 @@ import {
   ConnectWalletButton,
   vefifyChain,
 } from "../components/ConnectWalletButton/ConnectWalletButton"
+import React, { useMemo } from "react"
+import { SolanaAdapter } from '../components/SolanaWalletAdaptor/SolanaWalletAdaptor';
 
-import React from "react"
+const selectedChain = "solana";
 
 function formatAddress(address) {
   if (!address) return '';
@@ -16,8 +18,6 @@ function formatAddress(address) {
 }
 
 function Header() {
-  const { account } = useAccount();
-
   return (
       <header className={"main-header"}>
         <div className={"holder"}>
@@ -52,6 +52,7 @@ function Header() {
 
 function MyApp({ Component, pageProps }) {
   return (
+    selectedChain === "ethereum" ?
     <AccountProvider>
       <Header />
       <Component {...pageProps} />
@@ -86,7 +87,44 @@ function MyApp({ Component, pageProps }) {
         </div>
       </footer>
     </AccountProvider>
-  );
+  :  <SolanaAdapter>      
+      <div>
+      <Header />
+      <Component {...pageProps} />
+      <footer>
+        <div className={"holder"}>
+          <p>
+            <Image
+              src="/web3dev.svg"
+              alt="WEB3DEV"
+              width={17}
+              height={27}
+            />
+            &copy; 2023 WEB3DEV
+          </p>
+          <ul>
+            <li>
+              <a href="https://www.kyodoprotocol.xyz/code-of-conduct.html" target="_blank">
+                Code of conduct 
+              </a>
+            </li>
+            <li>
+              <a href="https://www.kyodoprotocol.xyz/privacy-policy.html" target="_blank">
+                Privacy policy
+              </a>
+            </li>
+            <li>
+              <a href="https://www.kyodoprotocol.xyz/terms-of-use.html" target="_blank">
+                Terms of use
+              </a>        
+            </li>
+          </ul>
+        </div>
+      </footer>
+      </div>
+      </SolanaAdapter>
+  )
+  ;
 }
 
 export default MyApp

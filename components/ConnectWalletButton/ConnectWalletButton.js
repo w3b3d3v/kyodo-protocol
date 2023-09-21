@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Image from 'next/image'
 import { ethers } from "ethers";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from "../../contexts/AccountContext";
-
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { UnsafeBurnerWalletAdapter } from '@solana/wallet-adapter-wallets';
+import {
+    WalletModalProvider,
+    WalletDisconnectButton,
+    WalletMultiButton
+} from '@solana/wallet-adapter-react-ui';
 const networkId = "0x13881";
 const customChainId = "0x7A69";
+const selectedChain = "solana"
+
 
 async function vefifyChain() {
   const testEnv = (process.env.NODE_ENV !== "production");
@@ -58,7 +67,7 @@ function ConnectWalletButton({ setAccount, chains, account }){
       try {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const accounts = await provider.listAccounts();
-        // await vefifyChain()
+        //await vefifyChain()
         setAccount(accounts[0])
         // props.updateAccount();
       } catch (error) {
@@ -69,10 +78,12 @@ function ConnectWalletButton({ setAccount, chains, account }){
   }
 
   return (
+    selectedChain === "ethereum" ? 
       <div className={"holder home-entry"}>
         {account ? (
           <p>Connected with wallet {account}</p>
-        ) : (
+        ) :
+         (
           <ConnectButton 
             className="connect-wallet"
             chainStatus="icon" 
@@ -82,7 +93,8 @@ function ConnectWalletButton({ setAccount, chains, account }){
           />
         )}
       </div>
-  );
+  : <WalletMultiButton/>
+  )
 }
 
 export {ConnectWalletButton, vefifyChain};

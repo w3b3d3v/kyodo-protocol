@@ -10,6 +10,11 @@
   },
   "dependencies": {
     "@rainbow-me/rainbowkit": "^1.0.11",
+    "@solana/wallet-adapter-base": "^0.9.23",
+    "@solana/wallet-adapter-react": "^0.15.35",
+    "@solana/wallet-adapter-react-ui": "^0.9.34",
+    "@solana/wallet-adapter-wallets": "^0.19.22",
+    "@solana/web3.js": "^1.78.5",
     "bignumber.js": "^9.1.2",
     "dotenv": "^16.0.3",
     "ethersjs": "^0.0.1-security",

@@ -1,12 +1,14 @@
 import { useRouter } from 'next/router'
 import { useAgreementContract } from "../../contexts/ContractContext"
 import { useAccount } from "../../contexts/AccountContext"
+import { useAccountSolana } from "../SolanaWalletAdaptor/SolanaWalletAdaptor"
 import { useState } from "react"
 import styles from "./AddAgreement.module.css"
 import Image from 'next/image'
 import { BeatLoader } from "react-spinners"
 import { ethers } from "ethers"
 import * as Yup from 'yup';
+import {useWallet } from '@solana/wallet-adapter-react';
 
 function AddAgreementForm(props) {
   const [title, setTitle] = useState("")
@@ -19,7 +21,14 @@ function AddAgreementForm(props) {
   const { contract, loading } = useAgreementContract()
   const [formErrors, setFormErrors] = useState({});
   const router = useRouter()
-  const { account } = useAccount();
+  const account = useAccountSolana();
+  const selectedChain = "solana"
+
+
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+  const { publicKey } = useWallet();
 
   const AgreementSchema = Yup.object().shape({
     title: Yup.string()
@@ -28,9 +37,13 @@ function AddAgreementForm(props) {
       .required('Description is required'),
       professional: Yup.string()
       .required('Professional is required')
-      .matches(/^0x[a-fA-F0-9]{40}$/, 'Professional must be a valid Ethereum address')
+      .matches(selectedChain === 'ethereum' ? /^0x[a-fA-F0-9]{40}$/ : /^[a-zA-Z0-9]{44}$/, `Professional must be a valid ${capitalizeFirstLetter(selectedChain)} address`)
       .test('is-not-company', 'Professional address cannot be the same as the agreement owner or company', function(value) {
-        return value.toLowerCase() !== account.toLowerCase();
+        if(selectedChain === 'ethereum'){
+          return value.toLowerCase() !== account.toLowerCase();
+        } else{
+          return value.toLowerCase() !== publicKey.toBase58().toLowerCase();
+        }
       }),
     skills: Yup.string()
       .required('Skills are required')
@@ -49,7 +62,6 @@ function AddAgreementForm(props) {
 
   async function handleSubmit(event) {
     event.preventDefault();
-
     try {
         await AgreementSchema.validate({
             title,
@@ -60,9 +72,10 @@ function AddAgreementForm(props) {
         }, { 
           abortEarly: false
         });  
-        setFormErrors({});  
-        await addAgreement();
+        setFormErrors({}); 
+        await addAgreementSolana();
     } catch (errors) {
+      console.log(errors);
         if (errors instanceof Yup.ValidationError) {
             const errorMessages = {};
             errors.inner.forEach(error => {
@@ -104,6 +117,35 @@ function AddAgreementForm(props) {
       setPaymentAmount("")
     }
   }
+
+  async function addAgreementSolana() {
+    setIsLoading(true)
+      console.log("account");
+      try {
+        const tx = await contract
+          .createAgreement(
+            title,
+            description,
+            professional,
+            skills.split(","),
+            paymentAmountInWei,
+          )
+        await tx.wait()
+      } catch (error) {
+        console.error("Error creating agreement:", error)
+      } finally {
+        setIsLoading(false)
+        router.push('/agreements')
+      }
+
+      setIsLoading(false)
+      setTitle("")
+      setDescription("")
+      setProfessional("")
+      setSkills("")
+      setPaymentAmount("")
+    }
+
 
   if (isLoading) {
     return (
