@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@rainbow-me/rainbowkit": "^1.0.11",
     "bignumber.js": "^9.1.2",
     "dotenv": "^16.0.3",
     "ethersjs": "^0.0.1-security",
@@ -21,6 +22,8 @@
     "react-spinners": "^0.13.8",
     "sol2uml": "^2.4.3",
     "solidity-docgen": "^0.5.16",
+    "viem": "^1.11.0",
+    "wagmi": "^1.4.2",
     "yup": "^1.2.0"
   },
   "devDependencies": {

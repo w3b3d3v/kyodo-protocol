@@ -9,7 +9,6 @@ import "./AgreementList.module.css"
 import ERC20Token from '../../utils/ERC20Token';
 import { useRouter } from 'next/router'
 
-
 function AgreementList(props) {
   const { account } = useAccount();
   const { contract, loading } = useAgreementContract();
@@ -93,6 +92,7 @@ function AgreementList(props) {
   };
 
   async function fetchAgreements() {
+    
     try {
       const userAgreementIds = await contract.getUserAgreements(account);
       const stringIds = userAgreementIds.map(id => id.toString());

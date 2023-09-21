@@ -1,6 +1,10 @@
 import '../styles/globals.scss'
 import Image from 'next/image'
 import { AccountProvider, useAccount} from "../contexts/AccountContext";
+import {
+  ConnectWalletButton,
+  vefifyChain,
+} from "../components/ConnectWalletButton/ConnectWalletButton"
 
 import React from "react"
 
@@ -26,14 +30,7 @@ function Header() {
             className={"logo"}
           />
           <div className={"user-wallet"}>
-            <em>{formatAddress(account)}</em>
-            <span className={"wallet-on"}>Status</span>
-            <Image
-              src="/metamask.svg"
-              alt="Metamask icon"
-              width={22}
-              height={19}
-            />
+            <ConnectWalletButton/>
           </div>
           <nav>
             <ul>
