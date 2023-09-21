@@ -39,7 +39,7 @@ function Header() {
             <ul>
               <li>
                 <a href="/">
-                  Home    
+                  Dashboard    
                 </a>                  
               </li>
               <li>
