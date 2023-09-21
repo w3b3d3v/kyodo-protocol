@@ -19,7 +19,6 @@ function Header() {
   const { account } = useAccount();
 
   return (
-    <AccountProvider>
       <header className={"main-header"}>
         <div className={"holder"}>
           <Image
@@ -48,7 +47,6 @@ function Header() {
           </nav>
         </div>
       </header>
-    </AccountProvider>
   )
 }
 

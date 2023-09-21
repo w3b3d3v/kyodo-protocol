@@ -11,7 +11,7 @@ import {
 import {
   RainbowKitProvider,
   connectorsForWallets,
-  darkTheme
+  lightTheme
 } from '@rainbow-me/rainbowkit';
 
 import {
@@ -109,10 +109,11 @@ export function AccountProvider({ children }) {
 
     return (
         <WagmiConfig config={wagmiConfig}>
-        <RainbowKitProvider theme={darkTheme()} chains={chains}>
-        <AccountContext.Provider value={{ account, setAccount }}>
-            {!account ? <ConnectWalletButton setAccount={setAccount}/> : children}
-        </AccountContext.Provider>
+        <RainbowKitProvider theme={lightTheme()} chains={chains}>
+          <AccountContext.Provider value={{ account, setAccount }}>
+          <ConnectWalletButton setAccount={setAccount} chains={chains} account={account}/>
+            {account && children}
+          </AccountContext.Provider>
         </RainbowKitProvider>
         </WagmiConfig>
     );

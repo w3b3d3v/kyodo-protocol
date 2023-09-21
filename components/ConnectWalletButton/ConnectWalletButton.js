@@ -51,8 +51,7 @@ async function vefifyChain() {
   }
 }
 
-function ConnectWalletButton(props) {
-  const { account, setAccount } = useAccount();
+function ConnectWalletButton({ setAccount, chains, account }){
 
   async function connectWallet() {
     if (window.ethereum) {
@@ -71,8 +70,8 @@ function ConnectWalletButton(props) {
 
   return (
       <div className={"holder home-entry"}>
-        {props.account ? (
-          <p>Connected with wallet {props.account}</p>
+        {account ? (
+          <p>Connected with wallet {account}</p>
         ) : (
           <ConnectButton 
             className="connect-wallet"
