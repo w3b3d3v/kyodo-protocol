@@ -1,0 +1,33 @@
+/**
+SKILLS
+===========================
+*/
+
+.skill-item {
+  display: inline-block;
+  padding: 0 10px;
+  border: 1.5px solid #85A8BE;
+  height: 28px;
+  line-height: 22px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  background: rgb(6,6,6);
+  background: linear-gradient(-110deg, rgba(6,6,6,.2) 0%, rgba(133,168,190,.2) 100%);
+  display: none;
+
+  span {
+    font-size: $font-small-2;
+    font-weight: 600;
+  }
+
+  img {
+    float: right;
+    width: 16px;
+    margin: 5px 0 0 10px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: .8;
+    }
+  }
+}
