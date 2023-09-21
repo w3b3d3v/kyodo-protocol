@@ -22,12 +22,13 @@ HOME CALL
 
   li {
     list-style-type: none;
-    width: 30%;
+    width: 31%;
     height: 240px;
     background-color: #1C2124;
     box-sizing: border-box;
     border-radius: 6px;
-    padding: 23px;
+    padding: 20px;
+    position: relative;
   }
 
   h2 {
@@ -42,5 +43,45 @@ HOME CALL
     line-height: 17px;
     color: $light-gray;
     margin: 15px 0 0 0;
+
+    strong {
+      color: $white;
+    }
+  }
+
+  a {
+    color: $medium-gray;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    line-height: 50px;
+    background-color: #23292D;
+    font-size: $font-medium;
+    text-decoration: none;
+    padding-left: 20px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+
+    &:hover {
+      color: $light-gray;
+    }
+  }
+}
+
+.progressbar {
+  height: 5px;
+  background: #323232;
+  border-radius: 3px;
+  margin: 28px 0 -10px 0;
+
+  div {
+    width: 35%;
+    height: 5px;
+    background: rgb(163,201,135);
+    background: linear-gradient(110deg, rgba(163,201,135,1) 0%, rgba(246,151,131,1) 150%);
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
   }
 }
