@@ -136,12 +136,15 @@ function AddAgreementForm(props) {
             />
             
             <label htmlFor="payment-amount-input">Payment amount</label>
-            <input
-              type="number"
-              id="payment-amount-input"
-              value={paymentAmount}
-              onChange={(event) => setPaymentAmount(parseInt(event.target.value))}
-            />
+            <div className={styles["amount-field"]}>
+              <span className={styles["usd-label"]}>USD</span>
+              <input
+                type="number"
+                id="payment-amount-input"
+                value={paymentAmount}
+                onChange={(event) => setPaymentAmount(parseInt(event.target.value))}
+              />
+            </div>
 
           </div>
 
