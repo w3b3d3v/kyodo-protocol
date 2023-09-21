@@ -23,5 +23,24 @@ HOME CALL
   li {
     list-style-type: none;
     width: 30%;
+    height: 240px;
+    background-color: #1C2124;
+    box-sizing: border-box;
+    border-radius: 6px;
+    padding: 23px;
+  }
+
+  h2 {
+    font-size: $font-large-2;
+    font-weight: normal;
+    line-height: 28px;
+    margin: 0;
+  }
+
+  p {
+    font-size: $font-small;
+    line-height: 17px;
+    color: $light-gray;
+    margin: 15px 0 0 0;
   }
 }
