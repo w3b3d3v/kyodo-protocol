@@ -1,3 +1,10 @@
+# Kyōdō Protocol 
+
+The future of work is being transformed by the relationship between Professionals, Communities and Businesses. Kyōdō Protocol facilitates trusted connections between these professional parties with a decentralized, blockchain-driven solution. The protocol provides a payments system with verifiable credentials and proof of curriculum using Zero Knowledge Proofs (ZKP) to enhance privacy. 
+
+For more information about how Kyōdō functions, head to [Kyōdō Protocol docs](https://docs.kyodoprotocol.xyz/). 
+
+
 ## Prerequisites
 
 Before you begin, make sure you have Node.js and npm installed on your machine. If not, you can download and install them from the [official Node.js website](https://nodejs.org/).
@@ -16,14 +23,21 @@ yarn install
 
 ## Index
 
-1. [Environment Setup](#1---environment-setup)
-2. [Setting Up Local Blockchain](#2---setting-up-local-blockchain)
-3. [Deploying Smart Contracts](#3---deploying-smart-contracts)
-4. [Run the Development Server](#4---run-the-development-server)
-5. [Interacting with Smart Contracts](#-🌟-interacting-with-smart-contracts-🌟)
-6. [Contribution](#contribution)
-7. [Contact](#contact)
-8. [License](#license)
+- [Kyōdō Protocol](#kyōdō-protocol)
+  - [Prerequisites](#prerequisites)
+  - [Getting Started](#getting-started)
+    - [Step 0: Install Dependencies](#step-0-install-dependencies)
+  - [Index](#index)
+  - [1 - Environment Setup](#1---environment-setup)
+  - [2 - Setting Up Local Blockchain](#2---setting-up-local-blockchain)
+  - [3 - Deploying Smart Contracts](#3---deploying-smart-contracts)
+  - [4 - Run the development server:](#4---run-the-development-server)
+- [🌟 Interacting with Smart Contracts 🌟](#-interacting-with-smart-contracts-)
+    - [Via Scripts](#via-scripts)
+    - [Via Frontend](#via-frontend)
+  - [Contribution](#contribution)
+  - [Contact](#contact)
+  - [License](#license)
 
 ---
 
@@ -94,4 +108,4 @@ For more information or if you have any questions, feel free to reach out to us 
 
 ## License
 
-This project is licensed under the MIT License. This means you are free to use, modify, and distribute the code, as long as you include the original copyright and license notice in any copy of the software/source. For more details, please refer to the LICENSE.md file in the repository.
+This project is licensed under the MIT License. This means you are free to use, modify, and distribute the code, as long as you include the original copyright and license notice in any copy of the software/source. For more details, please refer to the LICENSE file in the repository.
