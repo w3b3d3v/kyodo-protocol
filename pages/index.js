@@ -9,7 +9,20 @@ export default function Home() {
         <link rel="icon" href="/logo192.png" />
       </Head>
       <main>
-        Home
+        <section className="holder">
+          <h1>Hi, Josy</h1>
+          <ul className="home-calls">
+            <li>
+              <p>Complete your profile to be visible</p>
+            </li>
+            <li>
+              <p>Validate your experience</p>
+            </li>
+            <li>
+              <p>Refer and earn</p>
+            </li>
+          </ul>
+        </section>
       </main>
     </div>
   )
