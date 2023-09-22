@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from 'next/image'
 import { ethers } from "ethers";
+import styles from "./ConnectWalletButton.module.css"
 
 const networkId = "0x13881";
 const customChainId = "0x7A69";
 
 async function vefifyChain() {
-  const testEnv = (process.env.NODE_ENV !== "production"); //TODO: move this to .env (Is broken for some reason)
-  // const testEnv = false;
+  const testEnv = (process.env.NODE_ENV !== "production");
   const chainId = window.ethereum.networkVersion
 
   if (testEnv) {
@@ -17,7 +17,7 @@ async function vefifyChain() {
         params: [
           {
             chainId: customChainId,
-            rpcUrls: ["http://localhost:8545"], // Update with your custom RPC URL
+            rpcUrls: ["http://localhost:8545"],
             chainName: "Hardhat",
             nativeCurrency: {
               name: "ETH",
@@ -51,8 +51,10 @@ async function vefifyChain() {
 }
 
 function ConnectWalletButton(props) {
+  const [showModal, setShowModal] = useState(false);
 
   async function connectWallet() {
+    setShowModal(false);
     if (window.ethereum) {
       try {
         await window.ethereum.request({ method: "eth_requestAccounts" });
@@ -67,6 +69,11 @@ function ConnectWalletButton(props) {
     }
   }
 
+  function handleSolanaClick() {
+    alert("Future Feature");
+    setShowModal(false);
+  }
+
   return (
     <div className="connect-wallet-bg">
       <div className={"home-entry"}>
@@ -78,45 +85,23 @@ function ConnectWalletButton(props) {
             height={130}
           />
           <h2>Connect your wallet to start</h2>
-          {props.account ? (
-            <p>Conectado com a carteira {props.account}</p>
-          ) : (
-            <button className="connect-wallet" onClick={connectWallet}>
-              <div>Connect wallet</div>
-            </button>
+          <button className="connect-wallet" onClick={() => setShowModal(true)}>
+            <div>Connect wallet</div>
+          </button>
+          {showModal && (
+            <div className={styles["modal"]}>
+              <div className={styles["modal-content"]}>
+                <button className="close-modal" onClick={() => setShowModal(false)}>X</button>
+                <h2>Select the desired Chain</h2>
+                <br></br>
+                <button onClick={connectWallet}>Ethereum and Other EVMs</button>
+                <br></br>
+                <button onClick={handleSolanaClick}>Solana</button>
+              </div>
+            </div>
           )}
         </div>
       </div>
-      <footer>
-        <div className={"holder"}>
-          <p>
-            <Image
-              src="/web3dev.svg"
-              alt="WEB3DEV"
-              width={17}
-              height={27}
-            />
-            &copy; 2023 WEB3DEV
-          </p>
-          <ul>
-            <li>
-              <a href="https://www.kyodoprotocol.xyz/code-of-conduct.html" target="_blank">
-                Code of conduct 
-              </a>
-            </li>
-            <li>
-              <a href="https://www.kyodoprotocol.xyz/privacy-policy.html" target="_blank">
-                Privacy policy
-              </a>
-            </li>
-            <li>
-              <a href="https://www.kyodoprotocol.xyz/terms-of-use.html" target="_blank">
-                Terms of use
-              </a>        
-            </li>
-          </ul>
-        </div>
-      </footer>
     </div>
   );
 }

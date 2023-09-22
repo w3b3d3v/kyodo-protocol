@@ -1,10 +1,11 @@
+import React, { useState } from 'react';
 import '../styles/globals.scss'
 import Image from 'next/image'
 import { AccountProvider, useAccount} from "../contexts/AccountContext";
 import { useRouter } from "next/router"
 import { useTranslation } from "react-i18next"
+import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWalletButton"
 import "../i18n" // Adjust the path based on where you placed i18n.js
-import React, { useState } from 'react';
 
 function formatAddress(address) {
   if (!address) return ""
@@ -12,6 +13,26 @@ function formatAddress(address) {
   const end = address.substring(address.length - 4)
   return `${start}...${end}`
 }
+
+function PageContent({ Component, pageProps }) {
+  const { account } = useAccount();
+
+  return (
+    <>
+      {account ? (
+        <div>
+          <Header />
+          <Component {...pageProps} />
+        </div>
+      ) : (
+        <div>
+          <ConnectWalletButton />
+        </div>
+      )}
+    </>
+  );
+}
+
 
 function Header() {
   const { account } = useAccount()
@@ -82,8 +103,7 @@ function Header() {
 function MyApp({ Component, pageProps }) {
   return (
     <AccountProvider>
-      <Header />
-      <Component {...pageProps} />
+      <PageContent Component={Component} pageProps={pageProps} />
       <footer>
         <div className={"holder"}>
           <p>
