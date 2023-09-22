@@ -3,6 +3,16 @@ SKILLS
 ===========================
 */
 
+.skill-lv {
+  display: block;
+
+  span {
+    width: 68px;
+    text-align: center;
+    float: right;
+  }
+}
+
 .skills-field {
   margin-bottom: -17px;
   position: relative;
