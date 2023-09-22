@@ -6,6 +6,7 @@ import ERC20Token from '../../utils/ERC20Token';
 import styles from "./Dashboard.module.css"
 import { ethers } from "ethers";
 import Payments from './Payments';
+import Image from 'next/image'
 
 function Balances(props) {
   const { vaultContract, vaultLoading } = useVaultContract();
@@ -140,37 +141,71 @@ function Balances(props) {
   }
 
   return (
-    <div className={styles["balance-list"]}>
-      {userBalances.length > 0 && (
-        <h1>Balances</h1>
-      )}
-      <div className={styles["card-list"]}>
+
+    <section className="user-home">
+
+      <div className="dashboard-header">
+
+        <h1>GM, mate!</h1>
+
         {userBalances.map((balance, index) => (
-          <div key={index} className={styles["card"]}>
-            <p>
-              <strong>Balance</strong> 
-              {parseFloat(ethers.utils.formatUnits(balance.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD
+          <div key={index} className="balance-heading">
+            <p className="usd-balance">
+              <Image
+                src="/usd-icon.svg"
+                alt="USD icon"
+                width={32}
+                height={32}
+              />
+              <span>{parseFloat(ethers.utils.formatUnits(balance.amount, 18)).toFixed(2).replace(/\.00$/, '')}</span>
             </p>
-            <div className={styles["card-footer"]}>
+            <p>
               {showRedeemInput !== index && (
                 <a onClick={() => handleRedeemClick(index)}>Redeem</a>
               )}
               {showRedeemInput === index && (
                 <>
-                  <input 
-                    type="number" 
-                    value={redeemValue}
-                    onChange={(e) => handleRedeemValueChange(e)}
-                  />
-                  <button onClick={() => handleWithdraw(redeemValue, balance)} className={styles["confirm-btn"]}>Confirm Redeem</button>
+                  <div className="opened-items">
+                    <input 
+                      type="number" 
+                      value={redeemValue}
+                      onChange={(e) => handleRedeemValueChange(e)}
+                      placeholder="USD"
+                    />
+                    <button onClick={() => handleWithdraw(redeemValue, balance)}>Confirm</button>
+                  </div>
                 </>
               )}
-            </div>
+            </p>
           </div>
         ))}
-        <Payments limit={2} />
+
       </div>
-    </div>
+
+      <ul className="home-calls">
+        <li className="disabled">
+          <h2>Complete your profile to be visible</h2>
+          <div className="progressbar">
+            <div></div>
+          </div>
+          <p>You profile is <strong>35%</strong> complete</p>
+          <a href="#">Complete profile</a>
+        </li>
+        <li>
+          <h2>Add an agreement</h2>
+          <p>Start adding your first agreement.</p>
+          <a href="/agreements/new">Add agreement</a>
+        </li>
+        <li className="disabled">
+          <h2>Refer and<br></br> earn</h2>
+          <p>Professionals or contractors that refer the usage of Kyodo, can earn a % of paid value to the protocol.</p>
+          <a href="#">Get referral link</a>
+        </li>
+      </ul>
+
+      <Payments limit={2} />
+      
+    </section>
   );
   
 }

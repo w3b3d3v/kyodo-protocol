@@ -6,80 +6,79 @@ import { useAccount } from "../../contexts/AccountContext";
 import styles from "./Dashboard.module.css"
 
 function Payments ({ limit }) {
-    const { contract, loading } = useAgreementContract();
-    const { account } = useAccount();
-    const [paidAgreements, setPaidAgreements] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    
-    useEffect(() => {
-        setIsLoading(true);
-        if (!loading) {
-            fetchPaidAgreements();
-            setIsLoading(false);
-        }
-    }, [loading]);
-
-    if (paidAgreements.length === 0) {
-        return null;
+  const { contract, loading } = useAgreementContract();
+  const { account } = useAccount();
+  const [paidAgreements, setPaidAgreements] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    setIsLoading(true);
+    if (!loading) {
+      fetchPaidAgreements();
+      setIsLoading(false);
     }
+  }, [loading]);
 
-    async function fetchPaidAgreements() {
-        const companyFilter = contract.filters.PaymentMade(account, null);
-        const professionalFilter = contract.filters.PaymentMade(null, account);
+  if (paidAgreements.length === 0) {
+    return null;
+  }
 
-        const companyAgreements = await contract.queryFilter(companyFilter);
-        const professionalAgreements = await contract.queryFilter(professionalFilter);
+  async function fetchPaidAgreements() {
+    const companyFilter = contract.filters.PaymentMade(account, null);
+    const professionalFilter = contract.filters.PaymentMade(null, account);
 
-        const allAgreements = [...companyAgreements, ...professionalAgreements];
+    const companyAgreements = await contract.queryFilter(companyFilter);
+    const professionalAgreements = await contract.queryFilter(professionalFilter);
 
-        setPaidAgreements(allAgreements.map(event => ({
-        ...event.args,
-        transactionHash: event.transactionHash
-        })));
-    }
+    const allAgreements = [...companyAgreements, ...professionalAgreements];
 
-    function renderPaidAgreements() {
-        const displayedAgreements = limit ? paidAgreements.slice(0, limit) : paidAgreements;
+    setPaidAgreements(allAgreements.map(event => ({
+    ...event.args,
+    transactionHash: event.transactionHash
+    })));
+  }
 
-        return displayedAgreements.map((agreement, index) => (
-        <div key={index} className={styles["card"]}>
-            <h2>Agreement ID: {agreement.agreementId.toString()}</h2>
-            <p>
-            <strong>Status:</strong> {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? "Paid" : "Received"}
-            </p>
-            <p>
-            <strong>Amount:</strong> {parseFloat(ethers.utils.formatUnits(agreement.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD
-            </p>
-            <div className={styles["card-footer"]}>
-            <a href={`https://polygonscan.com/tx/${agreement.transactionHash}`} target="_blank" rel="noopener noreferrer" className={styles["confirm-btn"]}>
-                View on Polygonscan
-            </a>
-            </div>
+  function renderPaidAgreements() {
+    const displayedAgreements = limit ? paidAgreements.slice(0, limit) : paidAgreements;
+    return displayedAgreements.map((agreement, index) => (
+      <div key={index}>
+        <h2>Agreement ID: {agreement.agreementId.toString()}</h2>
+        <p>
+          <strong>Status:</strong> {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? "Paid" : "Received"}
+        </p>
+        <p>
+          <strong>Amount:</strong> {parseFloat(ethers.utils.formatUnits(agreement.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD
+        </p>
+        <div>
+          <a href={`https://polygonscan.com/tx/${agreement.transactionHash}`} target="_blank" rel="noopener noreferrer">
+            View on Polygonscan
+          </a>
         </div>
-        ));
-    }
+      </div>
+    ));
+  }
 
-    if (isLoading) {
-        return (
-          <div className={"loading-overlay"}>
-            <div className={"sweet-loading"}>
-              <BeatLoader loading={isLoading} size={50} />
-            </div>
-          </div>
-        )
-      }
-    
+  if (isLoading) {
     return (
-        <div className={styles["balance-list"]}>
-            <h1>Payments</h1>
-            <div className={styles["card-list"]}>
-                {renderPaidAgreements()}
-                {limit && paidAgreements.length > limit && (
-                    <button onClick={() => window.location.href='/payments'}>See More</button>
-                )}
-            </div>
+      <div className={"loading-overlay"}>
+        <div className={"sweet-loading"}>
+          <BeatLoader loading={isLoading} size={50} />
         </div>
-    );
+      </div>
+    )
+  }
+  
+  return (
+    <div>
+      <h1>Payments</h1>
+      <div>
+        {renderPaidAgreements()}
+        {limit && paidAgreements.length > limit && (
+          <button onClick={() => window.location.href='/payments'}>See More</button>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default Payments;
