@@ -1,0 +1,69 @@
+/**
+PAYMENTS
+===========================
+*/
+
+.payments-section {
+  padding-bottom: 100px;
+
+  h2 {
+    margin: 0 0 30px 0;
+    font-size: $font-large-2;
+    font-weight: 600;
+  }
+}
+
+.payment-item {
+  margin-bottom: 20px;
+  width: 100%;
+  border: 1px solid $dark-blue-2;
+  background: rgba($medium-blue, .07);
+  border-radius: 6px;
+  font-size: 14px;
+  color: #fff;
+  box-sizing: border-box;
+  display: block;
+  margin: 8px 0 15px 0;
+  padding: 20px;
+  @extend %clearfix;
+  position: relative;
+
+  h3 {
+    padding: 0 0 10px 0;
+    font-weight: 600;
+  }
+
+  a {
+    color: $medium-gray;
+    font-size: $font-medium;
+    text-decoration: none;
+  }
+
+  .value-status {
+    position: absolute;
+    text-align: right;
+    right: 20px;
+    top: 20px;
+
+    em {
+      font-size: $font-large;
+      display: block;
+      font-style: normal;
+      margin-bottom: 5px;
+    }
+
+    span {
+      display: inline-block;
+      color: $green;
+      font-size: $font-small;
+    }
+
+    img {
+      width: 20px;
+      float: right;
+      margin: -2px 0 0 5px;
+      display: none;
+    }
+  }
+}
+
