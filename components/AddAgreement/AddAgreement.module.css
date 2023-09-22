@@ -12,6 +12,28 @@
   font-size: 13px;
 }
 
+.amount-field {
+  position: relative;
+}
+
+.amount-field span {
+  position: absolute;
+  left: 0;
+  font-size: 14px;
+  color: #CCDDE2;
+  display: inline-block;
+  background-color: #1E2326;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  padding: 0 15px;
+  height: 40px;
+  line-height: 40px;
+}
+
+.amount-field input {
+  padding-left: 75px;
+}
+
 
 /* Form footer */
 
