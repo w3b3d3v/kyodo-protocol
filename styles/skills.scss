@@ -3,27 +3,91 @@ SKILLS
 ===========================
 */
 
-.skill-item {
+.skills-field {
+  margin-bottom: -17px;
+  position: relative;
+}
+
+#skills-input {
+  padding-right: 75px;
+}
+
+#skill-value {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  right: 0;
+  top: -8px;
+  position: absolute;
+  font-size: 13px;
+  color: #CCDDE2;
   display: inline-block;
-  padding: 0 10px;
-  border: 1.5px solid #85A8BE;
-  height: 28px;
-  line-height: 22px;
-  border-radius: 20px;
-  box-sizing: border-box;
-  background: rgb(6,6,6);
-  background: linear-gradient(-110deg, rgba(6,6,6,.2) 0%, rgba(133,168,190,.2) 100%);
-  display: none;
+  background: rgba($black, .5);
+  text-align: center;
+  height: 40px;
+  line-height: 38px;
+  width: 68px;
+}
+
+.add-skill-btn {
+  text-decoration: none;
+  color: $medium-gray;
+  
+  img {
+    float: left;
+    width: 16px;
+    margin: 3px 5px 0 0;
+  }
 
   span {
     font-size: $font-small-2;
     font-weight: 600;
   }
 
+  &:hover {
+    opacity: .8;
+  }
+}
+
+.skills-list {
+  margin-top: 25px;
+
+  li {
+    list-style-type: none;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  em {
+    font-style: normal;
+    font-size: $font-medium;
+    line-height: 28px;
+    text-align: center;
+    width: 68px;
+  }
+}
+
+.skill-item {
+  display: inline-block;
+  padding: 0 15px 0 16px;
+  border: 1px solid $medium-gray;
+  height: 28px;
+  line-height: 22px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  background: rgb(6,6,6);
+  background: linear-gradient(-110deg, rgba(6,6,6,.2) 0%, rgba(133,168,190,.2) 100%);
+
+  span {
+    font-size: $font-small-2;
+    font-weight: normal;
+  }
+
   img {
     float: right;
     width: 16px;
-    margin: 5px 0 0 10px;
+    margin: 5px 0 0 12px;
     cursor: pointer;
 
     &:hover {
