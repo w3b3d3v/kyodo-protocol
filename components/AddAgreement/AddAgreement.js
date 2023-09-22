@@ -169,10 +169,9 @@ function AddAgreementForm(props) {
               onChange={(event) => setProfessional(event.target.value)}
             />
 
-            <label htmlFor="payment-amount-input">Payment Amount</label>
-            {formErrors.paymentAmount && <span style={{ color: 'red', fontSize: '12px' }}><br></br>{formErrors.paymentAmount}</span>}
-
             <label htmlFor="payment-amount-input">Payment amount</label>
+            {formErrors.paymentAmount && <span style={{ color: 'red', fontSize: '12px' }}><br></br>{formErrors.paymentAmount}</span>}
+            
             <div className={styles["amount-field"]}>
               <span className={styles["usd-label"]}>USD</span>
               <input
