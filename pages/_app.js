@@ -15,7 +15,7 @@ function formatAddress(address) {
 }
 
 function PageContent({ Component, pageProps }) {
-  const { account } = useAccount();
+  const { account, setAccount, selectedChain, setSelectedChain } = useAccount();
 
   return (
     <>
@@ -26,7 +26,7 @@ function PageContent({ Component, pageProps }) {
         </div>
       ) : (
         <div>
-          <ConnectWalletButton />
+          <ConnectWalletButton value={{ account, setAccount, selectedChain, setSelectedChain }}/>
         </div>
       )}
     </>
