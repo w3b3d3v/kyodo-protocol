@@ -144,6 +144,10 @@ function Balances(props) {
 
     <section className="user-home">
 
+      {/* {userBalances.length > 0 && (
+        <h1>Balances</h1>
+      )} */}
+
       <div className="dashboard-header">
 
         <h1>GM, mate!</h1>
