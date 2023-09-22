@@ -1,8 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import {
-    ConnectWalletButton,
-    vefifyChain,
-} from "../components/ConnectWalletButton/ConnectWalletButton"
+import { vefifyChain } from "../components/ConnectWalletButton/ConnectWalletButton"
 
 const AccountContext = createContext();
 
@@ -35,10 +32,6 @@ export function AccountProvider({ children }) {
         window.ethereum.removeListener("disconnect", handleDisconnect)
         }
     }, [account])
-
-    if (!account) {
-        return <ConnectWalletButton account={account}/>;
-    }
 
     return (
         <AccountContext.Provider value={{ account, setAccount }}>
