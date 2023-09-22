@@ -150,6 +150,7 @@ function AddAgreementForm(props) {
         <section className={"columns"}>
 
           <div className={"col-01"}>
+
             <label htmlFor="title-input">Title</label>
             {formErrors.title && <span style={{ color: 'red', fontSize: '12px' }}><br></br>{formErrors.title}</span>}
             <input
@@ -157,7 +158,8 @@ function AddAgreementForm(props) {
               id="title-input"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              />
+            />
+            
             <label htmlFor="professional-input">Professional wallet</label>
             {formErrors.professional && <span style={{ color: 'red', fontSize: '12px' }}><br></br>{formErrors.professional}</span>}
             <input
@@ -165,15 +167,21 @@ function AddAgreementForm(props) {
               id="professional-input"
               value={professional}
               onChange={(event) => setProfessional(event.target.value)}
-              />
+            />
+
             <label htmlFor="payment-amount-input">Payment Amount</label>
             {formErrors.paymentAmount && <span style={{ color: 'red', fontSize: '12px' }}><br></br>{formErrors.paymentAmount}</span>}
-            <input
-              type="number"
-              id="payment-amount-input"
-              value={paymentAmount}
-              onChange={(event) => setPaymentAmount(parseFloat(event.target.value))}
-            />
+
+            <label htmlFor="payment-amount-input">Payment amount</label>
+            <div className={styles["amount-field"]}>
+              <span className={styles["usd-label"]}>USD</span>
+              <input
+                type="number"
+                id="payment-amount-input"
+                value={paymentAmount}
+                onChange={(event) => setPaymentAmount(parseFloat(event.target.value))}
+              />
+            </div>
 
           </div>
 
