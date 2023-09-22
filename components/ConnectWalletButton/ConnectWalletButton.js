@@ -53,7 +53,7 @@ async function vefifyChain() {
 function ConnectWalletButton(props) {
   const [showModal, setShowModal] = useState(false);
 
-  async function connectWallet() {
+  async function connectEthereumWallet() {
     setShowModal(false);
     if (window.ethereum) {
       try {
@@ -61,18 +61,32 @@ function ConnectWalletButton(props) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const accounts = await provider.listAccounts();
         await vefifyChain()
-        props.updateAccount(accounts[0]);
+        props.value.setAccount(accounts[0]);
+        props.value.setSelectedChain("ethereum");
+        localStorage.setItem('selectedChain', "ethereum");
       } catch (error) {
         console.error(error);
-      } finally {
       }
     }
   }
 
-  function handleSolanaClick() {
-    alert("Future Feature");
+  async function connectSolanaWallet() {
     setShowModal(false);
-  }
+    if (window.solana) {
+      try {
+        await window.solana.connect();
+        const solanaAccount = window.solana.publicKey.toString();
+        props.value.setAccount(solanaAccount);
+        props.value.setSelectedChain("solana");
+        localStorage.setItem('selectedChain', "solana");
+      } catch (error) {
+        console.error("Erro ao conectar com a Phantom Wallet:", error);
+      }
+    } else {
+        alert("Phantom wallet não encontrada, por favor instale a extensão.");
+    }
+}
+
 
   return (
     <div className="connect-wallet-bg">
