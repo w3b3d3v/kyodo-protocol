@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/globals.scss'
 import Image from 'next/image'
+import Link from 'next/link';
 import { AccountProvider, useAccount} from "../contexts/AccountContext";
 import { useRouter } from "next/router"
 import { useTranslation } from "react-i18next"
@@ -8,10 +9,7 @@ import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWa
 import "../i18n" // Adjust the path based on where you placed i18n.js
 
 function formatAddress(address) {
-  if (!address) return ""
-  const start = address.substring(0, 4)
-  const end = address.substring(address.length - 4)
-  return `${start}...${end}`
+  return address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : '';
 }
 
 function PageContent({ Component, pageProps }) {
@@ -54,7 +52,6 @@ function Header() {
   };
 
   return (
-    <AccountProvider>
       <header className={"main-header"}>
         <div className={"holder"}>
           <Image
@@ -85,7 +82,7 @@ function Header() {
                 <a href="/">{t("dashboard")}</a>
               </li>
               <li>
-                <a href="/agreements">{t("agreements")}</a>
+                <Link href="/agreements">{t("agreements")}</Link> 
               </li>
               <li>
                 <a onClick={changeLanguage} className={"local-trigger"}>{locale}</a>
@@ -96,7 +93,6 @@ function Header() {
 
         </div>
       </header>
-    </AccountProvider>
   )
 }
 

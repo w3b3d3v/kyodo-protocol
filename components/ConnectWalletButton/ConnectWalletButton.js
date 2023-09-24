@@ -102,19 +102,19 @@ function ConnectWalletButton(props) {
           <button className="connect-wallet" onClick={() => setShowModal(true)}>
             <div>Connect wallet</div>
           </button>
-          {showModal && (
-            <div className={styles["modal"]}>
-              <div className={styles["modal-content"]}>
-                <button className="close-modal" onClick={() => setShowModal(false)}>X</button>
-                <h2>Select the desired Chain</h2>
-                <br></br>
-                <button onClick={connectWallet}>Ethereum and Other EVMs</button>
-                <br></br>
-                <button onClick={handleSolanaClick}>Solana</button>
-              </div>
-            </div>
-          )}
+      </div>
+      {showModal && (
+        <div className={styles["modal"]}>
+          <div className={styles["modal-content"]}>
+            <button className="close-modal" onClick={() => setShowModal(false)}>X</button>
+            <h2>Select the desired Chain</h2>
+            <br></br>
+            <button onClick={connectEthereumWallet}>Ethereum and Other EVMs</button>
+            <br></br>
+            <button onClick={connectSolanaWallet}>Solana</button>
+          </div>
         </div>
+      )}
       </div>
     </div>
   );

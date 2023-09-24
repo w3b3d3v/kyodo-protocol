@@ -1,14 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import contractManager from '../chains/ContractManager';
+import { useAccount} from "../contexts/AccountContext";
 
 const AgreementContractContext = createContext(null);
-const selectedChain = "ethereum"
 
 export function useAgreementContract() {
   return useContext(AgreementContractContext);
 }
 
 export function AgreementContractProvider({ children }) {
+  const { selectedChain } = useAccount();
   const [contract, setContract] = useState(null);
   const [loading, setLoading] = useState(true);
 
