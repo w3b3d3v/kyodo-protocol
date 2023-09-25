@@ -9,6 +9,18 @@ COMPONENTS
   background-repeat: no-repeat;
   background-position: top;
   height: 100vh;
+
+  @media #{$smartphones-1} {
+    background: $white;
+    height: auto;
+  }
+
+  footer {
+
+    @media #{$smartphones-1} {
+      background: rgb(6,6,6);
+    }
+  }
 }
 
 .home-entry {
@@ -22,6 +34,12 @@ COMPONENTS
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media #{$smartphones-1} {
+    width: 100%;
+    position: inherit;
+    padding: 0 20px;
+  }
   
   h2 {
     margin: 80px 0 15px 0;
@@ -36,6 +54,14 @@ COMPONENTS
       font-size: $font-large-2;
       line-height: 34px;
       margin-top: 50px;
+    }
+  }
+
+  img {
+    width: 130px;
+
+    @media #{$smartphones-1} {
+      width: 100px;
     }
   }
 }
