@@ -70,14 +70,22 @@ function ConnectWalletButton(props) {
   return (
     <div className="connect-wallet-bg">
       <div className={"home-entry"}>
-        <h2>Connect your wallet to start</h2>
-        {props.account ? (
-          <p>Conectado com a carteira {props.account}</p>
-        ) : (
-          <button className="connect-wallet" onClick={connectWallet}>
-            Connect wallet
-          </button>
-        )}
+        <div>
+          <Image
+            src="/logo-square.svg"
+            alt="WEB3DEV"
+            width={130}
+            height={130}
+          />
+          <h2>Connect your wallet to start</h2>
+          {props.account ? (
+            <p>Conectado com a carteira {props.account}</p>
+          ) : (
+            <button className="connect-wallet" onClick={connectWallet}>
+              <div>Connect wallet</div>
+            </button>
+          )}
+        </div>
       </div>
       <footer>
         <div className={"holder"}>
