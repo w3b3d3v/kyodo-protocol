@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { vefifyChain } from "../components/ConnectWalletButton/ConnectWalletButton";
 
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { clusterApiUrl } from '@solana/web3.js';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+
 const AccountContext = createContext({
   account: null,
   setAccount: () => {},
@@ -21,16 +27,14 @@ export function AccountProvider({ children }) {
     return null;
   });
 
+  const network = WalletAdapterNetwork.Devnet;
+  const endpoint = clusterApiUrl(network);
+  const wallets = [new PhantomWalletAdapter()];
+
   const handleDisconnect = () => {
     setAccount(null);
     localStorage.setItem('selectedChain', null);
   };
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && selectedChain) {
-      localStorage.setItem('selectedChain', selectedChain);
-    }
-  }, [selectedChain]);
 
   const updateAccount = async () => {
     if (selectedChain === 'ethereum' && window.ethereum) {
@@ -42,17 +46,6 @@ export function AccountProvider({ children }) {
         }
       } catch (error) {
         console.error(error);
-      }
-    }
-
-    if (selectedChain === 'solana' && window.solana) {
-      try {
-        await window.solana.connect();
-        const solanaAccount = window.solana.publicKey.toString();
-        // TODO: Solana: verify connected chain for development, staging, or production.
-        setAccount(solanaAccount);
-      } catch (error) {
-        console.error("Erro ao conectar com a Phantom Wallet:", error);
       }
     }
   };
@@ -83,7 +76,13 @@ export function AccountProvider({ children }) {
 
   return (
     <AccountContext.Provider value={{ account, setAccount, selectedChain, setSelectedChain }}>
-      {children}
+      <ConnectionProvider endpoint={endpoint}>
+        <WalletProvider wallets={wallets} autoConnect>
+          <WalletModalProvider>
+            {children}
+          </WalletModalProvider>
+        </WalletProvider>
+      </ConnectionProvider>
     </AccountContext.Provider>
   );
 }
