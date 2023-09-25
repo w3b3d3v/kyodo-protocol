@@ -130,11 +130,9 @@ function AgreementList(props) {
     <div className={styles["agreement-list"]}>
 
       <section className={styles["action-bar"]}>
-        <div>
-          <h1>
+         <h1>
             Agreements
-          </h1>
-          <a onClick={() => handleNewAgreement()} className={styles["add-link"]}>
+            <a onClick={() => handleNewAgreement()} className={styles["add-link"]}>
             <Image
               src="/add.svg"
               alt="add an agreement"
@@ -142,7 +140,7 @@ function AgreementList(props) {
               height={20}
             />
           </a>
-        </div>
+        </h1>
         <ul>
           <li>
             <a href="#" className={styles["actived"]}>All</a>

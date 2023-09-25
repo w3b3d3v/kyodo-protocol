@@ -16,11 +16,12 @@
   display: inline-block;
 }
 
-.add-link {
+.add-link img {
   width: 20px;
   height: 20px;
-  margin-left: 10px;
+  margin: 6px 0 0 10px;
   display: inline-block;
+  float: right;
 }
 
 .add-link:hover {
@@ -252,6 +253,28 @@
 /* Mobile */
 
 @media only screen and (max-width: 800px) {
+
+  .action-bar {
+    display: block;
+    padding: 45px 0;
+  }
+
+  .action-bar ul {
+    text-align: left;
+    border-top: 1px solid #1E2326;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  
+  .action-bar li {
+    text-align: left;
+    margin: 0 25px 0 0;
+  }
+    
+  .action-bar a {
+    text-align: left;
+    padding: 0;
+  }
 
   .agreement-list {
     width: 90%;
