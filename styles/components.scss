@@ -3,21 +3,31 @@ COMPONENTS
 ===========================
 */
 
-.home-entry {
-  width: 75%;
-  max-width: 800px;
-  text-align: center;
+.connect-wallet-bg {
+  background-image: url("../public/login-bg.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top;
+  height: 100vh;
+}
 
-  @media #{$smartphones-1} {
-    width: 90%;
-  }
+.home-entry {
+  background: rgba($white, .93);
+  text-align: center;
+  position: absolute;
+  box-sizing: border-box;
+  padding: 0 30px;
+  right: 0;
+  width: 420px;
+  height: 100vh;
   
   h2 {
     margin: 100px 0 35px 0;
     font-weight: 600;
-    font-size: $font-big-4;
+    font-size: $font-large-3;
     color: $light-gray;
     line-height: 47px;
+    color: $dark-gray;
 
     @media #{$smartphones-1} {
       font-size: $font-large-2;
