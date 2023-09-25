@@ -38,6 +38,13 @@ function Header() {
             height={32}
             className={"logo"}
           />
+          <Image
+            src="/menu-icon.svg"
+            alt="menu icon"
+            width={30}
+            height={30}
+            className={"menu-trigger"}
+          />
           <div className={"user-wallet"}>
             <em>{formatAddress(account)}</em>
             <span className={"wallet-on"}>Status</span>
