@@ -99,19 +99,35 @@ function ConnectWalletButton(props) {
           </button>
         )}
       </div>
-      <footer className={"footer"}>
-        <a
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            src="/web3dev.svg"
-            alt="WEB3DEV Logo"
-            width={20}
-            height={31}
-          />
-        </a>
+      <footer>
+        <div className={"holder"}>
+          <p>
+            <Image
+              src="/web3dev.svg"
+              alt="WEB3DEV"
+              width={17}
+              height={27}
+            />
+            &copy; 2023 WEB3DEV
+          </p>
+          <ul>
+            <li>
+              <a href="https://www.kyodoprotocol.xyz/code-of-conduct.html" target="_blank">
+                Code of conduct 
+              </a>
+            </li>
+            <li>
+              <a href="https://www.kyodoprotocol.xyz/privacy-policy.html" target="_blank">
+                Privacy policy
+              </a>
+            </li>
+            <li>
+              <a href="https://www.kyodoprotocol.xyz/terms-of-use.html" target="_blank">
+                Terms of use
+              </a>        
+            </li>
+          </ul>
+        </div>
       </footer>
     </div>
   );
