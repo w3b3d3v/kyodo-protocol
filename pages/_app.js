@@ -1,18 +1,31 @@
 import '../styles/globals.scss'
 import Image from 'next/image'
 import { AccountProvider, useAccount} from "../contexts/AccountContext";
+import { useRouter } from "next/router"
+import { useTranslation } from "react-i18next"
+import "../i18n" // Adjust the path based on where you placed i18n.js
 
 import React from "react"
 
 function formatAddress(address) {
-  if (!address) return '';
-  const start = address.substring(0, 4);
-  const end = address.substring(address.length - 4);
-  return `${start}...${end}`;
+  if (!address) return ""
+  const start = address.substring(0, 4)
+  const end = address.substring(address.length - 4)
+  return `${start}...${end}`
 }
 
 function Header() {
-  const { account } = useAccount();
+  const { account } = useAccount()
+  const router = useRouter()
+  const { t, i18n } = useTranslation()
+  const { locale } = router
+  const currentLanguage = i18n.language
+
+  function changeLanguage() {
+    const newLocale = currentLanguage === "en-US" ? "pt-BR" : "en-US"
+    i18n.changeLanguage(newLocale)
+    router.push(router.pathname, router.asPath, { locale: newLocale }) // Update Next.js router locale
+  }
 
   return (
     <AccountProvider>
@@ -28,24 +41,18 @@ function Header() {
           <div className={"user-wallet"}>
             <em>{formatAddress(account)}</em>
             <span className={"wallet-on"}>Status</span>
-            <Image
-              src="/metamask.svg"
-              alt="Metamask icon"
-              width={22}
-              height={19}
-            />
+            <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
           </div>
           <nav>
             <ul>
               <li>
-                <a href="/">
-                  Dashboard    
-                </a>                  
+                <a href="/">{t("dashboard")}</a>
               </li>
               <li>
-                <a href="/agreements">
-                  Agreements    
-                </a>                  
+                <a href="/agreements">{t("agreements")}</a>
+              </li>
+              <li>
+                <button onClick={changeLanguage}>{locale}</button>
               </li>
             </ul>
           </nav>
