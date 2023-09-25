@@ -6,7 +6,8 @@ import styles from "./AddAgreement.module.scss"
 import Image from 'next/image'
 import { BeatLoader } from "react-spinners"
 import { ethers } from "ethers"
-import * as Yup from 'yup';
+import { useTranslation } from "react-i18next"
+import * as Yup from "yup"
 
 function AddAgreementForm(props) {
   const [title, setTitle] = useState("")
@@ -17,59 +18,65 @@ function AddAgreementForm(props) {
   const [isLoading, setIsLoading] = useState(false)
   const [transactionHash, setTransactionHash] = useState(null)
   const { contract, loading } = useAgreementContract()
-  const [formErrors, setFormErrors] = useState({});
+  const [formErrors, setFormErrors] = useState({})
   const router = useRouter()
-  const { account } = useAccount();
+  const { account } = useAccount()
+  const { t } = useTranslation()
 
   const AgreementSchema = Yup.object().shape({
-    title: Yup.string()
-      .required('Title is required'),
-    description: Yup.string()
-      .required('Description is required'),
-      professional: Yup.string()
-      .required('Professional is required')
-      .matches(/^0x[a-fA-F0-9]{40}$/, 'Professional must be a valid Ethereum address')
-      .test('is-not-company', 'Professional address cannot be the same as the agreement owner or company', function(value) {
-        return value.toLowerCase() !== account.toLowerCase();
-      }),
+    title: Yup.string().required(),
+    description: Yup.string().required("Description is required"),
+    professional: Yup.string()
+      .required("Professional is required")
+      .matches(/^0x[a-fA-F0-9]{40}$/, "Professional must be a valid Ethereum address")
+      .test(
+        "is-not-company",
+        "Professional address cannot be the same as the agreement owner or company",
+        function (value) {
+          return value.toLowerCase() !== account.toLowerCase()
+        }
+      ),
     skills: Yup.string()
-      .required('Skills are required')
-      .test('is-comma-separated', 'Skills should be comma-separated', value => {
-        if (!value) return false;
-        const skillsArray = value.split(",");
-        return skillsArray.every(skill => !!skill.trim());
+      .required("Skills are required")
+      .test("is-comma-separated", "Skills should be comma-separated", (value) => {
+        if (!value) return false
+        const skillsArray = value.split(",")
+        return skillsArray.every((skill) => !!skill.trim())
       }),
-      paymentAmount: Yup.number()
+    paymentAmount: Yup.number()
       .transform((value, originalValue) => {
-          return originalValue === "" ? undefined : value;
+        return originalValue === "" ? undefined : value
       })
-      .required('Payment amount is required')
-      .positive('Payment amount should be positive'),  
-  });
+      .required("Payment amount is required")
+      .positive("Payment amount should be positive"),
+  })
 
   async function handleSubmit(event) {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
-        await AgreementSchema.validate({
-            title,
-            description,
-            professional,
-            skills,
-            paymentAmount,
-        }, { 
-          abortEarly: false
-        });  
-        setFormErrors({});  
-        await addAgreement();
-    } catch (errors) {
-        if (errors instanceof Yup.ValidationError) {
-            const errorMessages = {};
-            errors.inner.forEach(error => {
-                errorMessages[error.path] = error.message;
-            });
-            setFormErrors(errorMessages);
+      await AgreementSchema.validate(
+        {
+          title,
+          description,
+          professional,
+          skills,
+          paymentAmount,
+        },
+        {
+          abortEarly: false,
         }
+      )
+      setFormErrors({})
+      await addAgreement()
+    } catch (errors) {
+      if (errors instanceof Yup.ValidationError) {
+        const errorMessages = {}
+        errors.inner.forEach((error) => {
+          errorMessages[error.path] = error.message
+        })
+        setFormErrors(errorMessages)
+      }
     }
   }
 
@@ -77,23 +84,22 @@ function AddAgreementForm(props) {
     setIsLoading(true)
 
     if (window.ethereum) {
-      const paymentAmountInWei = ethers.utils.parseUnits(paymentAmount.toString(), 18);
+      const paymentAmountInWei = ethers.utils.parseUnits(paymentAmount.toString(), 18)
 
       try {
-        const tx = await contract
-          .createAgreement(
-            title,
-            description,
-            professional,
-            skills.split(","),
-            paymentAmountInWei,
-          )
+        const tx = await contract.createAgreement(
+          title,
+          description,
+          professional,
+          skills.split(","),
+          paymentAmountInWei
+        )
         await tx.wait()
       } catch (error) {
         console.error("Error creating agreement:", error)
       } finally {
         setIsLoading(false)
-        router.push('/agreements')
+        router.push("/agreements")
       }
 
       setIsLoading(false)
@@ -120,11 +126,7 @@ function AddAgreementForm(props) {
       <div className="transaction-info">
         <div className={styles["holder"]}>
           <p>
-            <Image
-              src="/success-icon.svg"
-              width={20}
-              height={20}
-            />
+            <Image src="/success-icon.svg" width={20} height={20} />
             Agreement created!
           </p>
           <a
@@ -140,28 +142,33 @@ function AddAgreementForm(props) {
   }
 
   return (
-    
     <div className={styles["add-agreement-form-container"]}>
-
       <h1>Add agreement</h1>
 
       <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>
-
         <section className={"columns"}>
-
           <div className={"col-01"}>
-
-            <label htmlFor="title-input">Title</label>
-            {formErrors.title && <span style={{ color: 'red', fontSize: '12px' }}><br></br>{formErrors.title}</span>}
+            <label htmlFor="title-input">{t("title")}</label>
+            {formErrors.title && (
+              <span style={{ color: "red", fontSize: "12px" }}>
+                <br></br>
+                {formErrors.title}
+              </span>
+            )}
             <input
               type="text"
               id="title-input"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
             />
-            
+
             <label htmlFor="professional-input">Professional wallet</label>
-            {formErrors.professional && <span style={{ color: 'red', fontSize: '12px' }}><br></br>{formErrors.professional}</span>}
+            {formErrors.professional && (
+              <span style={{ color: "red", fontSize: "12px" }}>
+                <br></br>
+                {formErrors.professional}
+              </span>
+            )}
             <input
               type="text"
               id="professional-input"
@@ -170,8 +177,13 @@ function AddAgreementForm(props) {
             />
 
             <label htmlFor="payment-amount-input">Payment amount</label>
-            {formErrors.paymentAmount && <span style={{ color: 'red', fontSize: '12px' }}><br></br>{formErrors.paymentAmount}</span>}
-            
+            {formErrors.paymentAmount && (
+              <span style={{ color: "red", fontSize: "12px" }}>
+                <br></br>
+                {formErrors.paymentAmount}
+              </span>
+            )}
+
             <div className={styles["amount-field"]}>
               <span className={styles["usd-label"]}>USD</span>
               <input
@@ -181,12 +193,16 @@ function AddAgreementForm(props) {
                 onChange={(event) => setPaymentAmount(parseFloat(event.target.value))}
               />
             </div>
-
           </div>
 
           <div className={"col-02"}>
             <label htmlFor="description-input">Description</label>
-            {formErrors.description && <span style={{ color: 'red', fontSize: '12px' }}><br></br>{formErrors.description}</span>}
+            {formErrors.description && (
+              <span style={{ color: "red", fontSize: "12px" }}>
+                <br></br>
+                {formErrors.description}
+              </span>
+            )}
             <textarea
               id="description-input"
               value={description}
@@ -197,7 +213,12 @@ function AddAgreementForm(props) {
               Skills
               <span>Lv.</span>
             </label>
-            {formErrors.skills && <span style={{ color: 'red', fontSize: '12px' }}><br></br>{formErrors.skills}</span>}
+            {formErrors.skills && (
+              <span style={{ color: "red", fontSize: "12px" }}>
+                <br></br>
+                {formErrors.skills}
+              </span>
+            )}
             <div className={styles["skills-field"]}>
               <input
                 type="text"
@@ -214,11 +235,7 @@ function AddAgreementForm(props) {
               />
             </div>
             <a href="#" className={styles["add-skill-btn"]}>
-              <Image
-                src="/add.svg"
-                width={16}
-                height={16}
-              />
+            <Image src="/add.svg" width={16} height={16} />
               <span>add</span>
             </a>
 
@@ -226,29 +243,19 @@ function AddAgreementForm(props) {
               <li>
                 <div className={styles["skill-item"]}>
                   <span>Dev Ops</span>
-                  <Image
-                    src="/close.svg"
-                    width={16}
-                    height={16}
-                  />
+                  <Image src="/close.svg" width={16} height={16} />
                 </div>
                 <em>30%</em>
               </li>
               <li>
                 <div className={styles["skill-item"]}>
                   <span>Quality Assurance</span>
-                  <Image
-                    src="/close.svg"
-                    width={16}
-                    height={16}
-                  />
+                  <Image src="/close.svg" width={16} height={16} />
                 </div>
                 <em>20%</em>
               </li>
             </ul>
-
           </div>
-
         </section>
 
         <section className={styles["form-footer"]}>
@@ -256,7 +263,6 @@ function AddAgreementForm(props) {
             <div>Add</div>
           </button>
         </section>
-
       </form>
     </div>
   )

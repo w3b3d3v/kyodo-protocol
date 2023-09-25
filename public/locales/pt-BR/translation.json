@@ -1,4 +1,8 @@
 {
   "dashboard": "Painel",
-  "agreements": "Acordos"
+  "agreements": "Acordos",
+  "validation": {
+    "required": "{{field}} é obrigatório"
+  },
+  "title": "Título"
 }
