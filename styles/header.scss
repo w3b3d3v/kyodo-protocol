@@ -14,18 +14,17 @@ HEADER
     margin-top: 14px;
 
     @media #{$smartphones-1} {
-      border-left: 1px solid $dark-blue-2;
-      background: rgba($dark-blue, .99);
+      border-right: 1px solid $dark-blue-2;
+      background: rgba($dark-blue, 1);
       position: fixed;
       box-sizing: border-box;
-      right: 0;
+      left: 0;
       bottom: 0;
       top: 0;
       width: 200px;
       z-index: 9999;
       margin-top: 0;
       padding: 20px;
-      display: none;
     }
   }
 
@@ -50,7 +49,7 @@ HEADER
 
     @media #{$smartphones-1} {
       width: 100%;
-      color: $white;
+      color: $light-gray;
       height: 36px;
       line-height: 36px;
       border-radius: 4px;
@@ -62,17 +61,17 @@ HEADER
     }
 
     &:hover {
-      color: $medium-blue;
+      color: $white;
     }
   }
 }
 
 .menu-trigger {
   width: 30px;
-  display: none;
   cursor: pointer;
   margin: 15px 0 0 15px;
   float: right;
+  display: none;
 
   @media #{$smartphones-1} {
     display: block;

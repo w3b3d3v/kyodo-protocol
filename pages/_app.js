@@ -4,8 +4,7 @@ import { AccountProvider, useAccount} from "../contexts/AccountContext";
 import { useRouter } from "next/router"
 import { useTranslation } from "react-i18next"
 import "../i18n" // Adjust the path based on where you placed i18n.js
-
-import React from "react"
+import React, { useState } from 'react';
 
 function formatAddress(address) {
   if (!address) return ""
@@ -27,6 +26,12 @@ function Header() {
     router.push(router.pathname, router.asPath, { locale: newLocale }) // Update Next.js router locale
   }
 
+  // Mobile menu
+  const [visibleMenu, setVisibleMenu] = useState(true);
+  const toggleElement = () => {
+    setVisibleMenu(!visibleMenu);
+  };
+
   return (
     <AccountProvider>
       <header className={"main-header"}>
@@ -44,12 +49,15 @@ function Header() {
             width={30}
             height={30}
             className={"menu-trigger"}
+            onClick={toggleElement}
           />
           <div className={"user-wallet"}>
             <em>{formatAddress(account)}</em>
             <span className={"wallet-on"}>Status</span>
             <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
           </div>
+          
+          {visibleMenu &&
           <nav>
             <ul>
               <li>
@@ -63,6 +71,8 @@ function Header() {
               </li>
             </ul>
           </nav>
+          }
+
         </div>
       </header>
     </AccountProvider>
