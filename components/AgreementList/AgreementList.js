@@ -8,6 +8,7 @@ import { useAgreementContract } from "../../contexts/ContractContext"
 import "./AgreementList.module.css"
 import ERC20Token from '../../utils/ERC20Token';
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 
 
 function AgreementList(props) {
@@ -127,10 +128,31 @@ function AgreementList(props) {
   return (
 
     <div className={styles["agreement-list"]}>
-      <h1>Agreements</h1>
-      <button onClick={() => handleNewAgreement()} className={styles["confirm-btn"]}>
-          New Agreement
-      </button>
+
+      <section className={styles["action-bar"]}>
+        <div>
+          <h1>
+            Agreements
+          </h1>
+          <a onClick={() => handleNewAgreement()} className={styles["add-link"]}>
+            <Image
+              src="/add.svg"
+              alt="add an agreement"
+              width={20}
+              height={20}
+            />
+          </a>
+        </div>
+        <ul>
+          <li>
+            <a href="#" className={styles["actived"]}>All</a>
+          </li>
+          <li>
+            <a href="#">Inactives</a>
+          </li>
+        </ul>
+      </section>
+
       <div className={styles["card-list"]}>
 
         {agreements.map((agreement, index) => {
