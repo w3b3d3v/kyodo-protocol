@@ -46,6 +46,7 @@ HEADER
     font-weight: normal;
     color: $dark-blue;
     text-decoration: none;
+    cursor: pointer;
 
     @media #{$smartphones-1} {
       width: 100%;
@@ -61,8 +62,19 @@ HEADER
     }
 
     &:hover {
-      color: $white;
+      opacity: .8;
+
+      @media #{$smartphones-1} {
+        color: $white;
+        opacity: 1;
+      }
     }
+  }
+
+  a.local-trigger {
+    font-weight: bold;
+    color: $normal-gray;
+    font-size: $font-small;
   }
 }
 

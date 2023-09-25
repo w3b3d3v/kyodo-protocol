@@ -67,7 +67,7 @@ function Header() {
                 <a href="/agreements">{t("agreements")}</a>
               </li>
               <li>
-                <button onClick={changeLanguage}>{locale}</button>
+                <a onClick={changeLanguage} className={"local-trigger"}>{locale}</a>
               </li>
             </ul>
           </nav>
