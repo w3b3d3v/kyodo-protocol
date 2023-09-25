@@ -68,28 +68,8 @@ function ConnectWalletButton(props) {
   }
 
   return (
-    <div>
-      <header className={"main-header"}>
-        <div className={"holder"}>
-          <Image
-            src="/logo.svg"
-            alt="Kyodo Protocol logo"
-            width={120}
-            height={32}
-            className={"logo"}
-          />
-          <div className={"user-wallet"}>
-            <span className={"wallet-off"}>Status</span>
-            <Image
-              src="/metamask.svg"
-              alt="Metamask icon"
-              width={22}
-              height={19}
-            />
-          </div>
-        </div>
-      </header>
-      <div className={"holder home-entry"}>
+    <div className="connect-wallet-bg">
+      <div className={"home-entry"}>
         <h2>Connect your wallet to start</h2>
         {props.account ? (
           <p>Conectado com a carteira {props.account}</p>
