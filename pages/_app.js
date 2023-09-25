@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import '../styles/globals.scss'
 import Image from 'next/image'
 import Link from 'next/link';
@@ -7,6 +7,9 @@ import { useRouter } from "next/router"
 import { useTranslation } from "react-i18next"
 import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWalletButton"
 import "../i18n" // Adjust the path based on where you placed i18n.js
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+
+import { PublicKey } from '@solana/web3.js';
 
 function formatAddress(address) {
   return address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : '';
@@ -31,9 +34,9 @@ function PageContent({ Component, pageProps }) {
   );
 }
 
-
 function Header() {
   const { account } = useAccount()
+  const isPublicKey = account instanceof PublicKey;
   const router = useRouter()
   const { t, i18n } = useTranslation()
   const { locale } = router
@@ -69,12 +72,17 @@ function Header() {
             className={"menu-trigger"}
             onClick={toggleElement}
           />
-          <div className={"user-wallet"}>
-            <em>{formatAddress(account)}</em>
+       <div className={"user-wallet"}>
+        {isPublicKey ? (
+          <WalletMultiButton />
+          ) : (
+          <div>
             <span className={"wallet-on"}>Status</span>
+            <em>{formatAddress(account)}</em>
             <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
           </div>
           
+          )}
           {visibleMenu &&
           <nav>
             <ul>
@@ -90,9 +98,9 @@ function Header() {
             </ul>
           </nav>
           }
-
         </div>
-      </header>
+    </div>
+    </header>
   )
 }
 

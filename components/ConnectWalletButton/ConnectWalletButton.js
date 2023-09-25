@@ -1,7 +1,10 @@
-import React, { useState } from "react";
-import Image from 'next/image'
+import React, { useState, useEffect} from "react";
 import { ethers } from "ethers";
+import Image from 'next/image'
 import styles from "./ConnectWalletButton.module.css"
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
+require('@solana/wallet-adapter-react-ui/styles.css');
 
 const networkId = "0x13881";
 const customChainId = "0x7A69";
@@ -52,6 +55,15 @@ async function vefifyChain() {
 
 function ConnectWalletButton(props) {
   const [showModal, setShowModal] = useState(false);
+  const { setVisible } = useWalletModal();
+  const { publicKey, connected} = useWallet();
+
+  useEffect(() => {
+    if (connected) {
+      props.value.setAccount(publicKey);
+      localStorage.setItem('selectedChain', "solana");
+    }
+  }, [publicKey]);
 
   async function connectEthereumWallet() {
     setShowModal(false);
@@ -72,21 +84,8 @@ function ConnectWalletButton(props) {
 
   async function connectSolanaWallet() {
     setShowModal(false);
-    if (window.solana) {
-      try {
-        await window.solana.connect();
-        const solanaAccount = window.solana.publicKey.toString();
-        props.value.setAccount(solanaAccount);
-        props.value.setSelectedChain("solana");
-        localStorage.setItem('selectedChain', "solana");
-      } catch (error) {
-        console.error("Erro ao conectar com a Phantom Wallet:", error);
-      }
-    } else {
-        alert("Phantom wallet não encontrada, por favor instale a extensão.");
-    }
-}
-
+    setVisible(true)
+  }
 
   return (
     <div className="connect-wallet-bg">
@@ -103,6 +102,7 @@ function ConnectWalletButton(props) {
             <div>Connect wallet</div>
           </button>
       </div>
+
       {showModal && (
         <div className={styles["modal"]}>
           <div className={styles["modal-content"]}>
