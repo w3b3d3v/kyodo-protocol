@@ -46,36 +46,33 @@ function ConnectWalletButton(props) {
   }
 
   return (
-    <div className="connect-wallet-bg">
-      <div className={"home-entry"}>
+    <div className={styles["connect-wallet-bg"]}>
+      <div className={styles["home-entry"]}>
         <div>
-          <Image
-            src="/logo-square.svg"
-            alt="WEB3DEV"
-            width={130}
-            height={130}
-          />
+          <Image src="/logo-square.svg" alt="WEB3DEV" width={130} height={130} />
           <h2>Connect your wallet to start</h2>
-          <button className="connect-wallet" onClick={() => setShowModal(true)}>
+          <button className={styles["connect-wallet"]} onClick={() => setShowModal(true)}>
             <div>Connect wallet</div>
           </button>
-      </div>
-
-      {showModal && (
-        <div className={styles["modal"]}>
-          <div className={styles["modal-content"]}>
-            <button className="close-modal" onClick={() => setShowModal(false)}>X</button>
-            <h2>Select the desired Chain</h2>
-            <br></br>
-            <button onClick={connectEthereumWallet}>Ethereum and Other EVMs</button>
-            <br></br>
-            <button onClick={connectSolanaWallet}>Solana</button>
-          </div>
         </div>
-      )}
+
+        {showModal && (
+          <div className={styles["modal"]}>
+            <div className={styles["modal-content"]}>
+              <button className="close-modal" onClick={() => setShowModal(false)}>
+                X
+              </button>
+              <h2>Select the desired Chain</h2>
+              <br></br>
+              <button onClick={connectEthereumWallet}>Ethereum and Other EVMs</button>
+              <br></br>
+              <button onClick={connectSolanaWallet}>Solana</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
-  );
+  )
 }
 
 export {ConnectWalletButton, vefifyChain};
