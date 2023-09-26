@@ -7,6 +7,10 @@ DASHBOARD
   width: 615px;
   max-width: 615px;
   margin: 0 auto;
+
+  @media #{$smartphones-1} {
+    width: 90%;
+  }
 }
 
 .dashboard-header {
@@ -19,6 +23,10 @@ DASHBOARD
     width: 48%;
     font-size: $font-bigger-2;
     text-align: left;
+
+    @media #{$smartphones-1} {
+      font-size: $font-large-2;
+    }
   }
 
   .balance-heading {
@@ -27,6 +35,10 @@ DASHBOARD
     text-align: right;
     position: relative;
     margin-top: 11px;
+
+    @media #{$smartphones-1} {
+      margin-top: 9px;
+    }
 
     p {
       margin: 0;
@@ -42,6 +54,10 @@ DASHBOARD
       font-size: $font-big-4;
       display: inline-block;
       margin: 0 90px 0 7px;
+
+      @media #{$smartphones-1} {
+        font-size: $font-large-2;
+      }
     }
   }
 
@@ -111,6 +127,11 @@ DASHBOARD
   flex-direction: row;
   margin-bottom: 60px;
 
+  @media #{$smartphones-1} {
+    display: block;
+    margin-bottom: 45px;
+  }
+
   li {
     list-style-type: none;
     width: 31%;
@@ -120,6 +141,13 @@ DASHBOARD
     border-radius: 6px;
     padding: 20px;
     position: relative;
+
+    @media #{$smartphones-1} {
+      width: 100%;
+      height: auto;
+      padding-bottom: 75px;
+      margin-bottom: 20px;
+    }
   }
 
   h2 {
@@ -127,6 +155,14 @@ DASHBOARD
     font-weight: normal;
     line-height: 28px;
     margin: 0;
+
+    @media #{$smartphones-1} {
+      font-size: $font-large;
+
+      br {
+        display: none;
+      }
+    }
   }
 
   p {
