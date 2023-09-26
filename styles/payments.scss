@@ -28,7 +28,7 @@ PAYMENTS
   background: rgba($medium-blue, .07);
   border-radius: 6px;
   font-size: 14px;
-  color: #fff;
+  color: $white;
   box-sizing: border-box;
   display: block;
   margin: 8px 0 15px 0;
@@ -37,13 +37,14 @@ PAYMENTS
   position: relative;
 
   h3 {
+    font-size: $font-medium-2;
     padding: 0 0 10px 0;
     font-weight: 600;
   }
 
   a {
     color: $medium-gray;
-    font-size: $font-medium;
+    font-size: $font-small;
     text-decoration: none;
   }
 
@@ -60,17 +61,27 @@ PAYMENTS
       margin-bottom: 5px;
     }
 
-    span {
-      display: inline-block;
-      color: $green;
-      font-size: $font-small;
-    }
-
     img {
       width: 20px;
       float: right;
       margin: -2px 0 0 5px;
-      display: none;
+    }
+
+    span {
+      display: inline-block;
+      font-size: 9px;
+    }
+
+    strong {
+      font-weight: normal;
+    }
+
+    .paid {
+      color: $medium-gray;
+    }
+
+    .received {
+      color: $green;
     }
   }
 }

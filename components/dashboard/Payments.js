@@ -50,12 +50,17 @@ function Payments ({ limit }) {
         <p className="value-status">
           <em>{parseFloat(ethers.utils.formatUnits(agreement.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD</em>
           <span>
-            {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? "Paid" : "Received"}
-            <Image
-              src="/received-icon.svg"
-              width={16}
-              height={16}
-            />
+            {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? (
+              <>
+                <strong className={"paid"}>Paid</strong>
+                <Image src="/paid-icon.svg" width={16} height={16} />
+              </>
+            ) : (
+              <>
+                <strong className={"received"}>Received</strong>
+                <Image src="/received-icon.svg" width={16} height={16} />
+              </>
+            )}
           </span>
         </p>
       </div>
