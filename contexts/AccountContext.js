@@ -12,77 +12,65 @@ const AccountContext = createContext({
   setAccount: () => {},
   selectedChain: null,
   setSelectedChain: () => {},
-});
+})
 
 export function useAccount() {
-  return useContext(AccountContext);
+  return useContext(AccountContext)
 }
 
 export function AccountProvider({ children }) {
-  const [account, setAccount] = useState(null);
+  const [account, setAccount] = useState(null)
   const [selectedChain, setSelectedChain] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('selectedChain') || null;
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("selectedChain") || null
     }
-    return null;
-  });
+    return null
+  })
 
-  const network = WalletAdapterNetwork.Devnet;
-  const endpoint = clusterApiUrl(network);
-  const wallets = [new PhantomWalletAdapter()];
+  const network = WalletAdapterNetwork.Devnet
+  const endpoint = clusterApiUrl(network)
+  const wallets = [new PhantomWalletAdapter()]
 
   const handleDisconnect = () => {
-    setAccount(null);
-    localStorage.setItem('selectedChain', null);
-  };
+    setAccount(null)
+    localStorage.setItem("selectedChain", null)
+  }
 
   const updateAccount = async () => {
-    if (selectedChain === 'ethereum' && window.ethereum) {
+    if (selectedChain === "ethereum" && window.ethereum) {
       try {
-        const accounts = await window.ethereum.request({ method: "eth_accounts" });
+        const accounts = await window.ethereum.request({ method: "eth_accounts" })
         if (accounts.length > 0 && accounts[0] !== account) {
-          await vefifyChain();
-          setAccount(accounts[0]);
+          await vefifyChain()
+          setAccount(accounts[0])
         }
       } catch (error) {
-        console.error(error);
+        console.error(error)
       }
     }
-  };
+  }
 
   useEffect(() => {
-    updateAccount();
+    updateAccount()
 
-    if (window.ethereum) {
-      window.ethereum.on("accountsChanged", updateAccount);
-      window.ethereum.on("disconnect", handleDisconnect);
-
-      return () => {
-        window.ethereum.removeListener("accountsChanged", updateAccount);
-        window.ethereum.removeListener("disconnect", handleDisconnect);
-      };
-    }
-
-    if (window.solana) {
-      window.solana.on("connect", updateAccount);
-      window.solana.on("disconnect", handleDisconnect);
+    if (window[selectedChain]) {
+      window[selectedChain].on("connect", updateAccount)
+      window[selectedChain].on("disconnect", handleDisconnect)
 
       return () => {
-        window.solana.removeListener("connect", updateAccount);
-        window.solana.removeListener("disconnect", handleDisconnect);
-      };
+        window[selectedChain].removeListener("connect", updateAccount)
+        window[selectedChain].removeListener("disconnect", handleDisconnect)
+      }
     }
-  }, [account, selectedChain]);
+  }, [account, selectedChain])
 
   return (
     <AccountContext.Provider value={{ account, setAccount, selectedChain, setSelectedChain }}>
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
-          <WalletModalProvider>
-            {children}
-          </WalletModalProvider>
+          <WalletModalProvider>{children}</WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
     </AccountContext.Provider>
-  );
+  )
 }

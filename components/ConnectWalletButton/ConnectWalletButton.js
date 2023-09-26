@@ -4,53 +4,11 @@ import Image from 'next/image'
 import styles from "./ConnectWalletButton.module.css"
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
-require('@solana/wallet-adapter-react-ui/styles.css');
-
-const networkId = "0x13881";
-const customChainId = "0x7A69";
+import contractManager from "../../chains/ContractManager"
+require("@solana/wallet-adapter-react-ui/styles.css")
 
 async function vefifyChain() {
-  const testEnv = (process.env.NODE_ENV !== "production");
-  const chainId = window.ethereum.networkVersion
-
-  if (testEnv) {
-    if (chainId !== customChainId && chainId !== "31337") {
-      await window.ethereum.request({
-        method: "wallet_addEthereumChain",
-        params: [
-          {
-            chainId: customChainId,
-            rpcUrls: ["http://localhost:8545"],
-            chainName: "Hardhat",
-            nativeCurrency: {
-              name: "ETH",
-              symbol: "HETH",
-              decimals: 18,
-            },
-          },
-        ],
-      })
-    }
-  } else {
-    if (chainId !== networkId && chainId !== "80001") {
-      await window.ethereum.request({
-        method: "wallet_addEthereumChain",
-        params: [
-          {
-            chainId: networkId,
-            rpcUrls: ["https://rpc-mumbai.maticvigil.com/"],
-            chainName: "Matic Mumbai Testnet",
-            nativeCurrency: {
-              name: "Matic",
-              symbol: "MATIC",
-              decimals: 18,
-            },
-            blockExplorerUrls: ["https://explorer-mumbai.maticvigil.com/"],
-          },
-        ],
-      })
-    }
-  }
+  contractManager.verify("ethereum")
 }
 
 function ConnectWalletButton(props) {
