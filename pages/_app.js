@@ -87,7 +87,7 @@ function Header() {
           <nav>
             <ul>
               <li>
-                <a href="/">{t("dashboard")}</a>
+                <a href="/dashboard">{t("dashboard")}</a>
               </li>
               <li>
                 <Link href="/agreements">{t("agreements")}</Link> 
