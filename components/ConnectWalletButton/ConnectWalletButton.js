@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from "react";
 import { ethers } from "ethers";
 import Image from 'next/image'
-import styles from "./ConnectWalletButton.module.css"
+import styles from "./ConnectWalletButton.module.scss"
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import contractManager from "../../chains/ContractManager"
