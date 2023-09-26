@@ -9,51 +9,51 @@ export function useAgreementContract() {
 }
 
 export function AgreementContractProvider({ children }) {
-  const { selectedChain } = useAccount();
-  const [contract, setContract] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { selectedChain } = useAccount()
+  const [contract, setContract] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function initializeContract() {      
-      const initializedContract = contractManager.getContract(selectedChain, "AgreementContract");
-      setContract(initializedContract);
-      setLoading(false);
+    async function initializeContract() {
+      const agreementContract = contractManager.chains[selectedChain].agreementContract()
+      setContract(agreementContract)
+      setLoading(false)
     }
 
-    initializeContract();
-  }, []);
+    initializeContract()
+  }, [])
 
   return (
     <AgreementContractContext.Provider value={{ contract, loading }}>
       {children}
     </AgreementContractContext.Provider>
-  );
+  )
 }
 
-const VaultContractContext = createContext(null);
+const VaultContractContext = createContext(null)
 
 export function useVaultContract() {
-  return useContext(VaultContractContext);
+  return useContext(VaultContractContext)
 }
 
 export function VaultContractProvider({ children }) {
-  const [vaultContract, setContract] = useState(null);
-  const [vaultLoading, setLoading] = useState(true);
-  const { selectedChain } = useAccount();
+  const [vaultContract, setContract] = useState(null)
+  const [vaultLoading, setLoading] = useState(true)
+  const { selectedChain } = useAccount()
 
   useEffect(() => {
     async function initializeContract() {
-      const initializedContract = contractManager.getContract(selectedChain, "VaultContract");
-      setContract(initializedContract);
-      setLoading(false);
+      const initializedContract = contractManager.chains[selectedChain].vaultContract()
+      setContract(initializedContract)
+      setLoading(false)
     }
 
-    initializeContract();
-  }, []);
+    initializeContract()
+  }, [])
 
   return (
     <VaultContractContext.Provider value={{ vaultContract, vaultLoading }}>
       {children}
     </VaultContractContext.Provider>
-  );
+  )
 }

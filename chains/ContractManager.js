@@ -1,32 +1,18 @@
-import { 
-  initializeAgreementContract as initializeEthereumAgreementContract 
-} from './ethereum/initializeAgreementContract';
-import { 
-  initializeVaultContract as initializeEthereumVaultContract 
-} from './ethereum/initializeVaultContract';
+import ethContracts from "./ethereum/contracts"
+import solContracts from "./solana/contracts"
 
 class ContractManager {
   constructor() {
-    this.chainInitializers = {
-      ethereum: {
-        AgreementContract: initializeEthereumAgreementContract,
-        VaultContract: initializeEthereumVaultContract,
-      },
-      // solana: {
-      //   AgreementContract: initializeSolanaAgreementContract,
-      // },
-    };
+    this.chains = {
+      ethereum: ethContracts,
+      solana: solContracts,
+    }
   }
 
-  getContract(chain, contractType) {
-    if (this.chainInitializers[chain] && this.chainInitializers[chain][contractType]) {
-      return this.chainInitializers[chain][contractType]();
-    }
-    alert("Please select a valid chain")
-    localStorage.setItem('selectedChain', null);
-    // throw new Error(`Unsupported chain or contract type: ${chain}, ${contractType}`);
+  verify(chain) {
+    this.chains[chain].verify()
   }
 }
 
-const manager = new ContractManager();
-export default manager;
+const manager = new ContractManager()
+export default manager

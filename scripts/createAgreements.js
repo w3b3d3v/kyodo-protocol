@@ -7,7 +7,7 @@ const AGREEMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_AD
 const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
 async function main() {
-  const AgreementContract = await ethers.getContractFactory("AgreementContract");
+  const AgreementContract = await ethers.getContractFactory("agreementContract")
   const agreementContract = await AgreementContract.attach(AGREEMENT_CONTRACT_ADDRESS);
 
   const agreementsPath = path.join(__dirname, "assets", "agreements.json");
