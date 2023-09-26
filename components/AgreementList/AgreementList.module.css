@@ -76,6 +76,7 @@
   box-sizing: border-box;
   background: rgba(43, 82, 107, .07);
   padding: 75px 25px 80px 25px;
+  margin-bottom: 20px;
   position: relative;
 }
 
@@ -280,6 +281,7 @@
     width: 90%;
     margin: auto;
     max-width: 100%;
+    padding-bottom: 35px;
   }
 
   .card,
