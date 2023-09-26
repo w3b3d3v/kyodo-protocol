@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { BeatLoader } from "react-spinners";
 import { ethers } from "ethers";
 import tokens from "../../public/allowedTokens.json"
-import styles from "./AgreementList.module.css"
+import styles from "./AgreementList.module.scss"
 import { useAccount } from "../../contexts/AccountContext"
 import { useAgreementContract } from "../../contexts/ContractContext"
-import "./AgreementList.module.css"
 import ERC20Token from '../../utils/ERC20Token';
 import { useRouter } from "next/router"
 import Image from "next/image"
