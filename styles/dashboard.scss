@@ -96,6 +96,10 @@ DASHBOARD
     border-radius: 50px;
     padding: 0 10px;
     cursor: pointer;
+
+    &:hover {
+      opacity: .8;
+    }
   }
   
   a {
@@ -109,6 +113,7 @@ DASHBOARD
     right: 0;
     top: 7px;
     z-index: 200;
+    
   }
   
   button {
@@ -136,7 +141,7 @@ DASHBOARD
     list-style-type: none;
     width: 31%;
     height: 240px;
-    background-color: #1C2124;
+    background-color: $dark-blue-2;
     box-sizing: border-box;
     border-radius: 6px;
     padding: 20px;
@@ -184,7 +189,7 @@ DASHBOARD
     right: 0;
     height: 50px;
     line-height: 50px;
-    background-color: #23292D;
+    background: rgba($white, .05);
     font-size: $font-medium;
     text-decoration: none;
     padding-left: 20px;
