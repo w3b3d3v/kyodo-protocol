@@ -109,3 +109,18 @@ For more information or if you have any questions, feel free to reach out to us 
 ## License
 
 This project is licensed under the MIT License. This means you are free to use, modify, and distribute the code, as long as you include the original copyright and license notice in any copy of the software/source. For more details, please refer to the LICENSE file in the repository.
+
+## Editing styles
+
+### Global SASS
+header, footer, forms, grid, components...
+
+```
+className="class-name"
+```
+
+### Modules
+Contextualized SASS
+```
+className={styles["class-name"]}
+```
