@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { useAgreementContract } from "../../contexts/ContractContext"
 import { useAccount } from "../../contexts/AccountContext"
 import { useState } from "react"
-import styles from "./AddAgreement.module.css"
+import styles from "./AddAgreement.module.scss"
 import Image from 'next/image'
 import { BeatLoader } from "react-spinners"
 import { ethers } from "ethers"
