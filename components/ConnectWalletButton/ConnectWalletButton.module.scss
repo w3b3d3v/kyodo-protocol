@@ -22,6 +22,10 @@ CONNECT WALLET
     @media #{$smartphones-1} {
       background: rgb(6,6,6);
     }
+
+    a:hover {
+      color: $dark-gray;
+    }
   }
 }
 
