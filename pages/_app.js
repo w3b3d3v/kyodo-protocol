@@ -117,7 +117,9 @@ function MyApp({ Component, pageProps }) {
               width={17}
               height={27}
             />
-            &copy; 2023 WEB3DEV
+            <a href="https://pt.w3d.community/" target="_blank" className={"web3dev-link"}>
+              &copy; 2023 WEB3DEV
+            </a>
           </p>
           <ul>
             <li>
