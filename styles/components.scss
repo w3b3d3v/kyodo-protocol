@@ -1,0 +1,63 @@
+/**
+COMPONENTS
+===========================
+*/
+
+
+// Flash messages
+
+.flash-success,
+.transaction-info {
+  width: 100%;
+  background-color: $dark-blue-2;
+  border-bottom: 3px solid $green;
+  height: 45px;
+  line-height: 43px;
+  font-size: 13px;
+  box-sizing: border-box;
+  padding: 0 3%;
+
+  img {
+    float: left;
+    margin: 11px 10px 0 0;
+  }
+
+  p {
+    margin: 0;
+    float: left;
+  }
+
+  a {
+    color: $light-gray;
+    text-decoration: none;
+    font-size: 12px;
+    text-align: right;
+    float: right;
+
+    &:hover {
+      color: $white;
+    }
+  }
+}
+
+
+// Loading
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.sweet-loading {
+  display: block;
+  margin: 0 auto;
+}
+
