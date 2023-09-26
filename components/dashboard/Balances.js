@@ -3,7 +3,7 @@ import { BeatLoader } from "react-spinners";
 import { useVaultContract } from "../../contexts/ContractContext";
 import { useAccount } from "../../contexts/AccountContext";
 import ERC20Token from '../../utils/ERC20Token';
-import styles from "./Dashboard.module.css"
+import styles from "./Dashboard.module.scss"
 import { ethers } from "ethers";
 import Payments from './Payments';
 import Image from 'next/image'
@@ -142,19 +142,19 @@ function Balances(props) {
 
   return (
 
-    <section className="user-home">
+    <section className={styles["user-home"]}>
 
       {/* {userBalances.length > 0 && (
         <h1>Balances</h1>
       )} */}
 
-      <div className="dashboard-header">
+      <div className={styles["dashboard-header"]}>
 
         <h1>GM, mate!</h1>
 
         {userBalances.map((balance, index) => (
-          <div key={index} className="balance-heading">
-            <p className="usd-balance">
+          <div key={index} className={styles["balance-heading"]}>
+            <p className={styles["usd-balance"]}>
               <Image
                 src="/usd-icon.svg"
                 alt="USD icon"
@@ -169,7 +169,7 @@ function Balances(props) {
               )}
               {showRedeemInput === index && (
                 <>
-                  <div className="opened-items">
+                  <div className={styles["opened-items"]}>
                     <input 
                       type="number" 
                       value={redeemValue}
@@ -186,10 +186,10 @@ function Balances(props) {
 
       </div>
 
-      <ul className="home-calls">
-        <li className="disabled">
+      <ul className={styles["home-calls"]}>
+        <li className={styles["disabled"]}>
           <h2>Complete your profile to be visible</h2>
-          <div className="progressbar">
+          <div className={styles["progressbar"]}>
             <div></div>
           </div>
           <p>You profile is <strong>35%</strong> complete</p>
@@ -200,7 +200,7 @@ function Balances(props) {
           <p>Start adding your first agreement.</p>
           <a href="/agreements/new">Add agreement</a>
         </li>
-        <li className="disabled">
+        <li className={styles["disabled"]}>
           <h2>Refer and<br></br> earn</h2>
           <p>Professionals or contractors that refer the usage of Kyodo, can earn a % of paid value to the protocol.</p>
           <a href="#">Get referral link</a>
