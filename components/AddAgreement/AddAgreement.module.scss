@@ -1,175 +1,195 @@
-/* Form */
+@import "../../styles/variables";
+
+/**
+ADD AGREEMENT
+===========================
+*/
 
 .add-agreement-form {
   width: 615px;
   max-width: 615px;
   padding-bottom: 110px;
   margin: 0 auto;
-}
 
-.add-agreement-form label {
-  font-weight: bold;
-  font-size: 13px;
-}
-
-.amount-field {
-  position: relative;
-}
-
-.amount-field span {
-  position: absolute;
-  font-size: 13px;
-  color: #CCDDE2;
-  display: inline-block;
-  background-color: #1E2326;
-  padding: 0 15px;
-  height: 40px;
-  line-height: 40px;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  left: 0;
-}
-
-.amount-field input {
-  padding-left: 70px;
-}
-
-
-/* Form footer */
-
-.form-footer {
-  text-align: center;
-  padding-top: 20px;
-  margin-top: 55px;
-  border-top: 1px solid #1E2326;
-  display: block;
-}
-
-.add-agreement-form-button {
-  background: linear-gradient(to right, #A3C987, #F69783, #78BCEE);
-  display: inline-block;
-  border-radius: 30px;
-  border: none;
-  padding: 0;
-}
-
-.add-agreement-form-button div {
-  border-radius: 30px;
-  text-decoration: none;
-  font-weight: 600;
-  background: #060606;
-  height: 38px;
-  line-height: 36px;
-  display: inline-block;
-  font-size: 14px;
-  text-align: center;
-  box-sizing: border-box;
-  padding: 0 35px;
-  color: #fff;
-  margin: 2px;
-  cursor: pointer;
-}
-
-.add-agreement-form-button div:hover {
-  opacity: .8;
-}
-
-
-/* Flash messages */
-
-.flash-success,
-.transaction-info {
-  width: 100%;
-  background-color: #1C2124;
-  border-bottom: 3px solid #7BB651;
-  height: 45px;
-  line-height: 43px;
-  font-size: 13px;
-  box-sizing: border-box;
-  padding: 0 3%;
-}
-
-.flash-success img,
-.transaction-info img {
-  float: left;
-  margin: 11px 10px 0 0;
-}
-
-.flash-success p,
-.transaction-info p {
-  margin: 0;
-  float: left;
-}
-
-.flash-success a,
-.transaction-info a {
-  color: #E6EDF1;
-  text-decoration: none;
-  font-size: 12px;
-  text-align: right;
-  float: right;
-}
-
-.flash-success a:hover,
-.transaction-info a:hover {
-  color: #fff;
-}
-
-
-/* Transaction */
-
-.transaction-info {
-  border-top: 3px solid #7BB651;
-  background-color: #2B526B;
-  border-radius: 6px;
-  height: 45px;
-  line-height: 45px;
-  position: fixed;
-  left: 30px;
-  bottom: 30px;
-}
-
-.transaction-info a {
-  color: #8F989D;
-  text-decoration: none;
-  font-size: 12px;
-  text-align: right;
-}
-
-.transaction-info a:hover {
-  color: #fff;
-}
-
-.token-option {
-  background-color: #fff;
-  color: #000;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  padding: 8px;
-  transition: background-color 0.2s;
-}
-
-.token-option:hover {
-  background-color: #f0f0f0;
-}
-
-
-/* Mobile */
-
-@media only screen and (max-width: 800px) {
-
-  .add-agreement-form {
+  @media #{$smartphones-1} {
     width: 90%;
     max-width: 100%;
     padding-bottom: 70px;
   }
 
-  .columns {
-    display: block;
+  label {
+    font-weight: bold;
+    font-size: 13px;
   }
+}
+
+
+// Amount
+
+.amount-field {
+  position: relative;
+
+  span {
+    position: absolute;
+    font-size: 13px;
+    color: $light-gray;
+    display: inline-block;
+    background-color: $dark-blue-2;
+    padding: 0 15px;
+    height: 40px;
+    line-height: 40px;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    left: 0;
+  }
+
+  input {
+    padding-left: 70px;
+  }
+}
+
+
+// Skills
+
+.skill-lv {
+  display: block;
+
+  span {
+    width: 68px;
+    text-align: center;
+    float: right;
+  }
+}
+
+.skills-field {
+  margin-bottom: -17px;
+  position: relative;
+}
+
+.skills-input {
+  padding-right: 75px;
+}
+
+.skill-value {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  right: 0;
+  top: -8px;
+  position: absolute;
+  font-size: 13px;
+  color: $light-gray;
+  display: inline-block;
+  background: rgba($black, .5);
+  text-align: center;
+  height: 40px;
+  line-height: 38px;
+  width: 68px;
+}
+
+.add-skill-btn {
+  text-decoration: none;
+  color: $medium-gray;
   
-  .col-01,
-  .col-02 {
-    width: 100%;
+  img {
+    float: left;
+    width: 16px;
+    margin: 3px 5px 0 0;
+  }
+
+  span {
+    font-size: $font-small-2;
+    font-weight: 600;
+  }
+
+  &:hover {
+    opacity: .8;
+  }
+}
+
+.skills-list {
+  margin-top: 25px;
+
+  li {
+    list-style-type: none;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  em {
+    font-style: normal;
+    font-size: $font-medium;
+    line-height: 28px;
+    text-align: center;
+    width: 68px;
+  }
+}
+
+.skill-item {
+  display: inline-block;
+  padding: 0 15px 0 16px;
+  border: 1px solid $medium-gray;
+  height: 28px;
+  line-height: 22px;
+  border-radius: 20px;
+  box-sizing: border-box;
+  background: rgb(6,6,6);
+  background: linear-gradient(-110deg, rgba(6,6,6,.2) 0%, rgba(133,168,190,.2) 100%);
+
+  span {
+    font-size: $font-small-2;
+    font-weight: normal;
+  }
+
+  img {
+    float: right;
+    width: 16px;
+    margin: 5px 0 0 12px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: .8;
+    }
+  }
+}
+
+
+// Form footer
+
+.form-footer {
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 55px;
+  border-top: 1px solid $dark-blue-2;
+  display: block;
+}
+
+.add-agreement-form-button {
+  background: linear-gradient(to right, $brand-green, $brand-red, $brand-blue);
+  display: inline-block;
+  border-radius: 30px;
+  border: none;
+  padding: 0;
+
+  div {
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    background: $dark-blue;
+    height: 38px;
+    line-height: 36px;
+    display: inline-block;
+    font-size: 14px;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 0 35px;
+    color: $white;
+    margin: 2px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: .8;
+    }
   }
 }

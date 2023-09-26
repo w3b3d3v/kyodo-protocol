@@ -117,7 +117,7 @@ function AddAgreementForm(props) {
 
   if (transactionHash) {
     return (
-      <div className={styles["transaction-info"]}>
+      <div className="transaction-info">
         <div className={styles["holder"]}>
           <p>
             <Image
@@ -193,25 +193,27 @@ function AddAgreementForm(props) {
               onChange={(event) => setDescription(event.target.value)}
             ></textarea>
 
-            <label htmlFor="skills-input" className={"skill-lv"}>
+            <label htmlFor="skills-input" className={styles["skill-lv"]}>
               Skills
               <span>Lv.</span>
             </label>
             {formErrors.skills && <span style={{ color: 'red', fontSize: '12px' }}><br></br>{formErrors.skills}</span>}
-            <div className={"skills-field"}>
+            <div className={styles["skills-field"]}>
               <input
                 type="text"
                 id="skill-value"
+                className={styles["skill-value"]}
                 placeholder="%"
               />
               <input
                 type="text"
                 id="skills-input"
+                className={styles["skills-input"]}
                 value={skills}
                 onChange={(event) => setSkills(event.target.value)}
               />
             </div>
-            <a href="#" className={"add-skill-btn"}>
+            <a href="#" className={styles["add-skill-btn"]}>
               <Image
                 src="/add.svg"
                 width={16}
@@ -220,9 +222,9 @@ function AddAgreementForm(props) {
               <span>add</span>
             </a>
 
-            <ul className={"skills-list"}>
+            <ul className={styles["skills-list"]}>
               <li>
-                <div className={"skill-item"}>
+                <div className={styles["skill-item"]}>
                   <span>Dev Ops</span>
                   <Image
                     src="/close.svg"
@@ -233,7 +235,7 @@ function AddAgreementForm(props) {
                 <em>30%</em>
               </li>
               <li>
-                <div className={"skill-item"}>
+                <div className={styles["skill-item"]}>
                   <span>Quality Assurance</span>
                   <Image
                     src="/close.svg"

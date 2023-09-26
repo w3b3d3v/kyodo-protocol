@@ -207,7 +207,6 @@ function AgreementList(props) {
                             <option
                               key={token.address}
                               value={token.address}
-                              className={styles["token-option"]}
                             >
                               {token.name}
                             </option>
