@@ -3,7 +3,7 @@ import { BeatLoader } from "react-spinners";
 import { ethers } from "ethers";
 import { useAgreementContract } from "../../contexts/ContractContext";
 import { useAccount } from "../../contexts/AccountContext";
-import styles from "./Dashboard.module.css"
+import styles from "./Dashboard.module.scss"
 import Image from 'next/image'
 
 function Payments ({ limit }) {
@@ -42,22 +42,22 @@ function Payments ({ limit }) {
   function renderPaidAgreements() {
     const displayedAgreements = limit ? paidAgreements.slice(0, limit) : paidAgreements;
     return displayedAgreements.map((agreement, index) => (
-      <div key={index} className="payment-item">
+      <div key={index} className={styles["payment-item"]}>
         <h3>Agreement ID: {agreement.agreementId.toString()}</h3>
         <a href={`https://polygonscan.com/tx/${agreement.transactionHash}`} target="_blank" rel="noopener noreferrer">
            View on Polygonscan
         </a>
-        <p className="value-status">
+        <p className={styles["value-status"]}>
           <em>{parseFloat(ethers.utils.formatUnits(agreement.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD</em>
           <span>
             {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? (
               <>
-                <strong className={"paid"}>Paid</strong>
+                <strong className={styles["paid"]}>Paid</strong>
                 <Image src="/paid-icon.svg" width={16} height={16} />
               </>
             ) : (
               <>
-                <strong className={"received"}>Received</strong>
+                <strong className={styles["received"]}>Received</strong>
                 <Image src="/received-icon.svg" width={16} height={16} />
               </>
             )}
@@ -78,7 +78,7 @@ function Payments ({ limit }) {
   }
   
   return (
-    <div className="payments-section">
+    <div className={styles["payments-section"]}>
       <h2>Payments</h2>
       <div>
         {renderPaidAgreements()}
