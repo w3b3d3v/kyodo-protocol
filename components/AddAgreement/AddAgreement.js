@@ -150,10 +150,9 @@ function AddAgreementForm(props) {
           <div className={"col-01"}>
             <label htmlFor="title-input">{t("title")}</label>
             {formErrors.title && (
-              <span style={{ color: "red", fontSize: "12px" }}>
-                <br></br>
+              <div className={"validation-msg"}>
                 {formErrors.title}
-              </span>
+              </div>
             )}
             <input
               type="text"
@@ -164,10 +163,9 @@ function AddAgreementForm(props) {
 
             <label htmlFor="professional-input">Professional wallet</label>
             {formErrors.professional && (
-              <span style={{ color: "red", fontSize: "12px" }}>
-                <br></br>
+              <div className={"validation-msg"}>
                 {formErrors.professional}
-              </span>
+              </div>
             )}
             <input
               type="text"
@@ -178,10 +176,9 @@ function AddAgreementForm(props) {
 
             <label htmlFor="payment-amount-input">Payment amount</label>
             {formErrors.paymentAmount && (
-              <span style={{ color: "red", fontSize: "12px" }}>
-                <br></br>
+              <div className={"validation-msg"}>
                 {formErrors.paymentAmount}
-              </span>
+              </div>
             )}
 
             <div className={styles["amount-field"]}>
@@ -198,10 +195,9 @@ function AddAgreementForm(props) {
           <div className={"col-02"}>
             <label htmlFor="description-input">Description</label>
             {formErrors.description && (
-              <span style={{ color: "red", fontSize: "12px" }}>
-                <br></br>
+              <div className={"validation-msg"}>
                 {formErrors.description}
-              </span>
+              </div>
             )}
             <textarea
               id="description-input"
@@ -214,10 +210,9 @@ function AddAgreementForm(props) {
               <span>Lv.</span>
             </label>
             {formErrors.skills && (
-              <span style={{ color: "red", fontSize: "12px" }}>
-                <br></br>
+              <div className={"validation-msg"}>
                 {formErrors.skills}
-              </span>
+              </div>
             )}
             <div className={styles["skills-field"]}>
               <input
