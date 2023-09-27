@@ -50,6 +50,7 @@ To run tests or deploy contracts on the Mumbai test network, you'll need to set 
 Run a Hardhat node:
 
 ```bash
+cd contracts/ethereum
 npx hardhat node
 ```
 
@@ -59,6 +60,7 @@ The node will generate some accounts. Add the first one to Metamask.
 ## 3 - Deploying Smart Contracts
 Deploy the Agreement contract and the fake Stablecoin:
 ```bash
+cd contracts/ethereum
 npx hardhat run scripts/deploy.js
 ```
 
@@ -78,16 +80,19 @@ You can interact with the smart contracts either through the frontend applicatio
 
 Create an agreement:
 ```bash
+cd contracts/ethereum
 npx hardhat run scripts/createAgreements.js
 ```
 
 Retrieve all agreements or the user (deployer) agreements:
 ```bash
+cd contracts/ethereum
 npx hardhat run scripts/retrieveAgreements.js
 ```
 
 Pay for the agreement you've created:
 ```bash
+cd contracts/ethereum
 npx hardhat run scripts/payAgreements.js
 ```
 
@@ -95,6 +100,7 @@ npx hardhat run scripts/payAgreements.js
 To pay for the agreement through the user interface, you need to allow the contract first, as the logic to check allowance through the UI is not implemented yet:
 
 ```bash
+cd contracts/ethereum
 npx hardhat run scripts/allow.js
 ```
 

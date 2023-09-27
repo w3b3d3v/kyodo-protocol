@@ -1,5 +1,5 @@
 const { ethers } = require("hardhat");
-require('dotenv').config({ path: './.env.development.local' });
+require('dotenv').config({ path: '../../.env.development.local' });
 
 const STABLE_VAULT_ADDRESS = process.env.NEXT_PUBLIC_STABLE_VAULT_ADDRESS
 

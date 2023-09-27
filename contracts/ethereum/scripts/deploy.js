@@ -1,7 +1,7 @@
 const { ethers } = require("hardhat");
 const fs = require("fs");
 const path = require("path");
-require('dotenv').config({ path: './.env.development.local' });
+require('dotenv').config({ path: '../../.env.development.local' });
 
 const TOTAL_FEE = 20;
 const PROTOCOL_FEE = 500;
@@ -10,7 +10,7 @@ const FAKE_STABLE_DECIMALS = 18;
 
 function copyABI() {
   const sourcePath = path.join(__dirname, "../artifacts/contracts/AgreementContract.sol/AgreementContract.json");
-  const destinationPath = path.join(__dirname, "../contexts/contracts/AgreementContract.json");
+  const destinationPath = path.join(__dirname, "../../../contexts/contracts/AgreementContract.json");
 
   const sourceData = fs.readFileSync(sourcePath, "utf8");
   fs.writeFileSync(destinationPath, sourceData);
@@ -19,7 +19,7 @@ function copyABI() {
 
 function copyVaultABI() {
   const sourcePath = path.join(__dirname, "../artifacts/contracts/StableVault.sol/StableVault.json");
-  const destinationPath = path.join(__dirname, "../contexts/contracts/StableVault.json");
+  const destinationPath = path.join(__dirname, "../../../contexts/contracts/StableVault.json");
 
   const sourceData = fs.readFileSync(sourcePath, "utf8");
   fs.writeFileSync(destinationPath, sourceData);
@@ -27,7 +27,7 @@ function copyVaultABI() {
 }
 
 function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress) {
-  const envPath = path.join(__dirname, '../.env.development.local');
+  const envPath = path.join(__dirname, '../../../.env.development.local');
   let envData = fs.readFileSync(envPath, 'utf8');
   const lines = envData.split('\n');
 
@@ -58,6 +58,8 @@ function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress)
 
 async function deployAgreementsContract(vaultAddress) {
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
+  console.log(process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS, 
+    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS,)
   contract = await AgreementContract
   .deploy
   (
@@ -73,7 +75,7 @@ async function deployAgreementsContract(vaultAddress) {
   copyABI();
 
 
-  const allowedTokensData = fs.readFileSync("public/allowedTokens.json", "utf8");
+  const allowedTokensData = fs.readFileSync("../../public/allowedTokens.json", "utf8");
   const allowedTokens = JSON.parse(allowedTokensData);
 
 
@@ -100,7 +102,7 @@ async function deployToken() {
   console.log("Token deployed to:", token.address);
 
 
-  const allowedTokensPath = 'public/allowedTokens.json';
+  const allowedTokensPath = '../../public/allowedTokens.json';
   const allowedTokensData = fs.readFileSync(allowedTokensPath, 'utf8');
   const allowedTokens = JSON.parse(allowedTokensData);
 

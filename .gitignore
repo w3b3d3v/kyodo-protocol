@@ -39,4 +39,5 @@ artifacts/
 cache/
 package-lock.json
 
-test-ledger/
+contracts/solana/test-ledger/
+contracts/ethereum/node_modules
