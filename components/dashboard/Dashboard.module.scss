@@ -24,6 +24,10 @@ DASHBOARD
   justify-content: space-between;
   align-items: center;
 
+  @media #{$smartphones-1} {
+    display: block;
+  }
+
   h1 {
     width: 48%;
     font-size: $font-bigger-2;
@@ -31,6 +35,8 @@ DASHBOARD
 
     @media #{$smartphones-1} {
       font-size: $font-large-2;
+      margin: 30px 0 10px 0;
+      width: 100%;
     }
   }
 
@@ -41,8 +47,15 @@ DASHBOARD
     position: relative;
     margin-top: 11px;
 
+
     @media #{$smartphones-1} {
-      margin-top: 9px;
+      background: $dark-blue-2;
+      width: 100%;
+      padding: 5px;
+      box-sizing: border-box;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      text-align: left;
     }
 
     p {
@@ -54,6 +67,18 @@ DASHBOARD
     display: flex;
     align-items: center;
     justify-content: flex-end;
+
+    @media #{$smartphones-1} {
+      justify-content: flex-start;
+    }
+
+    img {
+
+      @media #{$smartphones-1} {
+        width: 26px;
+        height: 26px;
+      }
+    }
   
     span {
       font-size: $font-big-4;
@@ -67,13 +92,20 @@ DASHBOARD
   }
 
   .opened-items {
-    background-color: #060606;
+    background-color: $dark-gray;
     border-radius: 6px;
     padding-left: 60px;
     position: absolute;
     right: 0;
     top: 6px;
     z-index: 300;
+
+    @media #{$smartphones-1} {
+      background-color: $dark-blue-2;
+      padding-left: 0;
+      right: 5px;
+      top: 5px;
+    }
   }
   
   input {
@@ -85,6 +117,11 @@ DASHBOARD
     margin: 0;
     background: rgba(255, 255, 255, 0.01);
     width: 140px;
+
+    @media #{$smartphones-1} {
+      width: 90px;
+      background-color: $dark-blue;
+    }
   }
   
   input:focus {
@@ -118,7 +155,11 @@ DASHBOARD
     right: 0;
     top: 7px;
     z-index: 200;
-    
+
+    @media #{$smartphones-1} {
+      top: 5px;
+      right: 5px;
+    }
   }
   
   button {
