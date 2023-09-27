@@ -39,5 +39,12 @@ artifacts/
 cache/
 package-lock.json
 
-contracts/solana/test-ledger/
+contracts/solana/Cargo.lock
+contracts/solana/.anchor/
+contracts/solana/node_modules/
+contracts/solana/.prettierignore
+contracts/solana/yarn.lock
+contracts/solana/target/
+
 contracts/ethereum/node_modules
+contracts/ethereum/yarn.lock
