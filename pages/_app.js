@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWalletButton"
 import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-
+import Head from 'next/head';
 import { PublicKey } from '@solana/web3.js';
 
 function formatAddress(address) {
@@ -107,6 +107,9 @@ function Header() {
 function MyApp({ Component, pageProps }) {
   return (
     <AccountProvider>
+      <Head>
+        <title>App - Kyōdō Protocol</title>
+      </Head>
       <PageContent Component={Component} pageProps={pageProps} />
       <footer>
         <div className={"holder"}>
