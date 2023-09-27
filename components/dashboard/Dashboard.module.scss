@@ -220,7 +220,7 @@ DASHBOARD
     width: 35%;
     height: 5px;
     background: rgb(163,201,135);
-    background: linear-gradient(110deg, rgba(163,201,135,1) 0%, rgba(246,151,131,1) 150%);
+    background: linear-gradient(110deg, $green 0%, $red 150%);
     border-bottom-left-radius: 3px;
     border-top-left-radius: 3px;
   }
@@ -266,9 +266,26 @@ DASHBOARD
   @extend %clearfix;
   position: relative;
 
+  .payment-avatar {
+    border-radius: 25px;
+    width: 50px;
+    height: 50px;
+    background: rgba($white, .03);
+    margin-right: 20px;
+    text-align: center;
+    padding-top: 11px;
+    box-sizing: border-box;
+    float: left;
+
+    img {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
   h3 {
     font-size: $font-medium-2;
-    padding: 0 0 10px 0;
+    padding: 3px 0 8px 0;
     font-weight: 600;
   }
 

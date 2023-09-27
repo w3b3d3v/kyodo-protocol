@@ -43,6 +43,12 @@ function Payments ({ limit }) {
     const displayedAgreements = limit ? paidAgreements.slice(0, limit) : paidAgreements;
     return displayedAgreements.map((agreement, index) => (
       <div key={index} className={styles["payment-item"]}>
+        <div className={styles["payment-avatar"]}>
+          <Image
+            src="coins/usdc-icon.svg"
+            width={40} height={40}
+          />
+        </div>
         <h3>Agreement ID: {agreement.agreementId.toString()}</h3>
         <a href={`https://polygonscan.com/tx/${agreement.transactionHash}`} target="_blank" rel="noopener noreferrer">
            View on Polygonscan
