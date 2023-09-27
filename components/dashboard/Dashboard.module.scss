@@ -266,6 +266,10 @@ DASHBOARD
   @extend %clearfix;
   position: relative;
 
+  @media #{$smartphones-1} {
+    padding: 15px;
+  }
+
   .payment-avatar {
     border-radius: 25px;
     width: 50px;
@@ -277,6 +281,10 @@ DASHBOARD
     box-sizing: border-box;
     float: left;
 
+    @media #{$smartphones-1} {
+      margin-right: 15px;
+    }
+
     img {
       width: 28px;
       height: 28px;
@@ -287,12 +295,21 @@ DASHBOARD
     font-size: $font-medium-2;
     padding: 3px 0 8px 0;
     font-weight: 600;
+
+    @media #{$smartphones-1} {
+      font-size: $font-medium;
+      padding: 8px 0 3px 0;
+    }
   }
 
   a {
     color: $medium-gray;
     font-size: $font-small;
     text-decoration: none;
+
+    @media #{$smartphones-1} {
+      font-size: 09px;
+    }
   }
 
   .value-status {
@@ -301,11 +318,20 @@ DASHBOARD
     right: 20px;
     top: 20px;
 
+    @media #{$smartphones-1} {
+      top: 23px;
+    }
+
     em {
       font-size: $font-large;
       display: block;
       font-style: normal;
       margin-bottom: 5px;
+
+      @media #{$smartphones-1} {
+        font-size: $font-medium;
+        margin-bottom: 8px;
+      }
     }
 
     img {
@@ -321,6 +347,10 @@ DASHBOARD
 
     strong {
       font-weight: normal;
+
+      @media #{$smartphones-1} {
+        display: none;
+      }
     }
 
     .paid {
