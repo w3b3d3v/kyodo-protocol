@@ -55,22 +55,35 @@ function ConnectWalletButton(props) {
             <div>Connect wallet</div>
           </button>
         </div>
-
-        {showModal && (
+      </div>
+      {showModal && 
+        (
           <div className={styles["modal"]}>
             <div className={styles["modal-content"]}>
-              <button className="close-modal" onClick={() => setShowModal(false)}>
-                X
-              </button>
-              <h2>Select the desired Chain</h2>
-              <br></br>
-              <button onClick={connectEthereumWallet}>Ethereum and Other EVMs</button>
-              <br></br>
-              <button onClick={connectSolanaWallet}>Solana</button>
+              <a className={styles["close-modal"]} onClick={() => setShowModal(false)}>
+                <Image src="/close-modal.svg" width={30} height={30} />
+              </a>
+              <h3>Select a Chain and unlock your future</h3>
+              <ul className={styles["chains-list"]}>
+                <li>
+                  <a onClick={connectEthereumWallet}>
+                    <Image src="/eth-icon.svg" width={60} height={60} />
+                    <h4>Ethereum/Other EVMs</h4>
+                    <p>Reliability and a solid, well-defined foundation.</p>
+                  </a>
+                </li>
+                <li>
+                  <a onClick={connectSolanaWallet}>
+                    <Image src="/solana-icon.svg" width={60} height={60} />
+                    <h4>Solana chain</h4>
+                    <p>Unparalleled scalability and low fees.</p>
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
-        )}
-      </div>
+        )
+      }
     </div>
   )
 }

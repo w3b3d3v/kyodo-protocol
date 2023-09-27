@@ -104,3 +104,92 @@ CONNECT WALLET
 .connect-wallet div:hover {
   opacity: .8;
 }
+
+
+// Modal
+
+.modal {
+  background: rgba($dark-blue, .98);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  .modal-content {
+    width: 450px;
+    margin: auto;
+
+    @media #{$smartphones-1} {
+      width: 90%;
+    }
+  }
+
+  h3 {
+    font-weight: bold;
+    margin: 0 0 50px 0;
+  }
+
+  .close-modal {
+    right: 20px;
+    top: 18px;
+    position: absolute;
+    cursor: pointer;
+  }
+}
+
+.chains-list {
+
+  li {
+    list-style-type: none;
+    margin-bottom: 20px;
+    text-align: left;
+
+    @media #{$smartphones-1} {
+      text-align: center;
+    }
+  }
+
+  a {
+    background: rgba($white, .1);
+    width: 100%;
+    display: inline-block;
+    cursor: pointer;
+    padding: 27px 17px 20px 17px;
+    box-sizing: border-box;
+    border-radius: 6px;
+
+    @media #{$smartphones-1} {
+      padding: 27px;
+    }
+
+    &:hover {
+      background: rgba($white, .2);
+    }
+  }
+
+  h4 {
+    margin: 0 0 7px 0;
+  }
+
+  p {
+    font-size: $font-medium;
+    color: $light-gray;
+    line-height: 20px;
+  }
+
+  img {
+    margin: -10px 20px 0 0;
+    float: left;
+
+    @media #{$smartphones-1} {
+      float: none;
+      margin: 0 0 10px 0;
+    }
+  }
+}
+
