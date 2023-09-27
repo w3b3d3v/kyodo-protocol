@@ -63,12 +63,16 @@ footer {
     text-decoration: none;
 
     &:hover {
-      color: $white;
-      opacity: 1;
+      opacity: .9;
     }
   }
 
   .web3dev-link {
     color: $light-gray;
+
+    &:hover {
+      color: $white;
+      opacity: 1;
+    }
   }
 }

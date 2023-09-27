@@ -16,17 +16,6 @@ CONNECT WALLET
     background: $white;
     height: auto;
   }
-
-  footer {
-
-    @media #{$smartphones-1} {
-      background: rgb(6,6,6);
-    }
-
-    li a:hover {
-      color: $dark-gray;
-    }
-  }
 }
 
 .home-entry {
