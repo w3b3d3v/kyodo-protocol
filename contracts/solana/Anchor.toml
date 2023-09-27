@@ -2,14 +2,14 @@
 seeds = false
 skip-lint = false
 [programs.localnet]
-agreement_program = "Fz3wjVypwyrY4a3fad9gTpDotqZg2bFBwEW4TkyruMTo"
+agreement_program = "FVz7RJ6H6zFUkTx1sGuCDHDmYr96EQHR4g52xTmL8ZPn"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
 cluster = "Localnet"
-wallet = "/Users/nomadbitcoin/.config/solana/id.json"
+wallet = "/Users/brunobarros/.config/solana/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
