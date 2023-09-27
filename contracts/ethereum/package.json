@@ -1,0 +1,33 @@
+{
+    "name": "kyodo-protocol-smart-contracts",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {},
+    "dependencies": {
+        "ethersjs": "^0.0.1-security",
+        "dotenv": "^16.0.3",
+        "hardhat": "^2.12.6",
+        "hardhat-jest-plugin": "^0.0.6",
+        "sol2uml": "^2.4.3",
+        "solidity-docgen": "^0.5.16"
+    },
+    "devDependencies": {
+        "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
+        "@nomicfoundation/hardhat-network-helpers": "^1.0.9",
+        "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+        "@nomiclabs/hardhat-ethers": "^2.2.3",
+        "@nomiclabs/hardhat-etherscan": "^3.1.7",
+        "@openzeppelin/contracts": "^4.9.3",
+        "@typechain/ethers-v5": "^10.2.1",
+        "@typechain/hardhat": "^6.1.6",
+        "@types/chai": "^4.3.6",
+        "@types/mocha": "^10.0.2",
+        "chai": "^4.3.9",
+        "hardhat-contract-sizer": "^2.10.0",
+        "hardhat-gas-reporter": "^1.0.9",
+        "solc-0.8": "npm:solc@^0.8.18",
+        "solidity-coverage": "^0.8.5",
+        "typechain": "^8.3.1",
+        "typescript": "^5.2.2"
+    }
+}

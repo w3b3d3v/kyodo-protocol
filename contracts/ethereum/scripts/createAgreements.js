@@ -1,13 +1,13 @@
 const fs = require("fs");
 const path = require("path");
 const { ethers } = require("hardhat");
-require('dotenv').config({ path: './.env.development.local' });
+require('dotenv').config({ path: '../../.env.development.local' });
 
 const AGREEMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS
 const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
 async function main() {
-  const AgreementContract = await ethers.getContractFactory("agreementContract")
+  const AgreementContract = await ethers.getContractFactory("AgreementContract")
   const agreementContract = await AgreementContract.attach(AGREEMENT_CONTRACT_ADDRESS);
 
   const agreementsPath = path.join(__dirname, "assets", "agreements.json");
