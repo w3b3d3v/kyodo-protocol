@@ -55,34 +55,16 @@ function Header() {
   };
 
   return (
-      <header className={"main-header"}>
-        <div className={"holder"}>
-          <Image
-            src="/logo.svg"
-            alt="Kyodo Protocol logo"
-            width={120}
-            height={32}
-            className={"logo"}
-          />
-          <Image
-            src="/menu-icon.svg"
-            alt="menu icon"
-            width={30}
-            height={30}
-            className={"menu-trigger"}
-            onClick={toggleElement}
-          />
-       <div className={"user-wallet"}>
-        {isPublicKey ? (
-          <WalletMultiButton />
-          ) : (
-          <div>
-            <span className={"wallet-on"}>Status</span>
-            <em>{formatAddress(account)}</em>
-            <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
-          </div>
-          
-          )}
+    <header className={"main-header"}>
+      <div className={"holder"}>
+        <Image
+          src="/logo.svg"
+          alt="Kyodo Protocol logo"
+          width={120}
+          height={32}
+          className={"logo"}
+        />
+        <div className={"header-right"}>
           {visibleMenu &&
           <nav>
             <ul>
@@ -98,8 +80,28 @@ function Header() {
             </ul>
           </nav>
           }
+          <div className={"user-wallet"}>
+            {isPublicKey ? (
+              <WalletMultiButton />
+              ) : (
+              <div>
+                <span className={"wallet-on"}>Status</span>
+                <em>{formatAddress(account)}</em>
+                <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
+              </div>
+            
+            )}
+          </div>
+          <Image
+            src="/menu-icon.svg"
+            alt="menu icon"
+            width={30}
+            height={30}
+            className={"menu-trigger"}
+            onClick={toggleElement}
+          />
         </div>
-    </div>
+      </div>
     </header>
   )
 }
