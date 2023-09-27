@@ -71,27 +71,27 @@ CONNECT WALLET
   border: none;
   padding: 0;
   cursor: pointer;
-}
 
-.connect-wallet div {
-  border-radius: 30px;
-  text-decoration: none;
-  font-weight: 600;
-  background: $white;
-  height: 38px;
-  line-height: 38px;
-  display: inline-block;
-  font-size: 14px;
-  text-align: center;
-  box-sizing: border-box;
-  padding: 0 25px;
-  color: $medium-blue;
-  margin: 2px;
-  cursor: pointer;
-}
+  div {
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    background: $white;
+    height: 38px;
+    line-height: 38px;
+    display: inline-block;
+    font-size: 14px;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 0 25px;
+    color: $medium-blue;
+    margin: 2px;
+    cursor: pointer;
 
-.connect-wallet div:hover {
-  opacity: .8;
+    &:hover {
+      opacity: .8;
+    }
+  }
 }
 
 
