@@ -158,6 +158,7 @@ function AddAgreementForm(props) {
               id="title-input"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
+              tabIndex={1}
             />
 
             <label htmlFor="professional-input">{t("professional-wallet")}</label>
@@ -171,6 +172,7 @@ function AddAgreementForm(props) {
               id="professional-input"
               value={professional}
               onChange={(event) => setProfessional(event.target.value)}
+              tabIndex={2}
             />
 
             <label htmlFor="payment-amount-input">{t("payment-amount")}</label>
@@ -187,6 +189,7 @@ function AddAgreementForm(props) {
                 id="payment-amount-input"
                 value={paymentAmount}
                 onChange={(event) => setPaymentAmount(parseFloat(event.target.value))}
+                tabIndex={3}
               />
             </div>
           </div>
@@ -202,6 +205,7 @@ function AddAgreementForm(props) {
               id="description-input"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
+              tabIndex={4}
             ></textarea>
 
             <label htmlFor="skills-input" className={styles["skill-lv"]}>
@@ -220,6 +224,7 @@ function AddAgreementForm(props) {
                   id="skill-value"
                   className={styles["skill-value"]}
                   placeholder="%"
+                  tabIndex={6}
                 />
               </i>
               <input
@@ -228,9 +233,10 @@ function AddAgreementForm(props) {
                 className={styles["skills-input"]}
                 value={skills}
                 onChange={(event) => setSkills(event.target.value)}
+                tabIndex={5}
               />
             </div>
-            <a href="#" className={styles["add-skill-btn"]}>
+            <a href="#" className={styles["add-skill-btn"]} tabIndex={7}>
             <Image src="/add.svg" width={16} height={16} />
               <span>{t("add")}</span>
             </a>
@@ -255,7 +261,7 @@ function AddAgreementForm(props) {
         </section>
 
         <section className={styles["form-footer"]}>
-          <button type="submit" className={styles["add-agreement-form-button"]}>
+          <button type="submit" className={styles["add-agreement-form-button"]} tabIndex={8}>
             <div>{t("add-btn")}</div>
           </button>
         </section>
