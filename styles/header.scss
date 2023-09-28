@@ -127,6 +127,14 @@ HEADER
   }
 }
 
+.logo-mobile {
+  display: none;
+
+  @media #{$smartphones-1} {
+    display: block;
+  }
+}
+
 
 // User wallet
 
