@@ -24,7 +24,7 @@ pub mod agreement_program {
         agreement_account.token_incentive = agreement.token_incentive;
         agreement_account.payment = agreement.payment;
         agreement_account.total_paid = 0;
-        agreement_account.accepted_payment_tokens = agreement.accepted_payment_tokens;
+        agreement_account.accepted_payment_token = agreement.accepted_payment_token;
         agreement_account.status = agreement.status;
 
         company_agreements.agreements.push(agreement_account.key());
@@ -41,9 +41,9 @@ pub mod agreement_program {
     //     if ctx.accounts.owner.key() != agreement_account.company {
     //         return err!(ErrorCode::Unauthorized);
     //     }
-    //     // Add token to accepted_payment_tokens
+    //     // Add token to accepted_payment_token
     //     agreement_account
-    //         .accepted_payment_tokens
+    //         .accepted_payment_token
     //         .push(token_address);
     //     Ok(())
     // }
@@ -58,9 +58,9 @@ pub mod agreement_program {
     //     if ctx.accounts.owner.key() != agreement_account.company {
     //         return err!(ErrorCode::Unauthorized);
     //     }
-    //     // Remove the token from accepted_payment_tokens
+    //     // Remove the token from accepted_payment_token
     //     agreement_account
-    //         .accepted_payment_tokens
+    //         .accepted_payment_token
     //         .retain(|&x| x != token_address);
     //     Ok(())
     // }
@@ -138,35 +138,37 @@ pub mod agreement_program {
     pub fn process_payment(ctx: Context<ProcessPayment>) -> Result<()> {
         // Names may changed, as company maybe not be the one paying.
         let payment_from = &mut ctx.accounts.company;
+        let payment_to = &mut ctx.accounts.professional;
         let agreement_account = &mut ctx.accounts.agreement;
-        
-        let payment_to = agreement_account.professional;
+        let payment_token = &mut ctx.accounts.accepted_payment_token;
+
+        let agreement_professional = agreement_account.professional;
         let agreement_company = agreement_account.company;
-        let payment_token = agreement_account.accepted_payment_tokens;
+        let agreement_payment_token = agreement_account.accepted_payment_token;
         let amount_to_pay = agreement_account.payment.amount;
 
         // Check if the agreement exists
-        if payment_from.key() != agreement_company.key() {
+        if payment_from.key() != agreement_company {
             return err!(ErrorCode::Unauthorized);
         }
 
         // Check if the payment token is accepted
-        if agreement_account.accepted_payment_tokens == payment_token.key() {
+        if agreement_account.accepted_payment_token.key() != agreement_payment_token {
             return err!(ErrorCode::InvalidPaymentToken);
         }
 
         // Check if the payment amount is valid
-        if amount_to_pay == 0 {
+        if amount_to_pay <= 0 {
             return err!(ErrorCode::InvalidPaymentAmount);
         }
 
-        //Transfer funds from the company to the agreement professional
+        // //Transfer funds from the company to the agreement professional
         // anchor_spl::token::transfer(
         //     CpiContext::new(
-        //         payment_token,
+        //         payment_token.to_account_info(),
         //         Transfer {
         //             from: payment_from.to_account_info(),
-        //             to: payment_to,
+        //             to: payment_to.to_account_info(),
         //             authority: payment_from.to_account_info(),
         //         },
         //     ),
@@ -284,7 +286,7 @@ pub struct AgreementAccount {
     pub company: Pubkey,
     pub token_incentive: PaymentToken,
     pub payment: PaymentToken,
-    pub accepted_payment_tokens: Pubkey,
+    pub accepted_payment_token: Pubkey,
     pub total_paid: u64,
     pub status: u8,
 }
@@ -303,7 +305,7 @@ pub struct Agreement {
     pub company: Pubkey,
     pub token_incentive: PaymentToken,
     pub payment: PaymentToken,
-    pub accepted_payment_tokens: Pubkey,
+    pub accepted_payment_token: Pubkey,
     pub total_paid: u64,
     pub status: u8,
 }
