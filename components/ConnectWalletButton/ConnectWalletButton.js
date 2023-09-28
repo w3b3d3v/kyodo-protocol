@@ -61,7 +61,7 @@ function ConnectWalletButton(props) {
           <div className={styles["modal"]}>
             <div className={styles["modal-content"]}>
               <a className={styles["close-modal"]} onClick={() => setShowModal(false)}>
-                <Image src="/close-modal.svg" width={30} height={30} className="close" />
+                <Image src="/close-modal.svg" width={30} height={30} alt="close" />
               </a>
               <h3>Select a chain and unlock the future of work</h3>
               <ul className={styles["chains-list"]}>

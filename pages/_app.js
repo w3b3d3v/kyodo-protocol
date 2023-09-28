@@ -67,6 +67,13 @@ function Header() {
         <div className={"header-right"}>
           {visibleMenu &&
           <nav>
+            <Image
+              src="/logo-mobile.svg"
+              alt="Kyodo logo"
+              width={100}
+              height={56}
+              className={"logo-mobile"}
+            />
             <ul>
               <li>
                 <a href="/dashboard">{t("dashboard")}</a>
