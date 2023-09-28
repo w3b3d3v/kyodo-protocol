@@ -143,8 +143,7 @@ function AddAgreementForm(props) {
 
   return (
     <div className={styles["add-agreement-form-container"]}>
-      <h1>Add agreement</h1>
-
+      <h1>{t("add-agreement-heading")}</h1>
       <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>
         <section className={"columns"}>
           <div className={"col-01"}>
@@ -161,7 +160,7 @@ function AddAgreementForm(props) {
               onChange={(event) => setTitle(event.target.value)}
             />
 
-            <label htmlFor="professional-input">Professional wallet</label>
+            <label htmlFor="professional-input">{t("professional-wallet")}</label>
             {formErrors.professional && (
               <div className={"validation-msg"}>
                 {formErrors.professional}
@@ -174,7 +173,7 @@ function AddAgreementForm(props) {
               onChange={(event) => setProfessional(event.target.value)}
             />
 
-            <label htmlFor="payment-amount-input">Payment amount</label>
+            <label htmlFor="payment-amount-input">{t("payment-amount")}</label>
             {formErrors.paymentAmount && (
               <div className={"validation-msg"}>
                 {formErrors.paymentAmount}
@@ -193,7 +192,7 @@ function AddAgreementForm(props) {
           </div>
 
           <div className={"col-02"}>
-            <label htmlFor="description-input">Description</label>
+            <label htmlFor="description-input">{t("description")}</label>
             {formErrors.description && (
               <div className={"validation-msg"}>
                 {formErrors.description}
@@ -206,7 +205,7 @@ function AddAgreementForm(props) {
             ></textarea>
 
             <label htmlFor="skills-input" className={styles["skill-lv"]}>
-              Skills
+              {t("skills")}
               <span>Lv.</span>
             </label>
             {formErrors.skills && (
@@ -215,7 +214,7 @@ function AddAgreementForm(props) {
               </div>
             )}
             <div className={styles["skills-field"]}>
-              <i data-tooltip="The sum must equal 100%" className="tooltip-top">
+              <i data-tooltip={t('skills-tooltip')} className="tooltip-top">
                 <input
                   type="text"
                   id="skill-value"
@@ -233,7 +232,7 @@ function AddAgreementForm(props) {
             </div>
             <a href="#" className={styles["add-skill-btn"]}>
             <Image src="/add.svg" width={16} height={16} />
-              <span>add</span>
+              <span>{t("add")}</span>
             </a>
 
             <ul className={styles["skills-list"]}>
@@ -257,7 +256,7 @@ function AddAgreementForm(props) {
 
         <section className={styles["form-footer"]}>
           <button type="submit" className={styles["add-agreement-form-button"]}>
-            <div>Add</div>
+            <div>{t("add-btn")}</div>
           </button>
         </section>
       </form>

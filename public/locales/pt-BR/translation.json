@@ -4,5 +4,13 @@
   "validation": {
     "required": "{{field}} é obrigatório"
   },
-  "title": "Título"
+  "add-agreement-heading": "Adicionar acordo",
+  "title": "Título",
+  "professional-wallet": "Carteira",
+  "payment-amount": "Valor",
+  "description": "Descrição",
+  "skills": "Habilidades",
+  "skills-tooltip": "A soma deve ser igual a 100%",
+  "add": "adicionar",
+  "add-btn": "Adicionar"
 }
