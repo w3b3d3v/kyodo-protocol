@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
-use anchor_spl::{
-    token::{Token,Mint,MintTo,Transfer},
-};
+use anchor_lang::solana_program;
+use solana_program::system_instruction;
+use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer};
 
 declare_id!("FVz7RJ6H6zFUkTx1sGuCDHDmYr96EQHR4g52xTmL8ZPn");
 
@@ -142,6 +142,10 @@ pub mod agreement_program {
         let agreement_account = &mut ctx.accounts.agreement;
         let payment_token = &mut ctx.accounts.payment_token;
 
+        let destination = &ctx.accounts.to_ata;
+        let source = &ctx.accounts.from_ata;
+        let token_program = &ctx.accounts.token_program;
+        
         let agreement_professional = agreement_account.professional;
         let agreement_company = agreement_account.company;
         let agreement_payment_token = agreement_account.accepted_payment_token;
@@ -161,19 +165,20 @@ pub mod agreement_program {
         if amount_to_pay <= 0 {
             return err!(ErrorCode::InvalidPaymentAmount);
         }
-
-        //Transfer funds from the company to the agreement professional
-        anchor_spl::token::transfer(
-            CpiContext::new(
-                payment_token.to_account_info(),
-                Transfer {
-                    from: payment_from.to_account_info(),
-                    to: payment_to.to_account_info(),
-                    authority: payment_from.to_account_info(),
-                },
-            ),
-            amount_to_pay,
-        )?;
+        
+        // Transfer funds from the company to the agreement professional
+        // Invoke the transfer instruction
+        // Transfer tokens from taker to initializer
+        let cpi_accounts = SplTransfer {
+            from: source.to_account_info().clone(),
+            to: destination.to_account_info().clone(),
+            authority: payment_from.to_account_info().clone(),
+        };
+        let cpi_program = token_program.to_account_info();
+        
+        token::transfer(
+            CpiContext::new(cpi_program, cpi_accounts),
+            amount_to_pay)?;
 
         // Update the total paid amount in the agreement
         agreement_account.total_paid += amount_to_pay;
@@ -264,10 +269,15 @@ pub struct ProcessPayment<'info> {
     #[account(mut)]
     pub company: Signer<'info>,
     #[account(mut)]
+    pub from_ata: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub to_ata: Account<'info, TokenAccount>,
+    #[account(mut)]
     /// CHECK:` doc comment explaining why no checks through types are necessary.
     pub professional: AccountInfo<'info>,
     /// CHECK:` doc comment explaining why no checks through types are necessary.
     pub payment_token: AccountInfo<'info>,
+    pub token_program: Program<'info, Token>,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
