@@ -69,14 +69,14 @@ function ConnectWalletButton(props) {
                   <a onClick={connectEthereumWallet}>
                     <Image src="/eth-icon.svg" width={60} height={60} />
                     <h4>Ethereum<span>/Other EVMs</span></h4>
-                    <p>Reliability and a solid, well-defined foundation.</p>
+                    <p>A solid, well-defined foundation for Web3</p>
                   </a>
                 </li>
                 <li>
                   <a onClick={connectSolanaWallet}>
                     <Image src="/solana-icon.svg" width={60} height={60} />
                     <h4>Solana</h4>
-                    <p>Unparalleled scalability and low fees.</p>
+                    <p>Web3 Infrastructure for Everyone</p>
                   </a>
                 </li>
               </ul>
