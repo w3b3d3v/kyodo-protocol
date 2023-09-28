@@ -123,7 +123,7 @@ function AddAgreementForm(props) {
 
   if (transactionHash) {
     return (
-      <div className="transaction-info">
+      <div className="transaction-info tracking-in-expand">
         <div className={styles["holder"]}>
           <p>
             <Image src="/success-icon.svg" width={20} height={20} />

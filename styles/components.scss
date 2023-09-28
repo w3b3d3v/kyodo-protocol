@@ -16,6 +16,10 @@ COMPONENTS
   font-size: 13px;
   box-sizing: border-box;
   padding: 0 3%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
 
   img {
     float: left;
