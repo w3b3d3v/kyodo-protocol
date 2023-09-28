@@ -1,21 +1,38 @@
-use anchor_lang::prelude::*;
-use anchor_lang::solana_program;
-use solana_program::system_instruction;
-use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer};
+//! Agreement Program Test Suite
+//!
+//! A comprehensive testing suite to validate the agreement program functionalities 
+//! developed in a Solana blockchain context using the Anchor framework. This suite 
+//! contains tests for token minting, agreement initialization, and payment processing.
+//! 
+//! - **Author**: Jaxiii
+//! - **Version**: 0.0.4
+//! - **Date**: 09/28/2023
 
+use anchor_lang::prelude::*; // Import anchor's prelude for boilerplate and utility functions.
+use anchor_lang::solana_program; // Import solana_program for core Solana program functionalities.
+use solana_program::system_instruction; // Import system_instruction from the solana_program crate.
+use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer}; // Import modules from the anchor SPL token crate.
+
+
+// Declare the ID for this smart contract program.
 declare_id!("FVz7RJ6H6zFUkTx1sGuCDHDmYr96EQHR4g52xTmL8ZPn");
 
+// Begin the program module declaration.
 #[program]
 pub mod agreement_program {
+    // Import super's module's functions and structures.
     use super::*;
 
+    // Function to initialize a new agreement on-chain.
     pub fn initialize_agreement(
-        ctx: Context<InitializeAgreement>, //agreement: Agreement
-        agreement: Agreement,
+        ctx: Context<InitializeAgreement>, // Context carrying information about accounts involved.
+        agreement: Agreement,              // The agreement to be initialized.
     ) -> Result<()> {
+        // Extract the agreement and company_agreements accounts from the context.
         let agreement_account = &mut ctx.accounts.agreement;
         let company_agreements = &mut ctx.accounts.company_agreements;
 
+        // Populate the agreement account with the data from the given agreement.
         agreement_account.title = agreement.title;
         agreement_account.description = agreement.description;
         agreement_account.skills = agreement.skills;
@@ -27,8 +44,10 @@ pub mod agreement_program {
         agreement_account.accepted_payment_token = agreement.accepted_payment_token;
         agreement_account.status = agreement.status;
 
+        // Add the agreement's key to the company's list of agreements.
         company_agreements.agreements.push(agreement_account.key());
 
+        // Return Ok to indicate successful execution.
         Ok(())
     }
 
@@ -135,65 +154,60 @@ pub mod agreement_program {
     //     Ok(())
     // }
 
+    // Function to process the payment for an agreement.
     pub fn process_payment(ctx: Context<ProcessPayment>) -> Result<()> {
-        // Names may changed, as company maybe not be the one paying.
+        // Extract various accounts needed for payment processing from the context.
         let payment_from = &mut ctx.accounts.company;
         let payment_to = &mut ctx.accounts.professional;
         let agreement_account = &mut ctx.accounts.agreement;
         let payment_token = &mut ctx.accounts.payment_token;
-
         let destination = &ctx.accounts.to_ata;
         let source = &ctx.accounts.from_ata;
         let token_program = &ctx.accounts.token_program;
-        
+
+        // Extract information from the agreement account.
         let agreement_professional = agreement_account.professional;
         let agreement_company = agreement_account.company;
         let agreement_payment_token = agreement_account.accepted_payment_token;
         let amount_to_pay = agreement_account.payment.amount;
 
-        // Check if the agreement exists
+        // Check if the provided company is the one from the agreement.
         if payment_from.key() != agreement_company {
             return err!(ErrorCode::Unauthorized);
         }
 
-        // Check if the payment token is accepted
+        // Check if the given payment token is accepted for the agreement.
         if agreement_account.accepted_payment_token.key() != agreement_payment_token {
             return err!(ErrorCode::InvalidPaymentToken);
         }
 
-        // Check if the payment amount is valid
+        // Check if the amount to be paid is a valid amount.
         if amount_to_pay <= 0 {
             return err!(ErrorCode::InvalidPaymentAmount);
         }
-        
-        // Transfer funds from the company to the agreement professional
-        // Invoke the transfer instruction
-        // Transfer tokens from taker to initializer
+
+        // Perform the transfer from the company to the professional.
         let cpi_accounts = SplTransfer {
             from: source.to_account_info().clone(),
             to: destination.to_account_info().clone(),
             authority: payment_from.to_account_info().clone(),
         };
         let cpi_program = token_program.to_account_info();
-        
+
+        // Invoke the SPL token transfer instruction.
         token::transfer(
             CpiContext::new(cpi_program, cpi_accounts),
             amount_to_pay)?;
 
-        // Update the total paid amount in the agreement
+        // Update the amount that has been paid in the agreement.
         agreement_account.total_paid += amount_to_pay;
+
+        // Set the agreement's status as paid.
         agreement_account.status = 1;
+
+        // Return Ok to indicate successful execution.
         Ok(())
     }
-
-
-    // ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
-    // //////////////// * DELETE TO PRODUCTION * ////////////////////
-    // pub fn initialize_mint(ctx: Context<InitializeMint>) -> Result<()> {
-    //     Ok(())
-    // }
-    // ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
-    // //////////////// * DELETE TO PRODUCTION * ////////////////////
 }
 
 #[derive(Accounts)]
@@ -273,9 +287,9 @@ pub struct ProcessPayment<'info> {
     #[account(mut)]
     pub to_ata: Account<'info, TokenAccount>,
     #[account(mut)]
-    /// CHECK:` doc comment explaining why no checks through types are necessary.
+    /// CHECK:` We do not read or write to this account.
     pub professional: AccountInfo<'info>,
-    /// CHECK:` doc comment explaining why no checks through types are necessary.
+    /// CHECK:` We do not read or write to this account.
     pub payment_token: AccountInfo<'info>,
     pub token_program: Program<'info, Token>,
 }
@@ -333,28 +347,3 @@ pub enum ErrorCode {
     #[msg("Invalid payment amount")]
     InvalidPaymentAmount,
 }
-
-
-// ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
-// //////////////// * DELETE TO PRODUCTION * ////////////////////
-
-// #[derive(Accounts)]
-// pub struct InitializeMint<'info> {
-//     #[account(
-//         init,
-//         payer = payer,
-//         mint::decimals = 9,
-//         mint::authority = payer,
-//         mint::freeze_authority = payer,
-//     )]
-//     pub mint: Account<'info, Mint>,
-//     #[account(mut)]
-//     pub payer: Signer<'info>,
-//     pub system_program: Program<'info, System>,
-//     pub token_program: Program<'info, Token>,
-//     ///CHECK: This is not dangerous because we don't read or write from this account
-//     pub rent: AccountInfo<'info>,
-// }
-
-// ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
-// //////////////// * DELETE TO PRODUCTION * ////////////////////
