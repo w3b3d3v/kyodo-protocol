@@ -182,13 +182,13 @@ pub mod agreement_program {
     }
 
 
-    ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
-    //////////////// * DELETE TO PRODUCTION * ////////////////////
-    pub fn initialize_mint(ctx: Context<InitializeMint>) -> Result<()> {
-        Ok(())
-    }
-    ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
-    //////////////// * DELETE TO PRODUCTION * ////////////////////
+    // ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
+    // //////////////// * DELETE TO PRODUCTION * ////////////////////
+    // pub fn initialize_mint(ctx: Context<InitializeMint>) -> Result<()> {
+    //     Ok(())
+    // }
+    // ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
+    // //////////////// * DELETE TO PRODUCTION * ////////////////////
 }
 
 #[derive(Accounts)]
@@ -325,26 +325,26 @@ pub enum ErrorCode {
 }
 
 
-///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
-//////////////// * DELETE TO PRODUCTION * ////////////////////
+// ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
+// //////////////// * DELETE TO PRODUCTION * ////////////////////
 
-#[derive(Accounts)]
-pub struct InitializeMint<'info> {
-    #[account(
-        init,
-        payer = payer,
-        mint::decimals = 9,
-        mint::authority = payer,
-        mint::freeze_authority = payer,
-    )]
-    pub mint: Account<'info, Mint>,
-    #[account(mut)]
-    pub payer: Signer<'info>,
-    pub system_program: Program<'info, System>,
-    pub token_program: Program<'info, Token>,
-    ///CHECK: This is not dangerous because we don't read or write from this account
-    pub rent: AccountInfo<'info>,
-}
+// #[derive(Accounts)]
+// pub struct InitializeMint<'info> {
+//     #[account(
+//         init,
+//         payer = payer,
+//         mint::decimals = 9,
+//         mint::authority = payer,
+//         mint::freeze_authority = payer,
+//     )]
+//     pub mint: Account<'info, Mint>,
+//     #[account(mut)]
+//     pub payer: Signer<'info>,
+//     pub system_program: Program<'info, System>,
+//     pub token_program: Program<'info, Token>,
+//     ///CHECK: This is not dangerous because we don't read or write from this account
+//     pub rent: AccountInfo<'info>,
+// }
 
-///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
-//////////////// * DELETE TO PRODUCTION * ////////////////////
+// ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
+// //////////////// * DELETE TO PRODUCTION * ////////////////////
