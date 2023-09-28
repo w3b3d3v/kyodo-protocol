@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::Transfer;
+use anchor_spl::{
+    token::{Token,Mint,MintTo,Transfer},
+};
 
 declare_id!("FVz7RJ6H6zFUkTx1sGuCDHDmYr96EQHR4g52xTmL8ZPn");
 
@@ -35,17 +37,14 @@ pub mod agreement_program {
     //     token_address: Pubkey,
     // ) -> Result<()> {
     //     let agreement_account = &mut ctx.accounts.agreement;
-
     //     // Check if the calling address is the owner
     //     if ctx.accounts.owner.key() != agreement_account.company {
     //         return err!(ErrorCode::Unauthorized);
     //     }
-
     //     // Add token to accepted_payment_tokens
     //     agreement_account
     //         .accepted_payment_tokens
     //         .push(token_address);
-
     //     Ok(())
     // }
 
@@ -55,158 +54,139 @@ pub mod agreement_program {
     //     token_address: Pubkey,
     // ) -> Result<()> {
     //     let agreement_account = &mut ctx.accounts.agreement;
-
     //     // Check if the calling address is the owner
     //     if ctx.accounts.owner.key() != agreement_account.company {
     //         return err!(ErrorCode::Unauthorized);
     //     }
-
     //     // Remove the token from accepted_payment_tokens
     //     agreement_account
     //         .accepted_payment_tokens
     //         .retain(|&x| x != token_address);
-
     //     Ok(())
     // }
-
     // Function to update the token incentive
-    pub fn update_token_incentive(
-        ctx: Context<UpdateTokenIncentive>,
-        new_token: Token,
-    ) -> Result<()> {
-        let agreement_account = &mut ctx.accounts.agreement;
-
-        // Check if the calling address is the owner
-        if ctx.accounts.owner.key() != agreement_account.company {
-            return err!(ErrorCode::Unauthorized);
-        }
-
-        // Update the token incentive in the agreement account
-        agreement_account.token_incentive = new_token;
-
-        Ok(())
-    }
-
-    pub fn update_token_incentive_address(
-        ctx: Context<UpdateTokenIncentiveAddress>,
-        new_address: Pubkey,
-    ) -> Result<()> {
-        let agreement_account = &mut ctx.accounts.agreement;
-
-        // Check if the calling address is the owner
-        if ctx.accounts.owner.key() != agreement_account.company {
-            return err!(ErrorCode::Unauthorized);
-        }
-
-        // Update the token incentive address in the agreement account
-        agreement_account.token_incentive.token_address = new_address;
-
-        Ok(())
-    }
-
-    // Function to update the token incentive amount
-    pub fn update_token_incentive_amount(
-        ctx: Context<UpdateTokenIncentiveAmount>,
-        new_amount: u64,
-    ) -> Result<()> {
-        let agreement_account = &mut ctx.accounts.agreement;
-
-        // Check if the calling address is the owner
-        if ctx.accounts.owner.key() != agreement_account.company {
-            return err!(ErrorCode::Unauthorized);
-        }
-
-        // Update the token incentive amount in the agreement account
-        agreement_account.token_incentive.amount = new_amount;
-
-        Ok(())
-    }
-
-    // Function to update the payment amount for an agreement
-    pub fn update_payment_amount(ctx: Context<UpdatePaymentAmount>, new_amount: u64) -> Result<()> {
-        let agreement_account = &mut ctx.accounts.agreement;
-
-        // Check if the calling address is the owner
-        if ctx.accounts.owner.key() != agreement_account.company {
-            return err!(ErrorCode::Unauthorized);
-        }
-
-        // Update the payment amount in the agreement account
-        agreement_account.payment.amount = new_amount;
-
-        Ok(())
-    }
-
-    // Function to mark an agreement as completed
-    pub fn mark_agreement_completed(ctx: Context<MarkAgreementCompleted>) -> Result<()> {
-        let agreement_account = &mut ctx.accounts.agreement;
-
-        // Check if the calling address is the owner
-        if ctx.accounts.owner.key() != agreement_account.company {
-            return err!(ErrorCode::Unauthorized);
-        }
-
-        // Check if the agreement is already completed
-        if agreement_account.status != 0 {
-            return err!(ErrorCode::AlreadyCompleted);
-        }
-
-        // Mark the agreement as completed
-        agreement_account.status = 1;
-
-        Ok(())
-    }
-    // pub fn process_payment(ctx: Context<ProcessPayment>) -> Result<()> {
-    //     let payment_from = &mut ctx.accounts.owner;
-    //     let payment_to = &mut ctx.accounts.professional;
+    // pub fn update_token_incentive(
+    //     ctx: Context<UpdateTokenIncentive>,
+    //     new_token: Token,
+    // ) -> Result<()> {
     //     let agreement_account = &mut ctx.accounts.agreement;
-    //     let agreement_company = agreement_account.company;
-    //     let amount_to_pay = agreement_account.payment.amount;
-    //     let payment_address = agreement_account.professional;
-    //     let payment_token = &ctx.accounts.payment_token;
-
-    //     // Check if the agreement exists
-    //     if payment_from.key() != agreement_company.key() {
+    //     // Check if the calling address is the owner
+    //     if ctx.accounts.owner.key() != agreement_account.company {
     //         return err!(ErrorCode::Unauthorized);
     //     }
-
-    //     // Check if the agreement exists
-    //     if payment_to.key() != payment_address {
-    //         return err!(ErrorCode::Unauthorized);
-    //     }
-
-    //     // Check if the payment token is accepted
-    //     if !agreement_account
-    //         .accepted_payment_tokens
-    //         .contains(&payment_token.key())
-    //     {
-    //         return err!(ErrorCode::InvalidPaymentToken);
-    //     }
-
-    //     // Check if the payment amount is valid
-    //     if amount_to_pay == 0 {
-    //         return err!(ErrorCode::InvalidPaymentAmount);
-    //     }
-
-    //     // Transfer funds from the company to the agreement professional
-    //     anchor_spl::token::transfer(
-    //         CpiContext::new(
-    //             payment_token.to_account_info(),
-    //             Transfer {
-    //                 from: payment_from.to_account_info(),
-    //                 to: payment_to.to_account_info(),
-    //                 authority: payment_from.to_account_info(),
-    //             },
-    //         ),
-    //         amount_to_pay,
-    //     )?;
-
-    //     // Update the total paid amount in the agreement
-    //     agreement_account.total_paid += amount_to_pay;
-
+    //     // Update the token incentive in the agreement account
+    //     agreement_account.token_incentive = new_token;
     //     Ok(())
     // }
 
+    // pub fn update_token_incentive_address(
+    //     ctx: Context<UpdateTokenIncentiveAddress>,
+    //     new_address: Pubkey,
+    // ) -> Result<()> {
+    //     let agreement_account = &mut ctx.accounts.agreement;
+    //     // Check if the calling address is the owner
+    //     if ctx.accounts.owner.key() != agreement_account.company {
+    //         return err!(ErrorCode::Unauthorized);
+    //     }
+    //     // Update the token incentive address in the agreement account
+    //     agreement_account.token_incentive.token_address = new_address;
+    //     Ok(())
+    // }
+
+    // // Function to update the token incentive amount
+    // pub fn update_token_incentive_amount(
+    //     ctx: Context<UpdateTokenIncentiveAmount>,
+    //     new_amount: u64,
+    // ) -> Result<()> {
+    //     let agreement_account = &mut ctx.accounts.agreement;
+    //     // Check if the calling address is the owner
+    //     if ctx.accounts.owner.key() != agreement_account.company {
+    //         return err!(ErrorCode::Unauthorized);
+    //     }
+    //     // Update the token incentive amount in the agreement account
+    //     agreement_account.token_incentive.amount = new_amount;
+    //     Ok(())
+    // }
+
+    // // Function to update the payment amount for an agreement
+    // pub fn update_payment_amount(ctx: Context<UpdatePaymentAmount>, new_amount: u64) -> Result<()> {
+    //     let agreement_account = &mut ctx.accounts.agreement;
+    //     // Check if the calling address is the owner
+    //     if ctx.accounts.owner.key() != agreement_account.company {
+    //         return err!(ErrorCode::Unauthorized);
+    //     }
+    //     // Update the payment amount in the agreement account
+    //     agreement_account.payment.amount = new_amount;
+    //     Ok(())
+    // }
+    // // Function to mark an agreement as completed
+    // pub fn mark_agreement_completed(ctx: Context<MarkAgreementCompleted>) -> Result<()> {
+    //     let agreement_account = &mut ctx.accounts.agreement;
+    //     // Check if the calling address is the owner
+    //     if ctx.accounts.owner.key() != agreement_account.company {
+    //         return err!(ErrorCode::Unauthorized);
+    //     }
+    //     // Check if the agreement is already completed
+    //     if agreement_account.status != 0 {
+    //         return err!(ErrorCode::AlreadyCompleted);
+    //     }
+    //     // Mark the agreement as completed
+    //     agreement_account.status = 1;
+    //     Ok(())
+    // }
+
+    pub fn process_payment(ctx: Context<ProcessPayment>) -> Result<()> {
+        // Names may changed, as company maybe not be the one paying.
+        let payment_from = &mut ctx.accounts.company;
+        let agreement_account = &mut ctx.accounts.agreement;
+        
+        let payment_to = agreement_account.professional;
+        let agreement_company = agreement_account.company;
+        let payment_token = agreement_account.accepted_payment_tokens;
+        let amount_to_pay = agreement_account.payment.amount;
+
+        // Check if the agreement exists
+        if payment_from.key() != agreement_company.key() {
+            return err!(ErrorCode::Unauthorized);
+        }
+
+        // Check if the payment token is accepted
+        if agreement_account.accepted_payment_tokens == payment_token.key() {
+            return err!(ErrorCode::InvalidPaymentToken);
+        }
+
+        // Check if the payment amount is valid
+        if amount_to_pay == 0 {
+            return err!(ErrorCode::InvalidPaymentAmount);
+        }
+
+        //Transfer funds from the company to the agreement professional
+        // anchor_spl::token::transfer(
+        //     CpiContext::new(
+        //         payment_token,
+        //         Transfer {
+        //             from: payment_from.to_account_info(),
+        //             to: payment_to,
+        //             authority: payment_from.to_account_info(),
+        //         },
+        //     ),
+        //     amount_to_pay,
+        // )?;
+
+        // Update the total paid amount in the agreement
+        agreement_account.total_paid += amount_to_pay;
+        agreement_account.status = 1;
+        Ok(())
+    }
+
+
+    ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
+    //////////////// * DELETE TO PRODUCTION * ////////////////////
+    pub fn initialize_mint(ctx: Context<InitializeMint>) -> Result<()> {
+        Ok(())
+    }
+    ///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
+    //////////////// * DELETE TO PRODUCTION * ////////////////////
 }
 
 #[derive(Accounts)]
@@ -280,7 +260,7 @@ pub struct ProcessPayment<'info> {
     #[account(mut)]
     pub agreement: Account<'info, AgreementAccount>,
     #[account(mut)]
-    pub owner: Signer<'info>,
+    pub company: Signer<'info>,
     #[account(mut)]
     /// CHECK:` doc comment explaining why no checks through types are necessary.
     pub professional: AccountInfo<'info>,
@@ -289,7 +269,7 @@ pub struct ProcessPayment<'info> {
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
-pub struct Token {
+pub struct PaymentToken {
     pub amount: u64,
     pub token_address: Pubkey,
 }
@@ -302,8 +282,8 @@ pub struct AgreementAccount {
     pub payment_amount: u64,
     pub professional: Pubkey,
     pub company: Pubkey,
-    pub token_incentive: Token,
-    pub payment: Token,
+    pub token_incentive: PaymentToken,
+    pub payment: PaymentToken,
     pub accepted_payment_tokens: Pubkey,
     pub total_paid: u64,
     pub status: u8,
@@ -321,8 +301,8 @@ pub struct Agreement {
     pub skills: Vec<String>,
     pub professional: Pubkey,
     pub company: Pubkey,
-    pub token_incentive: Token,
-    pub payment: Token,
+    pub token_incentive: PaymentToken,
+    pub payment: PaymentToken,
     pub accepted_payment_tokens: Pubkey,
     pub total_paid: u64,
     pub status: u8,
@@ -341,3 +321,28 @@ pub enum ErrorCode {
     #[msg("Invalid payment amount")]
     InvalidPaymentAmount,
 }
+
+
+///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
+//////////////// * DELETE TO PRODUCTION * ////////////////////
+
+#[derive(Accounts)]
+pub struct InitializeMint<'info> {
+    #[account(
+        init,
+        payer = payer,
+        mint::decimals = 9,
+        mint::authority = payer,
+        mint::freeze_authority = payer,
+    )]
+    pub mint: Account<'info, Mint>,
+    #[account(mut)]
+    pub payer: Signer<'info>,
+    pub system_program: Program<'info, System>,
+    pub token_program: Program<'info, Token>,
+    ///CHECK: This is not dangerous because we don't read or write from this account
+    pub rent: AccountInfo<'info>,
+}
+
+///////////// * FAKE MINT FOR TEST POURPOSES * ///////////////
+//////////////// * DELETE TO PRODUCTION * ////////////////////
