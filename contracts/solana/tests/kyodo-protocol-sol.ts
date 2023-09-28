@@ -1,18 +1,22 @@
 import * as anchor from "@coral-xyz/anchor";
 import { BN, Program } from "@coral-xyz/anchor";
 import { AgreementProgram } from "../target/types/agreement_program";
-import {  } from "bn.js";
-import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, mintTo, getOrCreateAssociatedTokenAccount, createMint } from "@solana/spl-token";
+import { } from "bn.js";
+import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, mintTo, getOrCreateAssociatedTokenAccount, createMint, createAssociatedTokenAccount } from "@solana/spl-token";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 
 describe("agreement_program", () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
-  
+
   const program = anchor.workspace.AgreementProgram;
   const companyAddress = provider.wallet.publicKey;
   const professionalAddress = anchor.web3.Keypair.generate();
+  provider.connection.requestAirdrop(professionalAddress.publicKey, 100000000).then(() => console.log("Airdropped to Professional"));
+
+  let associatedTokenAddressCompany;
+  let associatedTokenAddressProfessional;
   let toPayAgreementAddress;
 
   const fakeMint = anchor.web3.Keypair.generate()
@@ -23,22 +27,23 @@ describe("agreement_program", () => {
       provider.connection,
       payer,
       companyAddress,
-      companyAddress, 
+      companyAddress,
       8,
       fakeMint,
       null,
       TOKEN_PROGRAM_ID,
     );
 
-     console.log("Your token address:", fakeMint.publicKey);
-     console.log("Your transaction signature:", tx);
+    console.log("Your token address:", fakeMint.publicKey);
+    console.log("Your transaction signature:", tx);
 
-   });
+  });
 
-   it("Creates Associated Token Account and Mints Tokens", async () => {
+  it("Creates Associated Token Account and Mints Tokens", async () => {
+
     const payer = (provider.wallet as NodeWallet).payer
     // Create the associated token account for companyAddress
-    const associatedTokenAddress = await getOrCreateAssociatedTokenAccount(
+    associatedTokenAddressCompany = await getOrCreateAssociatedTokenAccount(
       provider.connection,
       payer,
       fakeMint.publicKey,
@@ -50,21 +55,49 @@ describe("agreement_program", () => {
       ASSOCIATED_TOKEN_PROGRAM_ID,
     );
 
-  
-    // Mint to the associated token address
-    await mintTo(
+    associatedTokenAddressProfessional = await getOrCreateAssociatedTokenAccount(
       provider.connection,
-      payer, 
+      professionalAddress,
       fakeMint.publicKey,
-      associatedTokenAddress.address,
-      companyAddress, 
+      professionalAddress.publicKey,
+      false,
+      null,
+      null,
+      TOKEN_PROGRAM_ID,
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+    );
+
+
+    // Mint to the associated token address
+    var mintToCompanyTx =  await mintTo(
+      provider.connection,
+      payer,
+      fakeMint.publicKey,
+      associatedTokenAddressCompany.address,
+      companyAddress,
       10000,
       [],
       null,
       TOKEN_PROGRAM_ID,
     );
-    
-    console.log("Tokens minted to associated token account:", associatedTokenAddress.toString());
+
+    // Mint to the associated token address
+    var mintToProfessionalTx = await mintTo(
+      provider.connection,
+      payer,
+      fakeMint.publicKey,
+      associatedTokenAddressProfessional.address,
+      companyAddress,
+      1,
+      [],
+      null,
+      TOKEN_PROGRAM_ID,
+    );
+
+    console.log("Tokens mint tx to company", mintToCompanyTx.toString());
+    console.log("Tokens mint tx to professional:", mintToProfessionalTx.toString());
+    console.log("Tokens minted to associated company token account:", associatedTokenAddressCompany);
+    console.log("Tokens minted to associated professionaltoken account:", associatedTokenAddressProfessional);
   });
 
   it("Initialize first Agreement", async () => {
@@ -83,6 +116,7 @@ describe("agreement_program", () => {
       );
 
     const amount = new anchor.BN(1000);
+
     const agreement = {
       title: "test",
       description: "test description",
@@ -91,17 +125,17 @@ describe("agreement_program", () => {
       professional: professionalAddress.publicKey, // Replace with the professional's public key
       company: companyAddress, // Since company is signing this, we can use its public key
       token_incentive: {
-          amount: new anchor.BN(500), // Sample amount
-          token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
+        amount: new anchor.BN(500), // Sample amount
+        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
       },
       payment: {
-          amount: new anchor.BN(1000), // Sample amount
-          token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
+        amount: new anchor.BN(1000), // Sample amount
+        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
       },
       accepted_payment_token: fakeMint.publicKey, // Replace with the list of accepted token public keys
       total_paid: new anchor.BN(0),
       status: 0
-  } as any;
+    } as any;
 
     const tx = await program.methods
       .initializeAgreement(agreement)
@@ -149,19 +183,19 @@ describe("agreement_program", () => {
       professional: professionalAddress.publicKey, // Replace with the professional's public key
       company: companyAddress, // Since company is signing this, we can use its public key
       token_incentive: {
-          // nested data is not working
-          amount: new anchor.BN(500), // Sample amount
-          token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
+        // nested data is not working
+        amount: new anchor.BN(500), // Sample amount
+        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
       },
       payment: {
-          // nested data is not working
-          amount: new anchor.BN(1000), // Sample amount
-          token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
+        // nested data is not working
+        amount: new anchor.BN(1000), // Sample amount
+        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
       },
       accepted_payment_token: professionalAddress.publicKey, // Replace with the list of accepted token public keys
       total_paid: new anchor.BN(0),
       status: 0
-  } as any;
+    } as any;
 
     const tx = await program.methods
       .initializeAgreement(agreement)
@@ -191,8 +225,11 @@ describe("agreement_program", () => {
       .accounts({
         agreement: toPayAgreementAddress.publicKey,
         company: companyAddress,
+        fromAta: associatedTokenAddressCompany.address,
+        toAta:associatedTokenAddressProfessional.address,
         professional: professionalAddress.publicKey,
         paymentToken: fakeMint.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
       })
       .rpc();
 
