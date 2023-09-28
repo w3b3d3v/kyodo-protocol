@@ -215,12 +215,14 @@ function AddAgreementForm(props) {
               </div>
             )}
             <div className={styles["skills-field"]}>
-              <input
-                type="text"
-                id="skill-value"
-                className={styles["skill-value"]}
-                placeholder="%"
-              />
+              <i data-tooltip="The sum must equal 100%" className="tooltip-top">
+                <input
+                  type="text"
+                  id="skill-value"
+                  className={styles["skill-value"]}
+                  placeholder="%"
+                />
+              </i>
               <input
                 type="text"
                 id="skills-input"

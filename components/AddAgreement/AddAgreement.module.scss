@@ -64,6 +64,12 @@ ADD AGREEMENT
 .skills-field {
   margin-bottom: -17px;
   position: relative;
+
+  i {
+    right: 0;
+    top: -8px;
+    position: absolute;
+  }
 }
 
 .skills-input {
@@ -73,9 +79,6 @@ ADD AGREEMENT
 .skill-value {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  right: 0;
-  top: -8px;
-  position: absolute;
   font-size: 13px;
   color: $light-gray;
   display: inline-block;
