@@ -126,7 +126,7 @@ function AddAgreementForm(props) {
       <div className="transaction-info tracking-in-expand">
         <div className={styles["holder"]}>
           <p>
-            <Image src="/success-icon.svg" width={20} height={20} />
+            <Image src="/success-icon.svg" width={20} height={20} alt="Success icon" />
             Agreement created!
           </p>
           <a
@@ -237,7 +237,7 @@ function AddAgreementForm(props) {
               />
             </div>
             <a href="#" className={styles["add-skill-btn"]} tabIndex={7}>
-            <Image src="/add.svg" width={16} height={16} />
+            <Image src="/add.svg" width={16} height={16} alt="add" />
               <span>{t("add")}</span>
             </a>
 
@@ -245,14 +245,14 @@ function AddAgreementForm(props) {
               <li>
                 <div className={styles["skill-item"]}>
                   <span>Dev Ops</span>
-                  <Image src="/close.svg" width={16} height={16} />
+                  <Image src="/close.svg" width={16} height={16} alt="close" />
                 </div>
                 <em>30%</em>
               </li>
               <li>
                 <div className={styles["skill-item"]}>
                   <span>Quality Assurance</span>
-                  <Image src="/close.svg" width={16} height={16} />
+                  <Image src="/close.svg" width={16} height={16} alt="close" />
                 </div>
                 <em>20%</em>
               </li>

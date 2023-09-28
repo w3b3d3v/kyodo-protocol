@@ -61,20 +61,20 @@ function ConnectWalletButton(props) {
           <div className={styles["modal"]}>
             <div className={styles["modal-content"]}>
               <a className={styles["close-modal"]} onClick={() => setShowModal(false)}>
-                <Image src="/close-modal.svg" width={30} height={30} />
+                <Image src="/close-modal.svg" width={30} height={30} className="close" />
               </a>
               <h3>Select a chain and unlock the future of work</h3>
               <ul className={styles["chains-list"]}>
                 <li>
                   <a onClick={connectEthereumWallet}>
-                    <Image src="/eth-icon.svg" width={60} height={60} />
+                    <Image src="/eth-icon.svg" width={60} height={60} alt="Eth" />
                     <h4>Ethereum<span>/Other EVMs</span></h4>
                     <p>A solid, well-defined foundation for Web3</p>
                   </a>
                 </li>
                 <li>
                   <a onClick={connectSolanaWallet}>
-                    <Image src="/solana-icon.svg" width={60} height={60} />
+                    <Image src="/solana-icon.svg" width={60} height={60} alt="Solana" />
                     <h4>Solana</h4>
                     <p>Web3 Infrastructure for Everyone</p>
                   </a>
