@@ -62,7 +62,7 @@ describe("agreement_program", () => {
           amount: new anchor.BN(1000), // Sample amount
           token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
       },
-      accepted_payment_tokens: fakeMint.publicKey, // Replace with the list of accepted token public keys
+      accepted_payment_token: fakeMint.publicKey, // Replace with the list of accepted token public keys
       total_paid: new anchor.BN(0),
       status: 0
   } as any;
@@ -122,7 +122,7 @@ describe("agreement_program", () => {
           amount: new anchor.BN(1000), // Sample amount
           token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
       },
-      accepted_payment_tokens: professionalAddress.publicKey, // Replace with the list of accepted token public keys
+      accepted_payment_token: professionalAddress.publicKey, // Replace with the list of accepted token public keys
       total_paid: new anchor.BN(0),
       status: 0
   } as any;

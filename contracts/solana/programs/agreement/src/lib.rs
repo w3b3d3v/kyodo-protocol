@@ -140,7 +140,7 @@ pub mod agreement_program {
         let payment_from = &mut ctx.accounts.company;
         let payment_to = &mut ctx.accounts.professional;
         let agreement_account = &mut ctx.accounts.agreement;
-        let payment_token = &mut ctx.accounts.accepted_payment_token;
+        let payment_token = &mut ctx.accounts.payment_token;
 
         let agreement_professional = agreement_account.professional;
         let agreement_company = agreement_account.company;
@@ -162,18 +162,18 @@ pub mod agreement_program {
             return err!(ErrorCode::InvalidPaymentAmount);
         }
 
-        // //Transfer funds from the company to the agreement professional
-        // anchor_spl::token::transfer(
-        //     CpiContext::new(
-        //         payment_token.to_account_info(),
-        //         Transfer {
-        //             from: payment_from.to_account_info(),
-        //             to: payment_to.to_account_info(),
-        //             authority: payment_from.to_account_info(),
-        //         },
-        //     ),
-        //     amount_to_pay,
-        // )?;
+        //Transfer funds from the company to the agreement professional
+        anchor_spl::token::transfer(
+            CpiContext::new(
+                payment_token.to_account_info(),
+                Transfer {
+                    from: payment_from.to_account_info(),
+                    to: payment_to.to_account_info(),
+                    authority: payment_from.to_account_info(),
+                },
+            ),
+            amount_to_pay,
+        )?;
 
         // Update the total paid amount in the agreement
         agreement_account.total_paid += amount_to_pay;
