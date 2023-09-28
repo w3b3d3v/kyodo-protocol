@@ -35,7 +35,7 @@ DASHBOARD
 
     @media #{$smartphones-1} {
       font-size: $font-large-2;
-      margin: 40px 0 10px 0;
+      margin: 40px 0 15px 0;
       width: 100%;
     }
   }
@@ -184,7 +184,6 @@ DASHBOARD
   @media #{$smartphones-1} {
     display: block;
     margin-bottom: 45px;
-    margin-top: 50px;
   }
 
   li {

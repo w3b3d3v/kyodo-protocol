@@ -128,6 +128,10 @@ CONNECT WALLET
     top: 18px;
     position: absolute;
     cursor: pointer;
+
+    &:hover {
+      opacity: .8;
+    }
   }
 }
 
@@ -163,6 +167,10 @@ CONNECT WALLET
 
   h4 {
     margin: 0 0 7px 0;
+
+    span {
+      font-weight: normal;
+    }
   }
 
   p {
