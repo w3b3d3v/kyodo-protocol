@@ -152,12 +152,13 @@ CONNECT WALLET
     width: 100%;
     display: inline-block;
     cursor: pointer;
-    padding: 27px 17px 20px 17px;
+    padding: 27px 17px 20px 23px;
+    border-radius: 60px;
     box-sizing: border-box;
-    border-radius: 6px;
 
     @media #{$smartphones-1} {
       padding: 27px;
+      border-radius: 6px;
     }
 
     &:hover {
