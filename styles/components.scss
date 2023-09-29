@@ -4,6 +4,27 @@ COMPONENTS
 */
 
 
+// View all link
+
+.view-all {
+  display: inline-block;
+  padding: 0 10px;
+  border: 1px solid $dark-blue-2;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 20px;
+  font-size: 11px;
+  color: $medium-gray;
+  cursor: pointer;
+  margin-top: 20px;
+
+  &:hover {
+    border-color: $medium-gray;
+    color: $white;
+  }
+}
+
+
 // Flash messages
 .flash-success,
 .flash-error,
