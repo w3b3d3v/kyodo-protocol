@@ -4,6 +4,7 @@ This guide provides step-by-step instructions for adding Solana support to your 
 
 ## Prerequisites
 
+ solana-agreements-scripts
 - Ensure that you have a suitable development environment set up for Solana projects, including Rust, Node.js, and npm.
 
 ## Installing Anchor
@@ -84,3 +85,4 @@ ts-node scripts/createAgreements.ts
 ```
 
 ---
+If you are using a Mac, be aware that you may need to install some additional dependencies, such as `gnu-tar`. 
