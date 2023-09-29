@@ -7,25 +7,52 @@ HEADER
   width: 100%;
   height: 60px;
   background: rgba($white, 1);
-  @extend %clearfix;
+
+  .holder {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    height: 60px;
+  }
+
+  .header-right {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+    align-content: center;
+    width: 75%;
+  }
 
   nav {
-    float: right;
-    margin-top: 14px;
+    text-align: right;
 
     @media #{$smartphones-1} {
-      border-right: 1px solid $dark-blue-2;
-      background: rgba($dark-blue, 1);
+      animation: tracking-in-expand 1s ease-in-out;
+      background: linear-gradient(110deg, rgba(6, 6, 6, .99) 0%, rgba(47, 47, 47, .98) 100%);
       position: fixed;
       box-sizing: border-box;
+      text-align: left;
       left: 0;
       bottom: 0;
       top: 0;
       width: 200px;
       z-index: 9999;
       margin-top: 0;
-      padding: 20px;
-      display: none;
+      padding: 2px 20px 20px 20px;
+
+      img {
+        width: 39px;
+        margin-left: 3px;
+      }
+    }
+  }
+
+  ul {
+
+    @media #{$smartphones-1} {
+      padding-top: 20px;
     }
   }
 
@@ -55,7 +82,7 @@ HEADER
       height: 36px;
       line-height: 36px;
       border-radius: 4px;
-      background: rgba($medium-blue, .1);
+      background: rgba($white, .05);
       padding: 0 15px;
       margin: 0 0 2px 0;
       display: block;
@@ -63,11 +90,10 @@ HEADER
     }
 
     &:hover {
-      opacity: .8;
+      background: rgba($white, .08);
 
       @media #{$smartphones-1} {
         color: $white;
-        opacity: 1;
       }
     }
   }
@@ -82,8 +108,7 @@ HEADER
 .menu-trigger {
   width: 30px;
   cursor: pointer;
-  margin: 15px 0 0 15px;
-  float: right;
+  margin: 0 0 0 15px;
   display: none;
 
   @media #{$smartphones-1} {
@@ -95,12 +120,18 @@ HEADER
 // Logo
 
 .logo {
-  float: left;
-  margin-top: 13px;
   width: 150px;
 
   @media #{$smartphones-1} {
     width: 85px;
+  }
+}
+
+.logo-mobile {
+  display: none;
+
+  @media #{$smartphones-1} {
+    display: block;
   }
 }
 
@@ -116,7 +147,6 @@ HEADER
   font-size: $font-small;
   font-weight: normal;
   border: 1px solid $light-gray;
-  margin-top: 14px;
   color: #5F7482;
 
   @media #{$smartphones-1} {

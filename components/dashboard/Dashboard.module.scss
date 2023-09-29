@@ -24,6 +24,10 @@ DASHBOARD
   justify-content: space-between;
   align-items: center;
 
+  @media #{$smartphones-1} {
+    display: block;
+  }
+
   h1 {
     width: 48%;
     font-size: $font-bigger-2;
@@ -31,6 +35,8 @@ DASHBOARD
 
     @media #{$smartphones-1} {
       font-size: $font-large-2;
+      margin: 40px 0 15px 0;
+      width: 100%;
     }
   }
 
@@ -42,7 +48,14 @@ DASHBOARD
     margin-top: 11px;
 
     @media #{$smartphones-1} {
-      margin-top: 9px;
+      border: 1px solid $dark-blue-2;
+      background: rgba($medium-blue, .07);
+      border-radius: 6px;
+      width: 100%;
+      padding: 15px;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+      text-align: left;
     }
 
     p {
@@ -54,6 +67,18 @@ DASHBOARD
     display: flex;
     align-items: center;
     justify-content: flex-end;
+
+    @media #{$smartphones-1} {
+      justify-content: flex-start;
+    }
+
+    img {
+
+      @media #{$smartphones-1} {
+        width: 26px;
+        height: 26px;
+      }
+    }
   
     span {
       font-size: $font-big-4;
@@ -67,13 +92,20 @@ DASHBOARD
   }
 
   .opened-items {
-    background-color: #060606;
+    background-color: $dark-gray;
     border-radius: 6px;
     padding-left: 60px;
     position: absolute;
     right: 0;
     top: 6px;
     z-index: 300;
+
+    @media #{$smartphones-1} {
+      background: none;
+      padding-left: 0;
+      right: 15px;
+      top: 15px;
+    }
   }
   
   input {
@@ -85,6 +117,11 @@ DASHBOARD
     margin: 0;
     background: rgba(255, 255, 255, 0.01);
     width: 140px;
+
+    @media #{$smartphones-1} {
+      width: 90px;
+      background-color: $dark-blue;
+    }
   }
   
   input:focus {
@@ -118,7 +155,11 @@ DASHBOARD
     right: 0;
     top: 7px;
     z-index: 200;
-    
+
+    @media #{$smartphones-1} {
+      top: 15px;
+      right: 15px;
+    }
   }
   
   button {
@@ -220,7 +261,7 @@ DASHBOARD
     width: 35%;
     height: 5px;
     background: rgb(163,201,135);
-    background: linear-gradient(110deg, rgba(163,201,135,1) 0%, rgba(246,151,131,1) 150%);
+    background: linear-gradient(110deg, $green 0%, $red 150%);
     border-bottom-left-radius: 3px;
     border-top-left-radius: 3px;
   }
@@ -237,7 +278,7 @@ DASHBOARD
   padding-bottom: 100px;
 
   @media #{$smartphones-1} {
-    padding-bottom: 50px;
+    padding-bottom: 30px;
   }
 
   h2 {
@@ -266,16 +307,50 @@ DASHBOARD
   @extend %clearfix;
   position: relative;
 
+  @media #{$smartphones-1} {
+    padding: 15px;
+  }
+
+  .payment-avatar {
+    border-radius: 25px;
+    width: 50px;
+    height: 50px;
+    background: rgba($white, .03);
+    margin-right: 20px;
+    text-align: center;
+    padding-top: 11px;
+    box-sizing: border-box;
+    float: left;
+
+    @media #{$smartphones-1} {
+      margin-right: 15px;
+    }
+
+    img {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
   h3 {
     font-size: $font-medium-2;
-    padding: 0 0 10px 0;
+    padding: 3px 0 8px 0;
     font-weight: 600;
+
+    @media #{$smartphones-1} {
+      font-size: $font-medium;
+      padding: 8px 0 3px 0;
+    }
   }
 
   a {
     color: $medium-gray;
     font-size: $font-small;
     text-decoration: none;
+
+    @media #{$smartphones-1} {
+      font-size: 09px;
+    }
   }
 
   .value-status {
@@ -284,11 +359,20 @@ DASHBOARD
     right: 20px;
     top: 20px;
 
+    @media #{$smartphones-1} {
+      top: 23px;
+    }
+
     em {
       font-size: $font-large;
       display: block;
       font-style: normal;
       margin-bottom: 5px;
+
+      @media #{$smartphones-1} {
+        font-size: $font-medium;
+        margin-bottom: 8px;
+      }
     }
 
     img {
@@ -304,10 +388,14 @@ DASHBOARD
 
     strong {
       font-weight: normal;
+
+      @media #{$smartphones-1} {
+        display: none;
+      }
     }
 
     .paid {
-      color: $medium-gray;
+      color: $light-gray;
     }
 
     .received {

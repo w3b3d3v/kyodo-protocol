@@ -16,6 +16,10 @@ COMPONENTS
   font-size: 13px;
   box-sizing: border-box;
   padding: 0 3%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
 
   img {
     float: left;
@@ -60,4 +64,60 @@ COMPONENTS
   display: block;
   margin: 0 auto;
 }
+
+
+// Tooltip
+
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+}
+
+[data-tooltip] {
+  position: relative;
+  display: inline-block;
+}
+
+[data-tooltip]::before {
+  position: absolute;
+  z-index: 999;
+}
+
+[data-tooltip].tooltip-top::before {
+  bottom: 100%;
+  margin-bottom: 0;
+}
+
+[data-tooltip].bottom::before {
+  top: 100%;
+}
+
+[data-tooltip]::before {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+  opacity 1s;
+}
+
+[data-tooltip]:hover::before {
+  visibility: visible;
+  opacity: 1;
+}
+
+[data-tooltip] {
+  //background: $white;
+}
+
+[data-tooltip]::before {
+  background: #333;
+  color: $white;
+  padding: 8px;
+  min-width: 165px;
+  text-align: center;
+  border-radius: 6px;
+  font-size: $font-small;
+  box-sizing: border-box;
+  font-style: normal;
+  right: 0;
+}
+
 

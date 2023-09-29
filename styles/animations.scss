@@ -1,0 +1,23 @@
+/**
+ANIMATIONS
+===========================
+*/
+
+.tracking-in-expand {
+	-webkit-animation: tracking-in-expand 2s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+	        animation: tracking-in-expand 2s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+}
+
+@keyframes tracking-in-expand {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0.2;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

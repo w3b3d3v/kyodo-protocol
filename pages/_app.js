@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWalletButton"
 import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-
+import Head from 'next/head';
 import { PublicKey } from '@solana/web3.js';
 
 function formatAddress(address) {
@@ -55,36 +55,25 @@ function Header() {
   };
 
   return (
-      <header className={"main-header"}>
-        <div className={"holder"}>
-          <Image
-            src="/logo.svg"
-            alt="Kyodo Protocol logo"
-            width={120}
-            height={32}
-            className={"logo"}
-          />
-          <Image
-            src="/menu-icon.svg"
-            alt="menu icon"
-            width={30}
-            height={30}
-            className={"menu-trigger"}
-            onClick={toggleElement}
-          />
-       <div className={"user-wallet"}>
-        {isPublicKey ? (
-          <WalletMultiButton />
-          ) : (
-          <div>
-            <span className={"wallet-on"}>Status</span>
-            <em>{formatAddress(account)}</em>
-            <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
-          </div>
-          
-          )}
+    <header className={"main-header"}>
+      <div className={"holder"}>
+        <Image
+          src="/logo.svg"
+          alt="Kyodo Protocol logo"
+          width={120}
+          height={32}
+          className={"logo"}
+        />
+        <div className={"header-right"}>
           {visibleMenu &&
           <nav>
+            <Image
+              src="/logo-mobile.svg"
+              alt="Kyodo logo"
+              width={100}
+              height={56}
+              className={"logo-mobile"}
+            />
             <ul>
               <li>
                 <a href="/dashboard">{t("dashboard")}</a>
@@ -98,8 +87,28 @@ function Header() {
             </ul>
           </nav>
           }
+          <div className={"user-wallet"}>
+            {isPublicKey ? (
+              <WalletMultiButton />
+              ) : (
+              <div>
+                <span className={"wallet-on"}>Status</span>
+                <em>{formatAddress(account)}</em>
+                <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
+              </div>
+            
+            )}
+          </div>
+          <Image
+            src="/menu-icon.svg"
+            alt="menu icon"
+            width={30}
+            height={30}
+            className={"menu-trigger"}
+            onClick={toggleElement}
+          />
         </div>
-    </div>
+      </div>
     </header>
   )
 }
@@ -107,6 +116,9 @@ function Header() {
 function MyApp({ Component, pageProps }) {
   return (
     <AccountProvider>
+      <Head>
+        <title>App - Kyōdō Protocol</title>
+      </Head>
       <PageContent Component={Component} pageProps={pageProps} />
       <footer>
         <div className={"holder"}>

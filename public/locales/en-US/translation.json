@@ -4,5 +4,13 @@
   "validation": {
     "required": "{{field}} is required"
   },
-  "title": "Title"
+  "add-agreement-heading": "Add agreement",
+  "title": "Title",
+  "professional-wallet": "Professional wallet",
+  "payment-amount": "Payment amount",
+  "description": "Description",
+  "skills": "Skills",
+  "skills-tooltip": "The sum must equal 100%",
+  "add": "add",
+  "add-btn": "Add"
 }

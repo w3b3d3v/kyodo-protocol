@@ -43,6 +43,13 @@ function Payments ({ limit }) {
     const displayedAgreements = limit ? paidAgreements.slice(0, limit) : paidAgreements;
     return displayedAgreements.map((agreement, index) => (
       <div key={index} className={styles["payment-item"]}>
+        <div className={styles["payment-avatar"]}>
+          <Image
+            src="coins/usdc-icon.svg"
+            width={40} height={40}
+            alt="USDC"
+          />
+        </div>
         <h3>Agreement ID: {agreement.agreementId.toString()}</h3>
         <a href={`https://polygonscan.com/tx/${agreement.transactionHash}`} target="_blank" rel="noopener noreferrer">
            View on Polygonscan
@@ -53,12 +60,12 @@ function Payments ({ limit }) {
             {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? (
               <>
                 <strong className={styles["paid"]}>Paid</strong>
-                <Image src="/paid-icon.svg" width={16} height={16} />
+                <Image src="/paid-icon.svg" width={16} height={16} alt="Paid" />
               </>
             ) : (
               <>
                 <strong className={styles["received"]}>Received</strong>
-                <Image src="/received-icon.svg" width={16} height={16} />
+                <Image src="/received-icon.svg" width={16} height={16} alt="Received" />
               </>
             )}
           </span>

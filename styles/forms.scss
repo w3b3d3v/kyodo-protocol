@@ -38,3 +38,9 @@ textarea {
   min-height: 84px;
   max-height: 140px;
 }
+
+.validation-msg {
+  font-size: $font-small;
+  color: $red;
+  margin-top: 5px;
+}

@@ -123,10 +123,10 @@ function AddAgreementForm(props) {
 
   if (transactionHash) {
     return (
-      <div className="transaction-info">
+      <div className="transaction-info tracking-in-expand">
         <div className={styles["holder"]}>
           <p>
-            <Image src="/success-icon.svg" width={20} height={20} />
+            <Image src="/success-icon.svg" width={20} height={20} alt="Success icon" />
             Agreement created!
           </p>
           <a
@@ -143,45 +143,43 @@ function AddAgreementForm(props) {
 
   return (
     <div className={styles["add-agreement-form-container"]}>
-      <h1>Add agreement</h1>
-
+      <h1>{t("add-agreement-heading")}</h1>
       <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>
         <section className={"columns"}>
           <div className={"col-01"}>
             <label htmlFor="title-input">{t("title")}</label>
             {formErrors.title && (
-              <span style={{ color: "red", fontSize: "12px" }}>
-                <br></br>
+              <div className={"validation-msg"}>
                 {formErrors.title}
-              </span>
+              </div>
             )}
             <input
               type="text"
               id="title-input"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
+              tabIndex={1}
             />
 
-            <label htmlFor="professional-input">Professional wallet</label>
+            <label htmlFor="professional-input">{t("professional-wallet")}</label>
             {formErrors.professional && (
-              <span style={{ color: "red", fontSize: "12px" }}>
-                <br></br>
+              <div className={"validation-msg"}>
                 {formErrors.professional}
-              </span>
+              </div>
             )}
             <input
               type="text"
               id="professional-input"
               value={professional}
               onChange={(event) => setProfessional(event.target.value)}
+              tabIndex={2}
             />
 
-            <label htmlFor="payment-amount-input">Payment amount</label>
+            <label htmlFor="payment-amount-input">{t("payment-amount")}</label>
             {formErrors.paymentAmount && (
-              <span style={{ color: "red", fontSize: "12px" }}>
-                <br></br>
+              <div className={"validation-msg"}>
                 {formErrors.paymentAmount}
-              </span>
+              </div>
             )}
 
             <div className={styles["amount-field"]}>
@@ -191,66 +189,70 @@ function AddAgreementForm(props) {
                 id="payment-amount-input"
                 value={paymentAmount}
                 onChange={(event) => setPaymentAmount(parseFloat(event.target.value))}
+                tabIndex={3}
               />
             </div>
           </div>
 
           <div className={"col-02"}>
-            <label htmlFor="description-input">Description</label>
+            <label htmlFor="description-input">{t("description")}</label>
             {formErrors.description && (
-              <span style={{ color: "red", fontSize: "12px" }}>
-                <br></br>
+              <div className={"validation-msg"}>
                 {formErrors.description}
-              </span>
+              </div>
             )}
             <textarea
               id="description-input"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
+              tabIndex={4}
             ></textarea>
 
             <label htmlFor="skills-input" className={styles["skill-lv"]}>
-              Skills
+              {t("skills")}
               <span>Lv.</span>
             </label>
             {formErrors.skills && (
-              <span style={{ color: "red", fontSize: "12px" }}>
-                <br></br>
+              <div className={"validation-msg"}>
                 {formErrors.skills}
-              </span>
+              </div>
             )}
             <div className={styles["skills-field"]}>
-              <input
-                type="text"
-                id="skill-value"
-                className={styles["skill-value"]}
-                placeholder="%"
-              />
+              <i data-tooltip={t('skills-tooltip')} className="tooltip-top">
+                <input
+                  type="text"
+                  id="skill-value"
+                  className={styles["skill-value"]}
+                  placeholder="%"
+                  tabIndex={6}
+                />
+              </i>
               <input
                 type="text"
                 id="skills-input"
                 className={styles["skills-input"]}
                 value={skills}
                 onChange={(event) => setSkills(event.target.value)}
+                tabIndex={5}
               />
             </div>
-            <a href="#" className={styles["add-skill-btn"]}>
-            <Image src="/add.svg" width={16} height={16} />
-              <span>add</span>
+            <a href="#" className={styles["add-skill-btn"]} tabIndex={7}>
+            <Image src="/add.svg" width={16} height={16} alt="add" />
+              <span>{t("add")}</span>
             </a>
 
             <ul className={styles["skills-list"]}>
               <li>
                 <div className={styles["skill-item"]}>
                   <span>Dev Ops</span>
-                  <Image src="/close.svg" width={16} height={16} />
+                  <Image src="/close.svg" width={16} height={16} alt="close" />
                 </div>
                 <em>30%</em>
               </li>
               <li>
                 <div className={styles["skill-item"]}>
                   <span>Quality Assurance</span>
-                  <Image src="/close.svg" width={16} height={16} />
+                  <Image src="/close.svg" width={16} height={16} alt="close" />
                 </div>
                 <em>20%</em>
               </li>
@@ -259,8 +261,8 @@ function AddAgreementForm(props) {
         </section>
 
         <section className={styles["form-footer"]}>
-          <button type="submit" className={styles["add-agreement-form-button"]}>
-            <div>Add</div>
+          <button type="submit" className={styles["add-agreement-form-button"]} tabIndex={8}>
+            <div>{t("add-btn")}</div>
           </button>
         </section>
       </form>

@@ -16,17 +16,6 @@ CONNECT WALLET
     background: $white;
     height: auto;
   }
-
-  footer {
-
-    @media #{$smartphones-1} {
-      background: rgb(6,6,6);
-    }
-
-    li a:hover {
-      color: $dark-gray;
-    }
-  }
 }
 
 .home-entry {
@@ -82,25 +71,123 @@ CONNECT WALLET
   border: none;
   padding: 0;
   cursor: pointer;
+
+  div {
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    background: $white;
+    height: 38px;
+    line-height: 38px;
+    display: inline-block;
+    font-size: 14px;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 0 25px;
+    color: $medium-blue;
+    margin: 2px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: .8;
+    }
+  }
 }
 
-.connect-wallet div {
-  border-radius: 30px;
-  text-decoration: none;
-  font-weight: 600;
-  background: $white;
-  height: 38px;
-  line-height: 38px;
-  display: inline-block;
-  font-size: 14px;
+
+// Modal
+
+.modal {
+  background: linear-gradient(-110deg, rgba(6, 6, 6, .98) 0%, rgba(47, 47, 47, .98) 100%);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
   text-align: center;
-  box-sizing: border-box;
-  padding: 0 25px;
-  color: $medium-blue;
-  margin: 2px;
-  cursor: pointer;
+
+  .modal-content {
+    width: 450px;
+    margin: auto;
+
+    @media #{$smartphones-1} {
+      width: 90%;
+    }
+  }
+
+  h3 {
+    font-weight: bold;
+    margin: 0 0 50px 0;
+  }
+
+  .close-modal {
+    right: 20px;
+    top: 18px;
+    position: absolute;
+    cursor: pointer;
+
+    &:hover {
+      opacity: .8;
+    }
+  }
 }
 
-.connect-wallet div:hover {
-  opacity: .8;
+.chains-list {
+
+  li {
+    list-style-type: none;
+    margin-bottom: 20px;
+    text-align: left;
+
+    @media #{$smartphones-1} {
+      text-align: center;
+    }
+  }
+
+  a {
+    background: rgba($white, .1);
+    width: 100%;
+    display: inline-block;
+    cursor: pointer;
+    padding: 27px 17px 20px 23px;
+    border-radius: 60px;
+    box-sizing: border-box;
+
+    @media #{$smartphones-1} {
+      padding: 27px;
+      border-radius: 6px;
+    }
+
+    &:hover {
+      background: rgba($white, .2);
+    }
+  }
+
+  h4 {
+    margin: 0 0 7px 0;
+
+    span {
+      font-weight: normal;
+    }
+  }
+
+  p {
+    font-size: $font-medium;
+    color: $light-gray;
+    line-height: 20px;
+  }
+
+  img {
+    margin: -10px 20px 0 0;
+    float: left;
+
+    @media #{$smartphones-1} {
+      float: none;
+      margin: 0 0 10px 0;
+    }
+  }
 }
+
