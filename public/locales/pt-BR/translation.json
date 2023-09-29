@@ -12,5 +12,7 @@
   "skills": "Habilidades",
   "skills-tooltip": "A soma deve ser igual a 100%",
   "add": "adicionar",
-  "add-btn": "Adicionar"
+  "add-btn": "Adicionar",
+  "agreement-created": "Acordo criado com sucesso!",
+  "agreement-pending": "Transação pendente. Aguarde um instante..."
 }

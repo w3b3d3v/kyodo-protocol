@@ -12,5 +12,7 @@
   "skills": "Skills",
   "skills-tooltip": "The sum must equal 100%",
   "add": "add",
-  "add-btn": "Add"
+  "add-btn": "Add",
+  "agreement-created": "Agreement created!",
+  "agreement-pending": "Transaction is still pending, please wait."
 }
