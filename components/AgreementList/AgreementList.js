@@ -145,10 +145,10 @@ function AgreementList(props) {
         </h1>
         <ul>
           <li>
-            <a href="#" className={styles["actived"]}>All</a>
+            <a href="#" className={styles["actived"]}>{t("all-tab")}</a>
           </li>
           <li>
-            <a href="#">Inactives</a>
+            <a href="#">{t("inactive-tab")}</a>
           </li>
         </ul>
       </section>
@@ -165,18 +165,18 @@ function AgreementList(props) {
               <div className={styles["card-desc"]}>{agreement.description}</div>
 
               <p className={styles["skills-section"]}>
-                <strong>Skills</strong> <span>{agreement.skills.join(", ")}</span>
+                <strong>{t("skills")}</strong> <span>{agreement.skills.join(", ")}</span>
               </p>
 
               <p>
-                <strong>Payment amount</strong>
+                <strong>{t("payment-amount")}</strong>
                 {parseFloat(ethers.utils.formatUnits(agreement.payment.amount, 18))
                   .toFixed(2)
                   .replace(/\.00$/, "")}{" "}
                 USD
               </p>
               <p>
-                <strong className={styles["total-paid"]}>Total paid</strong>
+                <strong className={styles["total-paid"]}>{t("total-paid")}</strong>
                 {parseFloat(ethers.utils.formatUnits(agreement.totalPaid, 18))
                   .toFixed(2)
                   .replace(/\.00$/, "")}{" "}
@@ -185,7 +185,7 @@ function AgreementList(props) {
 
               <div className={styles["card-footer"]}>
                 <>
-                  <a onClick={() => handlePayClick(index)}>Pay agreement</a>
+                  <a onClick={() => handlePayClick(index)}>{t("pay-agreement")}</a>
                   {showPaymentInput === index && (
                     <>
                       <div className={styles["opened-items"]}>
@@ -201,7 +201,7 @@ function AgreementList(props) {
                           }}
                           className={styles["select-input"]}
                         >
-                          <option value="">Select a token</option>
+                          <option value="">{t("select-token")}</option>
                           {tokens.map((token) => (
                             <option
                               key={token.address}
@@ -226,7 +226,7 @@ function AgreementList(props) {
                           }
                           className={styles["confirm-btn"]}
                         >
-                          Confirm
+                          {t("confirm")}
                         </button>
                       </div>
                     </>

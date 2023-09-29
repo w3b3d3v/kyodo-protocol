@@ -7,8 +7,10 @@ import styles from "./Dashboard.module.scss"
 import { ethers } from "ethers";
 import Payments from './Payments';
 import Image from 'next/image'
+import { useTranslation } from "react-i18next"
 
 function Balances(props) {
+  const { t } = useTranslation()
   const { vaultContract, vaultLoading } = useVaultContract();
   const { account } = useAccount();
   const [userBalances, setUserBalances] = useState([]);
@@ -150,22 +152,17 @@ function Balances(props) {
 
         <div className={styles["dashboard-header"]}>
 
-          <h1>GM, mate!</h1>
+          <h1>{t("gm")}</h1>
 
           {userBalances.map((balance, index) => (
             <div key={index} className={styles["balance-heading"]}>
               <p className={styles["usd-balance"]}>
-                <Image
-                  src="/usd-icon.svg"
-                  alt="USD icon"
-                  width={32}
-                  height={32}
-                />
+                <Image src="/usd-icon.svg" alt="USD icon" width={32} height={32} />
                 <span>{parseFloat(ethers.utils.formatUnits(balance.amount, 18)).toFixed(2).replace(/\.00$/, '')}</span>
               </p>
               <p>
                 {showRedeemInput !== index && (
-                  <a onClick={() => handleRedeemClick(index)}>Redeem</a>
+                  <a onClick={() => handleRedeemClick(index)}>{t("redeem")}</a>
                 )}
                 {showRedeemInput === index && (
                   <>
@@ -176,7 +173,7 @@ function Balances(props) {
                         onChange={(e) => handleRedeemValueChange(e)}
                         placeholder="USD"
                       />
-                      <button onClick={() => handleWithdraw(redeemValue, balance)}>Confirm</button>
+                      <button onClick={() => handleWithdraw(redeemValue, balance)}>{t("confirm")}</button>
                     </div>
                   </>
                 )}
@@ -196,9 +193,9 @@ function Balances(props) {
             <a href="#">Complete profile</a>
           </li>
           <li>
-            <h2>Add an agreement</h2>
-            <p>Start adding your first agreement.</p>
-            <a href="/agreements/new">Add agreement</a>
+            <h2>{t("call-02")}</h2>
+            <p>{t("phrase-02")}</p>
+            <a href="/agreements/new">{t("btn-02")}</a>
           </li>
           <li className={styles["disabled"]}>
             <h2>Refer and<br></br> earn</h2>

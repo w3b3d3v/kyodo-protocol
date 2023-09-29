@@ -1,12 +1,36 @@
 {
   "dashboard": "Dashboard",
   "agreements": "Agreements",
+
+  "gm": "Hello,",
+  "redeem": "Redeem",
+  "confirm": "Confirm",
+
+  "call-02": "Add an agreement",
+  "phrase-02": "Start adding your first agreement.",
+  "btn-02": "Add agreement",
+
+  "payments": "Payments",
+  "paid": "Paid",
+  "received": "Received",
+  "polygonscan": "View on Polygonscan",
+  "view-all": "View all",
+
   "code-conduct": "Code of conduct",
   "privacy-policy": "Privacy policy",
   "terms-use": "Terms of use",
+
   "validation": {
     "required": "{{field}} is required"
   },
+
+  "all-tab": "All",
+  "inactive-tab": "Inactive",
+
+  "total-paid": "Total paid",
+  "pay-agreement": "Pay agreement",
+  "select-token": "Select a token",
+
   "add-agreement-heading": "Add agreement",
   "title": "Title",
   "professional-wallet": "Professional wallet",

@@ -1,12 +1,36 @@
 {
   "dashboard": "Painel",
   "agreements": "Acordos",
+
+  "gm": "Olá,",
+  "redeem": "Resgatar",
+  "confirm": "Confirmar",
+
+  "call-02": "Adicionar um acordo",
+  "phrase-02": "Comece criando um acordo com alguém",
+  "btn-02": "Adicionar acordo",
+
+  "payments": "Pagamentos",
+  "paid": "Pago",
+  "received": "Recebido",
+  "polygonscan": "Ver na Polygonscan",
+  "view-all": "Ver tudo",
+
   "code-conduct": "Código de conduta",
   "privacy-policy": "Política de privacidade",
   "terms-use": "Termos de uso",
+
   "validation": {
     "required": "{{field}} é obrigatório"
   },
+
+  "all-tab": "Todos",
+  "inactive-tab": "Inativos",
+
+  "total-paid": "Total pago",
+  "pay-agreement": "Pagar acordo",
+  "select-token": "Selecionar token",
+
   "add-agreement-heading": "Adicionar acordo",
   "title": "Título",
   "professional-wallet": "Carteira",
