@@ -4,7 +4,9 @@ import { useAccount } from "../../contexts/AccountContext"
 import { useState } from "react"
 import styles from "./AddAgreement.module.scss"
 import Image from 'next/image'
-import { BeatLoader } from "react-spinners"
+import Loader from '../utils/Loader';
+import Toast from '../utils/Toast';
+import useTransactionHandler from '../../hooks/useTransactionHandler';
 import { ethers } from "ethers"
 import { useTranslation } from "react-i18next"
 import * as Yup from "yup"
@@ -15,16 +17,20 @@ function AddAgreementForm(props) {
   const [professional, setProfessional] = useState("")
   const [skills, setSkills] = useState("")
   const [paymentAmount, setPaymentAmount] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [transactionSuccess, setTransactionSuccess] = useState(false);
-  const [transactionPending, setTransactionPending] = useState(false);
-  const [transactionFail, setTransactionFail] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
   const { contract } = useAgreementContract()
   const [formErrors, setFormErrors] = useState({})
   const router = useRouter()
   const { account } = useAccount()
   const { t } = useTranslation()
+  const {
+    isLoading,
+    transactionSuccess,
+    transactionPending,
+    transactionFail,
+    errorMessage,
+    sendTransaction,
+    transactionHash,
+  } = useTransactionHandler();
 
   const AgreementSchema = Yup.object().shape({
     title: Yup.string().required(),
@@ -83,116 +89,46 @@ function AddAgreementForm(props) {
     }
   }
 
-    async function addAgreement() {
-    setIsLoading(true);
-    setTransactionFail(false);
-    setTransactionPending(false);
-    setTransactionSuccess(false);
-
-    if (window.ethereum) {
+  const addAgreement = async () => {
+    const transactionFunction = async () => {
       const paymentAmountInWei = ethers.utils.parseUnits(paymentAmount.toString(), 18);
-
-      try {
-        const txPromise = contract.createAgreement(
-          title,
-          description,
-          professional,
-          skills.split(","),
-          paymentAmountInWei
-        );
-        
-        const txResponse = await Promise.race([
-          txPromise,
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Failed to send transaction')), 5000))
-        ]);
-
-        const agreementCreated = new Promise((resolve, reject) => {
-          const timeout = setTimeout(async () => {
-            const tx = await provider.getTransaction(txResponse.hash);
-            if (tx && tx.blockNumber) {
-              resolve({ agreementId: tx.transactionIndex, event: tx });
-            } else {
-              reject(new Error('Transaction is still pending'));
-            }
-          }, 20000);
-
-          contract.on("AgreementCreated", (agreementId, event) => {
-            clearTimeout(timeout);
-            resolve({ agreementId, event });
-          });
-        });
-
-        const { agreementId, event } = await agreementCreated;
-        console.log("Agreement Created:", agreementId, event);
-        setTransactionSuccess(true);
-
-        setTimeout(() => {
-          setIsLoading(false);
-          router.push("/agreements");
-        }, 1500);
-
-        setTitle("");
-        setDescription("");
-        setProfessional("");
-        setSkills("");
-        setPaymentAmount("");
-
-      } catch (error) {
-        setErrorMessage(error.message);
-        console.error("Error:", errorMessage);
-        if (error.message === 'Transaction is still pending') {
-          setTransactionPending(true);
-          setTimeout(() => {
-            setIsLoading(false);
-            router.push("/agreements");
-          }, 3000);
-        } else {
-          setTransactionFail(true);
-          setTimeout(() => {
-            setIsLoading(false);
-            setTransactionFail(false);
-          }, 3000);
-        }
-      }
-    }
-  }
+      return contract.createAgreement(
+        title,
+        description,
+        professional,
+        skills.split(","),
+        paymentAmountInWei
+      );
+    };
+  
+    const onConfirmation = (txReceipt) => {
+      console.log("Transaction Confirmed:", txReceipt);
+  
+      setTitle("");
+      setDescription("");
+      setProfessional("");
+      setSkills("");
+      setPaymentAmount("");
+  
+      setTimeout(() => {
+        router.push("/agreements");
+      }, 3000);
+    };
+  
+    await sendTransaction(transactionFunction, contract, "AgreementCreated", onConfirmation);
+  };
+  
 
   return (
     <div className={styles["add-agreement-form-container"]}>
-      {isLoading && (
-        <div className="loading-overlay">
-          <div className="sweet-loading">
-            <BeatLoader loading={isLoading} size={50} />
-          </div>
-        </div>
-      )}
-
-      {transactionSuccess && (
-        <div className="flash-success transaction-info">
-          <p>
-          <Image src="/success-icon.svg" width={20} height={20} alt="Success icon" />
-            Agreement created!
-          </p>
-        </div>
-      )}
-
-      {transactionPending && (
-        <div className="flash-pending transaction-info">
-          <p>
-          <Image src="/pending-icon.svg" width={20} height={20} alt="Pending icon" />
-            Transaction is still pending, please wait.
-          </p>
-        </div>
-      )}
-
-      {transactionFail && (
-        <div className="flash-error transaction-info">
-          <p>
-          <Image src="/error-icon.svg" width={20} height={20} alt="Error icon" />
-            {errorMessage}
-          </p>
-        </div>
-      )}
+      <Loader isLoading={isLoading} />
+      <Toast
+        transactionSuccess={transactionSuccess}
+        transactionPending={transactionPending}
+        transactionFail={transactionFail}
+        errorMessage={errorMessage}
+        transactionHash={transactionHash}
+      />
 
       <h1>{t("add-agreement-heading")}</h1>
       <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>

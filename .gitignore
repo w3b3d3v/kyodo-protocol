@@ -45,6 +45,8 @@ contracts/solana/node_modules/
 contracts/solana/.prettierignore
 contracts/solana/yarn.lock
 contracts/solana/target/
+contracts/solana/mykey.json
+contracts/solana/test-ledger/
 
 contracts/ethereum/node_modules
 contracts/ethereum/yarn.lock
