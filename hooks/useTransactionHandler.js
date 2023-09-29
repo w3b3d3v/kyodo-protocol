@@ -9,7 +9,7 @@ function useTransactionHandler() {
   const [transactionFail, setTransactionFail] = useState(false);
   const [transactionHash, setTransactionHash] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const { account } = useAccount()
+  const { account, selectedChain} = useAccount()
 
   const sendTransaction = useCallback(async (transactionFunction, contract, eventName, onConfirmation) => {
     setIsLoading(true);

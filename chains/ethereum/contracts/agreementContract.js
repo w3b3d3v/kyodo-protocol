@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import AgreementContract from '../../contexts/contracts/AgreementContract.json';
+import AgreementContract from './AgreementContract.json';
 
 export function agreementContract() {
   const provider = new ethers.providers.Web3Provider(window.ethereum)

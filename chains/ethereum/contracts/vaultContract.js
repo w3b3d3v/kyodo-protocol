@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import VaultContract from '../../contexts/contracts/StableVault.json';
+import VaultContract from './StableVault.json';
 
 export function vaultContract() {
   const provider = new ethers.providers.Web3Provider(window.ethereum)
