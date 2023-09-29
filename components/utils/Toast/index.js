@@ -1,14 +1,16 @@
 // Toast.js
 import React from 'react';
 import Image from 'next/image';
+import { useTranslation } from "react-i18next"
 
 function Toast({ transactionSuccess, transactionPending, transactionFail, errorMessage, transactionHash}) {
+  const { t } = useTranslation()
   if (transactionSuccess) {
     return (
       <div className="flash-success transaction-info">
         <p>
           <Image src="/success-icon.svg" width={20} height={20} alt="Success icon" />
-          Agreement created!
+          {t("agreement-created")}
         </p>
       </div>
     );
@@ -19,7 +21,7 @@ function Toast({ transactionSuccess, transactionPending, transactionFail, errorM
       <div className="flash-pending transaction-info">
         <p>
           <Image src="/pending-icon.svg" width={20} height={20} alt="Pending icon" />
-          Transaction is still pending, please wait. 
+          {t("agreement-pending")}
         </p>
           <a href={`https://polygonscan.com/tx/${transactionHash}`} target="_blank" rel="noopener noreferrer">
             Check the status here
