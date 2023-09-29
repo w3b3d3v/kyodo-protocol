@@ -90,7 +90,9 @@ function Payments ({ limit }) {
       <div>
         {renderPaidAgreements()}
         {limit && paidAgreements.length > limit && (
-          <button onClick={() => window.location.href='/payments'}>See More</button>
+          <a onClick={() => window.location.href='/payments'} className={"view-all"}>
+            View all
+          </a>
         )}
       </div>
     </div>
