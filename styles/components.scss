@@ -65,16 +65,21 @@ COMPONENTS
 }
 
 .flash-success {
-  border-bottom: 3px solid $brand-green;
+  border-bottom: 3px solid $green;
 }
 
 .flash-pending {
-  border-bottom: 3px solid $brand-blue;
+  border-bottom: 3px solid $medium-gray;
 }
 
 .flash-error {
-  border-bottom: 3px solid $brand-red;
+  border-bottom: 3px solid $red;
 }
+
+.flash-alert {
+  border-bottom: 3px solid $orange;
+}
+
 
 
 // Loading
