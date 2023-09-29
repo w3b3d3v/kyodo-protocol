@@ -16,8 +16,16 @@ footer {
 
   @media #{$smartphones-1} {
     height: auto;
-    padding: 10px 0 20px 0;
-    position: inherit;
+    left: 0;
+    bottom: 0;
+    top: 210px;
+    width: 200px;
+    z-index: 9999;
+    box-sizing: border-box;
+    background: linear-gradient(110deg, rgba(6, 6, 6, .99) 0%, rgba(47, 47, 47, .98) 100%);
+    animation: tracking-in-expand 1s ease-in-out;
+    padding-left: 10px;
+    padding-top: 10px;
   }
 
   p {

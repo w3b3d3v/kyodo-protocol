@@ -1,6 +1,9 @@
 {
   "dashboard": "Dashboard",
   "agreements": "Agreements",
+  "code-conduct": "Code of conduct",
+  "privacy-policy": "Privacy policy",
+  "terms-use": "Terms of use",
   "validation": {
     "required": "{{field}} is required"
   },
