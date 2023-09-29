@@ -5,12 +5,11 @@ COMPONENTS
 
 
 // Flash messages
-
 .flash-success,
+.flash-error,
 .transaction-info {
   width: 100%;
   background-color: $dark-blue-2;
-  border-bottom: 3px solid $green;
   height: 45px;
   line-height: 43px;
   font-size: 13px;
@@ -42,6 +41,18 @@ COMPONENTS
       color: $white;
     }
   }
+}
+
+.flash-success {
+  border-bottom: 3px solid $brand-green;
+}
+
+.flash-pending {
+  border-bottom: 3px solid $brand-blue;
+}
+
+.flash-error {
+  border-bottom: 3px solid $brand-red;
 }
 
 
