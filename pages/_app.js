@@ -50,6 +50,23 @@ function Header() {
 
   // Mobile menu
   const [visibleMenu, setVisibleMenu] = useState(false);
+
+  useEffect(() => {
+
+    const checkWindowWidth = () => {
+      const isSmallScreen = window.innerWidth <= 800;
+      setVisibleMenu(!isSmallScreen);
+    };
+
+    checkWindowWidth();
+    window.addEventListener('resize', checkWindowWidth);
+    
+    return () => {
+      window.removeEventListener('resize', checkWindowWidth);
+    };
+
+  }, []);
+
   const toggleElement = () => {
     setVisibleMenu(!visibleMenu);
   };
