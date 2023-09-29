@@ -49,7 +49,7 @@ function Header() {
   }
 
   // Mobile menu
-  const [visibleMenu, setVisibleMenu] = useState(true);
+  const [visibleMenu, setVisibleMenu] = useState(false);
   const toggleElement = () => {
     setVisibleMenu(!visibleMenu);
   };
@@ -57,15 +57,13 @@ function Header() {
   return (
     <header className={"main-header"}>
       <div className={"holder"}>
-        <a href="/dashboard">
-          <Image
-            src="/logo.svg"
-            alt="Kyodo Protocol logo"
-            width={120}
-            height={32}
-            className={"logo"}
-          />
-        </a>
+        <Image
+          src="/logo.svg"
+          alt="Kyodo Protocol logo"
+          width={120}
+          height={32}
+          className={"logo"}
+        />
         <div className={"header-right"}>
           {visibleMenu &&
           <nav>
@@ -98,7 +96,6 @@ function Header() {
                 <em>{formatAddress(account)}</em>
                 <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
               </div>
-            
             )}
           </div>
           <Image
