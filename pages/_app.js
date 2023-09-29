@@ -48,24 +48,9 @@ function Header() {
     router.push(router.pathname, router.asPath, { locale: newLocale }) // Update Next.js router locale
   }
 
-  // Mobile menu
-  const [visibleMenu, setVisibleMenu] = useState(false);
-
-  useEffect(() => {
-
-    const checkWindowWidth = () => {
-      const isSmallScreen = window.innerWidth <= 800;
-      setVisibleMenu(!isSmallScreen);
-    };
-
-    checkWindowWidth();
-    window.addEventListener('resize', checkWindowWidth);
-    
-    return () => {
-      window.removeEventListener('resize', checkWindowWidth);
-    };
-
-  }, []);
+  const mobileScreenWidth = 800;
+  const isSmallScreen = window.innerWidth <= mobileScreenWidth;
+  const [visibleMenu, setVisibleMenu] = useState(!isSmallScreen);
 
   const toggleElement = () => {
     setVisibleMenu(!visibleMenu);
