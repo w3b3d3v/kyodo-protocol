@@ -141,77 +141,75 @@ function Balances(props) {
   }
 
   return (
+    <div>
+      <section className={styles["user-home"]}>
 
-    <section className={styles["user-home"]}>
+        {/* {userBalances.length > 0 && (
+          <h1>Balances</h1>
+        )} */}
 
-      {/* {userBalances.length > 0 && (
-        <h1>Balances</h1>
-      )} */}
+        <div className={styles["dashboard-header"]}>
 
-      <div className={styles["dashboard-header"]}>
+          <h1>GM, mate!</h1>
 
-        <h1>GM, mate!</h1>
+          {userBalances.map((balance, index) => (
+            <div key={index} className={styles["balance-heading"]}>
+              <p className={styles["usd-balance"]}>
+                <Image
+                  src="/usd-icon.svg"
+                  alt="USD icon"
+                  width={32}
+                  height={32}
+                />
+                <span>{parseFloat(ethers.utils.formatUnits(balance.amount, 18)).toFixed(2).replace(/\.00$/, '')}</span>
+              </p>
+              <p>
+                {showRedeemInput !== index && (
+                  <a onClick={() => handleRedeemClick(index)}>Redeem</a>
+                )}
+                {showRedeemInput === index && (
+                  <>
+                    <div className={styles["opened-items"]}>
+                      <input 
+                        type="number" 
+                        value={redeemValue}
+                        onChange={(e) => handleRedeemValueChange(e)}
+                        placeholder="USD"
+                      />
+                      <button onClick={() => handleWithdraw(redeemValue, balance)}>Confirm</button>
+                    </div>
+                  </>
+                )}
+              </p>
+            </div>
+          ))}
 
-        {userBalances.map((balance, index) => (
-          <div key={index} className={styles["balance-heading"]}>
-            <p className={styles["usd-balance"]}>
-              <Image
-                src="/usd-icon.svg"
-                alt="USD icon"
-                width={32}
-                height={32}
-              />
-              <span>{parseFloat(ethers.utils.formatUnits(balance.amount, 18)).toFixed(2).replace(/\.00$/, '')}</span>
-            </p>
-            <p>
-              {showRedeemInput !== index && (
-                <a onClick={() => handleRedeemClick(index)}>Redeem</a>
-              )}
-              {showRedeemInput === index && (
-                <>
-                  <div className={styles["opened-items"]}>
-                    <input 
-                      type="number" 
-                      value={redeemValue}
-                      onChange={(e) => handleRedeemValueChange(e)}
-                      placeholder="USD"
-                    />
-                    <button onClick={() => handleWithdraw(redeemValue, balance)}>Confirm</button>
-                  </div>
-                </>
-              )}
-            </p>
-          </div>
-        ))}
+        </div>
 
-      </div>
-
-      <ul className={styles["home-calls"]}>
-        <li className={styles["disabled"]}>
-          <h2>Complete your profile to be visible</h2>
-          <div className={styles["progressbar"]}>
-            <div></div>
-          </div>
-          <p>You profile is <strong>35%</strong> complete</p>
-          <a href="#">Complete profile</a>
-        </li>
-        <li>
-          <h2>Add an agreement</h2>
-          <p>Start adding your first agreement.</p>
-          <a href="/agreements/new">Add agreement</a>
-        </li>
-        <li className={styles["disabled"]}>
-          <h2>Refer and<br></br> earn</h2>
-          <p>Professionals or contractors that refer the usage of Kyodo, can earn a % of paid value to the protocol.</p>
-          <a href="#">Get referral link</a>
-        </li>
-      </ul>
-
+        <ul className={styles["home-calls"]}>
+          <li className={styles["disabled"]}>
+            <h2>Complete your profile to be visible</h2>
+            <div className={styles["progressbar"]}>
+              <div></div>
+            </div>
+            <p>You profile is <strong>35%</strong> complete</p>
+            <a href="#">Complete profile</a>
+          </li>
+          <li>
+            <h2>Add an agreement</h2>
+            <p>Start adding your first agreement.</p>
+            <a href="/agreements/new">Add agreement</a>
+          </li>
+          <li className={styles["disabled"]}>
+            <h2>Refer and<br></br> earn</h2>
+            <p>Professionals or contractors that refer the usage of Kyodo, can earn a % of paid value to the protocol.</p>
+            <a href="#">Get referral link</a>
+          </li>
+        </ul>
+      </section>
       <Payments limit={2} />
-      
-    </section>
+    </div>
   );
-  
 }
 
 export default Balances;
