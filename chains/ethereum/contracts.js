@@ -1,5 +1,5 @@
-import { agreementContract } from "./agreementContract"
-import { vaultContract } from "./vaultContract"
+import { agreementContract } from "./contracts/agreementContract"
+import { vaultContract } from "./contracts/vaultContract"
 
 async function verify() {
   const HARDHAT_IDS = ["0x7A69", "31337"]
