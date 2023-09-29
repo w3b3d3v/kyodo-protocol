@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useAccount } from "../contexts/AccountContext"
 import { ethers } from 'ethers';
+import transactionManager from '../chains/transactionManager';
 
 function useTransactionHandler() {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,11 +12,12 @@ function useTransactionHandler() {
   const [errorMessage, setErrorMessage] = useState('');
   const { account, selectedChain} = useAccount()
 
-  const sendTransaction = useCallback(async (transactionFunction, contract, eventName, onConfirmation) => {
+  const sendTransaction = useCallback(async (functionName, details, eventName, onConfirmation) => {
     setIsLoading(true);
     setTransactionFail(false);
     setTransactionPending(false);
     setTransactionSuccess(false);
+    const { contract } = details;
 
     try {
         const TRANSACTION_TIMEOUT = 5000;
@@ -25,8 +27,10 @@ function useTransactionHandler() {
             setTimeout(() => reject(new Error('Transaction timed out')), TRANSACTION_TIMEOUT);
         });
 
-        const txResponse = await Promise.race([transactionFunction(), timeoutPromise]);
-        console.log("Transaction Sent:", txResponse);
+        const txResponse = await Promise.race([
+          transactionManager[functionName](selectedChain, details),
+          timeoutPromise
+        ]);
 
         if (txResponse && txResponse.hash) {
             setTransactionHash(txResponse.hash);
@@ -45,7 +49,6 @@ function useTransactionHandler() {
             });
 
             const eventArgs = await eventReceived;
-            console.log(`${eventName} Received:`, eventArgs);
             setTransactionSuccess(true);
             setTransactionPending(false);
 

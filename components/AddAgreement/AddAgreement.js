@@ -7,7 +7,6 @@ import Image from 'next/image'
 import Loader from '../utils/Loader';
 import Toast from '../utils/Toast';
 import useTransactionHandler from '../../hooks/useTransactionHandler';
-import { ethers } from "ethers"
 import { useTranslation } from "react-i18next"
 import * as Yup from "yup"
 
@@ -90,34 +89,28 @@ function AddAgreementForm(props) {
   }
 
   const addAgreement = async () => {
-    const transactionFunction = async () => {
-      const paymentAmountInWei = ethers.utils.parseUnits(paymentAmount.toString(), 18);
-      return contract.createAgreement(
-        title,
-        description,
-        professional,
-        skills.split(","),
-        paymentAmountInWei
-      );
+    const details = {
+      title,
+      description,
+      professional,
+      skills: skills.split(","),
+      paymentAmount,
     };
   
     const onConfirmation = (txReceipt) => {
       console.log("Transaction Confirmed:", txReceipt);
-  
       setTitle("");
       setDescription("");
       setProfessional("");
       setSkills("");
       setPaymentAmount("");
-  
       setTimeout(() => {
         router.push("/agreements");
       }, 3000);
     };
   
-    await sendTransaction(transactionFunction, contract, "AgreementCreated", onConfirmation);
+    await sendTransaction("addAgreement", { ...details, contract }, "AgreementCreated", onConfirmation);
   };
-  
 
   return (
     <div className={styles["add-agreement-form-container"]}>

@@ -1,8 +1,16 @@
 // src/chains/ethereum/transactions.js
-const EthereumTransactionHandler = {
-    sendTransaction: async (transactionFunction, contract, eventName, onConfirmation) => {
-      // Implemente a lógica para enviar transações Ethereum aqui
-    },
-  };
+import { ethers } from "ethers"
+
+export const addAgreement = async ({ title, description, professional, skills, paymentAmount, contract }) => {
+  const paymentAmountInWei = ethers.utils.parseUnits(paymentAmount.toString(), 18);
+
+  return contract.createAgreement(
+    title,
+    description,
+    professional,
+    skills,
+    paymentAmountInWei
+  );
+};
   
-export default EthereumTransactionHandler;
+export default addAgreement;
