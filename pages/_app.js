@@ -48,79 +48,76 @@ function Header() {
     router.push(router.pathname, router.asPath, { locale: newLocale }) // Update Next.js router locale
   }
 
+  // Mobile header and footer
+
   const mobileScreenWidth = 800;
   const isSmallScreen = window.innerWidth <= mobileScreenWidth;
+
   const [visibleMenu, setVisibleMenu] = useState(!isSmallScreen);
+  const [visibleFooter, setVisibleFooter] = useState(!isSmallScreen);
 
   const toggleElement = () => {
     setVisibleMenu(!visibleMenu);
+    setVisibleFooter(!visibleFooter);
   };
 
   return (
-    <header className={"main-header"}>
-      <div className={"holder"}>
-        <Image
-          src="/logo.svg"
-          alt="Kyodo Protocol logo"
-          width={120}
-          height={32}
-          className={"logo"}
-        />
-        <div className={"header-right"}>
-          {visibleMenu &&
-          <nav>
-            <Image
-              src="/logo-mobile.svg"
-              alt="Kyodo logo"
-              width={100}
-              height={56}
-              className={"logo-mobile"}
-            />
-            <ul>
-              <li>
-                <a href="/dashboard">{t("dashboard")}</a>
-              </li>
-              <li>
-                <Link href="/agreements">{t("agreements")}</Link> 
-              </li>
-              <li>
-                <a onClick={changeLanguage} className={"local-trigger"}>{locale}</a>
-              </li>
-            </ul>
-          </nav>
-          }
-          <div className={"user-wallet"}>
-            {isPublicKey ? (
-              <WalletMultiButton />
-              ) : (
-              <div>
-                <span className={"wallet-on"}>Status</span>
-                <em>{formatAddress(account)}</em>
-                <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
-              </div>
-            )}
-          </div>
+    <div>
+      <header className={"main-header"}>
+        <div className={"holder"}>
           <Image
-            src="/menu-icon.svg"
-            alt="menu icon"
-            width={30}
-            height={30}
-            className={"menu-trigger"}
-            onClick={toggleElement}
+            src="/logo.svg"
+            alt="Kyodo Protocol logo"
+            width={120}
+            height={32}
+            className={"logo"}
           />
+          <div className={"header-right"}>
+            {visibleMenu &&
+            <nav>
+              <Image
+                src="/logo-mobile.svg"
+                alt="Kyodo logo"
+                width={100}
+                height={56}
+                className={"logo-mobile"}
+              />
+              <ul>
+                <li>
+                  <a href="/dashboard">{t("dashboard")}</a>
+                </li>
+                <li>
+                  <Link href="/agreements">{t("agreements")}</Link> 
+                </li>
+                <li>
+                  <a onClick={changeLanguage} className={"local-trigger"}>{locale}</a>
+                </li>
+              </ul>
+            </nav>
+            }
+            <div className={"user-wallet"}>
+              {isPublicKey ? (
+                <WalletMultiButton />
+                ) : (
+                <div>
+                  <span className={"wallet-on"}>Status</span>
+                  <em>{formatAddress(account)}</em>
+                  <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
+                </div>
+              )}
+            </div>
+            <Image
+              src="/menu-icon.svg"
+              alt="menu icon"
+              width={30}
+              height={30}
+              className={"menu-trigger"}
+              onClick={toggleElement}
+            />
+          </div>
         </div>
-      </div>
-    </header>
-  )
-}
-
-function MyApp({ Component, pageProps }) {
-  return (
-    <AccountProvider>
-      <Head>
-        <title>App - Kyōdō Protocol</title>
-      </Head>
-      <PageContent Component={Component} pageProps={pageProps} />
+      </header>
+      {visibleFooter &&
       <footer>
         <div className={"holder"}>
           <p>
@@ -137,22 +134,35 @@ function MyApp({ Component, pageProps }) {
           <ul>
             <li>
               <a href="https://www.kyodoprotocol.xyz/code-of-conduct.html" target="_blank">
-                Code of conduct 
+                {t("code-conduct")}
               </a>
             </li>
             <li>
               <a href="https://www.kyodoprotocol.xyz/privacy-policy.html" target="_blank">
-                Privacy policy
+                {t("privacy-policy")}
               </a>
             </li>
             <li>
               <a href="https://www.kyodoprotocol.xyz/terms-of-use.html" target="_blank">
-                Terms of use
+                {t("terms-use")}
               </a>        
             </li>
           </ul>
         </div>
       </footer>
+      }
+    </div>
+  )
+}
+
+function MyApp({ Component, pageProps }) {
+
+  return (
+    <AccountProvider>
+      <Head>
+        <title>App - Kyōdō Protocol</title>
+      </Head>
+      <PageContent Component={Component} pageProps={pageProps} />
     </AccountProvider>
   );
 }

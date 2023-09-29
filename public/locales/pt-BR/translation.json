@@ -1,6 +1,9 @@
 {
   "dashboard": "Painel",
   "agreements": "Acordos",
+  "code-conduct": "Código de conduta",
+  "privacy-policy": "Política de privacidade",
+  "terms-use": "Termos de uso",
   "validation": {
     "required": "{{field}} é obrigatório"
   },
