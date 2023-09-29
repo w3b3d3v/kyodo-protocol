@@ -57,13 +57,15 @@ function Header() {
   return (
     <header className={"main-header"}>
       <div className={"holder"}>
-        <Image
-          src="/logo.svg"
-          alt="Kyodo Protocol logo"
-          width={120}
-          height={32}
-          className={"logo"}
-        />
+        <a href="/dashboard">
+          <Image
+            src="/logo.svg"
+            alt="Kyodo Protocol logo"
+            width={120}
+            height={32}
+            className={"logo"}
+          />
+        </a>
         <div className={"header-right"}>
           {visibleMenu &&
           <nav>
