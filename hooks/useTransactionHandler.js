@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useAccount } from "../contexts/AccountContext"
-import { ethers } from 'ethers';
 import transactionManager from '../chains/transactionManager';
+import { useAgreementContract } from "../contexts/ContractContext"
 
 function useTransactionHandler() {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,13 +11,13 @@ function useTransactionHandler() {
   const [transactionHash, setTransactionHash] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const { account, selectedChain} = useAccount()
+  const { contract } = useAgreementContract()
 
   const sendTransaction = useCallback(async (functionName, details, eventName, onConfirmation) => {
     setIsLoading(true);
     setTransactionFail(false);
     setTransactionPending(false);
     setTransactionSuccess(false);
-    const { contract } = details;
 
     try {
         const TRANSACTION_TIMEOUT = 5000;
@@ -28,7 +28,7 @@ function useTransactionHandler() {
         });
 
         const txResponse = await Promise.race([
-          transactionManager[functionName](selectedChain, details),
+          transactionManager[functionName](selectedChain, contract, details),
           timeoutPromise
         ]);
 
