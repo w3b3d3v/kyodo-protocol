@@ -16,7 +16,6 @@ function AddAgreementForm(props) {
   const [professional, setProfessional] = useState("")
   const [skills, setSkills] = useState("")
   const [paymentAmount, setPaymentAmount] = useState("")
-  const { contract } = useAgreementContract()
   const [formErrors, setFormErrors] = useState({})
   const router = useRouter()
   const { account } = useAccount()
@@ -98,7 +97,7 @@ function AddAgreementForm(props) {
     };
   
     const onConfirmation = (txReceipt) => {
-      console.log("Transaction Confirmed:", txReceipt);
+      console.log("Transaction Confirmed:", txReceipt)
       setTitle("");
       setDescription("");
       setProfessional("");
@@ -109,7 +108,7 @@ function AddAgreementForm(props) {
       }, 3000);
     };
   
-    await sendTransaction("addAgreement", { ...details, contract }, "AgreementCreated", onConfirmation);
+    await sendTransaction("addAgreement", details, "AgreementCreated", onConfirmation)
   };
 
   return (
