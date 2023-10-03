@@ -3,6 +3,15 @@ import { PublicKey } from "@solana/web3.js";
 import * as dotenv from "dotenv";
 import path from "path";
 dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local') });
+import { 
+  TOKEN_PROGRAM_ID, 
+  ASSOCIATED_TOKEN_PROGRAM_ID, 
+  mintTo, 
+  getOrCreateAssociatedTokenAccount, 
+  createMint 
+} from "@solana/spl-token"; // SPL token utilities for token creation, minting, and account association.
+import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet"; // NodeWallet is a class from Anchor that represents a wallet on a Solana node.
+
 
 async function createAgreement() {
   try {
@@ -16,7 +25,7 @@ async function createAgreement() {
 
     // Load the agreement program from the workspace.
     const program = anchor.workspace.AgreementProgram;
-
+    console.log("program", program.programId.toBase58());
     // Fetch the public key of the company from the provider's wallet.
     const companyAddress = provider.wallet.publicKey;
 
@@ -35,29 +44,43 @@ async function createAgreement() {
       program.programId
     );
 
-    // Defining the agreement details.
     const amount = new anchor.BN(1000);
     const agreement = {
-      title: "Agreement de teste 1",
-      description: "This is a test agreement",
+      title: "test1",
+      description: "test1 description",
+      skills: ["JavaScript", "Rust", "Solana"], // You can replace these with actual skills
       payment_amount: amount,
-      professional: professionalAddress.publicKey,
-      company: companyAddress,
-      accepted_payment_token: PublicKey.default, // Replace with the token's public key
+      professional: professionalAddress.publicKey, // Replace with the professional's public key
+      company: companyAddress, // Since company is signing this, we can use its public key
+      token_incentive: {
+        amount: new anchor.BN(500), // Sample amount
+        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
+      },
+      payment: {
+        amount: new anchor.BN(1000), // Sample amount
+        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
+      },
+      // TODO: add fakeMint.publicKey to env
+      // need to be the same as the one used in createFakeToken.ts
+      accepted_payment_token: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the list of accepted token public keys
       total_paid: new anchor.BN(0),
-      status: 0,
+      status: 0
     } as any;
 
     // Initialize the agreement on-chain.
-    const tx = await program.methods.initializeAgreement(agreement, {
-      accounts: {
+    const tx = await program.methods
+      .initializeAgreement(agreement)
+      .accounts({
         agreement: agreementAddress.publicKey,
         company: companyAddress,
-        companyAgreements: companyAgreementsPublicKey,
+        companyAgreements: companyAgreementsPublicKey, // The PDA address, you'll have to compute this based on your program logic
         systemProgram: anchor.web3.SystemProgram.programId,
-      },
-      signers: [agreementAddress],
-    });
+      })
+      .signers([agreementAddress])
+      .rpc();
+
+
+    console.log("tx", tx);
 
     const fetchedAgreement = await program.account.agreementAccount.fetch(
       agreementAddress.publicKey
@@ -76,6 +99,5 @@ async function createAgreement() {
     console.error("Error creating agreement:", error);
   }
 }
-
 // Call the createAgreement function to create a new agreement.
 createAgreement();
