@@ -3,11 +3,11 @@ import { vaultContract } from "./contracts/vaultContract"
 
 async function verify() {
   const HARDHAT_IDS = ["0x7A69", "31337"]
-  const testEnv = process.env.NODE_ENV === "production"
+  const testEnv = process.env.NODE_ENV === "development"
   const chainId = window.ethereum.networkVersion
 
   if (testEnv) {
-    if (HARDHAT_IDS.includes(chainId)) {
+    if (!HARDHAT_IDS.includes(chainId)) {
       await window.ethereum.request({
         method: "wallet_addEthereumChain",
         params: [
