@@ -325,6 +325,11 @@ pub struct CompanyAgreements {
     pub agreements: Vec<Pubkey>,
 }
 
+// #[account]
+// pub struct AcceptedaymentToken {
+//     pub agreements: Vec<Pubkey>,
+// }
+
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
 pub struct Agreement {
     pub title: String,
