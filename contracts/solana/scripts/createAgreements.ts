@@ -3,15 +3,6 @@ import { PublicKey } from "@solana/web3.js";
 import * as dotenv from "dotenv";
 import path from "path";
 dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local') });
-import { 
-  TOKEN_PROGRAM_ID, 
-  ASSOCIATED_TOKEN_PROGRAM_ID, 
-  mintTo, 
-  getOrCreateAssociatedTokenAccount, 
-  createMint 
-} from "@solana/spl-token"; // SPL token utilities for token creation, minting, and account association.
-import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet"; // NodeWallet is a class from Anchor that represents a wallet on a Solana node.
-
 
 async function createAgreement() {
   try {
@@ -62,7 +53,7 @@ async function createAgreement() {
       },
       // TODO: add fakeMint.publicKey to env
       // need to be the same as the one used in createFakeToken.ts
-      accepted_payment_token: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the list of accepted token public keys
+      accepted_payment_tokens: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the list of accepted token public keys
       total_paid: new anchor.BN(0),
       status: 0
     } as any;

@@ -15,7 +15,7 @@ use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer}; // 
 
 
 // Declare the ID for this smart contract program.
-declare_id!("FqaqjUy4n1ysFZi6Jr7XeGDzu5f1gt7a85mVLGjP1cRX");
+declare_id!("FVz7RJ6H6zFUkTx1sGuCDHDmYr96EQHR4g52xTmL8ZPn");
 
 // Begin the program module declaration.
 #[program]
@@ -41,7 +41,7 @@ pub mod agreement_program {
         agreement_account.token_incentive = agreement.token_incentive;
         agreement_account.payment = agreement.payment;
         agreement_account.total_paid = 0;
-        agreement_account.accepted_payment_token = agreement.accepted_payment_token;
+        agreement_account.accepted_payment_tokens = agreement.accepted_payment_tokens;
         agreement_account.status = agreement.status;
 
         // Add the agreement's key to the company's list of agreements.
@@ -51,21 +51,23 @@ pub mod agreement_program {
         Ok(())
     }
 
-    // pub fn add_accepted_payment_token(
-    //     ctx: Context<AddAcceptedPaymentToken>,
-    //     token_address: Pubkey,
-    // ) -> Result<()> {
-    //     let agreement_account = &mut ctx.accounts.agreement;
-    //     // Check if the calling address is the owner
-    //     if ctx.accounts.owner.key() != agreement_account.company {
-    //         return err!(ErrorCode::Unauthorized);
-    //     }
-    //     // Add token to accepted_payment_token
-    //     agreement_account
-    //         .accepted_payment_token
-    //         .push(token_address);
-    //     Ok(())
-    // }
+    pub fn add_accepted_payment_token(
+        ctx: Context<AddAcceptedPaymentToken>,
+        token_address: Pubkey,
+    ) -> Result<()> {
+
+        let agreement_account = &mut ctx.accounts.agreement;
+
+        if ctx.accounts.owner.key() != agreement_account.company{
+            return err!(ErrorCode::Unauthorized);
+        }
+
+        agreement_account
+            .accepted_payment_tokens
+            .push(token_address);
+
+        Ok(())
+    }
 
     // Function to remove a token from being accepted as payment
     // pub fn remove_accepted_payment_token(
@@ -168,7 +170,7 @@ pub mod agreement_program {
         // Extract information from the agreement account.
         let agreement_professional = agreement_account.professional;
         let agreement_company = agreement_account.company;
-        let agreement_payment_token = agreement_account.accepted_payment_token;
+        //let agreement_payment_token = agreement_account.accepted_payment_token;
         let amount_to_pay = agreement_account.payment.amount;
 
         // Check if the provided company is the one from the agreement.
@@ -177,9 +179,9 @@ pub mod agreement_program {
         }
 
         // Check if the given payment token is accepted for the agreement.
-        if agreement_account.accepted_payment_token.key() != agreement_payment_token {
-            return err!(ErrorCode::InvalidPaymentToken);
-        }
+        // if agreement_account.accepted_payment_token.key() != agreement_payment_token {
+        //     return err!(ErrorCode::InvalidPaymentToken);
+        // }
 
         // Check if the amount to be paid is a valid amount.
         if amount_to_pay <= 0 {
@@ -212,14 +214,14 @@ pub mod agreement_program {
 
 #[derive(Accounts)]
 pub struct InitializeAgreement<'info> {
-    #[account(init, payer = company, space = 8 + 1024)]
+    #[account(init, payer = company, space = 8 + 2048)]
     pub agreement: Account<'info, AgreementAccount>,
     #[account(mut)]
     pub company: Signer<'info>,
     #[account(
         init_if_needed,
         payer = company,
-        space = 1024,
+        space = 2048,
         seeds = [b"company_agreements".as_ref(),company.key().as_ref()],
         bump
     )]
@@ -286,7 +288,6 @@ pub struct ProcessPayment<'info> {
     pub from_ata: Account<'info, TokenAccount>,
     #[account(mut)]
     pub to_ata: Account<'info, TokenAccount>,
-    #[account(mut)]
     /// CHECK:` We do not read or write to this account.
     pub professional: AccountInfo<'info>,
     /// CHECK:` We do not read or write to this account.
@@ -310,7 +311,7 @@ pub struct AgreementAccount {
     pub company: Pubkey,
     pub token_incentive: PaymentToken,
     pub payment: PaymentToken,
-    pub accepted_payment_token: Pubkey,
+    pub accepted_payment_tokens: Vec<Pubkey>,
     pub total_paid: u64,
     pub status: u8,
 }
@@ -319,6 +320,11 @@ pub struct AgreementAccount {
 pub struct CompanyAgreements {
     pub agreements: Vec<Pubkey>,
 }
+
+// #[account]
+// pub struct AcceptedaymentToken {
+//     pub agreements: Vec<Pubkey>,
+// }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
 pub struct Agreement {
@@ -329,7 +335,7 @@ pub struct Agreement {
     pub company: Pubkey,
     pub token_incentive: PaymentToken,
     pub payment: PaymentToken,
-    pub accepted_payment_token: Pubkey,
+    pub accepted_payment_tokens: Vec<Pubkey>,
     pub total_paid: u64,
     pub status: u8,
 }

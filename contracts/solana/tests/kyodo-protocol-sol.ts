@@ -15,32 +15,32 @@
 import * as anchor from "@coral-xyz/anchor"; // The anchor module provides various tools to develop and test Solana programs.
 import { BN } from "@coral-xyz/anchor"; // Importing the BN (Big Number) library from anchor for handling large integers.
 import { AgreementProgram } from "../target/types/agreement_program"; // Custom data type definitions for the agreement program.
-import { 
-  TOKEN_PROGRAM_ID, 
-  ASSOCIATED_TOKEN_PROGRAM_ID, 
-  mintTo, 
-  getOrCreateAssociatedTokenAccount, 
-  createMint 
+import {
+  TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  mintTo,
+  getOrCreateAssociatedTokenAccount,
+  createMint
 } from "@solana/spl-token"; // SPL token utilities for token creation, minting, and account association.
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet"; // NodeWallet is a class from Anchor that represents a wallet on a Solana node.
 
 
 // Main test suite for the agreement program functionalities.
 describe("agreement_program", () => {
-  
+
   // Setting up the client configuration to connect to a local Solana cluster.
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 
   // Loading the agreement program from the workspace.
   const program = anchor.workspace.AgreementProgram;
-  
+
   // Fetching the public key of the company from the provider's wallet.
   const companyAddress = provider.wallet.publicKey;
-  
+
   // Generating a new keypair for the professional's address.
   const professionalAddress = anchor.web3.Keypair.generate();
-  
+
   // Requesting an airdrop (test SOL tokens) to the professional's account.
   provider.connection.requestAirdrop(professionalAddress.publicKey, 100000000)
     .then(() => console.log("Airdropped to Professional"));
@@ -81,7 +81,7 @@ describe("agreement_program", () => {
 
     // Fetching the payer's account which will fund the transactions.
     const payer = (provider.wallet as NodeWallet).payer;
-    
+
     // Create or fetch the associated token account for the company using the fake mint.
     associatedTokenAddressCompany = await getOrCreateAssociatedTokenAccount(
       provider.connection,               // Current provider's connection.
@@ -143,7 +143,7 @@ describe("agreement_program", () => {
   it("Initialize first Agreement", async () => {
     // Converting the string "company_agreements" to a buffer to be used for PDA calculations.
     const stringBuffer = Buffer.from("company_agreements", "utf-8");
-    
+
     // Generating a new keypair for the agreement's address.
     const agreementAddress = anchor.web3.Keypair.generate();
 
@@ -162,26 +162,24 @@ describe("agreement_program", () => {
 
     // Defining the amount to be used in the agreement.
     // Its not working in nested stuctures like agreement bellow
-    const amount = new anchor.BN(1000);
-
     // Constructing the agreement data for the second agreement.
     const agreement = {
       title: "test1",
       description: "test1 description",
       skills: ["JavaScript", "Rust", "Solana"], // You can replace these with actual skills
-      payment_amount: amount,
+      paymentAmount: new anchor.BN(1000),
       professional: professionalAddress.publicKey, // Replace with the professional's public key
       company: companyAddress, // Since company is signing this, we can use its public key
-      token_incentive: {
+      tokenIncentive: {
         amount: new anchor.BN(500), // Sample amount
-        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
+        tokenAddress: fakeMint.publicKey, // Replace with the token's public key
       },
       payment: {
         amount: new anchor.BN(1000), // Sample amount
-        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
+        token_address: fakeMint.publicKey, // Replace with the token's public key
       },
-      accepted_payment_token: fakeMint.publicKey, // Replace with the list of accepted token public keys
-      total_paid: new anchor.BN(0),
+      acceptedPaymentTokens: [], // Replace with the list of accepted token public keys
+      totalPaid: new anchor.BN(0),
       status: 0
     } as any;
 
@@ -208,12 +206,24 @@ describe("agreement_program", () => {
     console.log("Your transaction signature:", tx);
   });
 
+  // Test case for initializing the first agreement.
+  it("Add payment token", async () => {
+ 
+    const tx = await program.methods.addAcceptedPaymentToken(fakeMint.publicKey)
+      .accounts({
+        agreement: toPayAgreementAddress.publicKey,
+        owner: companyAddress,
+      }).rpc();
+
+    console.log("Your transaction signature:", tx);
+  });
+
   // Test case for initializing a second agreement.
   it("Initialize second Agreement", async () => {
-  
+
     // Converting the string "company_agreements" to a buffer to be used for PDA calculations.
     const stringBuffer = Buffer.from("company_agreements", "utf-8");
-    
+
     // Generating a new keypair for the agreement's address.
     const agreementAddress = anchor.web3.Keypair.generate();
 
@@ -226,27 +236,24 @@ describe("agreement_program", () => {
       program.programId
     );
 
-    // Defining the amount to be used in the agreement.
-    const amount = new anchor.BN(1000);
-
     // Constructing the agreement data for the second agreement.
     const agreement = {
       title: "test2",
       description: "test2 description",
       skills: ["TypeScript", "C++", "DodgeChain"], // Array of skills related to the agreement.
-      payment_amount: amount,
+      paymentAmount: new anchor.BN(1000),
       professional: professionalAddress.publicKey,
       company: companyAddress,
-      token_incentive: {
+      tokenIncentive: {
         amount: new anchor.BN(500),
-        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq",
+        tokenAddress: fakeMint.publicKey,
       },
       payment: {
         amount: new anchor.BN(1000),
-        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq",
+        tokenAddress: fakeMint.publicKey,
       },
-      accepted_payment_token: professionalAddress.publicKey,
-      total_paid: new anchor.BN(0),
+      acceptedPaymentTokens: [], // Replace with the list of accepted token public keys
+      totalPaid: new anchor.BN(0),
       status: 0
     } as any;
 
@@ -279,7 +286,7 @@ describe("agreement_program", () => {
 
   // Test case for processing a payment related to an agreement.
   it("Process Payment", async () => {
-  
+
     // Processing the payment for the agreement.
     const tx = await program.methods.processPayment()
       .accounts({
