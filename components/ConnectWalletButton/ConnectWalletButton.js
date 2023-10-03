@@ -7,8 +7,8 @@ import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import contractManager from "../../chains/ContractManager"
 require("@solana/wallet-adapter-react-ui/styles.css")
 
-async function vefifyChain() {
-  contractManager.verify("ethereum")
+async function verifyChain(chain) {
+  contractManager.verify(chain)
 }
 
 function ConnectWalletButton(props) {
@@ -17,10 +17,15 @@ function ConnectWalletButton(props) {
   const { publicKey, connected} = useWallet();
 
   useEffect(() => {
-    if (connected) {
-      props.value.setAccount(publicKey);
-      localStorage.setItem('selectedChain', "solana");
+    async function checkSolana() {
+      if (connected) {
+        props.value.setAccount(publicKey);
+        localStorage.setItem('selectedChain', "solana");
+        await verifyChain("solana");
+      }
     }
+
+    checkSolana();
   }, [publicKey]);
 
   async function connectEthereumWallet() {
@@ -30,7 +35,8 @@ function ConnectWalletButton(props) {
         await window.ethereum.request({ method: "eth_requestAccounts" });
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const accounts = await provider.listAccounts();
-        await vefifyChain()
+        await verifyChain("ethereum")
+        
         props.value.setAccount(accounts[0]);
         props.value.setSelectedChain("ethereum");
         localStorage.setItem('selectedChain', "ethereum");
@@ -88,4 +94,4 @@ function ConnectWalletButton(props) {
   )
 }
 
-export {ConnectWalletButton, vefifyChain};
+export {ConnectWalletButton, verifyChain};

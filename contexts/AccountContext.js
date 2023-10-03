@@ -1,6 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { vefifyChain } from "../components/ConnectWalletButton/ConnectWalletButton";
-
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
@@ -41,7 +39,6 @@ export function AccountProvider({ children }) {
       try {
         const accounts = await window.ethereum.request({ method: "eth_accounts" })
         if (accounts.length > 0 && accounts[0] !== account) {
-          await vefifyChain()
           setAccount(accounts[0])
         }
       } catch (error) {
