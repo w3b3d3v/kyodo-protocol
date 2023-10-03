@@ -41,8 +41,8 @@ pub mod agreement_program {
         agreement_account.token_incentive = agreement.token_incentive;
         agreement_account.payment = agreement.payment;
         agreement_account.total_paid = 0;
-        agreement_account.accepted_payment_tokens = agreement.accepted_payment_tokens;
-        agreement_account.status = agreement.status;
+        agreement_account.accepted_payment_tokens = Vec::new();
+        agreement_account.status = 0;
 
         // Add the agreement's key to the company's list of agreements.
         company_agreements.agreements.push(agreement_account.key());
@@ -58,7 +58,8 @@ pub mod agreement_program {
 
         let agreement_account = &mut ctx.accounts.agreement;
 
-        if ctx.accounts.owner.key() != agreement_account.company{
+        if ctx.accounts.owner.key() != agreement_account.company &&
+            ctx.accounts.owner.key() != agreement_account.professional {
             return err!(ErrorCode::Unauthorized);
         }
 
@@ -178,10 +179,10 @@ pub mod agreement_program {
             return err!(ErrorCode::Unauthorized);
         }
 
-        // Check if the given payment token is accepted for the agreement.
-        // if agreement_account.accepted_payment_token.key() != agreement_payment_token {
-        //     return err!(ErrorCode::InvalidPaymentToken);
-        // }
+        //Check if the given payment token is accepted for the agreement.
+        if agreement_account.accepted_payment_tokens.iter().find(|&&x| x == payment_token.key()).is_none() {
+            return err!(ErrorCode::InvalidPaymentToken);
+        }
 
         // Check if the amount to be paid is a valid amount.
         if amount_to_pay <= 0 {
@@ -321,10 +322,10 @@ pub struct CompanyAgreements {
     pub agreements: Vec<Pubkey>,
 }
 
-// #[account]
-// pub struct AcceptedaymentToken {
-//     pub agreements: Vec<Pubkey>,
-// }
+#[account]
+pub struct AcceptedaymentToken {
+    pub AcceptedaymentToken: Vec<Pubkey>,
+}
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
 pub struct Agreement {

@@ -216,6 +216,7 @@ describe("agreement_program", () => {
       }).rpc();
 
     console.log("Your transaction signature:", tx);
+    
   });
 
   // Test case for initializing a second agreement.
