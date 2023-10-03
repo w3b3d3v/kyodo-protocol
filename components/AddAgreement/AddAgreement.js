@@ -18,7 +18,7 @@ function AddAgreementForm(props) {
   const [paymentAmount, setPaymentAmount] = useState("")
   const [formErrors, setFormErrors] = useState({})
   const router = useRouter()
-  const { account } = useAccount()
+  const { account, selectedChain } = useAccount()
   const { t } = useTranslation()
   const {
     isLoading,
@@ -30,17 +30,31 @@ function AddAgreementForm(props) {
     transactionHash,
   } = useTransactionHandler();
 
+  console.log("account", account);
+
+  const addressValidators = {
+    ethereum: /^0x[a-fA-F0-9]{40}$/,
+    solana: /^[1-9A-HJ-NP-Za-km-z]{44}$/,
+  };
+
   const AgreementSchema = Yup.object().shape({
     title: Yup.string().required(),
     description: Yup.string().required("Description is required"),
     professional: Yup.string()
       .required("Professional is required")
-      .matches(/^0x[a-fA-F0-9]{40}$/, "Professional must be a valid Ethereum address")
+      .test(
+        'valid-chain-address',
+        `Professional must be a valid ${selectedChain} address`,
+        function(value) {
+          const validator = addressValidators[selectedChain];
+          return validator && validator.test(value);
+        }
+      )
       .test(
         "is-not-company",
         "Professional address cannot be the same as the agreement owner or company",
-        function (value) {
-          return value.toLowerCase() !== account.toLowerCase()
+        function(value) {
+          return value.toLowerCase() !== account.toLowerCase();
         }
       ),
     skills: Yup.string()
@@ -60,7 +74,7 @@ function AddAgreementForm(props) {
 
   async function handleSubmit(event) {
     event.preventDefault()
-
+    console.log("Form submitted");
     try {
       await AgreementSchema.validate(
         {
@@ -77,6 +91,7 @@ function AddAgreementForm(props) {
       setFormErrors({})
       await addAgreement()
     } catch (errors) {
+      console.log(errors);
       if (errors instanceof Yup.ValidationError) {
         const errorMessages = {}
         errors.inner.forEach((error) => {
