@@ -36,15 +36,19 @@ async function readAgreements() {
 
     console.log("fetchedCompanyAgreements", fetchedCompanyAgreements)
 
-    // // Processa e exibe os acordos associados à empresa.
-    // for (const agreement of fetchedCompanyAgreements.agreements) {
-    //   console.log("Título do Acordo:", agreement.title);
-    //   console.log("Descrição do Acordo:", agreement.description);
-    //   console.log("Profissional:", agreement.professional.toBase58());
-    //   console.log("Empresa:", agreement.company.toBase58());
-    //   console.log("Status:", agreement.status);
-    //   console.log("------");
-    // }
+    // Processa e exibe os acordos associados à empresa.
+    for (const agreement of fetchedCompanyAgreements.agreements) {
+      const fetchedAgreement = await program.account.agreementAccount.fetch(
+        agreement
+      );
+      console.log("Título do Acordo:", fetchedAgreement.title);
+      console.log("Descrição do Acordo:", fetchedAgreement.description);
+      console.log("Profissional:", fetchedAgreement.professional);
+      console.log("Empresa:", fetchedAgreement.company);
+      console.log("Status:", fetchedAgreement.status);
+      console.log("------");
+    }
+    
   } catch (error) {
     console.error("Erro ao ler os acordos:", error);
   }
