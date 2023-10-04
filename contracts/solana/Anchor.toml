@@ -1,14 +1,14 @@
 [features]
 seeds = false
 skip-lint = false
-[programs.denvet]
+[programs.localnet]
 agreement_program = "FVz7RJ6H6zFUkTx1sGuCDHDmYr96EQHR4g52xTmL8ZPn"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "Localnet"
 wallet = "/Users/brunobarros/.config/solana/id.json"
 
 [scripts]
