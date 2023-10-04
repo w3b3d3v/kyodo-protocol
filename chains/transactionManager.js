@@ -1,10 +1,14 @@
 // src/chains/transactionManager.js
-import addAgreement from "./ethereum/transactions";
+// import addAgreement from "./ethereum/transactions";
+import addAgreement from "./solana/transactions";
 
 class TransactionManager {
   constructor() {
     this.chains = {
       ethereum: {
+        addAgreement
+      },
+      solana: {
         addAgreement
       },
     };
