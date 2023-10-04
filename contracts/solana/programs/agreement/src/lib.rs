@@ -32,14 +32,16 @@ pub mod agreement_program {
         let agreement_account = &mut ctx.accounts.agreement;
         let company_agreements = &mut ctx.accounts.company_agreements;
 
+        let pay = PaymentToken::default();
+
         // Populate the agreement account with the data from the given agreement.
         agreement_account.title = agreement.title;
         agreement_account.description = agreement.description;
         agreement_account.skills = agreement.skills;
         agreement_account.professional = agreement.professional;
         agreement_account.company = ctx.accounts.company.key();
-        agreement_account.token_incentive = agreement.token_incentive;
-        agreement_account.payment = agreement.payment;
+        agreement_account.token_incentive = pay.clone();
+        agreement_account.payment = pay.clone();
         agreement_account.total_paid = 0;
         agreement_account.accepted_payment_tokens = Vec::new();
         agreement_account.status = 0;
@@ -68,6 +70,7 @@ pub mod agreement_program {
             .push(token_address);
 
         Ok(())
+        
     }
 
     // Function to remove a token from being accepted as payment
@@ -322,11 +325,6 @@ pub struct CompanyAgreements {
     pub agreements: Vec<Pubkey>,
 }
 
-#[account]
-pub struct AcceptedaymentToken {
-    pub AcceptedaymentToken: Vec<Pubkey>,
-}
-
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
 pub struct Agreement {
     pub title: String,
@@ -334,11 +332,6 @@ pub struct Agreement {
     pub skills: Vec<String>,
     pub professional: Pubkey,
     pub company: Pubkey,
-    pub token_incentive: PaymentToken,
-    pub payment: PaymentToken,
-    pub accepted_payment_tokens: Vec<Pubkey>,
-    pub total_paid: u64,
-    pub status: u8,
 }
 
 #[error_code]
