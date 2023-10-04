@@ -1,5 +1,5 @@
 import * as anchor from "@coral-xyz/anchor";
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
 import idl from "./agreement_program.json";
 import {Connection } from "@solana/web3.js";
 
@@ -54,19 +54,32 @@ export const addAgreement = async (c, details) => {
 
   try {
     const agreementAddress = anchor.web3.Keypair.generate();
-    const tx = await contract.rpc
-      .initializeAgreement(agreementData, {
-        accounts: {
+
+    let latestBlockhash = await provider.connection.getLatestBlockhash(
+      "confirmed"
+    );
+
+    const instruction = await contract.methods
+      .initializeAgreement(agreementData).accounts({
           agreement: agreementAddress.publicKey,
           company: companyAccount,
           companyAgreements: companyAgreementsPublicKey, 
           systemProgram: anchor.web3.SystemProgram.programId,
-        },
-        signers: [agreementAddress]
-      })
-    
-    await connection.confirmTransaction(tx);
-    console.log("tx", tx);
+        }).instruction();
+
+
+    const messageV0 = new anchor.web3.TransactionMessage({     
+      payerKey: companyAccount,
+      recentBlockhash: latestBlockhash.blockhash,
+      instructions: [instruction],
+    }).compileToV0Message();
+
+    const transaction = new anchor.web3.VersionedTransaction(messageV0);
+
+    const confirmation = await window.solana.signAndSendTransaction(transaction);
+
+    console.log("tx", confirmation);
+
   } catch (error) {
     console.error("Error initializing agreement:", error);
   } finally {
