@@ -167,20 +167,8 @@ describe("agreement_program", () => {
       title: "test1",
       description: "test1 description",
       skills: ["JavaScript", "Rust", "Solana"], // You can replace these with actual skills
-      paymentAmount: new anchor.BN(1000),
       professional: professionalAddress.publicKey, // Replace with the professional's public key
-      company: companyAddress, // Since company is signing this, we can use its public key
-      tokenIncentive: {
-        amount: new anchor.BN(500), // Sample amount
-        tokenAddress: fakeMint.publicKey, // Replace with the token's public key
-      },
-      payment: {
-        amount: new anchor.BN(1000), // Sample amount
-        token_address: fakeMint.publicKey, // Replace with the token's public key
-      },
-      acceptedPaymentTokens: [], // Replace with the list of accepted token public keys
-      totalPaid: new anchor.BN(0),
-      status: 0
+      company: companyAddress, // Since company is signing this, we can use its public key,
     } as any;
 
     const tx = await program.methods
@@ -216,7 +204,7 @@ describe("agreement_program", () => {
       }).rpc();
 
     console.log("Your transaction signature:", tx);
-    
+
   });
 
   // Test case for initializing a second agreement.
