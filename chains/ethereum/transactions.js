@@ -1,4 +1,3 @@
-// src/chains/ethereum/transactions.js
 import { ethers } from "ethers"
 
 export const addAgreement = async (contract, details) => {

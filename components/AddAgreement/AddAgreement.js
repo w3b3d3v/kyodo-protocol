@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router'
-import { useAgreementContract } from "../../contexts/ContractContext"
 import { useAccount } from "../../contexts/AccountContext"
 import { useState } from "react"
 import styles from "./AddAgreement.module.scss"
@@ -9,6 +8,7 @@ import Toast from '../utils/Toast';
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import { useTranslation } from "react-i18next"
 import * as Yup from "yup"
+import { useWallet } from '@solana/wallet-adapter-react';
 
 function AddAgreementForm(props) {
   const [title, setTitle] = useState("")
@@ -19,6 +19,7 @@ function AddAgreementForm(props) {
   const [formErrors, setFormErrors] = useState({})
   const router = useRouter()
   const { account, selectedChain } = useAccount()
+  const { publicKey } = useWallet();
   const { t } = useTranslation()
   const {
     isLoading,
@@ -29,8 +30,6 @@ function AddAgreementForm(props) {
     sendTransaction,
     transactionHash,
   } = useTransactionHandler();
-
-  console.log("account", account);
 
   const addressValidators = {
     ethereum: /^0x[a-fA-F0-9]{40}$/,
@@ -109,6 +108,8 @@ function AddAgreementForm(props) {
       professional,
       skills: skills.split(","),
       paymentAmount,
+      account,
+      publicKey
     };
   
     const onConfirmation = (txReceipt) => {
