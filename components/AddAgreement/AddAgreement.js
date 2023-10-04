@@ -19,7 +19,7 @@ function AddAgreementForm(props) {
   const [formErrors, setFormErrors] = useState({})
   const router = useRouter()
   const { account, selectedChain } = useAccount()
-  const { publicKey } = useWallet();
+  const { publicKey, wallet } = useWallet();
   const { t } = useTranslation()
   const {
     isLoading,
@@ -109,7 +109,8 @@ function AddAgreementForm(props) {
       skills: skills.split(","),
       paymentAmount,
       account,
-      publicKey
+      publicKey,
+      wallet
     };
   
     const onConfirmation = (txReceipt) => {
