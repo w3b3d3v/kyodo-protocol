@@ -169,6 +169,7 @@ describe("agreement_program", () => {
       skills: ["JavaScript", "Rust", "Solana"], // You can replace these with actual skills
       professional: professionalAddress.publicKey, // Replace with the professional's public key
       company: companyAddress, // Since company is signing this, we can use its public key,
+      paymentAmount: new anchor.BN(1000),
     } as any;
 
     const tx = await program.methods
@@ -191,18 +192,6 @@ describe("agreement_program", () => {
 
     console.log("Your agreement account:", fetchedAgreement);
     console.log("Your company agreements:", fetchedCompanyAgreements);
-    console.log("Your transaction signature:", tx);
-  });
-
-  // Test case for initializing the first agreement.
-  it("Add payment token", async () => {
- 
-    const tx = await program.methods.addAcceptedPaymentToken(fakeMint.publicKey)
-      .accounts({
-        agreement: toPayAgreementAddress.publicKey,
-        owner: companyAddress,
-      }).rpc();
-
     console.log("Your transaction signature:", tx);
   });
 
@@ -229,20 +218,9 @@ describe("agreement_program", () => {
       title: "test2",
       description: "test2 description",
       skills: ["TypeScript", "C++", "DodgeChain"], // Array of skills related to the agreement.
-      paymentAmount: new anchor.BN(1000),
       professional: professionalAddress.publicKey,
       company: companyAddress,
-      tokenIncentive: {
-        amount: new anchor.BN(500),
-        tokenAddress: fakeMint.publicKey,
-      },
-      payment: {
-        amount: new anchor.BN(1000),
-        tokenAddress: fakeMint.publicKey,
-      },
-      acceptedPaymentTokens: [], // Replace with the list of accepted token public keys
-      totalPaid: new anchor.BN(0),
-      status: 0
+      paymentAmount: new anchor.BN(1000),
     } as any;
 
     // Initializing the agreement on-chain.
@@ -272,6 +250,18 @@ describe("agreement_program", () => {
     console.log("Your transaction signature:", tx);
   });
 
+  // Test case for initializing the first agreement.
+  it("Add payment token to first agreement", async () => {
+
+    const tx = await program.methods.addAcceptedPaymentToken(fakeMint.publicKey)
+      .accounts({
+        agreement: toPayAgreementAddress.publicKey,
+        owner: companyAddress,
+      }).rpc();
+
+    console.log("Your transaction signature:", tx);
+  });
+  
   // Test case for processing a payment related to an agreement.
   it("Process Payment", async () => {
 

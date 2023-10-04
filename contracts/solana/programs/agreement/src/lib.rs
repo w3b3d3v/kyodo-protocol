@@ -39,9 +39,9 @@ pub mod agreement_program {
         agreement_account.description = agreement.description;
         agreement_account.skills = agreement.skills;
         agreement_account.professional = agreement.professional;
+        agreement_account.payment_amount = agreement.payment_amount;
         agreement_account.company = ctx.accounts.company.key();
         agreement_account.token_incentive = pay.clone();
-        agreement_account.payment = pay.clone();
         agreement_account.total_paid = 0;
         agreement_account.accepted_payment_tokens = Vec::new();
         agreement_account.status = 0;
@@ -175,7 +175,7 @@ pub mod agreement_program {
         let agreement_professional = agreement_account.professional;
         let agreement_company = agreement_account.company;
         //let agreement_payment_token = agreement_account.accepted_payment_token;
-        let amount_to_pay = agreement_account.payment.amount;
+        let amount_to_pay = agreement_account.payment_amount;
 
         // Check if the provided company is the one from the agreement.
         if payment_from.key() != agreement_company {
@@ -314,7 +314,6 @@ pub struct AgreementAccount {
     pub professional: Pubkey,
     pub company: Pubkey,
     pub token_incentive: PaymentToken,
-    pub payment: PaymentToken,
     pub accepted_payment_tokens: Vec<Pubkey>,
     pub total_paid: u64,
     pub status: u8,
@@ -325,11 +324,6 @@ pub struct CompanyAgreements {
     pub agreements: Vec<Pubkey>,
 }
 
-// #[account]
-// pub struct AcceptedaymentToken {
-//     pub agreements: Vec<Pubkey>,
-// }
-
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
 pub struct Agreement {
     pub title: String,
@@ -337,6 +331,7 @@ pub struct Agreement {
     pub skills: Vec<String>,
     pub professional: Pubkey,
     pub company: Pubkey,
+    pub payment_amount: u64,
 }
 
 #[error_code]
