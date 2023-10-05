@@ -9,6 +9,7 @@ import useTransactionHandler from '../../hooks/useTransactionHandler';
 import { useTranslation } from "react-i18next"
 import * as Yup from "yup"
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useAgreementContract } from "../../contexts/ContractContext"
 
 function AddAgreementForm(props) {
   const [title, setTitle] = useState("")
@@ -20,6 +21,7 @@ function AddAgreementForm(props) {
   const router = useRouter()
   const { account, selectedChain } = useAccount()
   const { publicKey, wallet } = useWallet();
+  const { contract } = useAgreementContract();
   const { t } = useTranslation()
   const {
     isLoading,
@@ -35,7 +37,7 @@ function AddAgreementForm(props) {
     ethereum: /^0x[a-fA-F0-9]{40}$/,
     solana: /^[1-9A-HJ-NP-Za-km-z]{44}$/,
   };
-
+  
   const AgreementSchema = Yup.object().shape({
     title: Yup.string().required(),
     description: Yup.string().required("Description is required"),
@@ -73,7 +75,7 @@ function AddAgreementForm(props) {
 
   async function handleSubmit(event) {
     event.preventDefault()
-    console.log("Form submitted");
+
     try {
       await AgreementSchema.validate(
         {
@@ -109,6 +111,7 @@ function AddAgreementForm(props) {
       skills: skills.split(","),
       paymentAmount,
       account,
+      contract,
       publicKey,
       wallet
     };

@@ -7,25 +7,17 @@ const opts ={
   preflightCommitment: "processed"
 }
 
-const getProvider =() => {
-  console.log("window.solana", window.solana)
-  const connection = new Connection("http://127.0.0.1:8899", opts.preflightCommitment);
+export function agreementContract(wallet) {
+  // const connection = new Connection("http://127.0.0.1:8899", opts.preflightCommitment);
   const provider = new anchor.AnchorProvider(
-    connection,
-    window.solana,
+    new Connection("https://api.devnet.solana.com"),
+    wallet.adapter,
     anchor.AnchorProvider.defaultOptions()
-  );
+  )
   anchor.setProvider(provider);
-  return provider;
-}
-
-export function agreementContract() {
-  if (!window.solana.isConnected) {
-    window.solana.connect();
-  }
-
-  const provider = getProvider();
+  
   const programAddress = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_AGREEMENT_CONTRACT_ADDRESS);
   const contract = new anchor.Program(idl, programAddress, provider);
+  console.log("Contrato instanciado", contract)
   return contract;
 }
