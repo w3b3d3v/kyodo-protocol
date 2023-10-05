@@ -1,7 +1,7 @@
 import addAgreement from "./transactions/addAgreement";
 
-async function handleTransactionPromise() {
-
+async function handleTransactionPromise(txResponse) {
+    console.log("txResponse: ", txResponse)
 }
 
 const transactions = { handleTransactionPromise, addAgreement}

@@ -1,15 +1,23 @@
 import { ethers } from "ethers"
 
 export const addAgreement = async (details) => {
-  const paymentAmountInWei = ethers.utils.parseUnits(details.paymentAmount.toString(), 18);
+  try {
+    const paymentAmountInWei = ethers.utils.parseUnits(details.paymentAmount.toString(), 18);
 
-  return details.contract.createAgreement(
-    details.title,
-    details.description,
-    details.professional,
-    details.skills,
-    paymentAmountInWei
-  );
+    const tx = await details.contract.createAgreement(
+      details.title,
+      details.description,
+      details.professional,
+      details.skills,
+      paymentAmountInWei
+    );
+
+    const receipt = await tx.wait();
+    return receipt;
+  } catch (error) {
+      console.error("Error in addAgreement:", error);
+      throw error;
+  }
 };
   
 export default addAgreement;

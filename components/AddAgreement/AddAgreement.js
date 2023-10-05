@@ -25,6 +25,7 @@ function AddAgreementForm(props) {
   const { t } = useTranslation()
   const {
     isLoading,
+    setIsLoading,
     transactionSuccess,
     transactionPending,
     transactionFail,
@@ -116,14 +117,14 @@ function AddAgreementForm(props) {
       wallet
     };
   
-    const onConfirmation = (txReceipt) => {
-      console.log("Transaction Confirmed:", txReceipt)
+    const onConfirmation = () => {
       setTitle("");
       setDescription("");
       setProfessional("");
       setSkills("");
       setPaymentAmount("");
       setTimeout(() => {
+        setIsLoading(false)
         router.push("/agreements");
       }, 3000);
     };
