@@ -1,15 +1,8 @@
-import { ethers } from "ethers"
+import addAgreement from "./transactions/addAgreement";
 
-export const addAgreement = async (details) => {
-  const paymentAmountInWei = ethers.utils.parseUnits(details.paymentAmount.toString(), 18);
+async function handleTransactionPromise() {
 
-  return details.contract.createAgreement(
-    details.title,
-    details.description,
-    details.professional,
-    details.skills,
-    paymentAmountInWei
-  );
-};
-  
-export default addAgreement;
+}
+
+const transactions = { handleTransactionPromise, addAgreement}
+export default transactions
