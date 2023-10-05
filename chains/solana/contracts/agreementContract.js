@@ -18,6 +18,5 @@ export function agreementContract(wallet) {
   
   const programAddress = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_AGREEMENT_CONTRACT_ADDRESS);
   const contract = new anchor.Program(idl, programAddress, provider);
-  console.log("Contrato instanciado", contract)
   return contract;
 }
