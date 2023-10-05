@@ -1,4 +1,4 @@
-import { agreementContract } from "./agreementContract"
+import { agreementContract } from "./contracts/agreementContract"
 // import { vaultContract } from "./contracts/vaultContract"
 
 async function verify() {

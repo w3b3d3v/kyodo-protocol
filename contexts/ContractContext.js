@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import contractManager from '../chains/ContractManager';
 import { useAccount} from "../contexts/AccountContext";
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const AgreementContractContext = createContext(null);
 
@@ -12,10 +13,11 @@ export function AgreementContractProvider({ children }) {
   const { selectedChain } = useAccount()
   const [contract, setContract] = useState(null)
   const [loading, setLoading] = useState(true)
+  const { wallet } = useWallet()
 
   useEffect(() => {
     async function initializeContract() {
-      const agreementContract = contractManager.chains[selectedChain].agreementContract()
+      const agreementContract = contractManager.chains[selectedChain].agreementContract(wallet)
       setContract(agreementContract)
       setLoading(false)
     }

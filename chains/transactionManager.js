@@ -1,26 +1,21 @@
 // src/chains/transactionManager.js
-// import addAgreement from "./ethereum/transactions";
-import addAgreement from "./solana/transactions";
+import { addAgreement as ethAddAgreement } from "./ethereum/transactions";
+import { addAgreement as solAddAgreement } from "./solana/transactions";
 
 class TransactionManager {
   constructor() {
     this.chains = {
       ethereum: {
-        addAgreement
+        addAgreement: ethAddAgreement
       },
       solana: {
-        addAgreement
+        addAgreement: solAddAgreement
       },
-    };
+    };    
   }
 
   async addAgreement(chain, ...args) {
-    if (this.chains[chain] && typeof this.chains[chain].addAgreement === 'function') {
-      return this.chains[chain].addAgreement(...args);
-    } else {
-      console.error("Unsupported blockchain or method:", chain);
-      throw new Error(`Unsupported blockchain or method: ${chain}`);
-    }
+    this.chains[chain].addAgreement(...args);
   }
 }
 

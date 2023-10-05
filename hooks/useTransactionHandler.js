@@ -1,17 +1,15 @@
 import { useState, useCallback } from 'react';
 import { useAccount } from "../contexts/AccountContext"
 import transactionManager from '../chains/transactionManager';
-import { useAgreementContract } from "../contexts/ContractContext"
 
 function useTransactionHandler() {
   const [isLoading, setIsLoading] = useState(false);
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [transactionPending, setTransactionPending] = useState(false);
   const [transactionFail, setTransactionFail] = useState(false);
-  const [transactionHash, setTransactionHash] = useState(false);
+  const [transactionHash, setTransactionHash] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const { account, selectedChain} = useAccount()
-  const { contract } = useAgreementContract()
 
   const sendTransaction = useCallback(async (functionName, details, eventName, onConfirmation) => {
     setIsLoading(true);
@@ -28,7 +26,7 @@ function useTransactionHandler() {
         });
 
         const txResponse = await Promise.race([
-          transactionManager[functionName](selectedChain, contract, details),
+          transactionManager[functionName](selectedChain, details),
           timeoutPromise
         ]);
 
@@ -40,9 +38,9 @@ function useTransactionHandler() {
                     reject(new Error(`Timeout waiting for ${eventName} event`));
                 }, EVENT_TIMEOUT);
 
-                const filter = contract.filters[eventName](account);
+                const filter = details.contract.filters[eventName](account);
 
-                contract.on(filter, (...args) => {
+                details.contract.on(filter, (...args) => {
                     clearTimeout(timeout);
                     resolve(args);
                 });
