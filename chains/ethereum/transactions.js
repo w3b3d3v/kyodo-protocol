@@ -1,9 +1,9 @@
 import { ethers } from "ethers"
 
-export const addAgreement = async (contract, details) => {
+export const addAgreement = async (details) => {
   const paymentAmountInWei = ethers.utils.parseUnits(details.paymentAmount.toString(), 18);
 
-  return contract.createAgreement(
+  return details.contract.createAgreement(
     details.title,
     details.description,
     details.professional,
