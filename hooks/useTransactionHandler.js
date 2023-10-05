@@ -1,11 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react'
 import { useAccount } from "../contexts/AccountContext"
-import transactionManager from '../chains/transactionManager';
+import transactionManager from '../chains/transactionManager'
 
 function useTransactionHandler() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [transactionSuccess, setTransactionSuccess] = useState(false);
-  const [transactionPending, setTransactionPending] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [transactionSuccess, setTransactionSuccess] = useState(false)
+  const [transactionPending, setTransactionPending] = useState(false)
   const [transactionFail, setTransactionFail] = useState(false);
   const [transactionHash, setTransactionHash] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -18,8 +18,7 @@ function useTransactionHandler() {
     setTransactionSuccess(false);
 
     try {
-        const TRANSACTION_TIMEOUT = 5000;
-        const EVENT_TIMEOUT = 10000;
+        const TRANSACTION_TIMEOUT = 10000;
         
         const timeoutPromise = new Promise((_, reject) => {
             setTimeout(() => reject(new Error('Transaction timed out')), TRANSACTION_TIMEOUT);
@@ -30,58 +29,47 @@ function useTransactionHandler() {
           timeoutPromise
         ]);
 
-        if (txResponse && txResponse.hash) {
-            setTransactionHash(txResponse.hash);
-
-            const eventReceived = new Promise((resolve, reject) => {
-                const timeout = setTimeout(() => {
-                    reject(new Error(`Timeout waiting for ${eventName} event`));
-                }, EVENT_TIMEOUT);
-
-                const filter = details.contract.filters[eventName](account);
-
-                details.contract.on(filter, (...args) => {
-                    clearTimeout(timeout);
-                    resolve(args);
-                });
-            });
-
-            const eventArgs = await eventReceived;
-            setTransactionSuccess(true);
-            setTransactionPending(false);
-
-            if (onConfirmation) onConfirmation(eventArgs);
-        } else {
-            throw new Error("Transaction hash is not available");
+        const response = await transactionManager.handleTransactionPromise
+        (
+          selectedChain,
+          details.contract,
+          txResponse,
+          eventName,
+          account,
+          setTransactionHash
+        )
+        
+        if (response){
+          setTransactionSuccess(true);
+          setTransactionPending(false);
+          onConfirmation();
         }
     } catch (error) {
-        setErrorMessage(error.message);
-        console.error("Error:", error.message);
+        setErrorMessage(error.message)
+        console.error("Error:", error.message)
         if (transactionHash) {
           if (error.message.includes(`Timeout waiting for ${eventName} event`)) {
-            setTransactionFail(false);
-            setTransactionPending(true);
+            setTransactionFail(false)
+            setTransactionPending(true)
           } else {
-            setTransactionFail(true);
+            setTransactionFail(true)
           }
         } else {
-          setTransactionFail(true);
+          setIsLoading(false)
+          setTransactionFail(true)
         }
-      } finally {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 3000);
-      }
-  }, []);
+    }
+  }, [])
 
   return {
     isLoading,
+    setIsLoading,
     transactionSuccess,
     transactionPending,
     transactionFail,
     errorMessage,
     sendTransaction,
-  };
+  }
 }
 
-export default useTransactionHandler;
+export default useTransactionHandler

@@ -9,8 +9,12 @@ class TransactionManager {
     }
   }
 
+  async handleTransactionPromise(chain, ...args) {
+    return this.chains[chain].handleTransactionPromise(...args);
+  }
+
   async addAgreement(chain, ...args) {
-    this.chains[chain].addAgreement(...args);
+    return this.chains[chain].addAgreement(...args);
   }
 }
 
