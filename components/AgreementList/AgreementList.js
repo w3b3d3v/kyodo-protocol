@@ -11,7 +11,7 @@ import Image from "next/image"
 import { useTranslation } from "react-i18next"
 import transactionManager from '../../chains/transactionManager'
 
-function AgreementList(props) {
+function AgreementList() {
   const { account, selectedChain } = useAccount()
   const { contract, loading } = useAgreementContract()
   const [agreements, setAgreements] = useState([])
@@ -106,7 +106,6 @@ function AgreementList(props) {
       const fetchedAgreements = await transactionManager["fetchAgreements"](selectedChain, details)
       if (!fetchedAgreements) {
         return
-        console.log("No agreements found")
       }
       setAgreements(fetchedAgreements)
     } catch (error) {
@@ -117,8 +116,10 @@ function AgreementList(props) {
   }
 
   useEffect(() => {
-    fetchAgreements()
-  }, [account])
+    if (!loading && contract) {
+        fetchAgreements();
+    }
+  }, [account, loading, contract]);
 
   if (isLoading) {
     return (
@@ -155,7 +156,12 @@ function AgreementList(props) {
       </section>
 
       <div className={styles["card-list"]}>
-        {agreements.map((agreement, index) => {
+        {agreements.length === 0 ? (
+          <div className={styles["no-agreement-message"]}>
+            {t("no-agreements")}
+          </div>
+          ) : (
+          agreements.map((agreement, index) => {
           return (
             <div key={index} className={styles["card"]}>
               <div key={index} className={styles["card-heading"]}>
@@ -238,7 +244,7 @@ function AgreementList(props) {
               </div>
             </div>
           )
-        })}
+        }))}
       </div>
     </div>
   )
