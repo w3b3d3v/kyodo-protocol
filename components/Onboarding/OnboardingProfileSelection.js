@@ -5,28 +5,29 @@ import Image from 'next/image'
 function OnboardingProfileSelection() {
 
   return (
-    <div className={styles["profile-selection"]}>
+    <div className={styles["onboarding"]}>
 
-      <h1>Welcome to <strong>Kyōdō</strong></h1>
-
-      <ul className={styles["onboarding-steps"]}>
-        <li className={styles["done-step"]}>
-          <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done icon" />
-          <p>Connect <span>wallet</span></p>
-        </li>
-        <li className={styles["current-step"]}>
-          <Image src="/onboarding/current-icon.svg" width={20} height={23} alt="Current step icon" />
-          <p>Profile <span>selection</span></p>
-        </li>
-        <li>
-          <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Next step icon" />
-          <p>Initial <span>setup</span></p>
-        </li>
-        <li>
-          <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Next step icon" />
-          <p>Terms & <span>Conditions</span></p>
-        </li>
-      </ul>
+      <div className={styles["onboarding-steps"]}>
+        <h1>Welcome to <strong>Kyōdō</strong></h1>
+        <ul>
+          <li className={styles["done-step"]}>
+            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done icon" />
+            <p>Connect <span>wallet</span></p>
+          </li>
+          <li className={styles["current-step"]}>
+            <Image src="/onboarding/current-icon.svg" width={20} height={23} alt="Current step icon" />
+            <p>Profile <span>selection</span></p>
+          </li>
+          <li>
+            <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Next step icon" />
+            <p>Initial <span>setup</span></p>
+          </li>
+          <li>
+            <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Next step icon" />
+            <p>Terms & <span>Conditions</span></p>
+          </li>
+        </ul>
+      </div>
 
       <ul className={styles["roles-list"]}>
         <li className={styles["community-call"]}>

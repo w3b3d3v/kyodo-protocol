@@ -1,10 +1,10 @@
-//import OnboardingProfessional from '../../components/Onboarding/OnboardingProfessional.js';
-import OnboardingProfileSelection from '../../components/Onboarding/OnboardingProfileSelection.js';
+import OnboardingProfessional from '../../components/Onboarding/OnboardingProfessional.js';
+//import OnboardingProfileSelection from '../../components/Onboarding/OnboardingProfileSelection.js';
 
 function Onboarding() {
   return (
-    //<OnboardingProfessional />
-    <OnboardingProfileSelection />
+    <OnboardingProfessional />
+    //<OnboardingProfileSelection />
   )
 }
   
