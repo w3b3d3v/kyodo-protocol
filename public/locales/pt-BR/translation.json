@@ -16,12 +16,16 @@
 
   "get-started": "Iniciar",
 
+  "basic-info": "Informações básicas",
   "personal-info": "Informações pessoais",
 
   "name": "Nome",
   "bio": "Biografia",
   "avatar": "Link do avatar",
-  "website": "Website / Portfólio",
+  "website": "Website",
+  "community-fee": "Community fee",
+
+  "token-tooltip": "Pode ser usado como um token de governança caso a comunidade se tornar um DAO",
 
   "back": "Voltar",
   "next-step": "Próximo passo",

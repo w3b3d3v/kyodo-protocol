@@ -16,12 +16,16 @@
 
   "get-started": "Get started",
 
+  "basic-info": "Basic info",
   "personal-info": "Personal info",
 
   "name": "Name",
   "bio": "Bio",
   "avatar": "Avatar URL",
-  "website": "Website / Portfolio",
+  "website": "Website",
+  "community-fee": "Community fee",
+
+  "token-tooltip": "It can be used as a governance token if the community become a DAO",
 
   "back": "Back",
   "next-step": "Next step",
