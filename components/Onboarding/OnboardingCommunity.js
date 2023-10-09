@@ -84,11 +84,14 @@ function OnboardingCommunity() {
           </div>
           <div className={"col-02"}>
             <label htmlFor="title-input">{t("community-fee")}</label>
-            <input
-              type="text"
-              id="community-fee-input"
-              tabIndex={5}
-            />
+            <div className={styles["fee-field"]}>
+              <span className={styles["fee-label"]}>%</span>
+              <input
+                type="text"
+                id="community-fee-input"
+                tabIndex={5}
+              />
+            </div>
           </div>
         </section>
 
