@@ -10,6 +10,7 @@ import { useRouter } from "next/router"
 import Image from "next/image"
 import { useTranslation } from "react-i18next"
 import transactionManager from '../../chains/transactionManager'
+import { useWallet } from '@solana/wallet-adapter-react';
 
 function AgreementList() {
   const { account, selectedChain } = useAccount()
@@ -22,6 +23,7 @@ function AgreementList() {
   const [selectedPaymentToken, setSelectedPaymentToken] = useState(null)
   const router = useRouter()
   const { t } = useTranslation()
+  const { publicKey, wallet } = useWallet();
 
   const checkAllowance = async (userAddress, contractAddress, selectedToken) => {
     const tokenContract = new ERC20Token(selectedToken.address)
@@ -176,12 +178,12 @@ function AgreementList() {
               </p>
 
               <p>
-                <strong>{t("payment-amount")}</strong>
-                {parseFloat(ethers.utils.formatUnits(agreement.payment.amount, 18))
-                  .toFixed(2)
-                  .replace(/\.00$/, "")}{" "}
-                USD
+                  <strong>{t("payment-amount")}</strong>
+                  {agreement.payment.amount && !isNaN(agreement.payment.amount)
+                  ? parseFloat(agreement.payment.amount).toFixed(2).replace(/\.00$/, "") + " USD"
+                  : "0 USD"}
               </p>
+
               <p>
                 <strong className={styles["total-paid"]}>{t("total-paid")}</strong>
                 {parseFloat(ethers.utils.formatUnits(agreement.totalPaid, 18))
