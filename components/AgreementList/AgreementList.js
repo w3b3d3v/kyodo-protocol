@@ -9,9 +9,10 @@ import ERC20Token from '../../utils/ERC20Token';
 import { useRouter } from "next/router"
 import Image from "next/image"
 import { useTranslation } from "react-i18next"
+import transactionManager from '../../chains/transactionManager'
 
 function AgreementList(props) {
-  const { account } = useAccount()
+  const { account, selectedChain } = useAccount()
   const { contract, loading } = useAgreementContract()
   const [agreements, setAgreements] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -97,16 +98,16 @@ function AgreementList(props) {
 
   async function fetchAgreements() {
     try {
-      const userAgreementIds = await contract.getUserAgreements(account)
-      const stringIds = userAgreementIds.map((id) => id.toString())
+      const details = {
+        account,
+        contract
+      };
 
-      const fetchedAgreements = await Promise.all(
-        stringIds.map(async (agreementId) => {
-          const agreement = await contract.getAgreementById(agreementId)
-          return agreement
-        })
-      )
-
+      const fetchedAgreements = await transactionManager["fetchAgreements"](selectedChain, details)
+      if (!fetchedAgreements) {
+        return
+        console.log("No agreements found")
+      }
       setAgreements(fetchedAgreements)
     } catch (error) {
       console.error("Error when fetching agreements:", error)
