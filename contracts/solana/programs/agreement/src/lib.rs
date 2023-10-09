@@ -1,18 +1,17 @@
 //! Agreement Program Test Suite
 //!
-//! A comprehensive testing suite to validate the agreement program functionalities 
-//! developed in a Solana blockchain context using the Anchor framework. This suite 
+//! A comprehensive testing suite to validate the agreement program functionalities
+//! developed in a Solana blockchain context using the Anchor framework. This suite
 //! contains tests for token minting, agreement initialization, and payment processing.
-//! 
+//!
 //! - **Author**: Jaxiii
 //! - **Version**: 0.0.4
 //! - **Date**: 09/28/2023
 
 use anchor_lang::prelude::*; // Import anchor's prelude for boilerplate and utility functions.
 use anchor_lang::solana_program; // Import solana_program for core Solana program functionalities.
-use solana_program::system_instruction; // Import system_instruction from the solana_program crate.
-use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer}; // Import modules from the anchor SPL token crate.
-
+use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer};
+use solana_program::system_instruction; // Import system_instruction from the solana_program crate. // Import modules from the anchor SPL token crate.
 
 // Declare the ID for this smart contract program.
 declare_id!("FVz7RJ6H6zFUkTx1sGuCDHDmYr96EQHR4g52xTmL8ZPn");
@@ -58,11 +57,11 @@ pub mod agreement_program {
         ctx: Context<AddAcceptedPaymentToken>,
         token_address: Pubkey,
     ) -> Result<()> {
-
         let agreement_account = &mut ctx.accounts.agreement;
 
-        if ctx.accounts.owner.key() != agreement_account.company &&
-            ctx.accounts.owner.key() != agreement_account.professional {
+        if ctx.accounts.owner.key() != agreement_account.company
+            && ctx.accounts.owner.key() != agreement_account.professional
+        {
             return err!(ErrorCode::Unauthorized);
         }
 
@@ -71,7 +70,6 @@ pub mod agreement_program {
             .push(token_address);
 
         Ok(())
-        
     }
 
     // Function to remove a token from being accepted as payment
@@ -161,14 +159,30 @@ pub mod agreement_program {
     //     Ok(())
     // }
 
+    // Function to set fees for an agreement.
+    pub fn set_fees(ctx: Context<SetFees>, fees: Fees) -> Result<()> {
+        let agreement_account = &mut ctx.accounts.agreement;
+
+        if fees.fee_percentage < 0 || fees.fee_percentage > 1000 {
+            return err!(ErrorCode::InvalidFeePercentage);
+        }
+
+        agreement_account.fee_percentage = fees.fee_percentage;
+        agreement_account.treasury_fee = fees.treasury_fee;
+        agreement_account.community_dao_fee = fees.community_dao_fee;
+
+        Ok(())
+    }
+
     // Function to process the payment for an agreement.
     pub fn process_payment(ctx: Context<ProcessPayment>) -> Result<()> {
         // Extract various accounts needed for payment processing from the context.
         let payment_from = &mut ctx.accounts.company;
-        let payment_to = &mut ctx.accounts.professional;
         let agreement_account = &mut ctx.accounts.agreement;
         let payment_token = &mut ctx.accounts.payment_token;
         let destination = &ctx.accounts.to_ata;
+        let community_dao = &ctx.accounts.community_dao;
+        let treasury = &ctx.accounts.treasury;
         let source = &ctx.accounts.from_ata;
         let token_program = &ctx.accounts.token_program;
 
@@ -183,15 +197,30 @@ pub mod agreement_program {
             return err!(ErrorCode::Unauthorized);
         }
 
+        if destination.owner.key() != agreement_professional {
+            return err!(ErrorCode::InvalidPaymentDestination);
+        }
+
         //Check if the given payment token is accepted for the agreement.
-        if agreement_account.accepted_payment_tokens.iter().find(|&&x| x == payment_token.key()).is_none() {
+        if agreement_account
+            .accepted_payment_tokens
+            .iter()
+            .find(|&&x| x == payment_token.key())
+            .is_none()
+        {
             return err!(ErrorCode::InvalidPaymentToken);
         }
 
         // Check if the amount to be paid is a valid amount.
-        if amount_to_pay <= 0 {
+        if amount_to_pay < 0 {
             return err!(ErrorCode::InvalidPaymentAmount);
         }
+
+        let total_fee_basis_points = agreement_account.fee_percentage * 1000;
+        let total_fee = (total_fee_basis_points * amount_to_pay) / u64::pow(10, 6);
+        let kyodo_treasury_share = (total_fee * agreement_account.treasury_fee) / 1000;
+        let community_dao_share = total_fee - kyodo_treasury_share;
+        let professional_payment = amount_to_pay - total_fee;
 
         // Perform the transfer from the company to the professional.
         let cpi_accounts = SplTransfer {
@@ -204,8 +233,36 @@ pub mod agreement_program {
         // Invoke the SPL token transfer instruction.
         token::transfer(
             CpiContext::new(cpi_program, cpi_accounts),
-            amount_to_pay)?;
+            professional_payment,
+        )?;
 
+        // Perform the transfer from the company to the community dao.
+        let cpi_accounts = SplTransfer {
+            from: source.to_account_info().clone(),
+            to: community_dao.to_account_info().clone(),
+            authority: payment_from.to_account_info().clone(),
+        };
+        let cpi_program = token_program.to_account_info();
+
+        // Invoke the SPL token transfer instruction.
+        token::transfer(
+            CpiContext::new(cpi_program, cpi_accounts),
+            community_dao_share,
+        )?;
+
+        // Perform the transfer from the company to the kyodo treasury.
+        let cpi_accounts = SplTransfer {
+            from: source.to_account_info().clone(),
+            to: treasury.to_account_info().clone(),
+            authority: payment_from.to_account_info().clone(),
+        };
+        let cpi_program = token_program.to_account_info();
+
+        // Invoke the SPL token transfer instruction.
+        token::transfer(
+            CpiContext::new(cpi_program, cpi_accounts),
+            kyodo_treasury_share,
+        )?;
         // Update the amount that has been paid in the agreement.
         agreement_account.total_paid += amount_to_pay;
 
@@ -283,16 +340,6 @@ pub struct MarkAgreementCompleted<'info> {
     pub owner: Signer<'info>,
 }
 
-
-// #[derive(Accounts)]
-// pub struct SetFees<'info> {
-//     #[account(mut)]
-//     pub agreement: Account<'info, AgreementAccount>,
-//     pub kyodoTreasury: Account<'info, AgreementAccount>,
-//     pub communityDAO: Account<'info, AgreementAccount>,
-//     pub owner: Signer<'info>,
-// }
-
 #[derive(Accounts)]
 pub struct ProcessPayment<'info> {
     #[account(mut)]
@@ -303,8 +350,10 @@ pub struct ProcessPayment<'info> {
     pub from_ata: Account<'info, TokenAccount>,
     #[account(mut)]
     pub to_ata: Account<'info, TokenAccount>,
-    /// CHECK:` We do not read or write to this account.
-    pub professional: AccountInfo<'info>,
+    #[account(mut)]
+    pub community_dao: Account<'info, TokenAccount>,
+    #[account(mut)]
+    pub treasury: Account<'info, TokenAccount>,
     /// CHECK:` We do not read or write to this account.
     pub payment_token: AccountInfo<'info>,
     pub token_program: Program<'info, Token>,
@@ -324,11 +373,29 @@ pub struct AgreementAccount {
     pub payment_amount: u64,
     pub professional: Pubkey,
     pub community_dao: Pubkey,
+    pub treasury: Pubkey,
     pub company: Pubkey,
     pub token_incentive: PaymentToken,
     pub accepted_payment_tokens: Vec<Pubkey>,
+    pub fee_percentage: u64,
+    pub treasury_fee: u64,
+    pub community_dao_fee: u64,
     pub total_paid: u64,
     pub status: u8,
+}
+
+#[derive(Accounts)]
+pub struct SetFees<'info> {
+    #[account(mut)]
+    pub agreement: Account<'info, AgreementAccount>,
+    pub owner: Signer<'info>,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
+pub struct Fees {
+    pub fee_percentage: u64,
+    pub treasury_fee: u64,
+    pub community_dao_fee: u64,
 }
 
 #[account]
@@ -355,8 +422,12 @@ pub enum ErrorCode {
     AlreadyCompleted,
     #[msg("Unauthorized")]
     Unauthorized,
+    #[msg("Invalid payment destination")]
+    InvalidPaymentDestination,
     #[msg("Invalid payment token")]
     InvalidPaymentToken,
     #[msg("Invalid payment amount")]
     InvalidPaymentAmount,
+    #[msg("Invalid fee percentage")]
+    InvalidFeePercentage,
 }
