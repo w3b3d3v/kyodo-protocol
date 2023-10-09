@@ -41,5 +41,6 @@
   "add": "add",
   "add-btn": "Add",
   "agreement-created": "Agreement created!",
-  "agreement-pending": "Transaction is still pending, please wait."
+  "agreement-pending": "Transaction is still pending, please wait.",
+  "no-agreements": "NO Agreements found. Please add one."
 }
