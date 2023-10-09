@@ -8,7 +8,7 @@ ONBOARDING
 
 // Profile selection
 
-.profile-selection {
+.onboarding {
   width: 615px;
   max-width: 615px;
   margin: 0 auto;
@@ -18,31 +18,34 @@ ONBOARDING
     width: 90%;
     padding-bottom: 0;
   }
-
-  h1 {
-    font-size: $font-bigger-2;
-    margin-bottom: 30px;
-
-    @media #{$smartphones-1} {
-      font-size: $font-large-2;
-      margin: 40px 0 20px 0;
-      width: 100%;
-    }
-  }
 }
 
 
 // Steps
 
 .onboarding-steps {
-  text-align: center;
-  margin-bottom: 60px;
 
-  @media #{$smartphones-1} {
-    margin-bottom: 40px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+  h1 {
+    font-size: $font-bigger-2;
+    margin-bottom: 30px;
+  
+    @media #{$smartphones-1} {
+      font-size: $font-large-2;
+      margin: 40px 0 20px 0;
+      width: 100%;
+    }
+  }
+
+  ul {
+    text-align: center;
+    margin-bottom: 60px;
+
+    @media #{$smartphones-1} {
+      margin-bottom: 45px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+    }
   }
 
   li {
@@ -176,4 +179,102 @@ ONBOARDING
   a {
     color: $brand-blue;
   }
+}
+
+
+// Forms
+
+.onboarding-form {
+  width: 615px;
+  max-width: 615px;
+  margin: 0 auto;
+
+  @media #{$smartphones-1} {
+    width: 100%;
+    max-width: 100%;
+    padding-bottom: 50px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: $font-medium;
+
+    span  {
+      margin: -7px 0 0 0;
+      background: $dark-gray;
+      padding-right: 20px;
+      float: left;
+    }
+
+    hr {
+      height: 1px;
+      background-color: $dark-blue-2;
+      border: none;
+    }
+  }
+
+  label {
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+  textarea {
+    min-height: 130px;
+    max-height: 180px;
+  }
+
+  h3 {
+    font-size: $font-large-3;
+    margin: 60px 0 30px 0;
+
+    @media #{$smartphones-1} {
+      font-size: $font-large;
+      margin-top: 40px;
+    }
+  }
+}
+
+.professional-heading {
+  color: $brand-red;
+}
+
+
+// Form footer
+
+.form-footer {
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 40px;
+  border-top: 1px solid $dark-blue-2;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+button.next-btn,
+.back-link {
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  border: 2px solid $medium-gray;
+  background: none;
+  height: 38px;
+  display: inline-block;
+  font-size: $font-medium;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 0 25px;
+  color: $white;
+  cursor: pointer;
+
+  &:hover {
+    opacity: .8;
+  }
+}
+
+.back-link {
+  border: none;
+  padding: 0;
+  line-height: 38px;
+  color: $medium-gray;
 }
