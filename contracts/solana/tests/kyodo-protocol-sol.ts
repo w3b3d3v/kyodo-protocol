@@ -41,6 +41,7 @@ describe("agreement_program", () => {
   // Generating a new keypair for the professional's address.
   const professionalAddress = anchor.web3.Keypair.generate();
   const communityDao = anchor.web3.Keypair.generate();
+  const kyodoTreasury = anchor.web3.Keypair.generate();
 
   // Requesting an airdrop (test SOL tokens) to the professional's account.
   provider.connection.requestAirdrop(professionalAddress.publicKey, 100000000)
@@ -50,6 +51,8 @@ describe("agreement_program", () => {
   // We need to initialize these variables here so that they can be used in one or more test.
   let associatedTokenAddressCompany; // Will be asign, and then used to pay the professional
   let associatedTokenAddressProfessional; // Will be asign, and then used to recieve payment from the company
+  let associatedTokenAddressCommunity; // Will be asign, and then used to recieve fees
+  let associatedTokenAddressTreasury; // Will be asign, and then used to recieve fees
   let toPayAgreementAddress; // Will be asign, and then updated when the paymen is processed
 
   // Generating a keypair for a fake mint (test payment token).
@@ -86,7 +89,7 @@ describe("agreement_program", () => {
     // Create or fetch the associated token account for the company using the fake mint.
     associatedTokenAddressCompany = await getOrCreateAssociatedTokenAccount(
       provider.connection,               // Current provider's connection.
-      payer,                             // Entity funding the transaction.
+      payer,                             // Entity funding the transaction. TODO: change if needed
       fakeMint.publicKey,                // Mint's public key.
       companyAddress,                    // Owner of the associated token account.
       false,                             // Indicates if the function should throw an error if the account already exists.
@@ -98,9 +101,34 @@ describe("agreement_program", () => {
     // Creating or fetching the associated token account for the professional.
     associatedTokenAddressProfessional = await getOrCreateAssociatedTokenAccount(
       provider.connection,                // Current provider's connection.
-      professionalAddress,                // Entity funding the transaction.
+      professionalAddress,                // Entity funding the transaction. TODO: change if needed
       fakeMint.publicKey,                 // Mint's public key.
       professionalAddress.publicKey,      // Owner of the associated token account.
+      false,                              // Indicates if the function should throw an error if the account already exists.
+      null, null,                         // Optional configs (multiSig and options).
+      TOKEN_PROGRAM_ID,                   // SPL token program ID.
+      ASSOCIATED_TOKEN_PROGRAM_ID         // SPL associated token program ID.
+    );
+
+
+    // Creating or fetching the associated token account for the professional.
+    associatedTokenAddressCommunity = await getOrCreateAssociatedTokenAccount(
+      provider.connection,                // Current provider's connection.
+      payer,                              // Entity funding the transaction. TODO: change if needed
+      fakeMint.publicKey,                 // Mint's public key.
+      communityDao.publicKey,             // Owner of the associated token account.
+      false,                              // Indicates if the function should throw an error if the account already exists.
+      null, null,                         // Optional configs (multiSig and options).
+      TOKEN_PROGRAM_ID,                   // SPL token program ID.
+      ASSOCIATED_TOKEN_PROGRAM_ID         // SPL associated token program ID.
+    );
+
+    // Creating or fetching the associated token account for the professional.
+    associatedTokenAddressTreasury = await getOrCreateAssociatedTokenAccount(
+      provider.connection,                // Current provider's connection.
+      payer,                              // Entity funding the transaction. TODO: change if needed
+      fakeMint.publicKey,                 // Mint's public key.
+      kyodoTreasury.publicKey,            // Owner of the associated token account.
       false,                              // Indicates if the function should throw an error if the account already exists.
       null, null,                         // Optional configs (multiSig and options).
       TOKEN_PROGRAM_ID,                   // SPL token program ID.
@@ -263,19 +291,52 @@ describe("agreement_program", () => {
 
     console.log("Your transaction signature:", tx);
   });
-  
+
+  // Test case for initializing the first agreement.
+  it("Set fees to first agreement", async () => {
+
+
+    // Constructing the agreement data for the second agreement.
+    const fees = {
+      feePercentage: new anchor.BN(2),
+      treasuryFee: new anchor.BN(50),
+      communityDaoFee: new anchor.BN(50),
+    } as any;
+
+    const tx = await program.methods.setFees(fees)
+      .accounts({
+        agreement: toPayAgreementAddress.publicKey,
+        owner: companyAddress,
+      }).rpc();
+
+    console.log("Your transaction signature:", tx);
+  });
+
   // Test case for processing a payment related to an agreement.
   it("Process Payment", async () => {
+
+    // Fetching the initial balances of the associated token accounts.
+    const initialCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
+    const initialProfessionalBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressProfessional.address)
+    const initialKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
+    const initialCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
+
+    // Logging the initial balances for debugging.
+    console.log("Initial company balance:", initialCompanyBalance.value);
+    console.log("Initial professional balance:", initialProfessionalBalance.value);
+    console.log("Initial kyodo treasury balance:", initialKyodoTreasuryBalance.value);
+    console.log("Initial community dao balance:", initialCommunityDAOBalance.value);
 
     // Processing the payment for the agreement.
     const tx = await program.methods.processPayment()
       .accounts({
         agreement: toPayAgreementAddress.publicKey,
         company: companyAddress,
+        professional: professionalAddress.publicKey,
         fromAta: associatedTokenAddressCompany.address,
         toAta: associatedTokenAddressProfessional.address,
-        professional: professionalAddress.publicKey,
-        communityDao: communityDao.publicKey,
+        communityDao: associatedTokenAddressCommunity.address,
+        treasury: associatedTokenAddressTreasury.address,
         paymentToken: fakeMint.publicKey,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
@@ -285,6 +346,18 @@ describe("agreement_program", () => {
     const fetchedAgreement = await program.account.agreementAccount.fetch(
       toPayAgreementAddress.publicKey
     );
+
+    // Fetching the final balances of the associated token accounts.
+    const finalCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
+    const finalProfessionalBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressProfessional.address)
+    const finalKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
+    const finalCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
+
+    // Logging the final balances for debugging.
+    console.log("Final company balance:", finalCompanyBalance.value);
+    console.log("Final professional balance:", finalProfessionalBalance.value);
+    console.log("Final kyodo treasury balance:", finalKyodoTreasuryBalance.value);
+    console.log("Final community dao balance:", finalCommunityDAOBalance.value);
 
     // Logging details of the agreement after the payment and the transaction signature for verification.
     console.log("Your paid agreement account:", fetchedAgreement);
