@@ -40,6 +40,7 @@ describe("agreement_program", () => {
 
   // Generating a new keypair for the professional's address.
   const professionalAddress = anchor.web3.Keypair.generate();
+  const communityDao = anchor.web3.Keypair.generate();
 
   // Requesting an airdrop (test SOL tokens) to the professional's account.
   provider.connection.requestAirdrop(professionalAddress.publicKey, 100000000)
@@ -168,6 +169,7 @@ describe("agreement_program", () => {
       description: "test1 description",
       skills: ["JavaScript", "Rust", "Solana"], // You can replace these with actual skills
       professional: professionalAddress.publicKey, // Replace with the professional's public key
+      communityDao: communityDao.publicKey, // Replace with the professional's public key
       company: companyAddress, // Since company is signing this, we can use its public key,
       paymentAmount: new anchor.BN(1000),
     } as any;
@@ -273,6 +275,7 @@ describe("agreement_program", () => {
         fromAta: associatedTokenAddressCompany.address,
         toAta: associatedTokenAddressProfessional.address,
         professional: professionalAddress.publicKey,
+        communityDao: communityDao.publicKey,
         paymentToken: fakeMint.publicKey,
         tokenProgram: TOKEN_PROGRAM_ID,
       })

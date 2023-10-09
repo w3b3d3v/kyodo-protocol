@@ -40,6 +40,7 @@ pub mod agreement_program {
         agreement_account.skills = agreement.skills;
         agreement_account.professional = agreement.professional;
         agreement_account.payment_amount = agreement.payment_amount;
+        agreement_account.community_dao = agreement.community_dao;
         agreement_account.company = ctx.accounts.company.key();
         agreement_account.token_incentive = pay.clone();
         agreement_account.total_paid = 0;
@@ -282,6 +283,16 @@ pub struct MarkAgreementCompleted<'info> {
     pub owner: Signer<'info>,
 }
 
+
+// #[derive(Accounts)]
+// pub struct SetFees<'info> {
+//     #[account(mut)]
+//     pub agreement: Account<'info, AgreementAccount>,
+//     pub kyodoTreasury: Account<'info, AgreementAccount>,
+//     pub communityDAO: Account<'info, AgreementAccount>,
+//     pub owner: Signer<'info>,
+// }
+
 #[derive(Accounts)]
 pub struct ProcessPayment<'info> {
     #[account(mut)]
@@ -312,6 +323,7 @@ pub struct AgreementAccount {
     pub skills: Vec<String>,
     pub payment_amount: u64,
     pub professional: Pubkey,
+    pub community_dao: Pubkey,
     pub company: Pubkey,
     pub token_incentive: PaymentToken,
     pub accepted_payment_tokens: Vec<Pubkey>,
@@ -330,6 +342,7 @@ pub struct Agreement {
     pub description: String,
     pub skills: Vec<String>,
     pub professional: Pubkey,
+    pub community_dao: Pubkey,
     pub company: Pubkey,
     pub payment_amount: u64,
 }
