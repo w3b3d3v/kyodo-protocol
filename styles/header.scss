@@ -90,11 +90,7 @@ HEADER
     }
 
     &:hover {
-      background: rgba($white, .08);
-
-      @media #{$smartphones-1} {
-        color: $white;
-      }
+      opacity: .8;
     }
   }
 
