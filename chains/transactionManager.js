@@ -16,6 +16,10 @@ class TransactionManager {
   async addAgreement(chain, ...args) {
     return this.chains[chain].addAgreement(...args);
   }
+
+  async fetchAgreements(chain, ...args) {
+    return this.chains[chain].fetchAgreements(...args);
+  }
 }
 
 const manager = new TransactionManager();
