@@ -1,30 +1,32 @@
-import { useAccount } from "../../contexts/AccountContext";
 import styles from "./Onboarding.module.scss"
 import Image from 'next/image'
+import { useTranslation } from "react-i18next"
 
 function OnboardingProfessional() {
+
+  const { t } = useTranslation()
 
   return (
     <div className={styles["onboarding"]}>
 
       <div className={styles["onboarding-steps"]}>
-        <h1>Welcome to <strong>Kyōdō</strong></h1>
+        <h1>{t("welcome")}</h1>
         <ul>
           <li className={styles["done-step"]}>
             <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done icon" />
-            <p>Connect <span>wallet</span></p>
+            <p>{t("connect-wallet")}</p>
           </li>
           <li className={styles["done-step"]}>
             <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done step icon" />
-            <p>Profile <span>selection</span></p>
+            <p>{t("profile-selection")}</p>
           </li>
           <li className={styles["current-step"]}>
             <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Current step icon" />
-            <p>Initial <span>setup</span></p>
+            <p>{t("initial-setup")}</p>
           </li>
           <li>
             <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Next step icon" />
-            <p>Terms & <span>Conditions</span></p>
+            <p>{t("terms-conditions")}</p>
           </li>
         </ul>
       </div>
@@ -32,22 +34,22 @@ function OnboardingProfessional() {
       <form className={styles["onboarding-form"]}>
 
         <h2 className={styles["professional-heading"]}>
-          <span>Professional</span>
+          <span>{t("professional")}</span>
           <hr></hr>
         </h2>
 
-        <h3>Personal info</h3>
+        <h3>{t("personal-info")}</h3>
 
         <section className={"columns"}>
 
           <div className={"col-01"}>
-            <label htmlFor="title-input">Name</label>
+            <label htmlFor="title-input">{t("name")}</label>
             <input
               type="text"
               id="title-input"
               tabIndex={1}
             />
-            <label htmlFor="title-input">Bio</label>
+            <label htmlFor="title-input">{t("bio")}</label>
             <textarea
               type="text"
               id="title-input"
@@ -56,19 +58,19 @@ function OnboardingProfessional() {
           </div>
 
           <div className={"col-02"}>
-            <label htmlFor="title-input">Avatar URL</label>
+            <label htmlFor="title-input">{t("avatar")}</label>
             <input
               type="text"
               id="title-input"
               tabIndex={1}
             />
-            <label htmlFor="title-input">Website / portfólio</label>
+            <label htmlFor="title-input">{t("website")}</label>
             <input
               type="text"
               id="title-input"
               tabIndex={1}
             />
-            <label htmlFor="title-input">Community</label>
+            <label htmlFor="title-input">{t("community")}</label>
             <input
               type="text"
               id="title-input"
@@ -78,10 +80,10 @@ function OnboardingProfessional() {
         </section>
         <section className={styles["form-footer"]}>
           <a href="#" className={styles["back-link"]}>
-            Back
+            {t("back")}
           </a>
           <button type="submit" className={styles["next-btn"]} tabIndex={8}>
-            Next step
+            {t("next-step")}
           </button>
         </section>
       </form>

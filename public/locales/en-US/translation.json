@@ -1,4 +1,25 @@
 {
+  "community": "Community",
+  "professional": "Professional",
+  "contractor": "Contractor",
+
+  "welcome": "Welcome to Kyōdō",
+
+  "connect-wallet": "Connect wallet",
+  "profile-selection": "Profile selection",
+  "initial-setup": "Initial setup",
+  "terms-conditions": "Terms & conditions",
+
+  "personal-info": "Personal info",
+
+  "name": "Name",
+  "bio": "Bio",
+  "avatar": "Avatar URL",
+  "website": "Website / Portfolio",
+
+  "back": "Back",
+  "next-step": "Next step",
+
   "dashboard": "Dashboard",
   "agreements": "Agreements",
 
