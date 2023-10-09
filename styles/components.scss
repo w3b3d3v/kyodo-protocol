@@ -105,6 +105,11 @@ COMPONENTS
 
 // Tooltip
 
+i {
+  font-weight: normal;
+  line-height: 16px;
+}
+
 [data-tooltip]::before {
   content: attr(data-tooltip);
 }
@@ -147,7 +152,7 @@ COMPONENTS
 [data-tooltip]::before {
   background: #333;
   color: $white;
-  padding: 8px;
+  padding: 8px 12px;
   min-width: 165px;
   text-align: center;
   border-radius: 6px;
