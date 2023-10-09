@@ -43,38 +43,38 @@ function OnboardingProfessional() {
         <section className={"columns"}>
 
           <div className={"col-01"}>
-            <label htmlFor="title-input">{t("name")}</label>
+            <label htmlFor="professional-name-input">{t("name")}</label>
             <input
               type="text"
-              id="title-input"
+              id="professional-name-input"
               tabIndex={1}
             />
-            <label htmlFor="title-input">{t("bio")}</label>
+            <label htmlFor="professional-bio-input">{t("bio")}</label>
             <textarea
               type="text"
-              id="title-input"
-              tabIndex={1}
+              id="professional-bio-input"
+              tabIndex={2}
             ></textarea>
           </div>
 
           <div className={"col-02"}>
-            <label htmlFor="title-input">{t("avatar")}</label>
+            <label htmlFor="professional-avatar-input">{t("avatar")}</label>
             <input
               type="text"
-              id="title-input"
-              tabIndex={1}
+              id="professional-avatar-input"
+              tabIndex={3}
             />
-            <label htmlFor="title-input">{t("website")}</label>
+            <label htmlFor="professional-website-input">{t("website")}</label>
             <input
               type="text"
-              id="title-input"
-              tabIndex={1}
+              id="professional-website-input"
+              tabIndex={4}
             />
-            <label htmlFor="title-input">{t("community")}</label>
+            <label htmlFor="professional-community-input">{t("community")}</label>
             <input
               type="text"
-              id="title-input"
-              tabIndex={1}
+              id="professional-community-input"
+              tabIndex={5}
             />
           </div>
         </section>
@@ -82,7 +82,7 @@ function OnboardingProfessional() {
           <a href="#" className={styles["back-link"]}>
             {t("back")}
           </a>
-          <button type="submit" className={styles["next-btn"]} tabIndex={8}>
+          <button type="submit" className={styles["next-btn"]} tabIndex={6}>
             {t("next-step")}
           </button>
         </section>
