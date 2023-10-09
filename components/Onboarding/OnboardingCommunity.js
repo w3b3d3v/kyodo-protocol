@@ -42,7 +42,7 @@ function OnboardingCommunity() {
 
         <section className={"columns"}>
           <div className={"col-01"}>
-            <label htmlFor="title-input">{t("name")}</label>
+            <label htmlFor="community-name-input">{t("name")}</label>
             <input
               type="text"
               id="community-name-input"
@@ -50,7 +50,7 @@ function OnboardingCommunity() {
             />
           </div>
           <div className={"col-02"}>
-            <label htmlFor="title-input">{t("avatar")}</label>
+            <label htmlFor="community-avatar-input">{t("avatar")}</label>
             <input
               type="text"
               id="community-avatar-input"
@@ -59,7 +59,7 @@ function OnboardingCommunity() {
           </div>
         </section>
 
-        <label htmlFor="title-input">{t("description")}</label>
+        <label htmlFor="community-description-input">{t("description")}</label>
         <textarea
           type="text"
           id="community-description-input"
@@ -75,7 +75,7 @@ function OnboardingCommunity() {
 
         <section className={"columns"}>
           <div className={"col-01"}>
-            <label htmlFor="title-input">Smart contract</label>
+            <label htmlFor="smart-contract-input">Smart contract</label>
             <input
               type="text"
               id="smart-contract-input"
@@ -83,7 +83,7 @@ function OnboardingCommunity() {
             />
           </div>
           <div className={"col-02"}>
-            <label htmlFor="title-input">{t("community-fee")}</label>
+            <label htmlFor="community-fee-input">{t("community-fee")}</label>
             <div className={styles["fee-field"]}>
               <span className={styles["fee-label"]}>%</span>
               <input

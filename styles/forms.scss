@@ -39,6 +39,11 @@ textarea {
   max-height: 140px;
 }
 
+#community-description-input {
+  min-height: 72px;
+}
+
+
 .validation-msg {
   font-size: $font-small;
   color: $red;
