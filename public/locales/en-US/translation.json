@@ -71,7 +71,7 @@
   "skills-tooltip": "The sum must equal 100%",
   "add": "add",
   "add-btn": "Add",
-  "agreement-created": "Agreement created!",
+  "transaction-success": "Transaction successful!",
   "agreement-pending": "Transaction is still pending, please wait.",
   "no-agreements": "NO Agreements found. Please add one."
 }
