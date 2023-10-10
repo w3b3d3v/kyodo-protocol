@@ -1,9 +1,10 @@
-import { useAccount } from "../../contexts/AccountContext";
 import styles from "./Onboarding.module.scss"
 import Image from 'next/image'
 import { useTranslation } from "react-i18next"
 
 function OnboardingProfileSelection() {
+
+
 
   const { t } = useTranslation()
 
@@ -37,19 +38,19 @@ function OnboardingProfileSelection() {
           <Image src="/onboarding/community-call-icon.svg" width={57} height={57} alt="Community icon" />
           <h2>{t("community")}</h2>
           <p>{t("community-call")}</p>
-          <a href="#">{t("get-started")}</a>
+          <a href="/onboarding/community">{t("get-started")}</a>
         </li>
         <li className={styles["professional-call"]}>
           <Image src="/onboarding/professional-call-icon.svg" width={57} height={57} alt="Professional icon" />
           <h2>{t("professional")}</h2>
           <p>{t("professional-call")}</p>
-          <a href="#">{t("get-started")}</a>
+          <a href="/onboarding/professional">{t("get-started")}</a>
         </li>
         <li className={styles["contractor-call"]}>
           <Image src="/onboarding/contractor-call-icon.svg" width={57} height={57} alt="Contractor icon" />
           <h2>{t("contractor")}</h2>
           <p>{t("contractor-call")}</p>
-          <a href="#">{t("get-started")}</a>
+          <a href="/onboarding/contractor">{t("get-started")}</a>
         </li>
       </ul>
 
