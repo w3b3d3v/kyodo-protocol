@@ -75,7 +75,7 @@ function OnboardingProfessional() {
                 id="professional-community-input"
                 tabIndex={5}
               >
-                <option>Select a option</option>
+                <option>{t("select-option")}</option>
                 <option>Phala Network</option>
                 <option>Web3dev</option>
               </select>
