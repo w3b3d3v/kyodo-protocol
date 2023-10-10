@@ -210,8 +210,7 @@ AGREEMENT LIST
   width: 100%;
   padding: 0 25px;
 
-  input,
-  select {
+  input {
     display: inline-block;
     height: 26px;
     border-radius: 4px;
@@ -219,11 +218,33 @@ AGREEMENT LIST
     font-size: 11px;
     margin: 0;
   }
+
+  .min-select {
+    width: 120px;
+    border: 1px solid $dark-blue-2;
+    background: $dark-blue-2;
+    border-radius: 6px;
+    font-size: 14px;
+    color: $white;
+    box-sizing: border-box;
+    display: inline-block;
+    margin: 0 7px 0 0;
+    height: 26px;
+    line-height: 24px;
+    border-radius: 4px;
+    padding: 0 7px;
+    font-size: 11px;
+  }
   
   select {
-    width: 120px;
-    margin-right: 7px;
-    background-color: #151A1C;
+    width: 100%;
+    background: none;
+    border: none;
+    color: $white;
+  }
+
+  option {
+    background-color: $dark-blue-2;
   }
   
   input {
