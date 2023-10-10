@@ -52,6 +52,7 @@ async function createFakeToken() {
     console.log("companyAddress", companyAddress.toBase58())
 
     const payer = (provider.wallet as NodeWallet).payer;
+    console.log("payer", payer.publicKey)
     const fakeMint = anchor.web3.Keypair.generate();
 
     // Create a new mint (token type) and get the transaction signature.
@@ -87,7 +88,7 @@ async function createFakeToken() {
       ASSOCIATED_TOKEN_PROGRAM_ID        // SPL associated token program ID.
     );
 
-    console.log(associatedTokenAddressCompany);
+    console.log("associatedTokenAddressCompany", associatedTokenAddressCompany);
 
     // Mint tokens to the company's associated token account.
     var mintToCompanyTx = await mintTo(
