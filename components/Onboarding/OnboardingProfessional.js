@@ -3,7 +3,6 @@ import Image from 'next/image'
 import { useTranslation } from "react-i18next"
 
 function OnboardingProfessional() {
-
   const { t } = useTranslation()
 
   return (
