@@ -1,10 +1,13 @@
 import addAgreement from "./transactions/addAgreement";
 import fetchAgreements from "./transactions/fetchAgreements";
+import payAgreement from "./transactions/payAgreement";
 
-const EVENT_TIMEOUT = 20000;
+const EVENT_TIMEOUT = 30000;
 
 async function handleTransactionPromise(contract, txResponse, eventName, account, setTransactionHash) {
+    // TODO: Make event filters more robust based on parameters
     const eventReceived = new Promise((resolve, reject) => {
+        console.log("Promise created")
         const timeout = setTimeout(async () => {
             const tx = await contract.provider.getTransaction(txResponse.hash);
             if (tx && tx.blockNumber) {
@@ -15,12 +18,7 @@ async function handleTransactionPromise(contract, txResponse, eventName, account
             }
         }, EVENT_TIMEOUT);
 
-        let filter;
-        if(account) {
-            filter = contract.filters[eventName](account);
-        } else {
-            filter = contract.filters[eventName]();
-        }
+        const filter = contract.filters[eventName]();
 
         contract.on(filter, (...args) => {
             clearTimeout(timeout);
@@ -35,6 +33,7 @@ async function handleTransactionPromise(contract, txResponse, eventName, account
 const transactions = { 
     handleTransactionPromise, 
     addAgreement,
-    fetchAgreements
+    fetchAgreements,
+    payAgreement
 }
 export default transactions

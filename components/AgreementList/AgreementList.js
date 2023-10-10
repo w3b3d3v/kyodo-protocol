@@ -1,54 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { BeatLoader } from "react-spinners";
 import { ethers } from "ethers";
 import tokens from "../../public/allowedTokens.json"
 import styles from "./AgreementList.module.scss"
 import { useAccount } from "../../contexts/AccountContext"
 import { useAgreementContract } from "../../contexts/ContractContext"
-import ERC20Token from '../../utils/ERC20Token';
 import { useRouter } from "next/router"
 import Image from "next/image"
 import { useTranslation } from "react-i18next"
 import transactionManager from '../../chains/transactionManager'
 import { useWallet } from '@solana/wallet-adapter-react';
+import useTransactionHandler from '../../hooks/useTransactionHandler';
+import Loader from '../utils/Loader';
+import Toast from '../utils/Toast';
 
 function AgreementList() {
   const { account, selectedChain } = useAccount()
   const { contract, loading } = useAgreementContract()
   const [agreements, setAgreements] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
   const [paymentValue, setPaymentValue] = useState("")
   const [showPaymentInput, setShowPaymentInput] = useState(null)
-  const [userAllowance, setUserAllowance] = useState(null)
   const [selectedPaymentToken, setSelectedPaymentToken] = useState(null)
   const router = useRouter()
   const { t } = useTranslation()
-  const { publicKey, wallet } = useWallet();
-
-  const checkAllowance = async (userAddress, contractAddress, selectedToken) => {
-    const tokenContract = new ERC20Token(selectedToken.address)
-    const allowance = await tokenContract.allowance(userAddress, contractAddress)
-    setUserAllowance(ethers.BigNumber.from(allowance.toString()))
-  }
-
-  const handleApprove = async (amount, spender) => {
-    try {
-      const amountInWei = ethers.utils.parseUnits(amount.toString(), selectedPaymentToken.decimals)
-      const tokenContract = new ERC20Token(selectedPaymentToken.address)
-      const tx = await tokenContract.approve(spender, amountInWei)
-      await tx.wait()
-
-      console.log(`Approval successful for amount: ${amount}`)
-    } catch (error) {
-      console.error("Error approving token:", error)
-    }
-  }
+  const { publicKey, wallet } = useWallet()
+  const {
+    isLoading,
+    setIsLoading,
+    transactionSuccess,
+    transactionPending,
+    transactionFail,
+    errorMessage,
+    sendTransaction,
+    transactionHash,
+  } = useTransactionHandler();
 
   const handlePayClick = (index) => {
     setShowPaymentInput(index)
   }
 
-  const handleNewAgreement = (index) => {
+  const handleNewAgreement = () => {
     router.push("/agreements/new")
   }
 
@@ -67,36 +57,24 @@ function AgreementList() {
       return
     }
 
-    const paymentAmountInWei = ethers.utils.parseUnits(
-      paymentValue.toString(),
-      selectedPaymentToken.decimals
-    )
-    if (parseFloat(paymentAmountInWei) <= 0) {
-      alert("Invalid payment amount.")
-      return
-    }
-
-    setIsLoading(true)
-
-    if (!userAllowance.gte(paymentAmountInWei)) {
-      await handleApprove(paymentValue, contract.address)
-    }
-
-    try {
-      const tx = await contract.makePayment(
-        agreementId,
-        paymentAmountInWei,
-        selectedPaymentToken.address
-      )
-      await tx.wait()
-    } catch (error) {
-      console.error("Error when making payment", error)
-    } finally {
-      setIsLoading(false)
-      fetchAgreements()
+    const details = {
+      account,
+      contract,
+      selectedPaymentToken,
+      paymentValue,
+      agreementId,
+    };
+  
+    const onConfirmation = () => {
       setShowPaymentInput(false)
-    }
-  }
+      setPaymentValue("");
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    };
+  
+    await sendTransaction("payAgreement", details, "PaymentMade", onConfirmation)
+  };
 
   async function fetchAgreements() {
     try {
@@ -119,22 +97,20 @@ function AgreementList() {
 
   useEffect(() => {
     if (!loading && contract) {
-        fetchAgreements();
+      fetchAgreements();
     }
   }, [account, loading, contract]);
 
-  if (isLoading) {
-    return (
-      <div className={"loading-overlay"}>
-        <div className={"sweet-loading"}>
-          <BeatLoader loading={isLoading} size={50} />
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className={styles["agreement-list"]}>
+      <Loader isLoading={isLoading} />
+      <Toast
+        transactionSuccess={transactionSuccess}
+        transactionPending={transactionPending}
+        transactionFail={transactionFail}
+        errorMessage={errorMessage}
+        transactionHash={transactionHash}
+      />
       <section className={styles["action-bar"]}>
          <h1>
             {t("agreements")}

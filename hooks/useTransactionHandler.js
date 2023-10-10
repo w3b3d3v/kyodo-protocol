@@ -18,7 +18,7 @@ function useTransactionHandler() {
     setTransactionSuccess(false);
 
     try {
-        const TRANSACTION_TIMEOUT = 10000;
+        const TRANSACTION_TIMEOUT = 30000;
         
         const timeoutPromise = new Promise((_, reject) => {
             setTimeout(() => reject(new Error('Transaction timed out')), TRANSACTION_TIMEOUT);
