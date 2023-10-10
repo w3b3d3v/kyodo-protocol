@@ -49,11 +49,11 @@ describe("agreement_program", () => {
 
   // Variable declarations to store associated token addresses and agreement address.
   // We need to initialize these variables here so that they can be used in one or more test.
-  let associatedTokenAddressCompany; // Will be asign, and then used to pay the professional
-  let associatedTokenAddressProfessional; // Will be asign, and then used to recieve payment from the company
-  let associatedTokenAddressCommunity; // Will be asign, and then used to recieve fees
-  let associatedTokenAddressTreasury; // Will be asign, and then used to recieve fees
-  let toPayAgreementAddress; // Will be asign, and then updated when the paymen is processed
+  let associatedTokenAddressCompany;        // Will be asign, and then used to pay the professional
+  let associatedTokenAddressProfessional;   // Will be asign, and then used to recieve payment from the company
+  let associatedTokenAddressCommunity;      // Will be asign, and then used to recieve fees
+  let associatedTokenAddressTreasury;       // Will be asign, and then used to recieve fees
+  let toPayAgreementAddress;                // Will be asign, and then updated when the payment is processed
 
   // Generating a keypair for a fake mint (test payment token).
   const fakeMint = anchor.web3.Keypair.generate();
@@ -137,25 +137,12 @@ describe("agreement_program", () => {
 
     // Mint tokens to the company's associated token account.
     var mintToCompanyTx = await mintTo(
-      provider.connection,                // Current provider's connection.
-      payer,                              // Entity funding the minting.
-      fakeMint.publicKey,                 // Mint's public key.
-      associatedTokenAddressCompany.address, // Destination account.
-      companyAddress,                     // Minting authority.
-      10000,                              // Amount of tokens to mint.
-      [],                                 // Optional multisig authorities.
-      null,                               // Optional config (instructions).
-      TOKEN_PROGRAM_ID                    // SPL token program ID.
-    );
-
-    // Minting tokens to the professional's associated token account.
-    var mintToProfessionalTx = await mintTo(
       provider.connection,                    // Current provider's connection.
       payer,                                  // Entity funding the minting.
       fakeMint.publicKey,                     // Mint's public key.
-      associatedTokenAddressProfessional.address, // Destination account.
+      associatedTokenAddressCompany.address,  // Destination account.
       companyAddress,                         // Minting authority.
-      1,                                      // Amount of tokens to mint.
+      10000 * (10**8),                        // Amount of tokens to mint.
       [],                                     // Optional multisig authorities.
       null,                                   // Optional config (instructions).
       TOKEN_PROGRAM_ID                        // SPL token program ID.
@@ -163,9 +150,8 @@ describe("agreement_program", () => {
 
     // Logging details of the minting transactions and the associated addresses.
     console.log("Tokens mint tx to company", mintToCompanyTx.toString());
-    console.log("Tokens mint tx to professional:", mintToProfessionalTx.toString());
-    console.log("Tokens minted to associated company token account:", associatedTokenAddressCompany);
-    console.log("Tokens minted to associated professional token account:", associatedTokenAddressProfessional);
+    console.log("Associated company token account:", associatedTokenAddressCompany);
+    console.log("Associated professional token account:", associatedTokenAddressProfessional);
   });
 
   // Test case for initializing the first agreement.
@@ -298,9 +284,9 @@ describe("agreement_program", () => {
 
     // Constructing the agreement data for the second agreement.
     const fees = {
-      feePercentage: new anchor.BN(2),
-      treasuryFee: new anchor.BN(50),
-      communityDaoFee: new anchor.BN(50),
+      feePercentage: new anchor.BN(20),
+      treasuryFee: new anchor.BN(500),
+      communityDaoFee: new anchor.BN(500),
     } as any;
 
     const tx = await program.methods.setFees(fees)
@@ -332,7 +318,7 @@ describe("agreement_program", () => {
       .accounts({
         agreement: toPayAgreementAddress.publicKey,
         company: companyAddress,
-        professional: professionalAddress.publicKey,
+        professional: professionalAddress.publicKey, // TODO: change if needed
         fromAta: associatedTokenAddressCompany.address,
         toAta: associatedTokenAddressProfessional.address,
         communityDao: associatedTokenAddressCommunity.address,
