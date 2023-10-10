@@ -10,7 +10,7 @@ function Toast({ transactionSuccess, transactionPending, transactionFail, errorM
       <div className="flash-success transaction-info">
         <p>
           <Image src="/success-icon.svg" width={20} height={20} alt="Success icon" />
-          {t("agreement-created")}
+          {t("transaction-success")}
         </p>
       </div>
     );
