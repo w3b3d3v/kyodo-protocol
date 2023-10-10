@@ -70,11 +70,15 @@ function OnboardingProfessional() {
               tabIndex={4}
             />
             <label htmlFor="professional-community-input">{t("community")}</label>
-            <input
-              type="text"
-              id="professional-community-input"
-              tabIndex={5}
-            />
+            <div className={"custom-select"}>
+              <select
+                id="professional-community-input"
+                tabIndex={5}
+              >
+                <option>Phala Network</option>
+                <option>Web3dev</option>
+              </select>
+            </div>
           </div>
         </section>
         <section className={styles["form-footer"]}>

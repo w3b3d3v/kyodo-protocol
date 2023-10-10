@@ -189,28 +189,30 @@ function AgreementList(props) {
                   {showPaymentInput === index && (
                     <>
                       <div className={styles["opened-items"]}>
-                        <select
-                          value={selectedPaymentToken ? selectedPaymentToken.address : ""}
-                          onChange={(event) => {
-                            const selectedTokenAddress = event.target.value
-                            const selectedToken = tokens.find(
-                              (token) => token.address === selectedTokenAddress
-                            )
-                            checkAllowance(account, contract.address, selectedToken)
-                            setSelectedPaymentToken(selectedToken)
-                          }}
-                          className={styles["select-input"]}
-                        >
-                          <option value="">{t("select-token")}</option>
-                          {tokens.map((token) => (
-                            <option
-                              key={token.address}
-                              value={token.address}
-                            >
-                              {token.name}
-                            </option>
-                          ))}
-                        </select>
+                        <div className={styles["min-select"]}>
+                          <select
+                            value={selectedPaymentToken ? selectedPaymentToken.address : ""}
+                            onChange={(event) => {
+                              const selectedTokenAddress = event.target.value
+                              const selectedToken = tokens.find(
+                                (token) => token.address === selectedTokenAddress
+                              )
+                              checkAllowance(account, contract.address, selectedToken)
+                              setSelectedPaymentToken(selectedToken)
+                            }}
+                            className={styles["select-input"]}
+                          >
+                            <option value="">{t("select-token")}</option>
+                            {tokens.map((token) => (
+                              <option
+                                key={token.address}
+                                value={token.address}
+                              >
+                                {token.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                         <input
                           type="number"
                           value={paymentValue}
