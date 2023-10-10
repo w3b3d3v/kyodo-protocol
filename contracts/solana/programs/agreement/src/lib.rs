@@ -190,7 +190,7 @@ pub mod agreement_program {
         let agreement_professional = agreement_account.professional;
         let agreement_company = agreement_account.company;
         //let agreement_payment_token = agreement_account.accepted_payment_token;
-        let amount_to_pay = agreement_account.payment_amount;
+        let amount_to_pay = agreement_account.payment_amount * u64::pow(10, 8);
 
         // Check if the provided company is the one from the agreement.
         if payment_from.key() != agreement_company {
@@ -217,7 +217,7 @@ pub mod agreement_program {
         }
 
         let total_fee_basis_points = agreement_account.fee_percentage * 1000;
-        let total_fee = (total_fee_basis_points * amount_to_pay) / u64::pow(10, 6);
+        let total_fee = (total_fee_basis_points * amount_to_pay) / u64::pow(10, 6); //TODO: CHECK: Is this correct, get decimals?
         let kyodo_treasury_share = (total_fee * agreement_account.treasury_fee) / 1000;
         let community_dao_share = total_fee - kyodo_treasury_share;
         let professional_payment = amount_to_pay - total_fee;
