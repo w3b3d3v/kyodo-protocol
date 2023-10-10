@@ -96,7 +96,7 @@ function OnboardingCommunity() {
         </section>
 
         <section className={styles["form-footer"]}>
-          <a href="#" className={styles["back-link"]}>
+          <a href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </a>
           <button type="submit" className={styles["next-btn"]} tabIndex={6}>
