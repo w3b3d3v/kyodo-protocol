@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from "ethers";
-import tokens from "../../public/allowedTokens.json"
 import styles from "./AgreementList.module.scss"
 import { useAccount } from "../../contexts/AccountContext"
 import { useAgreementContract } from "../../contexts/ContractContext"
@@ -12,9 +11,11 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import Loader from '../utils/Loader';
 import Toast from '../utils/Toast';
+import { getTokens } from './tokenConfig.js';
 
 function AgreementList() {
   const { account, selectedChain } = useAccount()
+  const tokens = getTokens(selectedChain);
   const { contract, loading } = useAgreementContract()
   const [agreements, setAgreements] = useState([])
   const [paymentValue, setPaymentValue] = useState("")
