@@ -71,11 +71,16 @@ function OnboardingContractor() {
               tabIndex={4}
             />
             <label htmlFor="contractor-community-input">{t("community")}</label>
-            <input
-              type="text"
-              id="contractor-community-input"
-              tabIndex={5}
-            />
+            <div className={"custom-select"}>
+              <select
+                id="contractor-community-input"
+                tabIndex={5}
+              >
+                <option>Select a option</option>
+                <option>Phala Network</option>
+                <option>Web3dev</option>
+              </select>
+            </div>
           </div>
         </section>
         <section className={styles["form-footer"]}>
