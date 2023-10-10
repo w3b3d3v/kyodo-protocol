@@ -6,12 +6,8 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local')
 
 async function createAgreement() {
   try {
-    // Define the URL of your local Solana cluster. Make sure the cluster is running.
-    const localClusterUrl = "https://api.devnet.solana.com";
-    const connection = new anchor.web3.Connection(localClusterUrl, "confirmed");
-
-    // Configure the client to use the local Solana cluster.
     const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
+
     anchor.setProvider(provider);
 
     // Load the agreement program from the workspace.

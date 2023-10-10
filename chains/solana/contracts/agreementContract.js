@@ -9,8 +9,9 @@ const opts ={
 
 export function agreementContract(wallet) {
   // const connection = new Connection("http://127.0.0.1:8899", opts.preflightCommitment);
+  const connection = new Connection("https://api.devnet.solana.com");
   const provider = new anchor.AnchorProvider(
-    new Connection("https://api.devnet.solana.com"),
+    connection,
     wallet.adapter,
     anchor.AnchorProvider.defaultOptions()
   )
