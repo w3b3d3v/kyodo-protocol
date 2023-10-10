@@ -41,6 +41,11 @@ if [ "$env" == "devnet" ]; then
         echo "NEXT_PUBLIC_SOLANA_AGREEMENT_CONTRACT_ADDRESS=$PROGRAM_ID" >> "$ENV_FILE"
     fi
 
+    # Deploy the fake Stablecoin
+    echo "Creating fake token..."
+    DEPLOY_FAKE_STABLE_OUTPUT=$(ts-node $DIR/createFakeToken.ts)
+    echo "$DEPLOY_FAKE_STABLE_OUTPUT"
+
 elif [ "$env" == "testnet" ]; then
   echo "Deploying to testnet..."
     # Get the directory of the script
