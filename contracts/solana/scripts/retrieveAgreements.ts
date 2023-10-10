@@ -6,12 +6,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local')
 
 async function readAgreements() {
   try {
-    // Define o URL da sua rede local Solana. Certifique-se de que a rede local esteja em execução.
-    const localClusterUrl = "https://api.devnet.solana.com";
-    const connection = new anchor.web3.Connection(localClusterUrl, "confirmed");
-
-    // Configura o cliente para usar a rede local Solana.
-    const provider = anchor.AnchorProvider.local(localClusterUrl);
+    const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
     anchor.setProvider(provider);
 
     // Carrega o programa de acordos do espaço de trabalho.
