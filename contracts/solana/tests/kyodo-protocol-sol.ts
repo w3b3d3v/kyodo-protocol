@@ -36,16 +36,22 @@ describe("agreement_program", () => {
   const program = anchor.workspace.AgreementProgram;
 
   // Fetching the public key of the company from the provider's wallet.
-  const companyAddress = provider.wallet.publicKey;
+  const companyPubkey = provider.wallet.publicKey;
 
   // Generating a new keypair for the professional's address.
-  const professionalAddress = anchor.web3.Keypair.generate();
-  const communityDao = anchor.web3.Keypair.generate();
-  const kyodoTreasury = anchor.web3.Keypair.generate();
+  const adminKeypair = anchor.web3.Keypair.generate();
+  const professionalKeypair = anchor.web3.Keypair.generate();
+  const communityDaoKeypair = anchor.web3.Keypair.generate();
+  const kyodoTreasuryKeypair = anchor.web3.Keypair.generate();
+  const feesKeypair = anchor.web3.Keypair.generate();
+  const acceptedPaymentTokensKeypair = anchor.web3.Keypair.generate();
 
   // Requesting an airdrop (test SOL tokens) to the professional's account.
-  provider.connection.requestAirdrop(professionalAddress.publicKey, 100000000)
+  provider.connection.requestAirdrop(professionalKeypair.publicKey, 100000000)
     .then(() => console.log("Airdropped to Professional"));
+
+  provider.connection.requestAirdrop(adminKeypair.publicKey, 100000000)
+    .then(() => console.log("Airdropped to Admin"));
 
   // Variable declarations to store associated token addresses and agreement address.
   // We need to initialize these variables here so that they can be used in one or more test.
@@ -53,13 +59,14 @@ describe("agreement_program", () => {
   let associatedTokenAddressProfessional;   // Will be asign, and then used to recieve payment from the company
   let associatedTokenAddressCommunity;      // Will be asign, and then used to recieve fees
   let associatedTokenAddressTreasury;       // Will be asign, and then used to recieve fees
-  let toPayAgreementAddress;                // Will be asign, and then updated when the payment is processed
+  let toPayFirstAgreementAddress;           // Will be asign, and then updated when the payment is processed
+  let toPaySecondAgreementAddress;           // Will be asign, and then updated when the payment is processed
 
   // Generating a keypair for a fake mint (test payment token).
   const fakeMint = anchor.web3.Keypair.generate();
 
   // Test case to initialize a fake payment token for testing purposes.
-  it("Initializes a fake payment token", async () => {
+  it("Initializes a Fake Payment Token", async () => {
     // Fetching the payer's account, which is the entity that'll fund the transactions.
     const payer = (provider.wallet as NodeWallet).payer;
 
@@ -67,8 +74,8 @@ describe("agreement_program", () => {
     const tx = await createMint(
       provider.connection,  // Current provider's connection.
       payer,                // Entity funding the transaction.
-      companyAddress,       // Mint's authority.
-      companyAddress,       // Freeze authority (can freeze token accounts).
+      companyPubkey,       // Mint's authority.
+      companyPubkey,       // Freeze authority (can freeze token accounts).
       8,                    // Decimals for the token.
       fakeMint,             // Mint's keypair.
       null,                 // Optional multisig authority.
@@ -76,8 +83,51 @@ describe("agreement_program", () => {
     );
 
     // Logging the minted token's address and the transaction signature.
-    console.log("Your token address:", fakeMint.publicKey);
-    console.log("Your transaction signature:", tx);
+    console.log("Your Token Account Address:", fakeMint.publicKey);
+    console.log("Your Transaction Signature:", tx);
+  });
+
+  it("Initializes Fees Account", async () => {
+    // Fetching the payer's account, which is the entity that'll fund the transactions.
+    const payer = (provider.wallet as NodeWallet).payer;
+
+    // Create a new mint (token type) and get the transaction signature.
+    const fees = {
+      feePercentage: new anchor.BN(20),
+      treasuryFee: new anchor.BN(500),
+      communityDaoFee: new anchor.BN(500),
+    } as any;
+
+    const tx = await program.methods
+      .initializeFees(fees)
+      .accounts({
+        fees: feesKeypair.publicKey,
+        admin: adminKeypair.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([adminKeypair, feesKeypair])
+      .rpc();
+
+    // Logging the minted token's address and the transaction signature.
+    console.log("Your Fees Account Address:", feesKeypair.publicKey);
+    console.log("Your Transaction Signature:", tx);
+  });
+
+  it("Initializes Accepted Tokens Account", async () => {
+
+    const tx = await program.methods
+      .initializeAcceptedPaymentTokens()
+      .accounts({
+        acceptedPaymentToken: acceptedPaymentTokensKeypair.publicKey,
+        admin: adminKeypair.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([adminKeypair, acceptedPaymentTokensKeypair])
+      .rpc();
+
+    // Logging the minted token's address and the transaction signature.
+    console.log("Your Accepted Payment Tokens Account Address:", feesKeypair.publicKey);
+    console.log("Your Transaction Signature:", tx);
   });
 
   // Test case to create associated token accounts and mint tokens to them.
@@ -91,7 +141,7 @@ describe("agreement_program", () => {
       provider.connection,               // Current provider's connection.
       payer,                             // Entity funding the transaction. TODO: change if needed
       fakeMint.publicKey,                // Mint's public key.
-      companyAddress,                    // Owner of the associated token account.
+      companyPubkey,                    // Owner of the associated token account.
       false,                             // Indicates if the function should throw an error if the account already exists.
       null, null,                        // Optional configs (multiSig and options).
       TOKEN_PROGRAM_ID,                  // SPL token program ID.
@@ -101,9 +151,9 @@ describe("agreement_program", () => {
     // Creating or fetching the associated token account for the professional.
     associatedTokenAddressProfessional = await getOrCreateAssociatedTokenAccount(
       provider.connection,                // Current provider's connection.
-      professionalAddress,                // Entity funding the transaction. TODO: change if needed
+      payer,                              // Entity funding the transaction. TODO: change if needed
       fakeMint.publicKey,                 // Mint's public key.
-      professionalAddress.publicKey,      // Owner of the associated token account.
+      professionalKeypair.publicKey,      // Owner of the associated token account.
       false,                              // Indicates if the function should throw an error if the account already exists.
       null, null,                         // Optional configs (multiSig and options).
       TOKEN_PROGRAM_ID,                   // SPL token program ID.
@@ -116,7 +166,7 @@ describe("agreement_program", () => {
       provider.connection,                // Current provider's connection.
       payer,                              // Entity funding the transaction. TODO: change if needed
       fakeMint.publicKey,                 // Mint's public key.
-      communityDao.publicKey,             // Owner of the associated token account.
+      communityDaoKeypair.publicKey,             // Owner of the associated token account.
       false,                              // Indicates if the function should throw an error if the account already exists.
       null, null,                         // Optional configs (multiSig and options).
       TOKEN_PROGRAM_ID,                   // SPL token program ID.
@@ -128,7 +178,7 @@ describe("agreement_program", () => {
       provider.connection,                // Current provider's connection.
       payer,                              // Entity funding the transaction. TODO: change if needed
       fakeMint.publicKey,                 // Mint's public key.
-      kyodoTreasury.publicKey,            // Owner of the associated token account.
+      kyodoTreasuryKeypair.publicKey,            // Owner of the associated token account.
       false,                              // Indicates if the function should throw an error if the account already exists.
       null, null,                         // Optional configs (multiSig and options).
       TOKEN_PROGRAM_ID,                   // SPL token program ID.
@@ -141,21 +191,21 @@ describe("agreement_program", () => {
       payer,                                  // Entity funding the minting.
       fakeMint.publicKey,                     // Mint's public key.
       associatedTokenAddressCompany.address,  // Destination account.
-      companyAddress,                         // Minting authority.
-      10000 * (10**8),                        // Amount of tokens to mint.
+      companyPubkey,                         // Minting authority.
+      10000 * (10 ** 8),                        // Amount of tokens to mint.
       [],                                     // Optional multisig authorities.
       null,                                   // Optional config (instructions).
       TOKEN_PROGRAM_ID                        // SPL token program ID.
     );
 
     // Logging details of the minting transactions and the associated addresses.
-    console.log("Tokens mint tx to company", mintToCompanyTx.toString());
-    console.log("Associated company token account:", associatedTokenAddressCompany);
-    console.log("Associated professional token account:", associatedTokenAddressProfessional);
+    console.log("Tokens Mint tx to Company", mintToCompanyTx.toString());
+    console.log("Associated Company Token Account:", associatedTokenAddressCompany);
+    console.log("Associated Professional Token Account:", associatedTokenAddressProfessional);
   });
 
   // Test case for initializing the first agreement.
-  it("Initialize first Agreement", async () => {
+  it("Initialize First Agreement", async () => {
     // Converting the string "company_agreements" to a buffer to be used for PDA calculations.
     const stringBuffer = Buffer.from("company_agreements", "utf-8");
 
@@ -163,7 +213,7 @@ describe("agreement_program", () => {
     const agreementAddress = anchor.web3.Keypair.generate();
 
     // Asigning the agreement address to the global variable to be used in the payment test.
-    toPayAgreementAddress = agreementAddress;
+    toPayFirstAgreementAddress = agreementAddress;
 
     // Finding the Program Derived Address (PDA) for company agreements using the buffer and company address.
     // https://www.anchor-lang.com/docs/pdas
@@ -171,7 +221,7 @@ describe("agreement_program", () => {
     // TODO: check for programs sign / modify pda 
     const [companyAgreementsPublicKey, _] =
       anchor.web3.PublicKey.findProgramAddressSync(
-        [stringBuffer, companyAddress.toBytes()],
+        [stringBuffer, companyPubkey.toBytes()],
         program.programId
       );
 
@@ -182,9 +232,9 @@ describe("agreement_program", () => {
       title: "test1",
       description: "test1 description",
       skills: ["JavaScript", "Rust", "Solana"], // You can replace these with actual skills
-      professional: professionalAddress.publicKey, // Replace with the professional's public key
-      communityDao: communityDao.publicKey, // Replace with the professional's public key
-      company: companyAddress, // Since company is signing this, we can use its public key,
+      professional: professionalKeypair.publicKey, // Replace with the professional's public key
+      communityDao: communityDaoKeypair.publicKey, // Replace with the professional's public key
+      company: companyPubkey, // Since company is signing this, we can use its public key,
       paymentAmount: new anchor.BN(1000),
     } as any;
 
@@ -192,7 +242,7 @@ describe("agreement_program", () => {
       .initializeAgreement(agreement)
       .accounts({
         agreement: agreementAddress.publicKey,
-        company: companyAddress,
+        company: companyPubkey,
         companyAgreements: companyAgreementsPublicKey, // The PDA address, you'll have to compute this based on your program logic
         systemProgram: anchor.web3.SystemProgram.programId,
       })
@@ -206,13 +256,13 @@ describe("agreement_program", () => {
     const fetchedCompanyAgreements =
       await program.account.companyAgreements.fetch(companyAgreementsPublicKey);
 
-    console.log("Your agreement account:", fetchedAgreement);
-    console.log("Your company agreements:", fetchedCompanyAgreements);
-    console.log("Your transaction signature:", tx);
+    console.log("Your Agreement Account Address:", fetchedAgreement);
+    console.log("Your Company Agreements:", fetchedCompanyAgreements);
+    console.log("Your Transaction Signature:", tx);
   });
 
   // Test case for initializing a second agreement.
-  it("Initialize second Agreement", async () => {
+  it("Initialize Second Agreement", async () => {
 
     // Converting the string "company_agreements" to a buffer to be used for PDA calculations.
     const stringBuffer = Buffer.from("company_agreements", "utf-8");
@@ -220,12 +270,15 @@ describe("agreement_program", () => {
     // Generating a new keypair for the agreement's address.
     const agreementAddress = anchor.web3.Keypair.generate();
 
+    // Asigning the agreement address to the global variable to be used in the payment test.
+    toPaySecondAgreementAddress = agreementAddress;
+
     // Finding the Program Derived Address (PDA) for company agreements using the buffer and company address.
     // https://www.anchor-lang.com/docs/pdas
     // https://solanacookbook.com/core-concepts/pdas.html#facts
     // TODO: check for programs sign / modify pda 
     const [companyAgreementsPublicKey, _] = anchor.web3.PublicKey.findProgramAddressSync(
-      [stringBuffer, companyAddress.toBytes()],
+      [stringBuffer, companyPubkey.toBytes()],
       program.programId
     );
 
@@ -234,8 +287,8 @@ describe("agreement_program", () => {
       title: "test2",
       description: "test2 description",
       skills: ["TypeScript", "C++", "DodgeChain"], // Array of skills related to the agreement.
-      professional: professionalAddress.publicKey,
-      company: companyAddress,
+      professional: professionalKeypair.publicKey,
+      company: companyPubkey,
       paymentAmount: new anchor.BN(1000),
     } as any;
 
@@ -244,7 +297,7 @@ describe("agreement_program", () => {
       .initializeAgreement(agreement)
       .accounts({
         agreement: agreementAddress.publicKey,
-        company: companyAddress,
+        company: companyPubkey,
         companyAgreements: companyAgreementsPublicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
@@ -261,27 +314,39 @@ describe("agreement_program", () => {
       await program.account.companyAgreements.fetch(companyAgreementsPublicKey);
 
     // Logging the details of the agreement, company's agreements, and the transaction for debugging.
-    console.log("Your agreement account:", fetchedAgreement);
-    console.log("Your company agreements:", fetchedCompanyAgreements);
-    console.log("Your transaction signature:", tx);
+    console.log("Your Agreement Account Address:", fetchedAgreement);
+    console.log("Your Company Agreements:", fetchedCompanyAgreements);
+    console.log("Your Transaction Signature:", tx);
   });
 
   // Test case for initializing the first agreement.
-  it("Add payment token to first agreement", async () => {
+  it("Add Payment Token to First Agreement", async () => {
 
     const tx = await program.methods.addAcceptedPaymentToken(fakeMint.publicKey)
       .accounts({
-        agreement: toPayAgreementAddress.publicKey,
-        owner: companyAddress,
+        agreement: toPayFirstAgreementAddress.publicKey,
+        acceptedPaymentTokens: acceptedPaymentTokensKeypair.publicKey,
+        owner: companyPubkey,
       }).rpc();
 
-    console.log("Your transaction signature:", tx);
+    console.log("Your Transaction Signature:", tx);
   });
 
   // Test case for initializing the first agreement.
-  it("Set fees to first agreement", async () => {
+  it("Add Payment Token to Second Agreement", async () => {
 
+    const tx = await program.methods.addAcceptedPaymentToken(fakeMint.publicKey)
+      .accounts({
+        agreement: toPaySecondAgreementAddress.publicKey,
+        acceptedPaymentTokens: acceptedPaymentTokensKeypair.publicKey,
+        owner: companyPubkey,
+      }).rpc();
 
+    console.log("Your Transaction Signature:", tx);
+  });
+
+  // Test case for initializing the first agreement.
+  it("Set Fees to Second Agreement", async () => {
     // Constructing the agreement data for the second agreement.
     const fees = {
       feePercentage: new anchor.BN(20),
@@ -291,15 +356,16 @@ describe("agreement_program", () => {
 
     const tx = await program.methods.setFees(fees)
       .accounts({
-        agreement: toPayAgreementAddress.publicKey,
-        owner: companyAddress,
+        agreement: toPaySecondAgreementAddress.publicKey,
+        fees: feesKeypair.publicKey,
+        owner: companyPubkey,
       }).rpc();
 
-    console.log("Your transaction signature:", tx);
+    console.log("Your Transaction Signature:", tx);
   });
 
   // Test case for processing a payment related to an agreement.
-  it("Process Payment", async () => {
+  it("Process 1/10 Payment on First Agreement", async () => {
 
     // Fetching the initial balances of the associated token accounts.
     const initialCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
@@ -308,29 +374,32 @@ describe("agreement_program", () => {
     const initialCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
 
     // Logging the initial balances for debugging.
-    console.log("Initial company balance:", initialCompanyBalance.value);
-    console.log("Initial professional balance:", initialProfessionalBalance.value);
-    console.log("Initial kyodo treasury balance:", initialKyodoTreasuryBalance.value);
-    console.log("Initial community dao balance:", initialCommunityDAOBalance.value);
+    console.log("Initial Company Balance:", initialCompanyBalance.value);
+    console.log("Initial Professional Balance:", initialProfessionalBalance.value);
+    console.log("Initial Kyodo Treasury Balance:", initialKyodoTreasuryBalance.value);
+    console.log("Initial Community DAO Balance:", initialCommunityDAOBalance.value);
+
+    const amountToPay = new anchor.BN(100);
 
     // Processing the payment for the agreement.
-    const tx = await program.methods.processPayment()
+    const tx = await program.methods.processPayment(fakeMint.publicKey, amountToPay)
       .accounts({
-        agreement: toPayAgreementAddress.publicKey,
-        company: companyAddress,
-        professional: professionalAddress.publicKey, // TODO: change if needed
+        agreement: toPayFirstAgreementAddress.publicKey,
+        company: companyPubkey,
         fromAta: associatedTokenAddressCompany.address,
         toAta: associatedTokenAddressProfessional.address,
         communityDao: associatedTokenAddressCommunity.address,
         treasury: associatedTokenAddressTreasury.address,
+        acceptedPaymentTokens: acceptedPaymentTokensKeypair.publicKey,
         paymentToken: fakeMint.publicKey,
+        fees: feesKeypair.publicKey,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
       .rpc();
 
     // Fetching details of the agreement post-payment to verify changes.
     const fetchedAgreement = await program.account.agreementAccount.fetch(
-      toPayAgreementAddress.publicKey
+      toPayFirstAgreementAddress.publicKey
     );
 
     // Fetching the final balances of the associated token accounts.
@@ -340,14 +409,122 @@ describe("agreement_program", () => {
     const finalCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
 
     // Logging the final balances for debugging.
-    console.log("Final company balance:", finalCompanyBalance.value);
-    console.log("Final professional balance:", finalProfessionalBalance.value);
-    console.log("Final kyodo treasury balance:", finalKyodoTreasuryBalance.value);
-    console.log("Final community dao balance:", finalCommunityDAOBalance.value);
+    console.log("Final Company Balance:", finalCompanyBalance.value);
+    console.log("Final Professional Balance:", finalProfessionalBalance.value);
+    console.log("Final Kyodo Treasury Balance:", finalKyodoTreasuryBalance.value);
+    console.log("Final Community DAO Balance:", finalCommunityDAOBalance.value);
 
     // Logging details of the agreement after the payment and the transaction signature for verification.
-    console.log("Your paid agreement account:", fetchedAgreement);
-    console.log("Your transaction signature:", tx);
+    console.log("Your Paid Agreement Account:", fetchedAgreement);
+    console.log("Your Transaction Signature:", tx);
   });
 
+  // Test case for processing a payment related to an agreement.
+  it("Process Full Payment on Second Agreement", async () => {
+
+    // Fetching the initial balances of the associated token accounts.
+    const initialCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
+    const initialProfessionalBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressProfessional.address)
+    const initialKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
+    const initialCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
+
+    // Logging the initial balances for debugging.
+    console.log("Initial Company Balance:", initialCompanyBalance.value);
+    console.log("Initial Professional Balance:", initialProfessionalBalance.value);
+    console.log("Initial Kyodo Treasury Balance:", initialKyodoTreasuryBalance.value);
+    console.log("Initial Community DAO Balance:", initialCommunityDAOBalance.value);
+
+    const amountToPay = new anchor.BN(1000);
+
+    // Processing the payment for the agreement.
+    const tx = await program.methods.processPayment(fakeMint.publicKey, amountToPay)
+      .accounts({
+        agreement: toPaySecondAgreementAddress.publicKey,
+        company: companyPubkey,
+        fromAta: associatedTokenAddressCompany.address,
+        toAta: associatedTokenAddressProfessional.address,
+        communityDao: associatedTokenAddressCommunity.address,
+        treasury: associatedTokenAddressTreasury.address,
+        acceptedPaymentTokens: acceptedPaymentTokensKeypair.publicKey,
+        paymentToken: fakeMint.publicKey,
+        fees: feesKeypair.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .rpc();
+
+    // Fetching details of the agreement post-payment to verify changes.
+    const fetchedAgreement = await program.account.agreementAccount.fetch(
+      toPaySecondAgreementAddress.publicKey
+    );
+
+    // Fetching the final balances of the associated token accounts.
+    const finalCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
+    const finalProfessionalBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressProfessional.address)
+    const finalKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
+    const finalCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
+
+    // Logging the final balances for debugging.
+    console.log("Final Company Balance:", finalCompanyBalance.value);
+    console.log("Final Professional Balance:", finalProfessionalBalance.value);
+    console.log("Final Kyodo Treasury Balance:", finalKyodoTreasuryBalance.value);
+    console.log("Final Community DAO Balance:", finalCommunityDAOBalance.value);
+
+    // Logging details of the agreement after the payment and the transaction signature for verification.
+    console.log("Your Paid Agreement Account:", fetchedAgreement);
+    console.log("Your Transaction Signature:", tx);
+  });
+
+  it("Process 9/10 Payment on First Agreement, to Fulfill", async () => {
+
+    // Fetching the initial balances of the associated token accounts.
+    const initialCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
+    const initialProfessionalBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressProfessional.address)
+    const initialKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
+    const initialCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
+
+    // Logging the initial balances for debugging.
+    console.log("Initial Company Balance:", initialCompanyBalance.value);
+    console.log("Initial Professional Balance:", initialProfessionalBalance.value);
+    console.log("Initial Kyodo Treasury Balance:", initialKyodoTreasuryBalance.value);
+    console.log("Initial Community DAO Balance:", initialCommunityDAOBalance.value);
+
+    const amountToPay = new anchor.BN(900);
+
+    // Processing the payment for the agreement.
+    const tx = await program.methods.processPayment(fakeMint.publicKey, amountToPay)
+      .accounts({
+        agreement: toPayFirstAgreementAddress.publicKey,
+        company: companyPubkey,
+        fromAta: associatedTokenAddressCompany.address,
+        toAta: associatedTokenAddressProfessional.address,
+        communityDao: associatedTokenAddressCommunity.address,
+        treasury: associatedTokenAddressTreasury.address,
+        acceptedPaymentTokens: acceptedPaymentTokensKeypair.publicKey,
+        paymentToken: fakeMint.publicKey,
+        fees: feesKeypair.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .rpc();
+
+    // Fetching details of the agreement post-payment to verify changes.
+    const fetchedAgreement = await program.account.agreementAccount.fetch(
+      toPayFirstAgreementAddress.publicKey
+    );
+
+    // Fetching the final balances of the associated token accounts.
+    const finalCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
+    const finalProfessionalBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressProfessional.address)
+    const finalKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
+    const finalCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
+
+    // Logging the final balances for debugging.
+    console.log("Final Company Balance:", finalCompanyBalance.value);
+    console.log("Final Professional Balance:", finalProfessionalBalance.value);
+    console.log("Final Kyodo Treasury Balance:", finalKyodoTreasuryBalance.value);
+    console.log("Final Community DAO Balance:", finalCommunityDAOBalance.value);
+
+    // Logging details of the agreement after the payment and the transaction signature for verification.
+    console.log("Your Paid Agreement Account:", fetchedAgreement);
+    console.log("Your Transaction Signature:", tx);
+  });
 });

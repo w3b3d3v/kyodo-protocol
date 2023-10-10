@@ -31,8 +31,6 @@ pub mod agreement_program {
         let agreement_account = &mut ctx.accounts.agreement;
         let company_agreements = &mut ctx.accounts.company_agreements;
 
-        let pay = PaymentToken::default();
-
         // Populate the agreement account with the data from the given agreement.
         agreement_account.title = agreement.title;
         agreement_account.description = agreement.description;
@@ -41,9 +39,7 @@ pub mod agreement_program {
         agreement_account.payment_amount = agreement.payment_amount;
         agreement_account.community_dao = agreement.community_dao;
         agreement_account.company = ctx.accounts.company.key();
-        agreement_account.token_incentive = pay.clone();
         agreement_account.total_paid = 0;
-        agreement_account.accepted_payment_tokens = Vec::new();
         agreement_account.status = 0;
 
         // Add the agreement's key to the company's list of agreements.
@@ -53,156 +49,94 @@ pub mod agreement_program {
         Ok(())
     }
 
+    pub fn initialize_fees(
+        ctx: Context<InitializeFees>,
+        fees: Fees,
+    ) -> Result<()> {
+        let fees_account = &mut ctx.accounts.fees; // TODO: Maybe hardcode the Kyodo admin key?
+                                                   // so only Kyodo admin can initilize fees.
+        fees_account.fee_percentage = fees.fee_percentage;
+        fees_account.treasury_fee = fees.treasury_fee;
+        fees_account.community_dao_fee = fees.community_dao_fee;
+
+        Ok(())
+    }
+
+    pub fn initialize_accepted_payment_tokens(
+        ctx: Context<InitializeAcceptedPaymentTokens>,
+    ) -> Result<()> {
+        let accepted_payment_token_account = &mut ctx.accounts.accepted_payment_token;
+        // TODO: Maybe hardcode the Kyodo admin key?
+        // so only Kyodo admin can initilize fees.
+        Ok(())
+    }
+
     pub fn add_accepted_payment_token(
         ctx: Context<AddAcceptedPaymentToken>,
         token_address: Pubkey,
     ) -> Result<()> {
-        let agreement_account = &mut ctx.accounts.agreement;
+        let accepted_payment_token_account = &mut ctx.accounts.accepted_payment_tokens;
 
-        if ctx.accounts.owner.key() != agreement_account.company
-            && ctx.accounts.owner.key() != agreement_account.professional
-        {
-            return err!(ErrorCode::Unauthorized);
-        }
-
-        agreement_account
+        accepted_payment_token_account
             .accepted_payment_tokens
             .push(token_address);
 
         Ok(())
     }
 
-    // Function to remove a token from being accepted as payment
-    // pub fn remove_accepted_payment_token(
-    //     ctx: Context<RemoveAcceptedPaymentToken>,
-    //     token_address: Pubkey,
-    // ) -> Result<()> {
-    //     let agreement_account = &mut ctx.accounts.agreement;
-    //     // Check if the calling address is the owner
-    //     if ctx.accounts.owner.key() != agreement_account.company {
-    //         return err!(ErrorCode::Unauthorized);
-    //     }
-    //     // Remove the token from accepted_payment_token
-    //     agreement_account
-    //         .accepted_payment_token
-    //         .retain(|&x| x != token_address);
-    //     Ok(())
-    // }
-    // Function to update the token incentive
-    // pub fn update_token_incentive(
-    //     ctx: Context<UpdateTokenIncentive>,
-    //     new_token: Token,
-    // ) -> Result<()> {
-    //     let agreement_account = &mut ctx.accounts.agreement;
-    //     // Check if the calling address is the owner
-    //     if ctx.accounts.owner.key() != agreement_account.company {
-    //         return err!(ErrorCode::Unauthorized);
-    //     }
-    //     // Update the token incentive in the agreement account
-    //     agreement_account.token_incentive = new_token;
-    //     Ok(())
-    // }
-
-    // pub fn update_token_incentive_address(
-    //     ctx: Context<UpdateTokenIncentiveAddress>,
-    //     new_address: Pubkey,
-    // ) -> Result<()> {
-    //     let agreement_account = &mut ctx.accounts.agreement;
-    //     // Check if the calling address is the owner
-    //     if ctx.accounts.owner.key() != agreement_account.company {
-    //         return err!(ErrorCode::Unauthorized);
-    //     }
-    //     // Update the token incentive address in the agreement account
-    //     agreement_account.token_incentive.token_address = new_address;
-    //     Ok(())
-    // }
-
-    // // Function to update the token incentive amount
-    // pub fn update_token_incentive_amount(
-    //     ctx: Context<UpdateTokenIncentiveAmount>,
-    //     new_amount: u64,
-    // ) -> Result<()> {
-    //     let agreement_account = &mut ctx.accounts.agreement;
-    //     // Check if the calling address is the owner
-    //     if ctx.accounts.owner.key() != agreement_account.company {
-    //         return err!(ErrorCode::Unauthorized);
-    //     }
-    //     // Update the token incentive amount in the agreement account
-    //     agreement_account.token_incentive.amount = new_amount;
-    //     Ok(())
-    // }
-
-    // // Function to update the payment amount for an agreement
-    // pub fn update_payment_amount(ctx: Context<UpdatePaymentAmount>, new_amount: u64) -> Result<()> {
-    //     let agreement_account = &mut ctx.accounts.agreement;
-    //     // Check if the calling address is the owner
-    //     if ctx.accounts.owner.key() != agreement_account.company {
-    //         return err!(ErrorCode::Unauthorized);
-    //     }
-    //     // Update the payment amount in the agreement account
-    //     agreement_account.payment.amount = new_amount;
-    //     Ok(())
-    // }
-    // // Function to mark an agreement as completed
-    // pub fn mark_agreement_completed(ctx: Context<MarkAgreementCompleted>) -> Result<()> {
-    //     let agreement_account = &mut ctx.accounts.agreement;
-    //     // Check if the calling address is the owner
-    //     if ctx.accounts.owner.key() != agreement_account.company {
-    //         return err!(ErrorCode::Unauthorized);
-    //     }
-    //     // Check if the agreement is already completed
-    //     if agreement_account.status != 0 {
-    //         return err!(ErrorCode::AlreadyCompleted);
-    //     }
-    //     // Mark the agreement as completed
-    //     agreement_account.status = 1;
-    //     Ok(())
-    // }
-
     // Function to set fees for an agreement.
     pub fn set_fees(ctx: Context<SetFees>, fees: Fees) -> Result<()> {
-        let agreement_account = &mut ctx.accounts.agreement;
+        let fees_account = &mut ctx.accounts.fees;
 
         if fees.fee_percentage < 0 || fees.fee_percentage > 1000 {
             return err!(ErrorCode::InvalidFeePercentage);
         }
 
-        agreement_account.fee_percentage = fees.fee_percentage;
-        agreement_account.treasury_fee = fees.treasury_fee;
-        agreement_account.community_dao_fee = fees.community_dao_fee;
+        fees_account.fee_percentage = fees.fee_percentage;
+        fees_account.treasury_fee = fees.treasury_fee;
+        fees_account.community_dao_fee = fees.community_dao_fee;
 
         Ok(())
     }
 
     // Function to process the payment for an agreement.
-    pub fn process_payment(ctx: Context<ProcessPayment>) -> Result<()> {
-        // Extract various accounts needed for payment processing from the context.
-        let payment_from = &mut ctx.accounts.company;
+    pub fn process_payment(ctx: Context<ProcessPayment>, payment_token: Pubkey ,amount_to_pay: u64) -> Result<()> {
+        //Extract various accounts needed for payment processing from the context.
         let agreement_account = &mut ctx.accounts.agreement;
-        let payment_token = &mut ctx.accounts.payment_token;
-        let destination = &ctx.accounts.to_ata;
+        let accepted_payment_tokens_account = &mut ctx.accounts.accepted_payment_tokens;
+        let fees_account = &mut ctx.accounts.fees;
+
         let community_dao = &ctx.accounts.community_dao;
         let treasury = &ctx.accounts.treasury;
+
+        let payment_from = &mut ctx.accounts.company;
+        let destination = &ctx.accounts.to_ata;
         let source = &ctx.accounts.from_ata;
+
         let token_program = &ctx.accounts.token_program;
 
         // Extract information from the agreement account.
         let agreement_professional = agreement_account.professional;
         let agreement_company = agreement_account.company;
-        //let agreement_payment_token = agreement_account.accepted_payment_token;
-        let amount_to_pay = agreement_account.payment_amount * u64::pow(10, 8);
-
-        // Check if the provided company is the one from the agreement.
-        if payment_from.key() != agreement_company {
-            return err!(ErrorCode::Unauthorized);
-        }
+        let agreement_amount_to_pay = agreement_account.payment_amount;
+        let total_payed = agreement_account.total_paid;
 
         if destination.owner.key() != agreement_professional {
             return err!(ErrorCode::InvalidPaymentDestination);
         }
 
+        // Check if the amount to be paid is a valid amount.
+        if amount_to_pay < 0 {
+            return err!(ErrorCode::InvalidPaymentAmount);
+        }
+
+        // Check if the amount being paid is greater than total amount to pay.
+        if (total_payed + amount_to_pay) > agreement_amount_to_pay {
+            return err!(ErrorCode::PaymentExeeded);
+        }
+
         //Check if the given payment token is accepted for the agreement.
-        if agreement_account
+        if accepted_payment_tokens_account
             .accepted_payment_tokens
             .iter()
             .find(|&&x| x == payment_token.key())
@@ -211,14 +145,9 @@ pub mod agreement_program {
             return err!(ErrorCode::InvalidPaymentToken);
         }
 
-        // Check if the amount to be paid is a valid amount.
-        if amount_to_pay < 0 {
-            return err!(ErrorCode::InvalidPaymentAmount);
-        }
-
-        let total_fee_basis_points = agreement_account.fee_percentage * 1000;
+        let total_fee_basis_points = fees_account.fee_percentage * 1000;
         let total_fee = (total_fee_basis_points * amount_to_pay) / u64::pow(10, 6); //TODO: CHECK: Is this correct, get decimals?
-        let kyodo_treasury_share = (total_fee * agreement_account.treasury_fee) / 1000;
+        let kyodo_treasury_share = (total_fee * fees_account.treasury_fee) / 1000;
         let community_dao_share = total_fee - kyodo_treasury_share;
         let professional_payment = amount_to_pay - total_fee;
 
@@ -263,11 +192,14 @@ pub mod agreement_program {
             CpiContext::new(cpi_program, cpi_accounts),
             kyodo_treasury_share,
         )?;
+
         // Update the amount that has been paid in the agreement.
         agreement_account.total_paid += amount_to_pay;
 
         // Set the agreement's status as paid.
-        agreement_account.status = 1;
+        if agreement_account.total_paid == agreement_account.payment_amount {
+            agreement_account.status = 1;
+        }
 
         // Return Ok to indicate successful execution.
         Ok(())
@@ -292,51 +224,34 @@ pub struct InitializeAgreement<'info> {
 }
 
 #[derive(Accounts)]
+pub struct InitializeFees<'info> {
+    #[account(init, payer = admin, space = 8 + 512)]
+    pub fees: Account<'info, FeesAccount>,
+    #[account(mut)]
+    pub admin: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct InitializeAcceptedPaymentTokens<'info> {
+    #[account(init, payer = admin, space = 8 + 1024)]
+    pub accepted_payment_token: Account<'info, AcceptedPaymentTokensAccount>,
+    #[account(mut)]
+    pub admin: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct SetFees<'info> {
+    #[account(mut)]
+    pub fees: Account<'info, FeesAccount>,
+    pub owner: Signer<'info>,
+}
+
+#[derive(Accounts)]
 pub struct AddAcceptedPaymentToken<'info> {
     #[account(mut)]
-    pub agreement: Account<'info, AgreementAccount>,
-    pub owner: Signer<'info>,
-}
-
-#[derive(Accounts)]
-pub struct RemoveAcceptedPaymentToken<'info> {
-    #[account(mut)]
-    pub agreement: Account<'info, AgreementAccount>,
-    pub owner: Signer<'info>,
-}
-
-#[derive(Accounts)]
-pub struct UpdateTokenIncentive<'info> {
-    #[account(mut)]
-    pub agreement: Account<'info, AgreementAccount>,
-    pub owner: Signer<'info>,
-}
-
-#[derive(Accounts)]
-pub struct UpdateTokenIncentiveAddress<'info> {
-    #[account(mut)]
-    pub agreement: Account<'info, AgreementAccount>,
-    pub owner: Signer<'info>,
-}
-
-#[derive(Accounts)]
-pub struct UpdateTokenIncentiveAmount<'info> {
-    #[account(mut)]
-    pub agreement: Account<'info, AgreementAccount>,
-    pub owner: Signer<'info>,
-}
-
-#[derive(Accounts)]
-pub struct UpdatePaymentAmount<'info> {
-    #[account(mut)]
-    pub agreement: Account<'info, AgreementAccount>,
-    pub owner: Signer<'info>,
-}
-
-#[derive(Accounts)]
-pub struct MarkAgreementCompleted<'info> {
-    #[account(mut)]
-    pub agreement: Account<'info, AgreementAccount>,
+    pub accepted_payment_tokens: Account<'info, AcceptedPaymentTokensAccount>,
     pub owner: Signer<'info>,
 }
 
@@ -354,15 +269,9 @@ pub struct ProcessPayment<'info> {
     pub community_dao: Account<'info, TokenAccount>,
     #[account(mut)]
     pub treasury: Account<'info, TokenAccount>,
-    /// CHECK:` We do not read or write to this account.
-    pub payment_token: AccountInfo<'info>,
+    pub accepted_payment_tokens: Account<'info, AcceptedPaymentTokensAccount>,
+    pub fees: Account<'info, FeesAccount>,
     pub token_program: Program<'info, Token>,
-}
-
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
-pub struct PaymentToken {
-    pub amount: u64,
-    pub token_address: Pubkey,
 }
 
 #[account]
@@ -375,32 +284,34 @@ pub struct AgreementAccount {
     pub community_dao: Pubkey,
     pub treasury: Pubkey,
     pub company: Pubkey,
-    pub token_incentive: PaymentToken,
-    pub accepted_payment_tokens: Vec<Pubkey>,
-    pub fee_percentage: u64,
-    pub treasury_fee: u64,
-    pub community_dao_fee: u64,
     pub total_paid: u64,
     pub status: u8,
 }
 
-#[derive(Accounts)]
-pub struct SetFees<'info> {
-    #[account(mut)]
-    pub agreement: Account<'info, AgreementAccount>,
-    pub owner: Signer<'info>,
+#[account]
+pub struct FeesAccount {
+    pub fee_percentage: u64,
+    pub treasury_fee: u64,
+    pub treasury: Pubkey,
+    pub community_dao_fee: u64,
+}
+
+#[account]
+pub struct AcceptedPaymentTokensAccount {
+    pub accepted_payment_tokens: Vec<Pubkey>
+}
+
+#[account]
+pub struct CompanyAgreements {
+    pub agreements: Vec<Pubkey>,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
 pub struct Fees {
     pub fee_percentage: u64,
     pub treasury_fee: u64,
+    pub treasury: Pubkey,
     pub community_dao_fee: u64,
-}
-
-#[account]
-pub struct CompanyAgreements {
-    pub agreements: Vec<Pubkey>,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
@@ -430,4 +341,6 @@ pub enum ErrorCode {
     InvalidPaymentAmount,
     #[msg("Invalid fee percentage")]
     InvalidFeePercentage,
+    #[msg("Payment exeeded the total amount")]
+    PaymentExeeded
 }
