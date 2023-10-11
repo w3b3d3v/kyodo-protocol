@@ -52,7 +52,7 @@ async function readAgreements() {
 
 async function processPayment(agreement, company, acceptedPaymentTokensAddress, feesAddress,) {
     const payer = (provider.wallet as NodeWallet).payer;
-    const amountToPay = new anchor.BN(100)
+    const amountToPay = new anchor.BN(1000 * Math.pow(10, 8))
 
     const associatedTokenAddressCompany = new PublicKey(process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY);
     const associatedTokenAddressCommunity = new PublicKey(process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY);
@@ -116,9 +116,3 @@ async function getOrCreateAssociatedTokenAccountKyodo(payer, tokenAddress, owner
 };
 
 main()
-
-
-// TODO @7seven: paymentToken nos testes ainda está associado a um agreement mas deve ser definido pelo admin após o deploy assim como o setFees.
-// Melhorar o initializePaymentInfrastructure: 
-// 1 - adicionar o endereço da fakeStable como acceptedPaymentToken e pegar a account
-// 2-  se a feeAccount e acceptedPaymentTokensAccount precisam ser salvas na env, eu nao sei exatamente qual é o valor que eu devo salvar.

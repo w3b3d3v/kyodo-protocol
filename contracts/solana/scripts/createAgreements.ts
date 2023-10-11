@@ -34,11 +34,12 @@ async function createAgreement() {
       program.programId
     );
 
-    const amount = new anchor.BN(1000);
+    // const amount = new anchor.BN(1000);
+    const amount = new anchor.BN(1000 * Math.pow(10, 8))
     
     const agreement = {
-      title: "test1",
-      description: "test1 description",
+      title: "test from backend",
+      description: "backend description",
       skills: ["JavaScript", "Rust", "Solana"], // You can replace these with actual skills
       paymentAmount: amount,
       communityDao: communityDaoPubkey,
