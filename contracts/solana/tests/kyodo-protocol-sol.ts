@@ -324,7 +324,6 @@ describe("agreement_program", () => {
 
     const tx = await program.methods.addAcceptedPaymentToken(fakeMint.publicKey)
       .accounts({
-        agreement: toPayFirstAgreementAddress.publicKey,
         acceptedPaymentTokens: acceptedPaymentTokensKeypair.publicKey,
         owner: companyPubkey,
       }).rpc();
@@ -337,7 +336,6 @@ describe("agreement_program", () => {
 
     const tx = await program.methods.addAcceptedPaymentToken(fakeMint.publicKey)
       .accounts({
-        agreement: toPaySecondAgreementAddress.publicKey,
         acceptedPaymentTokens: acceptedPaymentTokensKeypair.publicKey,
         owner: companyPubkey,
       }).rpc();
@@ -391,7 +389,6 @@ describe("agreement_program", () => {
         communityDao: associatedTokenAddressCommunity.address,
         treasury: associatedTokenAddressTreasury.address,
         acceptedPaymentTokens: acceptedPaymentTokensKeypair.publicKey,
-        paymentToken: fakeMint.publicKey,
         fees: feesKeypair.publicKey,
         tokenProgram: TOKEN_PROGRAM_ID,
       })

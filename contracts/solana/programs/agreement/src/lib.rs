@@ -29,6 +29,7 @@ pub mod agreement_program {
     ) -> Result<()> {
         // Extract the agreement and company_agreements accounts from the context.
         let agreement_account = &mut ctx.accounts.agreement;
+        let company_account = &mut ctx.accounts.company;
         let company_agreements = &mut ctx.accounts.company_agreements;
 
         // Populate the agreement account with the data from the given agreement.
@@ -38,7 +39,7 @@ pub mod agreement_program {
         agreement_account.professional = agreement.professional;
         agreement_account.payment_amount = agreement.payment_amount;
         agreement_account.community_dao = agreement.community_dao;
-        agreement_account.company = ctx.accounts.company.key();
+        agreement_account.company = company_account.key();
         agreement_account.total_paid = 0;
         agreement_account.status = 0;
 
@@ -126,13 +127,8 @@ pub mod agreement_program {
         }
 
         // Check if the amount to be paid is a valid amount.
-        if amount_to_pay < 0 {
+        if amount_to_pay <= 0 {
             return err!(ErrorCode::InvalidPaymentAmount);
-        }
-
-        // Check if the amount being paid is greater than total amount to pay.
-        if (total_payed + amount_to_pay) > agreement_amount_to_pay {
-            return err!(ErrorCode::PaymentExeeded);
         }
 
         //Check if the given payment token is accepted for the agreement.
@@ -195,11 +191,6 @@ pub mod agreement_program {
 
         // Update the amount that has been paid in the agreement.
         agreement_account.total_paid += amount_to_pay;
-
-        // Set the agreement's status as paid.
-        if agreement_account.total_paid == agreement_account.payment_amount {
-            agreement_account.status = 1;
-        }
 
         // Return Ok to indicate successful execution.
         Ok(())
@@ -282,7 +273,6 @@ pub struct AgreementAccount {
     pub payment_amount: u64,
     pub professional: Pubkey,
     pub community_dao: Pubkey,
-    pub treasury: Pubkey,
     pub company: Pubkey,
     pub total_paid: u64,
     pub status: u8,
