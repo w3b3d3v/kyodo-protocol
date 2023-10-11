@@ -77,5 +77,5 @@
   "add-btn": "Add",
   "transaction-success": "Transaction successful!",
   "agreement-pending": "Transaction is still pending, please wait.",
-  "no-agreements": "NO Agreements found. Please add one."
+  "no-agreements": "No agreements found. Click on the add icon above."
 }

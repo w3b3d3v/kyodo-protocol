@@ -76,5 +76,6 @@
   "add": "adicionar",
   "add-btn": "Adicionar",
   "agreement-created": "Acordo criado com sucesso!",
-  "agreement-pending": "Transação pendente. Aguarde um instante..."
+  "agreement-pending": "Transação pendente. Aguarde um instante...",
+  "no-agreements": "Nenhum acordo encontrado. Click no link de adicionar acima"
 }

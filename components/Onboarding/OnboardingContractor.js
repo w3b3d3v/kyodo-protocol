@@ -67,21 +67,11 @@ function OnboardingContractor() {
             <p>{t("profile-selection")}</p>
           </li>
           <li className={styles["current-step"]}>
-            <Image
-              src="/onboarding/current-icon.svg"
-              width={20}
-              height={23}
-              alt="Current step icon"
-            />
+            <Image src="/onboarding/current-icon.svg" width={20} height={23} alt="Current step" />
             <p>{t("initial-setup")}</p>
           </li>
           <li>
-            <Image
-              src="/onboarding/next-step-icon.svg"
-              width={20}
-              height={23}
-              alt="Next step icon"
-            />
+            <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Next step" />
             <p>{t("terms-conditions")}</p>
           </li>
         </ul>
