@@ -27,18 +27,22 @@ function Payments ({ limit }) {
   }
 
   async function fetchPaidAgreements() {
-    const companyFilter = contract.filters.PaymentMade(account, null);
-    const professionalFilter = contract.filters.PaymentMade(null, account);
-
-    const companyAgreements = await contract.queryFilter(companyFilter);
-    const professionalAgreements = await contract.queryFilter(professionalFilter);
-
-    const allAgreements = [...companyAgreements, ...professionalAgreements];
-
-    setPaidAgreements(allAgreements.map(event => ({
-    ...event.args,
-    transactionHash: event.transactionHash
-    })));
+    try {
+      const companyFilter = contract.filters.PaymentMade(account, null);
+      const professionalFilter = contract.filters.PaymentMade(null, account);
+  
+      const companyAgreements = await contract.queryFilter(companyFilter);
+      const professionalAgreements = await contract.queryFilter(professionalFilter);
+  
+      const allAgreements = [...companyAgreements, ...professionalAgreements];
+  
+      setPaidAgreements(allAgreements.map(event => ({
+      ...event.args,
+      transactionHash: event.transactionHash
+      })));
+    } catch (error) {
+      // TODO: Move implementation to promiseHandler hook
+    }
   }
 
   function renderPaidAgreements() {
