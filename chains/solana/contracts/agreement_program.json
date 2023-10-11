@@ -36,10 +36,59 @@
       ]
     },
     {
+      "name": "initializeFees",
+      "accounts": [
+        {
+          "name": "fees",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "fees",
+          "type": {
+            "defined": "Fees"
+          }
+        }
+      ]
+    },
+    {
+      "name": "initializeAcceptedPaymentTokens",
+      "accounts": [
+        {
+          "name": "acceptedPaymentToken",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "addAcceptedPaymentToken",
       "accounts": [
         {
-          "name": "agreement",
+          "name": "acceptedPaymentTokens",
           "isMut": true,
           "isSigner": false
         },
@@ -60,7 +109,7 @@
       "name": "setFees",
       "accounts": [
         {
-          "name": "agreement",
+          "name": "fees",
           "isMut": true,
           "isSigner": false
         },
@@ -113,7 +162,12 @@
           "isSigner": false
         },
         {
-          "name": "paymentToken",
+          "name": "acceptedPaymentTokens",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "fees",
           "isMut": false,
           "isSigner": false
         },
@@ -123,7 +177,16 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "paymentToken",
+          "type": "publicKey"
+        },
+        {
+          "name": "amountToPay",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -167,17 +230,21 @@
             "type": "publicKey"
           },
           {
-            "name": "tokenIncentive",
-            "type": {
-              "defined": "PaymentToken"
-            }
+            "name": "totalPaid",
+            "type": "u64"
           },
           {
-            "name": "acceptedPaymentTokens",
-            "type": {
-              "vec": "publicKey"
-            }
-          },
+            "name": "status",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeesAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
             "name": "feePercentage",
             "type": "u64"
@@ -187,16 +254,26 @@
             "type": "u64"
           },
           {
+            "name": "treasury",
+            "type": "publicKey"
+          },
+          {
             "name": "communityDaoFee",
             "type": "u64"
-          },
+          }
+        ]
+      }
+    },
+    {
+      "name": "AcceptedPaymentTokensAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            "name": "totalPaid",
-            "type": "u64"
-          },
-          {
-            "name": "status",
-            "type": "u8"
+            "name": "acceptedPaymentTokens",
+            "type": {
+              "vec": "publicKey"
+            }
           }
         ]
       }
@@ -218,22 +295,6 @@
   ],
   "types": [
     {
-      "name": "PaymentToken",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "amount",
-            "type": "u64"
-          },
-          {
-            "name": "tokenAddress",
-            "type": "publicKey"
-          }
-        ]
-      }
-    },
-    {
       "name": "Fees",
       "type": {
         "kind": "struct",
@@ -245,6 +306,10 @@
           {
             "name": "treasuryFee",
             "type": "u64"
+          },
+          {
+            "name": "treasury",
+            "type": "publicKey"
           },
           {
             "name": "communityDaoFee",
@@ -327,9 +392,14 @@
       "code": 6006,
       "name": "InvalidFeePercentage",
       "msg": "Invalid fee percentage"
+    },
+    {
+      "code": 6007,
+      "name": "PaymentExeeded",
+      "msg": "Payment exeeded the total amount"
     }
   ],
   "metadata": {
-    "address": "FVz7RJ6H6zFUkTx1sGuCDHDmYr96EQHR4g52xTmL8ZPn"
+    "address": "FqaqjUy4n1ysFZi6Jr7XeGDzu5f1gt7a85mVLGjP1cRX"
   }
 }
