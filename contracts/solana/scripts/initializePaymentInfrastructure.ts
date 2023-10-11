@@ -15,6 +15,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local')
 const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
 anchor.setProvider(provider);
 const program = anchor.workspace.AgreementProgram;
+const FAKE_STABLE_ADDRESS = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS);
 
 function loadKeypairFromJSONFile(filePath: string): Keypair {
     // Carregue o conteúdo do arquivo.
@@ -29,7 +30,7 @@ function loadKeypairFromJSONFile(filePath: string): Keypair {
     return keypair;
   }
 
-const wallet = process.env.ANCHOR_WALLET
+const wallet = "/Users/nomadbitcoin/.config/solana/id.json"
 
 function updateConfig(
         associatedTokenAddressCompany, 
