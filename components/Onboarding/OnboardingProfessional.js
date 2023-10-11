@@ -1,9 +1,56 @@
 import styles from "./Onboarding.module.scss"
 import Image from 'next/image'
 import { useTranslation } from "react-i18next"
+import { useState } from 'react';
 import Link from "next/link"
 
+function saveToCache(data) {
+  const dataString = JSON.stringify(data);
+  localStorage.setItem('cachedData', dataString);
+  console.log(localStorage.getItem('cachedData'));
+}
+
 function OnboardingProfessional() {
+
+  const [nameProfessional, setName] = useState('');
+  const [bioProfessional, setBio] = useState('');
+  const [avatarProfessional, setAvatar] = useState('');
+  const [websiteProfessional, setWebsite] = useState('');
+  const [communityProfessional, setCommunity] = useState('');
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
+
+  const handleBioChange = (e) => {
+    setBio(e.target.value);
+  };
+
+  const handleAvatarChange = (e) => {
+    setAvatar(e.target.value);
+  };
+
+  const handleWebsiteChange = (e) => {
+    setWebsite(e.target.value);
+  };
+
+  const handleCommunityChange = (e) => {
+    setCommunity(e.target.value);
+  };
+
+  const handleButtonClick = () => {
+
+    const formData = {
+      nameProfessional,
+      bioProfessional,
+      avatarProfessional,
+      websiteProfessional,
+      communityProfessional
+    };
+
+    saveToCache(formData);
+  };
+
   const { t } = useTranslation()
 
   return (
@@ -53,29 +100,36 @@ function OnboardingProfessional() {
             <label htmlFor="professional-name-input">{t("name")} <span>*</span></label>
             <input
               type="text"
-              id="professional-name-input"
+              onChange={handleNameChange}
               tabIndex={1}
             />
             <label htmlFor="professional-bio-input">{t("bio")} <span>*</span></label>
             <textarea
               type="text"
-              id="professional-bio-input"
+              onChange={handleBioChange}
               tabIndex={2}
             ></textarea>
           </div>
 
           <div className={"col-02"}>
             <label htmlFor="professional-avatar-input">{t("avatar")}</label>
-            <input type="text" id="professional-avatar-input" tabIndex={3} />
+            <input
+              type="text"
+              onChange={handleAvatarChange}
+              tabIndex={3}
+            />
             <label htmlFor="professional-website-input">{t("website")}</label>
             <input
               type="text"
-              id="professional-website-input"
+              onChange={handleWebsiteChange}
               tabIndex={4}
             />
             <label htmlFor="professional-community-input">{t("community")} <span>*</span></label>
             <div className={"custom-select"}>
-              <select id="professional-community-input" tabIndex={5}>
+              <select
+                tabIndex={5}
+                onChange={handleCommunityChange}
+              >
                 <option>{t("select-option")}</option>
                 <option>Phala Network</option>
                 <option>Web3dev</option>
@@ -87,7 +141,7 @@ function OnboardingProfessional() {
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </Link>
-          <button type="submit" className={styles["next-btn"]} tabIndex={6}>
+          <button onClick={handleButtonClick} className={styles["next-btn"]} tabIndex={6}>
             {t("next-step")}
           </button>
         </section>
