@@ -35,33 +35,33 @@ export function AccountProvider({ children }) {
   }
 
   const updateAccount = async () => {
+    console.log("mudou")
     if (selectedChain === "ethereum" && window.ethereum) {
       try {
-        const accounts = await window.ethereum.request({ method: "eth_accounts" });
+        const accounts = await window.ethereum.request({ method: "eth_accounts" })
         if (accounts.length > 0 && accounts[0] !== account) {
-          setAccount(accounts[0]);
+          setAccount(accounts[0])
         }
       } catch (error) {
-        console.error(error);
+        console.error(error)
       }
     } else if (selectedChain === "solana" && window.solana && window.solana.isConnected) {
       try {
-        const solanaAccount = window.solana.publicKey.toString();
+        const solanaAccount = window.solana.publicKey.toString()
         if (solanaAccount && solanaAccount !== account) {
-          setAccount(solanaAccount);
+          setAccount(solanaAccount)
         }
       } catch (error) {
-        console.error(error);
+        console.error(error)
       }
     }
   }
-  
 
   useEffect(() => {
     updateAccount()
-
     if (window[selectedChain]) {
       window[selectedChain].on("connect", updateAccount)
+      window[selectedChain].on("accountsChanged", updateAccount)
       window[selectedChain].on("disconnect", handleDisconnect)
 
       return () => {
