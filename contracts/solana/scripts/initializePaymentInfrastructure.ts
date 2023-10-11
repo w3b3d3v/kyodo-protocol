@@ -29,7 +29,7 @@ function loadKeypairFromJSONFile(filePath: string): Keypair {
     return keypair;
   }
 
-const wallet = "/Users/nomadbitcoin/.config/solana/id.json"
+const wallet = process.env.ANCHOR_WALLET
 
 function updateConfig(
         associatedTokenAddressCompany, 
@@ -85,8 +85,8 @@ async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasur
     const fakeStablePubkey = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS);
     const adminPubkey = new PublicKey(adminKeypair.publicKey);
     const acceptedPaymentTokensPubkey = new PublicKey(acceptedPaymentTokensKeypair.publicKey);
-    const kyodoTreasuryPubkey = new PublicKey(kyodoTreasuryKeypair.publicKey);
-    const communityDaoPubkey = new PublicKey(communityDaoKeypair.publicKey);
+    const kyodoTreasuryPubkey = new PublicKey(kyodoTreasuryKeypair);
+    const communityDaoPubkey = new PublicKey(communityDaoKeypair);
     const feesPubkey = new PublicKey(feesKeypair.publicKey);
 
 
@@ -172,11 +172,11 @@ async function main() {
     try {
         // This need to be created only once for production, and saved in a safe place.
         // both public key and secret key.
-        const communityDaoKeypair = anchor.web3.Keypair.generate();
-        const kyodoTreasuryKeypair = anchor.web3.Keypair.generate();
+        const communityDaoKeypair = process.env.NEXT_PUBLIC_SOL_COMMUNITY_TREASURY_ADDRESS
+        const kyodoTreasuryKeypair = process.env.NEXT_PUBLIC_SOL_KYODO_TREASURY_ADDRESS
         const feesKeypair = anchor.web3.Keypair.generate();
         const acceptedPaymentTokensKeypair = anchor.web3.Keypair.generate();
-
+        
         await initializePaymentInfrastructure(
             communityDaoKeypair,
             kyodoTreasuryKeypair,
