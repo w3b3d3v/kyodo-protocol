@@ -3,6 +3,7 @@ import { PublicKey, Keypair } from "@solana/web3.js";
 import * as dotenv from "dotenv";
 import path from "path";
 import fs from 'fs';
+import { getOrCreateAssociatedTokenAccountKyodo } from "./initializePaymentInfrastructure";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { 
     TOKEN_PROGRAM_ID,
@@ -14,7 +15,6 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local')
 const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
 anchor.setProvider(provider);
 const program = anchor.workspace.AgreementProgram;
-const FAKE_STABLE_ADDRESS = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS);
 
 async function readAgreements() {
     const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
@@ -51,40 +51,23 @@ async function readAgreements() {
     return agreements;
 }
 
-async function processPayment(agreement, company) {
+async function processPayment(agreement, company, acceptedPaymentTokensAddress, feesAddress,) {
     const payer = (provider.wallet as NodeWallet).payer;
     const amountToPay = 100
 
     const associatedTokenAddressCompany = process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY
     const associatedTokenAddressCommunity = process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY
     const associatedTokenAddressTreasury = process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY
+    const fakeStablePubkey = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_fakeStablePubkey);
 
-    //   Creating or fetching the associated token account for the professional.
-    const associatedTokenAddressProfessional = await getOrCreateAssociatedTokenAccount(
-        provider.connection,                // Current provider's connection.
-        payer,                // Entity funding the transaction.
-        FAKE_STABLE_ADDRESS,                 // Mint's public key.
+    // Creating or fetching the associated token account for the professional.
+    const associatedTokenAddressProfessional = await getOrCreateAssociatedTokenAccountKyodo(
+        payer,                          // Entity funding the transaction.
+        fakeStablePubkey,               // Mint's public key.
         agreement[0].professional,      // Owner of the associated token account.
-        false,                              // Indicates if the function should throw an error if the account already exists.
-        null, null,                         // Optional configs (multiSig and options).
-        TOKEN_PROGRAM_ID,                   // SPL token program ID.
-        ASSOCIATED_TOKEN_PROGRAM_ID         // SPL associated token program ID.
     );
 
-
-    const tx = await program.methods.processPayment()
-      .accounts({
-        agreement: agreement[0].publicKey,
-        company: company,
-        fromAta: associatedTokenAddressCompany,
-        toAta: associatedTokenAddressProfessional.address,
-        professional: agreement[0].professional,
-        paymentToken: FAKE_STABLE_ADDRESS,
-        tokenProgram: TOKEN_PROGRAM_ID,
-      })
-      .rpc();
-
-      const tx = await program.methods.processPayment(FAKE_STABLE_ADDRESS, amountToPay)
+      const tx = await program.methods.processPayment(fakeStablePubkey, amountToPay)
       .accounts({
         agreement: agreement[0].publicKey,
         company: company,
@@ -92,9 +75,8 @@ async function processPayment(agreement, company) {
         toAta: associatedTokenAddressProfessional,
         communityDao: associatedTokenAddressCommunity,
         treasury: associatedTokenAddressTreasury,
-        acceptedPaymentTokens: acceptedPaymentTokensKeypair.publicKey, // É preciso definir essa account dentro do initializePaymentInfrastructure
-        paymentToken: FAKE_STABLE_ADDRESS, // precisamos passar o fakeStable duas vezes?
-        fees: feesKeypair.publicKey,
+        acceptedPaymentTokens: acceptedPaymentTokensAddress, // É preciso definir essa account dentro do initializePaymentInfrastructure
+        fees: feesAddress,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
       .rpc();
@@ -110,12 +92,14 @@ async function processPayment(agreement, company) {
 
 async function main(){
     const company = provider.wallet.publicKey;
+    const acceptedPaymentTokensPubkey = new PublicKey(process.env.SOL_ACCEPTED_PAYMENT_TOKENS_ADDRESS);
+    const feesPubkey = new PublicKey(process.env.SOL_FEES_ADDRESS);
 
     const agreement = await readAgreements()
     // console.log("agreement", agreement)
     
-    const processPaymentResult = await processPayment(agreement, company)
-    // console.log("processPaymentResult", processPaymentResult)
+    const processPaymentResult = await processPayment(agreement, company, acceptedPaymentTokensPubkey, feesPubkey)
+    //console.log("processPaymentResult", processPaymentResult)
 }
 
 
@@ -125,4 +109,4 @@ main()
 // TODO @7seven: paymentToken nos testes ainda está associado a um agreement mas deve ser definido pelo admin após o deploy assim como o setFees.
 // Melhorar o initializePaymentInfrastructure: 
 // 1 - adicionar o endereço da fakeStable como acceptedPaymentToken e pegar a account
-// 2- se a feeAccount e acceptedPaymentTokensAccount precisam ser salvas na env, eu nao sei exatamente qual é o valor que eu devo salvar.
+// 2-  se a feeAccount e acceptedPaymentTokensAccount precisam ser salvas na env, eu nao sei exatamente qual é o valor que eu devo salvar.
