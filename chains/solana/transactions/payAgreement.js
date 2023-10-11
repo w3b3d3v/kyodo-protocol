@@ -40,6 +40,7 @@ export const payAgreement = async (details) => {
         const selectedPaymentTokenPubkey = new PublicKey(details.selectedPaymentToken.address);
 
         // Creating or fetching the associated token account for the professional.
+        console.log("details.agreement.professional", details.agreement.professional)
         const associatedTokenAddressProfessional = await getOrCreateAssociatedNecessaryTokenAccount(
             details.contract.provider,              
             details.publicKey,                          // payer: Entity funding the transaction.
@@ -51,36 +52,34 @@ export const payAgreement = async (details) => {
         
         const amountInLamports = new anchor.BN(details.paymentValue * Math.pow(10, details.selectedPaymentToken.decimals));
 
-        // console.log({
-        //     agreement: details.agreement.publicKey,
-        //     company: details.wallet,
-        //     fromAta: associatedTokenAddressCompany,
-        //     toAta: associatedTokenAddressProfessional.address,
-        //     communityDao: associatedTokenAddressCommunity,
-        //     treasury: associatedTokenAddressTreasury,
-        //     acceptedPaymentTokens: acceptedPaymentTokensPubkey,
-        //     paymentToken: selectedPaymentTokenPubkey,
-        //     fees: feesPubkey,
-        //     tokenProgram: TOKEN_PROGRAM_ID,
-        // });
+        console.log({
+            agreement: details.agreement.publicKey,
+            company: details.wallet,
+            fromAta: associatedTokenAddressCompany,
+            toAta: associatedTokenAddressProfessional.address,
+            communityDao: associatedTokenAddressCommunity,
+            treasury: associatedTokenAddressTreasury,
+            acceptedPaymentTokens: acceptedPaymentTokensPubkey,
+            paymentToken: selectedPaymentTokenPubkey,
+            fees: feesPubkey,
+            tokenProgram: TOKEN_PROGRAM_ID,
+        });
 
-        // const tx = await details.contract.methods.processPayment(selectedPaymentTokenPubkey, amountInLamports)
-        // .accounts({
-        //     agreement: details.agreement.publicKey,
-        //     company: details.publicKey,
-        //     fromAta: associatedTokenAddressCompany,
-        //     toAta: associatedTokenAddressProfessional.address,
-        //     communityDao: associatedTokenAddressCommunity,
-        //     treasury: associatedTokenAddressTreasury,
-        //     acceptedPaymentTokens: acceptedPaymentTokensPubkey,
-        //     paymentToken: selectedPaymentTokenPubkey,
-        //     fees: feesPubkey,
-        //     tokenProgram: TOKEN_PROGRAM_ID,
-        // })
-        // .rpc();
-
-        const tx = "whatever"
-        console.log("Okay")
+        const tx = await details.contract.methods.processPayment(selectedPaymentTokenPubkey, amountInLamports)
+        .accounts({
+            agreement: details.agreement.publicKey,
+            company: details.publicKey,
+            fromAta: associatedTokenAddressCompany,
+            toAta: associatedTokenAddressProfessional.address,
+            communityDao: associatedTokenAddressCommunity,
+            treasury: associatedTokenAddressTreasury,
+            acceptedPaymentTokens: acceptedPaymentTokensPubkey,
+            paymentToken: selectedPaymentTokenPubkey,
+            fees: feesPubkey,
+            tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .rpc();
+        console.log("tx", tx)
         return tx;
     } catch (error) {
         console.error("Error in payAgreement:", error);

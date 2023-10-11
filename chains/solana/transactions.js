@@ -3,7 +3,7 @@ import fetchAgreements from "./transactions/fetchAgreements";
 import payAgreement from "./transactions/payAgreement";
 
 async function handleTransactionPromise(contract, txResponse) {
-    const EVENT_TIMEOUT = 20000;  // 20 seconds timeout
+    const EVENT_TIMEOUT = 30000;  // 30 seconds timeout
     const checkTransaction = async () => {
         const result = await contract.provider.connection.getTransaction(txResponse, {
             commitment: 'confirmed',
