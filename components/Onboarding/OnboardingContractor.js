@@ -13,7 +13,7 @@ function saveToCache(data) {
 function OnboardingContractor() {
 
   const [nameContractor, setName] = useState('');
-  const [CNPJContractor, setCNPJ] = useState('');
+  const [DocumentContractor, setDocument] = useState('');
   const [logoContractor, setLogo] = useState('');
   const [websiteContractor, setWebsite] = useState('');
   const [aboutContractor, setAbout] = useState('');
@@ -22,8 +22,8 @@ function OnboardingContractor() {
     setName(e.target.value);
   };
 
-  const handleCNPJChange = (e) => {
-    setCNPJ(e.target.value);
+  const handleDocumentChange = (e) => {
+    setDocument(e.target.value);
   };
 
   const handleLogoChange = (e) => {
@@ -42,7 +42,7 @@ function OnboardingContractor() {
 
     const formData = {
       nameContractor,
-      CNPJContractor,
+      documentContractor,
       logoContractor,
       websiteContractor,
       aboutContractor,
@@ -94,11 +94,11 @@ function OnboardingContractor() {
               id="contractor-name-input"
               tabIndex={1}
             />
-            <label htmlFor="contractor-cnpj-input">{t("company-cnpj")} <span>*</span></label>
+            <label htmlFor="contractor-document-input">{t("company-document")} <span>*</span></label>
             <input
               type="text"
-              onChange={handleCNPJChange}
-              id="contractor-cnpj-input"
+              onChange={handleDocumentChange}
+              id="contractor-document-input"
               tabIndex={2}
             />
           </div>
