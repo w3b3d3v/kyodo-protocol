@@ -49,7 +49,6 @@ async function createFakeToken() {
 
     // Fetch the public key of the company from the provider's wallet.
     const companyAddress = provider.wallet.publicKey;
-    console.log("companyAddress", companyAddress.toBase58())
 
     const payer = (provider.wallet as NodeWallet).payer;
     console.log("payer", payer.publicKey)
@@ -67,11 +66,6 @@ async function createFakeToken() {
       TOKEN_PROGRAM_ID      // SPL token program ID.
     );
 
-    // Logging the minted token's address and the transaction signature.
-    // console.log("Your token address:", fakeMint.publicKey);
-    // console.log("Your transaction signature:", txMint);
-    // Defining the agreement details.
-
     // Fetching the payer's account which will fund the transactions.
     let associatedTokenAddressCompany; // Will be asign, and then used to pay the professional
     //let toPayAgreementAddress; // Will be asign, and then updated when the paymen is processed
@@ -87,8 +81,6 @@ async function createFakeToken() {
       TOKEN_PROGRAM_ID,                  // SPL token program ID.
       ASSOCIATED_TOKEN_PROGRAM_ID        // SPL associated token program ID.
     );
-
-    console.log("associatedTokenAddressCompany", associatedTokenAddressCompany);
 
     // Mint tokens to the company's associated token account.
     var mintToCompanyTx = await mintTo(
