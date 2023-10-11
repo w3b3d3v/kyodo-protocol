@@ -15,7 +15,6 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local')
 const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
 anchor.setProvider(provider);
 const program = anchor.workspace.AgreementProgram;
-const FAKE_STABLE_ADDRESS = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS);
 
 function loadKeypairFromJSONFile(filePath: string): Keypair {
     // Carregue o conteúdo do arquivo.
@@ -35,7 +34,9 @@ const wallet = "/Users/nomadbitcoin/.config/solana/id.json"
 function updateConfig(
         associatedTokenAddressCompany, 
         associatedTokenAddressCommunity, 
-        associatedTokenAddressTreasury
+        associatedTokenAddressTreasury,
+        feesAddress,
+        acceptedPaymentTokensAddress
     ) {
     const envPath = path.join(__dirname, '../../../.env.development.local');
     let envData = fs.readFileSync(envPath, 'utf8');
@@ -45,7 +46,9 @@ function updateConfig(
     const keysToUpdate = {
         'SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY': associatedTokenAddressCompany,
         'SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY': associatedTokenAddressCommunity,
-        'SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY': associatedTokenAddressTreasury
+        'SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY': associatedTokenAddressTreasury,
+        'SOL_FEES_ADDRESS': feesAddress,
+        'SOL_ACCEPTED_TOKENS_ADDRESS': acceptedPaymentTokensAddress,
     };
   
     Object.keys(keysToUpdate).forEach(key => {
@@ -67,13 +70,26 @@ function updateConfig(
     console.log(`Updated fakeStable for Solana addresses in ${envPath}`);
   }
 
-async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasuryKeypair) {
+async function addPaymentToken(tokenPubkey, acceptedPaymentPubkey, adminPubkey) {
+    return await program.methods.addAcceptedPaymentToken(tokenPubkey)
+    .accounts({
+      acceptedPaymentTokens: acceptedPaymentPubkey,
+      owner: adminPubkey,
+    }).rpc();
+};
+
+async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasuryKeypair, feesKeypair, acceptedPaymentTokensKeypair) {
     const payer = (provider.wallet as NodeWallet).payer;
     const adminKeypair = loadKeypairFromJSONFile(wallet);
     const company = provider.wallet.publicKey;
-    const feesKeypair = anchor.web3.Keypair.generate();
-    const acceptedPaymentTokensKeypair = anchor.web3.Keypair.generate();
-  
+    const fakeStablePubkey = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS);
+    const adminPubkey = new PublicKey(adminKeypair.publicKey);
+    const acceptedPaymentTokensPubkey = new PublicKey(acceptedPaymentTokensKeypair.publicKey);
+    const kyodoTreasuryPubkey = new PublicKey(kyodoTreasuryKeypair.publicKey);
+    const communityDaoPubkey = new PublicKey(communityDaoKeypair.publicKey);
+    const feesPubkey = new PublicKey(feesKeypair.publicKey);
+
+
     // 1. Initialize Fees Account
     const fees = {
         feePercentage: new anchor.BN(20),
@@ -84,8 +100,8 @@ async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasur
     await program.methods
         .initializeFees(fees)
         .accounts({
-            fees: feesKeypair.publicKey,
-            admin: adminKeypair.publicKey,
+            fees: feesPubkey,
+            admin: adminPubkey,
             systemProgram: anchor.web3.SystemProgram.programId,
         })
         .signers([adminKeypair, feesKeypair])
@@ -97,8 +113,8 @@ async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasur
     await program.methods
         .initializeAcceptedPaymentTokens()
         .accounts({
-            acceptedPaymentToken: acceptedPaymentTokensKeypair.publicKey,
-            admin: adminKeypair.publicKey,
+            acceptedPaymentToken: acceptedPaymentTokensPubkey,
+            admin: adminPubkey,
             systemProgram: anchor.web3.SystemProgram.programId,
         })
         .signers([adminKeypair, acceptedPaymentTokensKeypair])
@@ -106,41 +122,31 @@ async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasur
   
     console.log("Accepted Tokens Account Initialized")
   
-    const associatedTokenAddressCompany = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        payer,
-        FAKE_STABLE_ADDRESS,
-        company,
-        false,
-        null, null,
-        TOKEN_PROGRAM_ID,
-        ASSOCIATED_TOKEN_PROGRAM_ID
+    // Add fake stable token as accepted payment token
+    await addPaymentToken(fakeStablePubkey, acceptedPaymentTokensPubkey, adminPubkey);
+    
+    console.log("Fake Stable Added to Accepted Tokens Account")
+
+    const associatedTokenAddressCompany = await getOrCreateAssociatedTokenAccountKyodo(
+        payer,                      // Entity funding the transaction.
+        fakeStablePubkey,           // Mint's public key.
+        company,                    // Owner of the associated token account.
     );
   
     console.log("associatedTokenAddressCompany Account Initialized")
   
-    const associatedTokenAddressCommunity = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        payer,
-        FAKE_STABLE_ADDRESS,
-        communityDaoKeypair.publicKey,
-        false,
-        null, null,
-        TOKEN_PROGRAM_ID,
-        ASSOCIATED_TOKEN_PROGRAM_ID
+    const associatedTokenAddressCommunity = await getOrCreateAssociatedTokenAccountKyodo(
+        payer,                      // Entity funding the transaction.
+        fakeStablePubkey,           // Mint's public key.
+        communityDaoPubkey,         // Owner of the associated token account.
     );
   
     console.log("associatedTokenAddressCommunity Account Initialized")
   
-    const associatedTokenAddressTreasury = await getOrCreateAssociatedTokenAccount(
-        provider.connection,
-        payer,
-        FAKE_STABLE_ADDRESS,
-        kyodoTreasuryKeypair.publicKey,
-        false,
-        null, null,
-        TOKEN_PROGRAM_ID,
-        ASSOCIATED_TOKEN_PROGRAM_ID
+    const associatedTokenAddressTreasury = await getOrCreateAssociatedTokenAccountKyodo(
+        payer,                      // Entity funding the transaction.
+        fakeStablePubkey,           // Mint's public key.
+        kyodoTreasuryPubkey,        // Owner of the associated token account.
     );
   
     console.log("associatedTokenAddressTreasury Account Initialized")
@@ -148,24 +154,34 @@ async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasur
     updateConfig(
         associatedTokenAddressCompany.address, 
         associatedTokenAddressCommunity.address, 
-        associatedTokenAddressTreasury.address
+        associatedTokenAddressTreasury.address,
+        feesPubkey,
+        acceptedPaymentTokensPubkey
     )
-  
+
     return {
         associatedTokenAddressCompany,
         associatedTokenAddressCommunity,
-        associatedTokenAddressTreasury
+        associatedTokenAddressTreasury,
+        feesPubkey,
+        acceptedPaymentTokensPubkey
     };
   }
 
 async function main() {
     try {
+        // This need to be created only once for production, and saved in a safe place.
+        // both public key and secret key.
         const communityDaoKeypair = anchor.web3.Keypair.generate();
         const kyodoTreasuryKeypair = anchor.web3.Keypair.generate();
+        const feesKeypair = anchor.web3.Keypair.generate();
+        const acceptedPaymentTokensKeypair = anchor.web3.Keypair.generate();
 
         await initializePaymentInfrastructure(
             communityDaoKeypair,
-            kyodoTreasuryKeypair
+            kyodoTreasuryKeypair,
+            feesKeypair,
+            acceptedPaymentTokensKeypair
         )
 
         console.log("Payment Infrastructure Initialized")
@@ -174,5 +190,18 @@ async function main() {
         console.error("error initializing payment infrastructure:", error);
     }
 }
+
+export async function getOrCreateAssociatedTokenAccountKyodo(payer, tokenAddress, owner) {
+    return await getOrCreateAssociatedTokenAccount(
+        provider.connection,
+        payer,
+        tokenAddress,
+        owner,
+        false,
+        null, null,
+        TOKEN_PROGRAM_ID,
+        ASSOCIATED_TOKEN_PROGRAM_ID
+    );
+};
 
 main();

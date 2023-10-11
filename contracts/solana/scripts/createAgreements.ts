@@ -6,6 +6,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local')
 
 async function createAgreement() {
   try {
+    // Configure the client to use the local Solana cluster.
     const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
 
     anchor.setProvider(provider);
@@ -25,6 +26,8 @@ async function createAgreement() {
     // Generating a new keypair for the agreement's address.
     const agreementAddress = anchor.web3.Keypair.generate();
 
+    const communityDaoPubkey = new PublicKey(process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY);
+
     // Finding the Program Derived Address (PDA) for company agreements using the buffer and company address.
     const [companyAgreementsPublicKey, _] = anchor.web3.PublicKey.findProgramAddressSync(
       [stringBuffer, companyAddress.toBuffer()],
@@ -32,26 +35,15 @@ async function createAgreement() {
     );
 
     const amount = new anchor.BN(1000);
+    
     const agreement = {
       title: "test1",
       description: "test1 description",
       skills: ["JavaScript", "Rust", "Solana"], // You can replace these with actual skills
       payment_amount: amount,
+      communityDao: communityDaoPubkey,
       professional: professionalAddress.publicKey, // Replace with the professional's public key
       company: companyAddress, // Since company is signing this, we can use its public key
-      token_incentive: {
-        amount: new anchor.BN(500), // Sample amount
-        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
-      },
-      payment: {
-        amount: new anchor.BN(1000), // Sample amount
-        token_address: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the token's public key
-      },
-      // TODO: add fakeMint.publicKey to env
-      // need to be the same as the one used in createFakeToken.ts
-      accepted_payment_tokens: "skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq", // Replace with the list of accepted token public keys
-      total_paid: new anchor.BN(0),
-      status: 0
     } as any;
 
     // Initialize the agreement on-chain.
