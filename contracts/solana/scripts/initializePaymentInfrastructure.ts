@@ -47,8 +47,8 @@ function updateConfig(
         'SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY': associatedTokenAddressCompany,
         'SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY': associatedTokenAddressCommunity,
         'SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY': associatedTokenAddressTreasury,
+        'SOL_ACCEPTED_PAYMENT_TOKENS_ADDRESS': acceptedPaymentTokensAddress,
         'SOL_FEES_ADDRESS': feesAddress,
-        'SOL_ACCEPTED_TOKENS_ADDRESS': acceptedPaymentTokensAddress,
     };
   
     Object.keys(keysToUpdate).forEach(key => {
@@ -191,7 +191,7 @@ async function main() {
     }
 }
 
-export async function getOrCreateAssociatedTokenAccountKyodo(payer, tokenAddress, owner) {
+async function getOrCreateAssociatedTokenAccountKyodo(payer, tokenAddress, owner) {
     return await getOrCreateAssociatedTokenAccount(
         provider.connection,
         payer,
