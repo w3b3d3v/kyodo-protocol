@@ -40,7 +40,7 @@ async function createAgreement() {
       title: "test1",
       description: "test1 description",
       skills: ["JavaScript", "Rust", "Solana"], // You can replace these with actual skills
-      payment_amount: amount,
+      paymentAmount: amount,
       communityDao: communityDaoPubkey,
       professional: professionalAddress.publicKey, // Replace with the professional's public key
       company: companyAddress, // Since company is signing this, we can use its public key
