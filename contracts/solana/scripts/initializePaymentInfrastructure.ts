@@ -29,7 +29,7 @@ function loadKeypairFromJSONFile(filePath: string): Keypair {
     return keypair;
   }
 
-const wallet = "/Users/nomadbitcoin/.config/solana/id.json"
+const wallet = "/Users/brunobarros/.config/solana/id.json"
 
 function updateConfig(
         associatedTokenAddressCompany, 

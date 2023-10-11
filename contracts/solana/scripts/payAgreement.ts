@@ -63,12 +63,12 @@ async function processPayment(agreement, company, acceptedPaymentTokensAddress, 
     const associatedTokenAddressProfessional = await getOrCreateAssociatedTokenAccountKyodo(
         payer,                          // Entity funding the transaction.
         fakeStablePubkey,               // Mint's public key.
-        agreement[0].professional,      // Owner of the associated token account.
+        agreement[agreement.length - 1].professional,      // Owner of the associated token account.
     );
 
       const tx = await program.methods.processPayment(fakeStablePubkey, amountToPay)
       .accounts({
-        agreement: agreement[0].publicKey,
+        agreement: agreement[agreement.length - 1].publicKey,
         company: company,
         fromAta: associatedTokenAddressCompany,
         toAta: associatedTokenAddressProfessional.address,
@@ -82,7 +82,7 @@ async function processPayment(agreement, company, acceptedPaymentTokensAddress, 
       .rpc();
 
     const fetchedAgreement = await program.account.agreementAccount.fetch(
-        agreement[0].publicKey
+        agreement[agreement.length - 1].publicKey
     );
 
     console.log("Your paid agreement account:", fetchedAgreement);

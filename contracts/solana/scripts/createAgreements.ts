@@ -43,7 +43,6 @@ async function createAgreement() {
       paymentAmount: amount,
       communityDao: communityDaoPubkey,
       professional: professionalAddress.publicKey, // Replace with the professional's public key
-      company: companyAddress, // Since company is signing this, we can use its public key
     } as any;
 
     // Initialize the agreement on-chain.
