@@ -59,7 +59,8 @@ textarea {
   max-height: 140px;
 }
 
-#community-description-input {
+#community-description-input,
+#contractor-about-input {
   min-height: 72px;
 }
 
@@ -68,11 +69,4 @@ textarea {
   font-size: $font-small;
   color: $red;
   margin-top: 5px;
-}
-
-
-// Custom select
-
-.custom-select {
-
 }

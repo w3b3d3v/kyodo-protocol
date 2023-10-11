@@ -13,39 +13,39 @@ function saveToCache(data) {
 function OnboardingContractor() {
 
   const [nameContractor, setName] = useState('');
-  const [bioContractor, setBio] = useState('');
-  const [avatarContractor, setAvatar] = useState('');
+  const [CNPJContractor, setCNPJ] = useState('');
+  const [logoContractor, setLogo] = useState('');
   const [websiteContractor, setWebsite] = useState('');
-  const [communityContractor, setCommunity] = useState('');
+  const [aboutContractor, setAbout] = useState('');
 
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
 
-  const handleBioChange = (e) => {
-    setBio(e.target.value);
+  const handleCNPJChange = (e) => {
+    setCNPJ(e.target.value);
   };
 
-  const handleAvatarChange = (e) => {
-    setAvatar(e.target.value);
+  const handleLogoChange = (e) => {
+    setLogo(e.target.value);
   };
 
   const handleWebsiteChange = (e) => {
     setWebsite(e.target.value);
   };
 
-  const handleCommunityChange = (e) => {
-    setCommunity(e.target.value);
+  const handleAboutChange = (e) => {
+    setAbout(e.target.value);
   };
 
   const handleButtonClick = () => {
 
     const formData = {
       nameContractor,
-      bioContractor,
-      avatarContractor,
+      CNPJContractor,
+      logoContractor,
       websiteContractor,
-      communityContractor
+      aboutContractor,
     };
 
     saveToCache(formData);
@@ -93,32 +93,31 @@ function OnboardingContractor() {
           <hr></hr>
         </h2>
 
-        <h3>{t("personal-info")}</h3>
+        <h3>{t("basic-info")}</h3>
 
         <section className={"columns"}>
           <div className={"col-01"}>
-            <label htmlFor="contractor-name-input">{t("name")} <span>*</span></label>
+            <label htmlFor="contractor-name-input">{t("company-name")} <span>*</span></label>
             <input
               type="text"
               onChange={handleNameChange}
               id="contractor-name-input"
               tabIndex={1}
             />
-            <label htmlFor="contractor-bio-input">{t("bio")} <span>*</span></label>
-            <textarea
-              type="text"
-              onChange={handleBioChange}
-              id="contractor-bio-input"
-              tabIndex={2}
-            ></textarea>
-          </div>
-
-          <div className={"col-02"}>
-            <label htmlFor="contractor-avatar-input">{t("avatar")}</label>
+            <label htmlFor="contractor-cnpj-input">{t("company-cnpj")} <span>*</span></label>
             <input
               type="text"
-              onChange={handleAvatarChange}
-              id="contractor-avatar-input"
+              onChange={handleCNPJChange}
+              id="contractor-cnpj-input"
+              tabIndex={1}
+            />
+          </div>
+          <div className={"col-02"}>
+            <label htmlFor="contractor-logo-input">{t("logo")}</label>
+            <input
+              type="text"
+              onChange={handleLogoChange}
+              id="contractor-logo-input"
               tabIndex={3}
             />
             <label htmlFor="contractor-website-input">{t("website")}</label>
@@ -128,20 +127,17 @@ function OnboardingContractor() {
               id="contractor-website-input"
               tabIndex={4}
             />
-            <label htmlFor="contractor-community-input">{t("community")} <span>*</span></label>
-            <div className={"custom-select"}>
-              <select
-                onChange={handleCommunityChange}
-                id="contractor-community-input"
-                tabIndex={5}
-              >
-                <option>Select a option</option>
-                <option>Phala Network</option>
-                <option>Web3dev</option>
-              </select>
-            </div>
           </div>
         </section>
+
+        <label htmlFor="contractor-about-input">{t("about")} <span>*</span></label>
+        <textarea
+          type="text"
+          onChange={handleAboutChange}
+          id="contractor-about-input"
+          tabIndex={2}
+        ></textarea>
+
         <section className={styles["form-footer"]}>
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
@@ -150,6 +146,7 @@ function OnboardingContractor() {
             {t("next-step")}
           </button>
         </section>
+
       </form>
     </div>
   )
