@@ -44,11 +44,11 @@ function updateConfig(
 
     
     const keysToUpdate = {
-        'SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY': associatedTokenAddressCompany,
-        'SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY': associatedTokenAddressCommunity,
-        'SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY': associatedTokenAddressTreasury,
-        'SOL_ACCEPTED_PAYMENT_TOKENS_ADDRESS': acceptedPaymentTokensAddress,
-        'SOL_FEES_ADDRESS': feesAddress,
+        'NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY': associatedTokenAddressCompany,
+        'NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY': associatedTokenAddressCommunity,
+        'NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY': associatedTokenAddressTreasury,
+        'NEXT_PUBLIC_SOL_ACCEPTED_PAYMENT_TOKENS_ADDRESS': acceptedPaymentTokensAddress,
+        'NEXT_PUBLIC_SOL_FEES_ADDRESS': feesAddress,
     };
   
     Object.keys(keysToUpdate).forEach(key => {
@@ -87,6 +87,7 @@ async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasur
     const acceptedPaymentTokensPubkey = new PublicKey(acceptedPaymentTokensKeypair.publicKey);
     const kyodoTreasuryPubkey = new PublicKey(kyodoTreasuryKeypair);
     const communityDaoPubkey = new PublicKey(communityDaoKeypair);
+    const professionalPubkey = new PublicKey(process.env.NEXT_PUBLIC_SOL_PROFESSIONAL_ADDRESS); //TODO FIX: issue #106
     const feesPubkey = new PublicKey(feesKeypair.publicKey);
 
 
@@ -127,7 +128,7 @@ async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasur
     
     console.log("Fake Stable Added to Accepted Tokens Account")
 
-    const associatedTokenAddressCompany = await getOrCreateAssociatedTokenAccountKyodo(
+    const associatedTokenAddressCompany = await getOrCreateNeededAssociatedTokenAccount(
         payer,                      // Entity funding the transaction.
         fakeStablePubkey,           // Mint's public key.
         company,                    // Owner of the associated token account.
@@ -135,7 +136,7 @@ async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasur
   
     console.log("associatedTokenAddressCompany Account Initialized")
   
-    const associatedTokenAddressCommunity = await getOrCreateAssociatedTokenAccountKyodo(
+    const associatedTokenAddressCommunity = await getOrCreateNeededAssociatedTokenAccount(
         payer,                      // Entity funding the transaction.
         fakeStablePubkey,           // Mint's public key.
         communityDaoPubkey,         // Owner of the associated token account.
@@ -143,13 +144,21 @@ async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasur
   
     console.log("associatedTokenAddressCommunity Account Initialized")
   
-    const associatedTokenAddressTreasury = await getOrCreateAssociatedTokenAccountKyodo(
+    const associatedTokenAddressTreasury = await getOrCreateNeededAssociatedTokenAccount(
         payer,                      // Entity funding the transaction.
         fakeStablePubkey,           // Mint's public key.
         kyodoTreasuryPubkey,        // Owner of the associated token account.
     );
   
     console.log("associatedTokenAddressTreasury Account Initialized")
+
+    const associatedTokenAddressProfessional = await getOrCreateNeededAssociatedTokenAccount(
+        payer,                      // Entity funding the transaction.
+        fakeStablePubkey,           // Mint's public key.
+        professionalPubkey,                    // Owner of the associated token account.
+    );
+
+    console.log("associatedTokenAddressProfessional Account Initialized", associatedTokenAddressProfessional)
 
     updateConfig(
         associatedTokenAddressCompany.address, 
@@ -191,7 +200,7 @@ async function main() {
     }
 }
 
-async function getOrCreateAssociatedTokenAccountKyodo(payer, tokenAddress, owner) {
+async function getOrCreateNeededAssociatedTokenAccount(payer, tokenAddress, owner) {
     return await getOrCreateAssociatedTokenAccount(
         provider.connection,
         payer,
