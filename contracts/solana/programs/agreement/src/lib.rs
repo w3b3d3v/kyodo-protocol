@@ -42,10 +42,10 @@ pub mod agreement_program {
         agreement_account.company = company_account.key();
         agreement_account.total_paid = 0;
         agreement_account.status = 0;
-
+        msg!("Agreement Initialized!");
         // Add the agreement's key to the company's list of agreements.
         company_agreements.agreements.push(agreement_account.key());
-
+        msg!("Agreement Added to Company Agreements!");
         // Return Ok to indicate successful execution.
         Ok(())
     }
@@ -59,7 +59,14 @@ pub mod agreement_program {
         fees_account.fee_percentage = fees.fee_percentage;
         fees_account.treasury_fee = fees.treasury_fee;
         fees_account.community_dao_fee = fees.community_dao_fee;
+        msg!("Fees Initialized!");
+        Ok(())
+    }
 
+    pub fn initialize_vault(
+        ctx: Context<InitializeVault>,
+    ) -> Result<()> {
+        msg!("Vault Initialized!");
         Ok(())
     }
 
@@ -67,8 +74,7 @@ pub mod agreement_program {
         ctx: Context<InitializeAcceptedPaymentTokens>,
     ) -> Result<()> {
         let accepted_payment_token_account = &mut ctx.accounts.accepted_payment_token;
-        // TODO: Maybe hardcode the Kyodo admin key?
-        // so only Kyodo admin can initilize fees.
+        msg!("Accepted Payment Tokens Initialized");
         Ok(())
     }
 
@@ -81,7 +87,7 @@ pub mod agreement_program {
         accepted_payment_token_account
             .accepted_payment_tokens
             .push(token_address);
-
+        msg!("Token Added to Accepted Payment Tokens");
         Ok(())
     }
 
@@ -96,7 +102,7 @@ pub mod agreement_program {
         fees_account.fee_percentage = fees.fee_percentage;
         fees_account.treasury_fee = fees.treasury_fee;
         fees_account.community_dao_fee = fees.community_dao_fee;
-
+        msg!("Fees Set!");
         Ok(())
     }
 
@@ -203,14 +209,24 @@ pub struct InitializeAgreement<'info> {
     pub agreement: Account<'info, AgreementAccount>,
     #[account(mut)]
     pub company: Signer<'info>,
+    /// CHECK: We need the Pubkey to create an PDA for the professional
+    pub professional: AccountInfo<'info>,
     #[account(
         init_if_needed,
         payer = company,
         space = 2048,
-        seeds = [b"company_agreements".as_ref(),company.key().as_ref()],
+        seeds = [b"company_agreements".as_ref(), company.key().as_ref()],
         bump
     )]
-    pub company_agreements: Account<'info, CompanyAgreements>, // Added
+    pub company_agreements: Account<'info, CompanyAgreements>,
+    #[account(
+        init_if_needed,
+        payer = company,
+        space = 2048,
+        seeds = [b"professional_agreements".as_ref(), professional.key().as_ref()],
+        bump
+    )]
+    pub professional_agreements: Account<'info, ProfessionalAgreements>,
     pub system_program: Program<'info, System>,
 }
 
@@ -227,6 +243,15 @@ pub struct InitializeFees<'info> {
 pub struct InitializeAcceptedPaymentTokens<'info> {
     #[account(init, payer = admin, space = 8 + 1024)]
     pub accepted_payment_token: Account<'info, AcceptedPaymentTokensAccount>,
+    #[account(mut)]
+    pub admin: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct InitializeVault<'info> {
+    #[account(init, payer = admin, space = 8 + 512)]
+    pub vault: Account<'info, VaultAccount>,
     #[account(mut)]
     pub admin: Signer<'info>,
     pub system_program: Program<'info, System>,
@@ -287,12 +312,25 @@ pub struct FeesAccount {
 }
 
 #[account]
+pub struct VaultAccount {
+    pub deposits: Vec<u64>,
+    pub total_deposits: u64,
+}
+
+#[account]
 pub struct AcceptedPaymentTokensAccount {
     pub accepted_payment_tokens: Vec<Pubkey>
 }
 
 #[account]
+pub struct ProfessionalAgreements {
+    pub balance: u64,
+    pub agreements: Vec<Pubkey>,
+}
+
+#[account]
 pub struct CompanyAgreements {
+    pub total_paid: u64,
     pub agreements: Vec<Pubkey>,
 }
 

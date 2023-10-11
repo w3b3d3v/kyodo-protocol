@@ -41,6 +41,7 @@ describe("agreement_program", () => {
   // Generating a new keypair for the professional's address.
   const adminKeypair = anchor.web3.Keypair.generate();
   const professionalKeypair = anchor.web3.Keypair.generate();
+  const vaultKeypair = anchor.web3.Keypair.generate();
   const communityDaoKeypair = anchor.web3.Keypair.generate();
   const kyodoTreasuryKeypair = anchor.web3.Keypair.generate();
   const feesKeypair = anchor.web3.Keypair.generate();
@@ -84,6 +85,27 @@ describe("agreement_program", () => {
 
     // Logging the minted token's address and the transaction signature.
     console.log("Your Token Account Address:", fakeMint.publicKey);
+    console.log("Your Transaction Signature:", tx);
+  });
+
+  it("Initializes Vault Account", async () => {
+    // Fetching the payer's account, which is the entity that'll fund the transactions.
+    const payer = (provider.wallet as NodeWallet).payer;
+
+    // Create a new mint (token type) and get the transaction signature.
+
+    const tx = await program.methods
+      .initializeVault()
+      .accounts({
+        vault: vaultKeypair.publicKey,
+        admin: adminKeypair.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      })
+      .signers([adminKeypair, vaultKeypair])
+      .rpc();
+
+    // Logging the minted token's address and the transaction signature.
+    console.log("Your Fees Account Address:", feesKeypair.publicKey);
     console.log("Your Transaction Signature:", tx);
   });
 
@@ -207,7 +229,8 @@ describe("agreement_program", () => {
   // Test case for initializing the first agreement.
   it("Initialize First Agreement", async () => {
     // Converting the string "company_agreements" to a buffer to be used for PDA calculations.
-    const stringBuffer = Buffer.from("company_agreements", "utf-8");
+    const stringBufferCompany = Buffer.from("company_agreements", "utf-8");
+    const stringBufferProfessional = Buffer.from("professional_agreements", "utf-8");
 
     // Generating a new keypair for the agreement's address.
     const agreementAddress = anchor.web3.Keypair.generate();
@@ -221,7 +244,13 @@ describe("agreement_program", () => {
     // TODO: check for programs sign / modify pda 
     const [companyAgreementsPublicKey, _] =
       anchor.web3.PublicKey.findProgramAddressSync(
-        [stringBuffer, companyPubkey.toBytes()],
+        [stringBufferCompany, companyPubkey.toBytes()],
+        program.programId
+      );
+
+  const [professionalAgreementsPublicKey, __] =
+      anchor.web3.PublicKey.findProgramAddressSync(
+        [stringBufferProfessional, professionalKeypair.publicKey.toBytes()],
         program.programId
       );
 
@@ -243,7 +272,9 @@ describe("agreement_program", () => {
       .accounts({
         agreement: agreementAddress.publicKey,
         company: companyPubkey,
-        companyAgreements: companyAgreementsPublicKey, // The PDA address, you'll have to compute this based on your program logic
+        professional: professionalKeypair.publicKey,
+        companyAgreements: companyAgreementsPublicKey,            // The PDA address, you'll have to compute this based on your program logic
+        professionalAgreements: professionalAgreementsPublicKey,  // The PDA address, you'll have to compute this based on your program logic
         systemProgram: anchor.web3.SystemProgram.programId,
       })
       .signers([agreementAddress])
@@ -266,6 +297,7 @@ describe("agreement_program", () => {
 
     // Converting the string "company_agreements" to a buffer to be used for PDA calculations.
     const stringBuffer = Buffer.from("company_agreements", "utf-8");
+    const stringBufferProfessional = Buffer.from("professional_agreements", "utf-8");
 
     // Generating a new keypair for the agreement's address.
     const agreementAddress = anchor.web3.Keypair.generate();
@@ -279,6 +311,12 @@ describe("agreement_program", () => {
     // TODO: check for programs sign / modify pda 
     const [companyAgreementsPublicKey, _] = anchor.web3.PublicKey.findProgramAddressSync(
       [stringBuffer, companyPubkey.toBytes()],
+      program.programId
+    );
+
+    const [professionalAgreementsPublicKey, __] =
+    anchor.web3.PublicKey.findProgramAddressSync(
+      [stringBufferProfessional, professionalKeypair.publicKey.toBytes()],
       program.programId
     );
 
@@ -298,7 +336,9 @@ describe("agreement_program", () => {
       .accounts({
         agreement: agreementAddress.publicKey,
         company: companyPubkey,
-        companyAgreements: companyAgreementsPublicKey,
+        professional: professionalKeypair.publicKey,
+        companyAgreements: companyAgreementsPublicKey,            // The PDA address, you'll have to compute this based on your program logic
+        professionalAgreements: professionalAgreementsPublicKey,  // The PDA address, you'll have to compute this based on your program logic
         systemProgram: anchor.web3.SystemProgram.programId,
       })
       .signers([agreementAddress])
@@ -361,6 +401,8 @@ describe("agreement_program", () => {
 
     console.log("Your Transaction Signature:", tx);
   });
+
+
 
   // Test case for processing a payment related to an agreement.
   it("Process 1/10 Payment on First Agreement", async () => {
