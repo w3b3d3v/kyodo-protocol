@@ -51,8 +51,12 @@ function OnboardingCommunity() {
 
         <section className={"columns"}>
           <div className={"col-01"}>
-            <label htmlFor="community-name-input">{t("name")}</label>
-            <input type="text" id="community-name-input" tabIndex={1} />
+            <label htmlFor="community-name-input">{t("name")} <span>*</span></label>
+            <input
+              type="text"
+              id="community-name-input"
+              tabIndex={1}
+            />
           </div>
           <div className={"col-02"}>
             <label htmlFor="community-avatar-input">{t("avatar")}</label>
@@ -60,8 +64,12 @@ function OnboardingCommunity() {
           </div>
         </section>
 
-        <label htmlFor="community-description-input">{t("description")}</label>
-        <textarea type="text" id="community-description-input" tabIndex={3}></textarea>
+        <label htmlFor="community-description-input">{t("description")} <span>*</span></label>
+        <textarea
+          type="text"
+          id="community-description-input"
+          tabIndex={3}
+        ></textarea>
 
         <h3>
           Token

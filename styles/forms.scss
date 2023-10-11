@@ -7,6 +7,10 @@ form {
 
   label {
     color: $light-gray;
+
+    span {
+      color: $red;
+    }
   }
 }
 

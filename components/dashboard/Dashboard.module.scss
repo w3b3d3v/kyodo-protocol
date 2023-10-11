@@ -361,7 +361,7 @@ DASHBOARD
     position: absolute;
     text-align: right;
     right: 20px;
-    top: 20px;
+    top: 22px;
 
     @media #{$smartphones-1} {
       top: 23px;
@@ -382,7 +382,7 @@ DASHBOARD
     img {
       width: 20px;
       float: right;
-      margin: -2px 0 0 5px;
+      margin: -3px 0 0 5px;
     }
 
     span {

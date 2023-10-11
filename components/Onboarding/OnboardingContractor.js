@@ -51,18 +51,30 @@ function OnboardingContractor() {
 
         <section className={"columns"}>
           <div className={"col-01"}>
-            <label htmlFor="contractor-name-input">{t("name")}</label>
-            <input type="text" id="contractor-name-input" tabIndex={1} />
-            <label htmlFor="contractor-bio-input">{t("bio")}</label>
-            <textarea type="text" id="contractor-bio-input" tabIndex={2}></textarea>
+            <label htmlFor="contractor-name-input">{t("name")} <span>*</span></label>
+            <input
+              type="text"
+              id="contractor-name-input"
+              tabIndex={1}
+            />
+            <label htmlFor="contractor-bio-input">{t("bio")} <span>*</span></label>
+            <textarea
+              type="text"
+              id="contractor-bio-input"
+              tabIndex={2}
+            ></textarea>
           </div>
 
           <div className={"col-02"}>
             <label htmlFor="contractor-avatar-input">{t("avatar")}</label>
             <input type="text" id="contractor-avatar-input" tabIndex={3} />
             <label htmlFor="conntractor-website-input">{t("website")}</label>
-            <input type="text" id="contractor-website-input" tabIndex={4} />
-            <label htmlFor="contractor-community-input">{t("community")}</label>
+            <input
+              type="text"
+              id="contractor-website-input"
+              tabIndex={4}
+            />
+            <label htmlFor="contractor-community-input">{t("community")} <span>*</span></label>
             <div className={"custom-select"}>
               <select id="contractor-community-input" tabIndex={5}>
                 <option>Select a option</option>

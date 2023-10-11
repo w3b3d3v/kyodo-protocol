@@ -50,18 +50,30 @@ function OnboardingProfessional() {
 
         <section className={"columns"}>
           <div className={"col-01"}>
-            <label htmlFor="professional-name-input">{t("name")}</label>
-            <input type="text" id="professional-name-input" tabIndex={1} />
-            <label htmlFor="professional-bio-input">{t("bio")}</label>
-            <textarea type="text" id="professional-bio-input" tabIndex={2}></textarea>
+            <label htmlFor="professional-name-input">{t("name")} <span>*</span></label>
+            <input
+              type="text"
+              id="professional-name-input"
+              tabIndex={1}
+            />
+            <label htmlFor="professional-bio-input">{t("bio")} <span>*</span></label>
+            <textarea
+              type="text"
+              id="professional-bio-input"
+              tabIndex={2}
+            ></textarea>
           </div>
 
           <div className={"col-02"}>
             <label htmlFor="professional-avatar-input">{t("avatar")}</label>
             <input type="text" id="professional-avatar-input" tabIndex={3} />
             <label htmlFor="professional-website-input">{t("website")}</label>
-            <input type="text" id="professional-website-input" tabIndex={4} />
-            <label htmlFor="professional-community-input">{t("community")}</label>
+            <input
+              type="text"
+              id="professional-website-input"
+              tabIndex={4}
+            />
+            <label htmlFor="professional-community-input">{t("community")} <span>*</span></label>
             <div className={"custom-select"}>
               <select id="professional-community-input" tabIndex={5}>
                 <option>{t("select-option")}</option>
