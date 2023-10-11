@@ -14,6 +14,7 @@
   "professional-call": "Consiga um trabalho",
   "contractor-call": "Encontre talentos",
 
+  "view-document": "Ver documento",
   "get-started": "Iniciar",
 
   "basic-info": "Informações básicas",
@@ -33,6 +34,7 @@
 
   "back": "Voltar",
   "next-step": "Próximo passo",
+  "i-agree": "Eu concordo",
 
   "dashboard": "Painel",
   "agreements": "Acordos",
@@ -52,7 +54,7 @@
   "view-all": "Ver tudo",
 
   "code-conduct": "Código de conduta",
-  "privacy-policy": "Política de privacidade",
+  "privacy-policy": "Privacidade",
   "terms-use": "Termos de uso",
 
   "validation": {

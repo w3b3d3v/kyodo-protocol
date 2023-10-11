@@ -47,19 +47,19 @@ function OnboardingCommunity() {
         <h1>{t("welcome")}</h1>
         <ul>
           <li className={styles["done-step"]}>
-            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done icon" />
+            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done" />
             <p>{t("connect-wallet")}</p>
           </li>
           <li className={styles["done-step"]}>
-            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done step icon" />
+            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done" />
             <p>{t("profile-selection")}</p>
           </li>
           <li className={styles["current-step"]}>
-            <Image src="/onboarding/current-icon.svg" width={20} height={23} alt="Current step" />
+            <Image src="/onboarding/current-icon.svg" width={20} height={23} alt="Current" />
             <p>{t("initial-setup")}</p>
           </li>
           <li>
-            <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Next step" />
+            <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Next" />
             <p>{t("terms-conditions")}</p>
           </li>
         </ul>
