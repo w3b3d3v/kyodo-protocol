@@ -34,11 +34,17 @@ export const fetchAgreements = async (details) => {
       if (!fetchedCompanyAgreements.agreements || fetchedCompanyAgreements.agreements.length === 0) return null;
 
       const fetchedAgreements = await Promise.all(
-          fetchedCompanyAgreements.agreements.map(async (agreementAddress) => {
-              const agreement = await program.account.agreementAccount.fetch(agreementAddress);
-              return transformAgreementData(agreement);
-          })
-      );
+        fetchedCompanyAgreements.agreements.map(async (agreementAddress) => {
+            const agreement = await program.account.agreementAccount.fetch(agreementAddress);
+    
+            const agreementWithPubKey = {
+                ...transformAgreementData(agreement),
+                publicKey: agreementAddress
+            };
+    
+            return agreementWithPubKey;
+        })
+    );    
 
       return fetchedAgreements;
 

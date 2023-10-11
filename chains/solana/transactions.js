@@ -1,5 +1,6 @@
 import addAgreement from "./transactions/addAgreement";
 import fetchAgreements from "./transactions/fetchAgreements";
+import payAgreement from "./transactions/payAgreement";
 
 async function handleTransactionPromise(contract, txResponse) {
     const EVENT_TIMEOUT = 20000;  // 20 seconds timeout
@@ -28,5 +29,5 @@ async function handleTransactionPromise(contract, txResponse) {
 }
 
 
-const transactions = { handleTransactionPromise, addAgreement, fetchAgreements}
+const transactions = { handleTransactionPromise, addAgreement, fetchAgreements, payAgreement}
 export default transactions

@@ -42,34 +42,6 @@ function updateConfig(fakeStableAddress) {
   console.log(`Updated fakeStable for Solana addresses in ${envPath}`);
 }
 
-function updateConfig(fakeStableAddress) {
-  const envPath = path.join(__dirname, '../../../.env.development.local');
-  let envData = fs.readFileSync(envPath, 'utf8');
-  const lines = envData.split('\n');
-
-  const keysToUpdate = {
-    'NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS': fakeStableAddress
-  };
-
-  Object.keys(keysToUpdate).forEach(key => {
-    let found = false;
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].startsWith(`${key}=`)) {
-        lines[i] = `${key}=${keysToUpdate[key]}`;
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      lines.push(`${key}=${keysToUpdate[key]}`);
-    }
-  });
-
-  envData = lines.join('\n');
-  fs.writeFileSync(envPath, envData);
-  console.log(`Updated fakeStable for Solana addresses in ${envPath}`);
-}
-
 async function createFakeToken() {
   try {
     // Configure the client to use the local Solana cluster.

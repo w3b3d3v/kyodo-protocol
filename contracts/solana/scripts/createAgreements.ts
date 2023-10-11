@@ -18,15 +18,15 @@ async function createAgreement() {
     const companyAddress = provider.wallet.publicKey;
 
     // Generate a new keypair for the professional's address.
-    const professionalAddress = anchor.web3.Keypair.generate();
-
+    const professionalAddress = new PublicKey("ApJwCVP7QitDWjQ5K9tCQAP6ajrN2BRPD47Ku9Wsgeub")
+    
     // Converting the string "company_agreements" to a buffer to be used for PDA calculations.
     const stringBuffer = Buffer.from("company_agreements", "utf-8");
 
     // Generating a new keypair for the agreement's address.
     const agreementAddress = anchor.web3.Keypair.generate();
 
-    const communityDaoPubkey = new PublicKey(process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY);
+    const communityDaoPubkey = new PublicKey(process.env.NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY);
 
     // Finding the Program Derived Address (PDA) for company agreements using the buffer and company address.
     const [companyAgreementsPublicKey, _] = anchor.web3.PublicKey.findProgramAddressSync(
@@ -38,12 +38,12 @@ async function createAgreement() {
     const amount = new anchor.BN(1000 * Math.pow(10, 8))
     
     const agreement = {
-      title: "test from backend",
+      title: "new test from backend",
       description: "backend description",
       skills: ["JavaScript", "Rust", "Solana"], // You can replace these with actual skills
       paymentAmount: amount,
       communityDao: communityDaoPubkey,
-      professional: professionalAddress.publicKey, // Replace with the professional's public key
+      professional: professionalAddress, // Replace with the professional's public key
     } as any;
 
     // Initialize the agreement on-chain.
