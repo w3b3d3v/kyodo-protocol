@@ -7,130 +7,128 @@ import styles from "./Dashboard.module.scss"
 import { ethers } from "ethers";
 import Payments from './Payments';
 import Image from 'next/image'
+import Link from "next/link"
 import { useTranslation } from "react-i18next"
 
 function Balances(props) {
   const { t } = useTranslation()
-  const { vaultContract, vaultLoading } = useVaultContract();
-  const { account } = useAccount();
-  const [userBalances, setUserBalances] = useState([]);
-  const [showRedeemInput, setShowRedeemInput] = useState(null);
-  const [redeemValue, setRedeemValue] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  
+  const { vaultContract, vaultLoading } = useVaultContract()
+  const { account } = useAccount()
+  const [userBalances, setUserBalances] = useState([])
+  const [showRedeemInput, setShowRedeemInput] = useState(null)
+  const [redeemValue, setRedeemValue] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
+
   const handleRedeemClick = (index) => {
-    setShowRedeemInput(index);
-  };  
+    setShowRedeemInput(index)
+  }
 
   const handleRedeemValueChange = (e) => {
-    const inputAmount = parseFloat(e.target.value);
+    const inputAmount = parseFloat(e.target.value)
     if (isNaN(inputAmount)) {
-      setRedeemValue('');
+      setRedeemValue("")
     } else {
-      setRedeemValue(inputAmount.toString());
+      setRedeemValue(inputAmount.toString())
     }
-  };
+  }
 
   const handleWithdrawal = async (user, amount, asset) => {
     if (user.toLowerCase() == account.toLowerCase()) {
-    if (!localStorage.getItem(asset)) {
-        const tokenContract = new ERC20Token(asset);
-        const symbol = await tokenContract.symbol();
-        const decimals = await tokenContract.decimals();
+      if (!localStorage.getItem(asset)) {
+        const tokenContract = new ERC20Token(asset)
+        const symbol = await tokenContract.symbol()
+        const decimals = await tokenContract.decimals()
 
-        await window.ethereum
-        .request({
-            method: "wallet_watchAsset",
-            params: {
-                type: "ERC20",
-                options: {
-                    address: asset,
-                    symbol: symbol,
-                    decimals: decimals,
-                },
+        await window.ethereum.request({
+          method: "wallet_watchAsset",
+          params: {
+            type: "ERC20",
+            options: {
+              address: asset,
+              symbol: symbol,
+              decimals: decimals,
             },
-        });
-        localStorage.setItem(asset, 'added');
+          },
+        })
+        localStorage.setItem(asset, "added")
       }
     }
-  };
-
+  }
 
   async function fetchUserBalances() {
-    const tokenAddresses = [
-      process.env.NEXT_PUBLIC_STABLE_VAULT_ADDRESS
-    ]
-    const balances = [];
+    const tokenAddresses = [process.env.NEXT_PUBLIC_STABLE_VAULT_ADDRESS]
+    const balances = []
 
     for (let address of tokenAddresses) {
       try {
-        const tokenContract = new ERC20Token(address);
-        const balance = await tokenContract.balanceOf(account);
-        const decimals = await tokenContract.decimals();
+        const tokenContract = new ERC20Token(address)
+        const balance = await tokenContract.balanceOf(account)
+        const decimals = await tokenContract.decimals()
 
         if (balance > 0) {
           balances.push({
             tokenAddress: address,
             tokenDecimals: decimals,
             amount: balance,
-          });
+          })
         }
       } catch (error) {
-        console.error(`Error when retrieving balance for ${address}:`, error);
+        console.error(`Error when retrieving balance for ${address}:`, error)
       }
     }
 
-    setUserBalances(balances);
+    setUserBalances(balances)
   }
 
   const handleWithdraw = async (amount, balance) => {
-    const redeemAmountInWei = ethers.utils.parseUnits(amount.toString(), balance.tokenDecimals);
-      
-      if (redeemAmountInWei.gt(balance.amount)) {
-        alert("You cannot redeem more than your balance!");
-        setRedeemValue(''); // Reset the input value
-      }
-    try {
-      setIsLoading(true);
-      const tx = await vaultContract.withdraw(redeemAmountInWei, process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS)
-      await tx.wait();
-      await fetchUserBalances();
-    } catch (error) {
-      console.error("Error during withdrawal:", error);
-    } finally {
-      setShowRedeemInput(false);
-      setIsLoading(false);
+    const redeemAmountInWei = ethers.utils.parseUnits(amount.toString(), balance.tokenDecimals)
+
+    if (redeemAmountInWei.gt(balance.amount)) {
+      alert("You cannot redeem more than your balance!")
+      setRedeemValue("") // Reset the input value
     }
-  };
-  
+    try {
+      setIsLoading(true)
+      const tx = await vaultContract.withdraw(
+        redeemAmountInWei,
+        process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
+      )
+      await tx.wait()
+      await fetchUserBalances()
+    } catch (error) {
+      console.error("Error during withdrawal:", error)
+    } finally {
+      setShowRedeemInput(false)
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
-    setIsLoading(true);
+    setIsLoading(true)
 
     const fetchData = async () => {
-        try {
-            if (!vaultLoading) {
-                await fetchUserBalances();
-                vaultContract.on("Withdrawal", handleWithdrawal);
-                
-                return () => {
-                    vaultContract.off("Withdrawal", handleWithdrawal);
-                };
-            }
-        } catch (error) {
-            console.error("Erro ao buscar dados:", error);
-        } finally {
-            setIsLoading(false);
+      try {
+        if (!vaultLoading) {
+          await fetchUserBalances()
+          vaultContract.on("Withdrawal", handleWithdrawal)
+
+          return () => {
+            vaultContract.off("Withdrawal", handleWithdrawal)
+          }
         }
-    };
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
 
-    fetchData();
-  }, [vaultLoading]);
-
-
+    fetchData()
+  }, [vaultLoading])
 
   const handleInvestClick = () => {
-    alert("Future feature");
-  };
+    alert("Future feature")
+  }
 
   if (isLoading) {
     return (
@@ -145,20 +143,22 @@ function Balances(props) {
   return (
     <div>
       <section className={styles["user-home"]}>
-
         {/* {userBalances.length > 0 && (
           <h1>Balances</h1>
         )} */}
 
         <div className={styles["dashboard-header"]}>
-
           <h1>{t("gm")}</h1>
 
           {userBalances.map((balance, index) => (
             <div key={index} className={styles["balance-heading"]}>
               <p className={styles["usd-balance"]}>
                 <Image src="/usd-icon.svg" alt="USD icon" width={32} height={32} />
-                <span>{parseFloat(ethers.utils.formatUnits(balance.amount, 18)).toFixed(2).replace(/\.00$/, '')}</span>
+                <span>
+                  {parseFloat(ethers.utils.formatUnits(balance.amount, 18))
+                    .toFixed(2)
+                    .replace(/\.00$/, "")}
+                </span>
               </p>
               <p>
                 {showRedeemInput !== index && (
@@ -167,20 +167,21 @@ function Balances(props) {
                 {showRedeemInput === index && (
                   <>
                     <div className={styles["opened-items"]}>
-                      <input 
-                        type="number" 
+                      <input
+                        type="number"
                         value={redeemValue}
                         onChange={(e) => handleRedeemValueChange(e)}
                         placeholder="USD"
                       />
-                      <button onClick={() => handleWithdraw(redeemValue, balance)}>{t("confirm")}</button>
+                      <button onClick={() => handleWithdraw(redeemValue, balance)}>
+                        {t("confirm")}
+                      </button>
                     </div>
                   </>
                 )}
               </p>
             </div>
           ))}
-
         </div>
 
         <ul className={styles["home-calls"]}>
@@ -189,24 +190,31 @@ function Balances(props) {
             <div className={styles["progressbar"]}>
               <div></div>
             </div>
-            <p>You profile is <strong>35%</strong> complete</p>
-            <a href="#">Complete profile</a>
+            <p>
+              You profile is <strong>35%</strong> complete
+            </p>
+            <Link href="#">Complete profile</Link>
           </li>
           <li>
             <h2>{t("call-02")}</h2>
             <p>{t("phrase-02")}</p>
-            <a href="/agreements/new">{t("btn-02")}</a>
+            <Link href="/agreements/new">{t("btn-02")}</Link>
           </li>
           <li className={styles["disabled"]}>
-            <h2>Refer and<br></br> earn</h2>
-            <p>Professionals or contractors that refer the usage of Kyodo, can earn a % of paid value to the protocol.</p>
-            <a href="#">Get referral link</a>
+            <h2>
+              Refer and<br></br> earn
+            </h2>
+            <p>
+              Professionals or contractors that refer the usage of Kyodo, can earn a % of paid value
+              to the protocol.
+            </p>
+            <Link href="#">Get referral link</Link>
           </li>
         </ul>
       </section>
       <Payments limit={2} />
     </div>
-  );
+  )
 }
 
 export default Balances;

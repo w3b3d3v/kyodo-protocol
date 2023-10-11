@@ -3,6 +3,7 @@ import { useAccount } from "../../contexts/AccountContext"
 import { useState } from "react"
 import styles from "./AddAgreement.module.scss"
 import Image from 'next/image'
+import Link from "next/link"
 import Loader from '../utils/Loader';
 import Toast from '../utils/Toast';
 import useTransactionHandler from '../../hooks/useTransactionHandler';
@@ -148,11 +149,7 @@ function AddAgreementForm(props) {
         <section className={"columns"}>
           <div className={"col-01"}>
             <label htmlFor="title-input">{t("title")}</label>
-            {formErrors.title && (
-              <div className={"validation-msg"}>
-                {formErrors.title}
-              </div>
-            )}
+            {formErrors.title && <div className={"validation-msg"}>{formErrors.title}</div>}
             <input
               type="text"
               id="title-input"
@@ -163,9 +160,7 @@ function AddAgreementForm(props) {
 
             <label htmlFor="professional-input">{t("professional-wallet")}</label>
             {formErrors.professional && (
-              <div className={"validation-msg"}>
-                {formErrors.professional}
-              </div>
+              <div className={"validation-msg"}>{formErrors.professional}</div>
             )}
             <input
               type="text"
@@ -177,9 +172,7 @@ function AddAgreementForm(props) {
 
             <label htmlFor="payment-amount-input">{t("payment-amount")}</label>
             {formErrors.paymentAmount && (
-              <div className={"validation-msg"}>
-                {formErrors.paymentAmount}
-              </div>
+              <div className={"validation-msg"}>{formErrors.paymentAmount}</div>
             )}
 
             <div className={styles["amount-field"]}>
@@ -197,9 +190,7 @@ function AddAgreementForm(props) {
           <div className={"col-02"}>
             <label htmlFor="description-input">{t("description")}</label>
             {formErrors.description && (
-              <div className={"validation-msg"}>
-                {formErrors.description}
-              </div>
+              <div className={"validation-msg"}>{formErrors.description}</div>
             )}
             <textarea
               id="description-input"
@@ -212,13 +203,9 @@ function AddAgreementForm(props) {
               {t("skills")}
               <span>Lv.</span>
             </label>
-            {formErrors.skills && (
-              <div className={"validation-msg"}>
-                {formErrors.skills}
-              </div>
-            )}
+            {formErrors.skills && <div className={"validation-msg"}>{formErrors.skills}</div>}
             <div className={styles["skills-field"]}>
-              <i data-tooltip={t('skills-tooltip')} className="tooltip-top">
+              <i data-tooltip={t("skills-tooltip")} className="tooltip-top">
                 <input
                   type="text"
                   id="skill-value"
@@ -236,10 +223,10 @@ function AddAgreementForm(props) {
                 tabIndex={5}
               />
             </div>
-            <a href="#" className={styles["add-skill-btn"]} tabIndex={7}>
-            <Image src="/add.svg" width={16} height={16} alt="add" />
+            <Link href="#" className={styles["add-skill-btn"]} tabIndex={7}>
+              <Image src="/add.svg" width={16} height={16} alt="add" />
               <span>{t("add")}</span>
-            </a>
+            </Link>
 
             <ul className={styles["skills-list"]}>
               <li>

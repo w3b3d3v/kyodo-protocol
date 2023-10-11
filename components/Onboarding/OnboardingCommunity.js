@@ -1,6 +1,7 @@
 import styles from "./Onboarding.module.scss"
 import Image from 'next/image'
 import { useTranslation } from "react-i18next"
+import Link from "next/link"
 
 function OnboardingCommunity() {
 
@@ -8,7 +9,6 @@ function OnboardingCommunity() {
 
   return (
     <div className={styles["onboarding"]}>
-
       <div className={styles["onboarding-steps"]}>
         <h1>{t("welcome")}</h1>
         <ul>
@@ -21,18 +21,27 @@ function OnboardingCommunity() {
             <p>{t("profile-selection")}</p>
           </li>
           <li className={styles["current-step"]}>
-            <Image src="/onboarding/current-icon.svg" width={20} height={23} alt="Current step icon" />
+            <Image
+              src="/onboarding/current-icon.svg"
+              width={20}
+              height={23}
+              alt="Current step icon"
+            />
             <p>{t("initial-setup")}</p>
           </li>
           <li>
-            <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Next step icon" />
+            <Image
+              src="/onboarding/next-step-icon.svg"
+              width={20}
+              height={23}
+              alt="Next step icon"
+            />
             <p>{t("terms-conditions")}</p>
           </li>
         </ul>
       </div>
 
       <form className={styles["onboarding-form"]}>
-
         <h2 className={styles["community-heading"]}>
           <span>{t("community")}</span>
           <hr></hr>
@@ -43,32 +52,20 @@ function OnboardingCommunity() {
         <section className={"columns"}>
           <div className={"col-01"}>
             <label htmlFor="community-name-input">{t("name")}</label>
-            <input
-              type="text"
-              id="community-name-input"
-              tabIndex={1}
-            />
+            <input type="text" id="community-name-input" tabIndex={1} />
           </div>
           <div className={"col-02"}>
             <label htmlFor="community-avatar-input">{t("avatar")}</label>
-            <input
-              type="text"
-              id="community-avatar-input"
-              tabIndex={2}
-            />
+            <input type="text" id="community-avatar-input" tabIndex={2} />
           </div>
         </section>
 
         <label htmlFor="community-description-input">{t("description")}</label>
-        <textarea
-          type="text"
-          id="community-description-input"
-          tabIndex={3}
-        ></textarea>
+        <textarea type="text" id="community-description-input" tabIndex={3}></textarea>
 
         <h3>
           Token
-          <i data-tooltip={t('token-tooltip')} className="tooltip-top">
+          <i data-tooltip={t("token-tooltip")} className="tooltip-top">
             <Image src="/info-icon.svg" width={16} height={16} alt="Info icon" />
           </i>
         </h3>
@@ -76,34 +73,25 @@ function OnboardingCommunity() {
         <section className={"columns"}>
           <div className={"col-01"}>
             <label htmlFor="smart-contract-input">Smart contract</label>
-            <input
-              type="text"
-              id="smart-contract-input"
-              tabIndex={4}
-            />
+            <input type="text" id="smart-contract-input" tabIndex={4} />
           </div>
           <div className={"col-02"}>
             <label htmlFor="community-fee-input">{t("community-fee")}</label>
             <div className={styles["fee-field"]}>
               <span className={styles["fee-label"]}>%</span>
-              <input
-                type="text"
-                id="community-fee-input"
-                tabIndex={5}
-              />
+              <input type="text" id="community-fee-input" tabIndex={5} />
             </div>
           </div>
         </section>
 
         <section className={styles["form-footer"]}>
-          <a href="/onboarding/profile-selection" className={styles["back-link"]}>
+          <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
-          </a>
+          </Link>
           <button type="submit" className={styles["next-btn"]} tabIndex={6}>
             {t("next-step")}
           </button>
         </section>
-
       </form>
     </div>
   )

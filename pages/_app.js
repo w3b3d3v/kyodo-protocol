@@ -73,32 +73,34 @@ function Header() {
             className={"logo"}
           />
           <div className={"header-right"}>
-            {visibleMenu &&
-            <nav>
-              <Image
-                src="/logo-mobile.svg"
-                alt="Kyodo logo"
-                width={100}
-                height={56}
-                className={"logo-mobile"}
-              />
-              <ul>
-                <li>
-                  <a href="/dashboard">{t("dashboard")}</a>
-                </li>
-                <li>
-                  <Link href="/agreements">{t("agreements")}</Link> 
-                </li>
-                <li>
-                  <a onClick={changeLanguage} className={"local-trigger"}>{locale}</a>
-                </li>
-              </ul>
-            </nav>
-            }
+            {visibleMenu && (
+              <nav>
+                <Image
+                  src="/logo-mobile.svg"
+                  alt="Kyodo logo"
+                  width={100}
+                  height={56}
+                  className={"logo-mobile"}
+                />
+                <ul>
+                  <li>
+                    <Link href="/dashboard">{t("dashboard")}</Link>
+                  </li>
+                  <li>
+                    <Link href="/agreements">{t("agreements")}</Link>
+                  </li>
+                  <li>
+                    <a onClick={changeLanguage} className={"local-trigger"}>
+                      {locale}
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            )}
             <div className={"user-wallet"}>
               {isPublicKey ? (
                 <WalletMultiButton />
-                ) : (
+              ) : (
                 <div>
                   <span className={"wallet-on"}>Status</span>
                   <em>{formatAddress(account)}</em>
@@ -117,40 +119,35 @@ function Header() {
           </div>
         </div>
       </header>
-      {visibleFooter &&
-      <footer>
-        <div className={"holder"}>
-          <p>
-            <Image
-              src="/web3dev.svg"
-              alt="WEB3DEV"
-              width={17}
-              height={27}
-            />
-            <a href="https://pt.w3d.community/" target="_blank" className={"web3dev-link"}>
-              &copy; 2023 WEB3DEV
-            </a>
-          </p>
-          <ul>
-            <li>
-              <a href="https://www.kyodoprotocol.xyz/code-of-conduct.html" target="_blank">
-                {t("code-conduct")}
-              </a>
-            </li>
-            <li>
-              <a href="https://www.kyodoprotocol.xyz/privacy-policy.html" target="_blank">
-                {t("privacy-policy")}
-              </a>
-            </li>
-            <li>
-              <a href="https://www.kyodoprotocol.xyz/terms-of-use.html" target="_blank">
-                {t("terms-use")}
-              </a>        
-            </li>
-          </ul>
-        </div>
-      </footer>
-      }
+      {visibleFooter && (
+        <footer>
+          <div className={"holder"}>
+            <p>
+              <Image src="/web3dev.svg" alt="WEB3DEV" width={17} height={27} />
+              <Link href="https://pt.w3d.community/" target="_blank" className={"web3dev-link"}>
+                &copy; 2023 WEB3DEV
+              </Link>
+            </p>
+            <ul>
+              <li>
+                <Link href="https://www.kyodoprotocol.xyz/code-of-conduct.html" target="_blank">
+                  {t("code-conduct")}
+                </Link>
+              </li>
+              <li>
+                <Link href="https://www.kyodoprotocol.xyz/privacy-policy.html" target="_blank">
+                  {t("privacy-policy")}
+                </Link>
+              </li>
+              <li>
+                <Link href="https://www.kyodoprotocol.xyz/terms-of-use.html" target="_blank">
+                  {t("terms-use")}
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </footer>
+      )}
     </div>
   )
 }

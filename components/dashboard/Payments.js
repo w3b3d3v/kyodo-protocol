@@ -5,6 +5,7 @@ import { useAgreementContract } from "../../contexts/ContractContext";
 import { useAccount } from "../../contexts/AccountContext";
 import styles from "./Dashboard.module.scss"
 import Image from 'next/image'
+import Link from "next/link"
 import { useTranslation } from "react-i18next"
 
 function Payments ({ limit }) {
@@ -53,11 +54,20 @@ function Payments ({ limit }) {
           <Image src="coins/usdc-icon.svg" width={40} height={40} alt="USDC" />
         </div>
         <h3>Agreement ID: {agreement.agreementId.toString()}</h3>
-        <a href={`https://polygonscan.com/tx/${agreement.transactionHash}`} target="_blank" rel="noopener noreferrer">
+        <Link
+          href={`https://polygonscan.com/tx/${agreement.transactionHash}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {t("polygonscan")}
-        </a>
+        </Link>
         <p className={styles["value-status"]}>
-          <em>{parseFloat(ethers.utils.formatUnits(agreement.amount, 18)).toFixed(2).replace(/\.00$/, '')} USD</em>
+          <em>
+            {parseFloat(ethers.utils.formatUnits(agreement.amount, 18))
+              .toFixed(2)
+              .replace(/\.00$/, "")}{" "}
+            USD
+          </em>
           <span>
             {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? (
               <>
@@ -73,7 +83,7 @@ function Payments ({ limit }) {
           </span>
         </p>
       </div>
-    ));
+    ))
   }
 
   if (isLoading) {
