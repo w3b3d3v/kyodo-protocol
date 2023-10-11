@@ -109,7 +109,7 @@ function OnboardingContractor() {
               type="text"
               onChange={handleCNPJChange}
               id="contractor-cnpj-input"
-              tabIndex={1}
+              tabIndex={2}
             />
           </div>
           <div className={"col-02"}>
@@ -135,7 +135,7 @@ function OnboardingContractor() {
           type="text"
           onChange={handleAboutChange}
           id="contractor-about-input"
-          tabIndex={2}
+          tabIndex={5}
         ></textarea>
 
         <section className={styles["form-footer"]}>
