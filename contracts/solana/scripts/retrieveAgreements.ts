@@ -36,11 +36,14 @@ async function readAgreements() {
       const fetchedAgreement = await program.account.agreementAccount.fetch(
         agreement
       );
-      console.log("Título do Acordo:", fetchedAgreement.title);
-      console.log("Descrição do Acordo:", fetchedAgreement.description);
-      console.log("Profissional:", fetchedAgreement.professional);
-      console.log("Empresa:", fetchedAgreement.company);
+      // console.log("fetchedAgreement", fetchedAgreement)
+      console.log("Title:", fetchedAgreement.title);
+      console.log("Description:", fetchedAgreement.description);
+      console.log("Professional:", fetchedAgreement.professional);
+      console.log("Company:", fetchedAgreement.company);
       console.log("Status:", fetchedAgreement.status);
+      console.log("Payment Amount:", fetchedAgreement.paymentAmount.toString());
+      console.log("Total Paid:", fetchedAgreement.totalPaid.toString());
       console.log("------");
     }
     

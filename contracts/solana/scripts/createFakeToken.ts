@@ -12,6 +12,7 @@ import {
 } from "@solana/spl-token"; // SPL token utilities for token creation, minting, and account association.
 dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local') });
 
+const TOKEN_LAMPORTS = 8;
 
 function updateConfig(fakeStableAddress) {
   const envPath = path.join(__dirname, '../../../.env.development.local');
@@ -60,7 +61,7 @@ async function createFakeToken() {
       payer,                // Entity funding the transaction.
       companyAddress,       // Mint's authority.
       companyAddress,       // Freeze authority (can freeze token accounts).
-      8,                    // Decimals for the token.
+      TOKEN_LAMPORTS,                    // Decimals for the token.
       fakeMint,             // Mint's keypair.
       null,                 // Optional multisig authority.
       TOKEN_PROGRAM_ID      // SPL token program ID.
@@ -83,13 +84,15 @@ async function createFakeToken() {
     );
 
     // Mint tokens to the company's associated token account.
+    const amountToMint = 100000000 * Math.pow(10, TOKEN_LAMPORTS);
+    console.log("amountToMint", amountToMint)
     var mintToCompanyTx = await mintTo(
       provider.connection,                // Current provider's connection.
       payer,                              // Entity funding the minting.
       fakeMint.publicKey,                 // Mint's public key.
       associatedTokenAddressCompany.address, // Destination account.
       companyAddress,                     // Minting authority.
-      10000,                              // Amount of tokens to mint.
+      amountToMint,                              // Amount of tokens to mint.
       [],                                 // Optional multisig authorities.
       null,                               // Optional config (instructions).
       TOKEN_PROGRAM_ID                    // SPL token program ID.
