@@ -1,5 +1,5 @@
 import { agreementContract } from "./contracts/agreementContract"
-// import { vaultContract } from "./contracts/vaultContract"
+import { vaultContract } from "./contracts/vaultContract"
 
 async function verify() {
   // Unfortunatelly phantom wallet or solana object does not offer a clear way to get the network id
@@ -7,5 +7,5 @@ async function verify() {
   alert("Please change to localnet. Phantom > Settings > Developer Settings")
 }
 
-const contracts = { agreementContract, verify }
+const contracts = { agreementContract, vaultContract, verify }
 export default contracts
