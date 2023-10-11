@@ -101,12 +101,14 @@ function OnboardingProfessional() {
             <input
               type="text"
               onChange={handleNameChange}
+              id="professional-name-input"
               tabIndex={1}
             />
             <label htmlFor="professional-bio-input">{t("bio")} <span>*</span></label>
             <textarea
               type="text"
               onChange={handleBioChange}
+              id="professional-bio-input"
               tabIndex={2}
             ></textarea>
           </div>
@@ -116,12 +118,14 @@ function OnboardingProfessional() {
             <input
               type="text"
               onChange={handleAvatarChange}
+              id="professional-avatar-input"
               tabIndex={3}
             />
             <label htmlFor="professional-website-input">{t("website")}</label>
             <input
               type="text"
               onChange={handleWebsiteChange}
+              id="professional-website-input"
               tabIndex={4}
             />
             <label htmlFor="professional-community-input">{t("community")} <span>*</span></label>
@@ -129,6 +133,7 @@ function OnboardingProfessional() {
               <select
                 tabIndex={5}
                 onChange={handleCommunityChange}
+                id="professional-community-input"
               >
                 <option>{t("select-option")}</option>
                 <option>Phala Network</option>

@@ -101,12 +101,14 @@ function OnboardingContractor() {
             <input
               type="text"
               onChange={handleNameChange}
+              id="contractor-name-input"
               tabIndex={1}
             />
             <label htmlFor="contractor-bio-input">{t("bio")} <span>*</span></label>
             <textarea
               type="text"
               onChange={handleBioChange}
+              id="contractor-bio-input"
               tabIndex={2}
             ></textarea>
           </div>
@@ -116,18 +118,21 @@ function OnboardingContractor() {
             <input
               type="text"
               onChange={handleAvatarChange}
+              id="contractor-avatar-input"
               tabIndex={3}
             />
-            <label htmlFor="conntractor-website-input">{t("website")}</label>
+            <label htmlFor="contractor-website-input">{t("website")}</label>
             <input
               type="text"
               onChange={handleWebsiteChange}
+              id="contractor-website-input"
               tabIndex={4}
             />
             <label htmlFor="contractor-community-input">{t("community")} <span>*</span></label>
             <div className={"custom-select"}>
               <select
                 onChange={handleCommunityChange}
+                id="contractor-community-input"
                 tabIndex={5}
               >
                 <option>Select a option</option>
