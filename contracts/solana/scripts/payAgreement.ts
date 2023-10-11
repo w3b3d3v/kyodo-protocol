@@ -3,7 +3,6 @@ import { PublicKey, Keypair } from "@solana/web3.js";
 import * as dotenv from "dotenv";
 import path from "path";
 import fs from 'fs';
-import { getOrCreateAssociatedTokenAccountKyodo } from "./initializePaymentInfrastructure";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { 
     TOKEN_PROGRAM_ID,
@@ -53,12 +52,12 @@ async function readAgreements() {
 
 async function processPayment(agreement, company, acceptedPaymentTokensAddress, feesAddress,) {
     const payer = (provider.wallet as NodeWallet).payer;
-    const amountToPay = 100
+    const amountToPay = new anchor.BN(100)
 
-    const associatedTokenAddressCompany = process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY
-    const associatedTokenAddressCommunity = process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY
-    const associatedTokenAddressTreasury = process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY
-    const fakeStablePubkey = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_fakeStablePubkey);
+    const associatedTokenAddressCompany = new PublicKey(process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY);
+    const associatedTokenAddressCommunity = new PublicKey(process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY);
+    const associatedTokenAddressTreasury = new PublicKey(process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY);
+    const fakeStablePubkey = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS);
 
     // Creating or fetching the associated token account for the professional.
     const associatedTokenAddressProfessional = await getOrCreateAssociatedTokenAccountKyodo(
@@ -72,10 +71,11 @@ async function processPayment(agreement, company, acceptedPaymentTokensAddress, 
         agreement: agreement[0].publicKey,
         company: company,
         fromAta: associatedTokenAddressCompany,
-        toAta: associatedTokenAddressProfessional,
+        toAta: associatedTokenAddressProfessional.address,
         communityDao: associatedTokenAddressCommunity,
         treasury: associatedTokenAddressTreasury,
-        acceptedPaymentTokens: acceptedPaymentTokensAddress, // É preciso definir essa account dentro do initializePaymentInfrastructure
+        acceptedPaymentTokens: acceptedPaymentTokensAddress,
+        paymentToken: fakeStablePubkey,
         fees: feesAddress,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
@@ -99,9 +99,21 @@ async function main(){
     // console.log("agreement", agreement)
     
     const processPaymentResult = await processPayment(agreement, company, acceptedPaymentTokensPubkey, feesPubkey)
-    //console.log("processPaymentResult", processPaymentResult)
+    console.log("processPaymentResult", processPaymentResult)
 }
 
+async function getOrCreateAssociatedTokenAccountKyodo(payer, tokenAddress, owner) {
+  return await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      payer,
+      tokenAddress,
+      owner,
+      false,
+      null, null,
+      TOKEN_PROGRAM_ID,
+      ASSOCIATED_TOKEN_PROGRAM_ID
+  );
+};
 
 main()
 
