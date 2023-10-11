@@ -2,8 +2,54 @@ import styles from "./Onboarding.module.scss"
 import Image from 'next/image'
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
+import { useState } from 'react';
+
+function saveToCache(data) {
+  const dataString = JSON.stringify(data);
+  localStorage.setItem('cachedData', dataString);
+  console.log(localStorage.getItem('cachedData'));
+}
 
 function OnboardingContractor() {
+
+  const [nameContractor, setName] = useState('');
+  const [bioContractor, setBio] = useState('');
+  const [avatarContractor, setAvatar] = useState('');
+  const [websiteContractor, setWebsite] = useState('');
+  const [communityContractor, setCommunity] = useState('');
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
+
+  const handleBioChange = (e) => {
+    setBio(e.target.value);
+  };
+
+  const handleAvatarChange = (e) => {
+    setAvatar(e.target.value);
+  };
+
+  const handleWebsiteChange = (e) => {
+    setWebsite(e.target.value);
+  };
+
+  const handleCommunityChange = (e) => {
+    setCommunity(e.target.value);
+  };
+
+  const handleButtonClick = () => {
+
+    const formData = {
+      nameContractor,
+      bioContractor,
+      avatarContractor,
+      websiteContractor,
+      communityContractor
+    };
+
+    saveToCache(formData);
+  };
 
   const { t } = useTranslation()
 
@@ -54,29 +100,36 @@ function OnboardingContractor() {
             <label htmlFor="contractor-name-input">{t("name")} <span>*</span></label>
             <input
               type="text"
-              id="contractor-name-input"
+              onChange={handleNameChange}
               tabIndex={1}
             />
             <label htmlFor="contractor-bio-input">{t("bio")} <span>*</span></label>
             <textarea
               type="text"
-              id="contractor-bio-input"
+              onChange={handleBioChange}
               tabIndex={2}
             ></textarea>
           </div>
 
           <div className={"col-02"}>
             <label htmlFor="contractor-avatar-input">{t("avatar")}</label>
-            <input type="text" id="contractor-avatar-input" tabIndex={3} />
+            <input
+              type="text"
+              onChange={handleAvatarChange}
+              tabIndex={3}
+            />
             <label htmlFor="conntractor-website-input">{t("website")}</label>
             <input
               type="text"
-              id="contractor-website-input"
+              onChange={handleWebsiteChange}
               tabIndex={4}
             />
             <label htmlFor="contractor-community-input">{t("community")} <span>*</span></label>
             <div className={"custom-select"}>
-              <select id="contractor-community-input" tabIndex={5}>
+              <select
+                onChange={handleCommunityChange}
+                tabIndex={5}
+              >
                 <option>Select a option</option>
                 <option>Phala Network</option>
                 <option>Web3dev</option>
@@ -88,7 +141,7 @@ function OnboardingContractor() {
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </Link>
-          <button type="submit" className={styles["next-btn"]} tabIndex={6}>
+          <button onClick={handleButtonClick} className={styles["next-btn"]} tabIndex={6}>
             {t("next-step")}
           </button>
         </section>
