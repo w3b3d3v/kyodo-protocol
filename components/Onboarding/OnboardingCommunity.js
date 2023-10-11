@@ -1,9 +1,43 @@
 import styles from "./Onboarding.module.scss"
 import Image from 'next/image'
-import { useTranslation } from "react-i18next"
 import Link from "next/link"
+import { useTranslation } from "react-i18next"
+import { useState } from 'react';
+
+function saveToCache(data) {
+  const dataString = JSON.stringify(data);
+  localStorage.setItem('cachedData', dataString);
+  console.log(localStorage.getItem('cachedData'));
+}
 
 function OnboardingCommunity() {
+
+  const [nameCommunity, setName] = useState('');
+  const [logoCommunity, setLogo] = useState('');
+  const [descriptionCommunity, setDescription] = useState('');
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
+
+  const handleLogoChange = (e) => {
+    setLogo(e.target.value);
+  };
+
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+  };
+
+  const handleButtonClick = () => {
+
+    const formData = {
+      nameCommunity,
+      logoCommunity,
+      descriptionCommunity
+    };
+
+    saveToCache(formData);
+  };
 
   const { t } = useTranslation()
 
@@ -54,19 +88,25 @@ function OnboardingCommunity() {
             <label htmlFor="community-name-input">{t("name")} <span>*</span></label>
             <input
               type="text"
+              onChange={handleNameChange}
               id="community-name-input"
               tabIndex={1}
             />
           </div>
           <div className={"col-02"}>
-            <label htmlFor="community-avatar-input">{t("avatar")}</label>
-            <input type="text" id="community-avatar-input" tabIndex={2} />
+            <label htmlFor="community-logo-input">{t("logo")}</label>
+            <input type="text"
+              onChange={handleLogoChange}
+              id="community-logo-input"
+              tabIndex={2}
+            />
           </div>
         </section>
 
         <label htmlFor="community-description-input">{t("description")} <span>*</span></label>
         <textarea
           type="text"
+          onChange={handleDescriptionChange}
           id="community-description-input"
           tabIndex={3}
         ></textarea>
@@ -96,7 +136,7 @@ function OnboardingCommunity() {
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </Link>
-          <button type="submit" className={styles["next-btn"]} tabIndex={6}>
+          <button onClick={handleButtonClick} className={styles["next-btn"]} tabIndex={6}>
             {t("next-step")}
           </button>
         </section>

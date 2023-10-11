@@ -1,8 +1,8 @@
 import styles from "./Onboarding.module.scss"
 import Image from 'next/image'
+import Link from "next/link"
 import { useTranslation } from "react-i18next"
 import { useState } from 'react';
-import Link from "next/link"
 
 function saveToCache(data) {
   const dataString = JSON.stringify(data);
