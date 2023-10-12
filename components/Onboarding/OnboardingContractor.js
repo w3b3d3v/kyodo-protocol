@@ -13,7 +13,7 @@ function saveToCache(data) {
 function OnboardingContractor() {
 
   const [nameContractor, setName] = useState('');
-  const [DocumentContractor, setDocument] = useState('');
+  const [documentContractor, setDocument] = useState('');
   const [logoContractor, setLogo] = useState('');
   const [websiteContractor, setWebsite] = useState('');
   const [aboutContractor, setAbout] = useState('');
