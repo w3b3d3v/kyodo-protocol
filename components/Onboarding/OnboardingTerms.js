@@ -7,6 +7,12 @@ function OnboardingTerms() {
 
   const { t } = useTranslation()
 
+  const { completeOnboarding } = useAccount();
+
+  const handleCompleteOnboarding = () => {
+    completeOnboarding();
+  }
+
   return (
     <div className={styles["onboarding"]}>
       <div className={styles["onboarding-steps"]}>
@@ -82,7 +88,7 @@ function OnboardingTerms() {
         <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
           {t("back")}
         </Link>
-        <Link href="#" className={styles["next-btn"]}>
+        <Link onClick={handleCompleteOnboarding} href="#" className={styles["next-btn"]}>
           {t("i-agree")}
         </Link>
       </section>

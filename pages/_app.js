@@ -10,31 +10,42 @@ import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import Head from 'next/head';
 import { PublicKey } from '@solana/web3.js';
+import OnboardingProfileSelection from '../components/Onboarding/OnboardingProfileSelection';
 
 function formatAddress(address) {
   return address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : '';
 }
 
 function PageContent({ Component, pageProps }) {
-  const { account, setAccount, selectedChain, setSelectedChain } = useAccount();
+
+  const { account, setAccount, selectedChain, setSelectedChain, isOnboardingComplete} = useAccount();
 
   return (
     <>
       {account ? (
-        <div>
-          <Header />
-          <Component {...pageProps} />
-        </div>
+        isOnboardingComplete ? (
+          <div>
+            <Header />
+            <Component {...pageProps} />
+          </div>
+        ) : (
+          <div>
+            <Header />
+            <OnboardingProfileSelection />
+          </div>
+        )
       ) : (
         <div>
-          <ConnectWalletButton value={{ account, setAccount, selectedChain, setSelectedChain }}/>
+          <ConnectWalletButton value={{ account, setAccount, selectedChain, setSelectedChain }} />
         </div>
       )}
     </>
   );
+  
 }
 
 function Header() {
+  
   const { account } = useAccount()
   const isPublicKey = account instanceof PublicKey;
   const router = useRouter()

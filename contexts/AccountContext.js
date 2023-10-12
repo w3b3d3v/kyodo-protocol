@@ -10,13 +10,28 @@ const AccountContext = createContext({
   setAccount: () => {},
   selectedChain: null,
   setSelectedChain: () => {},
-})
+  isOnboardingComplete: false,
+  completeOnboarding: () => {}
+});
 
 export function useAccount() {
   return useContext(AccountContext)
 }
 
 export function AccountProvider({ children }) {
+
+  const [isOnboardingComplete, setIsOnboardingComplete] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("isOnboardingComplete") === "true";
+    }
+    return false;
+  });
+  
+  const completeOnboarding = () => {
+    setIsOnboardingComplete(true);
+    localStorage.setItem("isOnboardingComplete", "true");
+  };
+
   const [account, setAccount] = useState(null)
   const [selectedChain, setSelectedChain] = useState(() => {
     if (typeof window !== "undefined") {
@@ -71,12 +86,19 @@ export function AccountProvider({ children }) {
   }, [account, selectedChain])
 
   return (
-    <AccountContext.Provider value={{ account, setAccount, selectedChain, setSelectedChain }}>
+    <AccountContext.Provider value={{
+      account,
+      setAccount,
+      selectedChain,
+      setSelectedChain,
+      isOnboardingComplete,
+      completeOnboarding
+    }}>
       <ConnectionProvider endpoint={endpoint}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>{children}</WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
     </AccountContext.Provider>
-  )
+  );
 }
