@@ -5,8 +5,6 @@ import { useTranslation } from "react-i18next"
 
 function OnboardingProfileSelection() {
 
-
-
   const { t } = useTranslation()
 
   return (
@@ -15,7 +13,7 @@ function OnboardingProfileSelection() {
         <h1>{t("welcome")}</h1>
         <ul>
           <li className={styles["done-step"]}>
-            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done icon" />
+            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done" />
             <p>{t("connect-wallet")}</p>
           </li>
           <li className={styles["current-step"]}>
@@ -23,7 +21,7 @@ function OnboardingProfileSelection() {
               src="/onboarding/current-icon.svg"
               width={20}
               height={23}
-              alt="Current step icon"
+              alt="Current step"
             />
             <p>{t("profile-selection")}</p>
           </li>
@@ -32,7 +30,7 @@ function OnboardingProfileSelection() {
               src="/onboarding/next-step-icon.svg"
               width={20}
               height={23}
-              alt="Next step icon"
+              alt="Next step"
             />
             <p>{t("initial-setup")}</p>
           </li>
@@ -41,7 +39,7 @@ function OnboardingProfileSelection() {
               src="/onboarding/next-step-icon.svg"
               width={20}
               height={23}
-              alt="Next step icon"
+              alt="Next step"
             />
             <p>{t("terms-conditions")}</p>
           </li>
@@ -58,7 +56,9 @@ function OnboardingProfileSelection() {
           />
           <h2>{t("community")}</h2>
           <p>{t("community-call")}</p>
-          <Link href="/onboarding/community">{t("get-started")}</Link>
+          <Link href="/onboarding/community" className={styles["call"]}>
+            {t("get-started")}
+          </Link>
         </li>
         <li className={styles["professional-call"]}>
           <Image
@@ -69,7 +69,9 @@ function OnboardingProfileSelection() {
           />
           <h2>{t("professional")}</h2>
           <p>{t("professional-call")}</p>
-          <Link href="/onboarding/professional">{t("get-started")}</Link>
+          <Link href="/onboarding/professional" className={styles["call"]}>
+            {t("get-started")}
+          </Link>
         </li>
         <li className={styles["contractor-call"]}>
           <Image
@@ -80,7 +82,9 @@ function OnboardingProfileSelection() {
           />
           <h2>{t("contractor")}</h2>
           <p>{t("contractor-call")}</p>
-          <Link href="/onboarding/contractor">{t("get-started")}</Link>
+          <Link href="/onboarding/contractor" className={styles["call"]}>
+            {t("get-started")}
+          </Link>
         </li>
       </ul>
     </div>

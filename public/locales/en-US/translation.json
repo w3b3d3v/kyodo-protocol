@@ -12,23 +12,29 @@
 
   "community-call": "Implement the protocol",
   "professional-call": "Get a job and career help",
-  "contractor-call": "Get a job and career help",
+  "contractor-call": "Find a talent",
 
+  "view-document": "View document",
   "get-started": "Get started",
 
   "basic-info": "Basic info",
   "personal-info": "Personal info",
 
   "name": "Name",
+  "company-name": "Company name",
   "bio": "Bio",
   "avatar": "Avatar URL",
+  "logo": "Logo URL",
   "website": "Website",
+  "about": "About",
+  "company-document": "Registration number",
   "community-fee": "Community fee",
   "select-option": "Select an option",
   "token-tooltip": "It can be used as a governance token if the community become a DAO",
 
   "back": "Back",
   "next-step": "Next step",
+  "i-agree": "I agree",
 
   "dashboard": "Dashboard",
   "agreements": "Agreements",
@@ -73,5 +79,5 @@
   "add-btn": "Add",
   "transaction-success": "Transaction successful!",
   "agreement-pending": "Transaction is still pending, please wait.",
-  "no-agreements": "NO Agreements found. Please add one."
+  "no-agreements": "No agreements found. Click on the add icon above."
 }

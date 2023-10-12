@@ -11,24 +11,30 @@
   "terms-conditions": "Termos & Condições",
 
   "community-call": "Implemente o protocolo",
-  "professional-call": "Consiga um emprego",
+  "professional-call": "Consiga um trabalho",
   "contractor-call": "Encontre talentos",
 
+  "view-document": "Ver documento",
   "get-started": "Iniciar",
 
   "basic-info": "Informações básicas",
   "personal-info": "Informações pessoais",
 
   "name": "Nome",
+  "company-name": "Nome da empresa",
   "bio": "Biografia",
-  "avatar": "Link do avatar",
+  "avatar": "URL do avatar",
+  "logo": "URL da Logo",
   "website": "Website",
+  "about": "Sobre",
+  "company-document": "Número do documento",
   "community-fee": "Community fee",
   "select-option": "Selecione uma opção",
   "token-tooltip": "Pode ser usado como um token de governança caso a comunidade se tornar um DAO",
 
   "back": "Voltar",
   "next-step": "Próximo passo",
+  "i-agree": "Eu concordo",
 
   "dashboard": "Painel",
   "agreements": "Acordos",
@@ -48,7 +54,7 @@
   "view-all": "Ver tudo",
 
   "code-conduct": "Código de conduta",
-  "privacy-policy": "Política de privacidade",
+  "privacy-policy": "Privacidade",
   "terms-use": "Termos de uso",
 
   "validation": {
@@ -72,5 +78,6 @@
   "add": "adicionar",
   "add-btn": "Adicionar",
   "agreement-created": "Acordo criado com sucesso!",
-  "agreement-pending": "Transação pendente. Aguarde um instante..."
+  "agreement-pending": "Transação pendente. Aguarde um instante...",
+  "no-agreements": "Nenhum acordo encontrado. Click no link de adicionar acima"
 }

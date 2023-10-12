@@ -76,9 +76,10 @@ ONBOARDING
 }
 
 
-// Roles list
+// Roles and terms list
 
-.roles-list {
+.roles-list,
+.terms-list {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
@@ -108,14 +109,9 @@ ONBOARDING
   }
 
   h2 {
-    font-size: $font-large-2;
     font-weight: normal;
-    line-height: 28px;
     margin: 30px 0 0 0;
-
-    @media #{$smartphones-1} {
-      font-size: $font-large;
-    }
+    line-height: 28px;
   }
 
   p {
@@ -129,7 +125,7 @@ ONBOARDING
     }
   }
 
-  a {
+  .call {
     color: $medium-gray;
     position: absolute;
     bottom: 0;
@@ -150,23 +146,62 @@ ONBOARDING
   }
 }
 
+.roles-list {
+
+  li {
+    height: 240px;
+  }
+
+  h2 {
+    font-size: $font-large-2;
+
+    @media #{$smartphones-1} {
+      font-size: $font-large;
+    }
+  }
+}
+
+.terms-list {
+
+  li {
+    height: auto;
+    padding-bottom: 25px;
+  }
+
+  h2 {
+    font-size: $font-medium-3;
+    letter-spacing: -1px;
+
+    @media #{$smartphones-1} {
+      font-size: $font-large;
+    }
+  }
+
+  p {
+
+    a {
+      color: $light-gray;
+    }
+  }
+}
+
 .community-call {
 
-  a {
+  a.call {
     color: $brand-green;
   }
 }
 
 .professional-call {
 
-  a {
+  a.call {
     color: $brand-red;
   }
 }
 
 .contractor-call {
 
-  a {
+  a.call {
     color: $brand-blue;
   }
 }
@@ -279,6 +314,7 @@ ONBOARDING
   flex-direction: row;
 }
 
+a.next-btn,
 button.next-btn,
 .back-link {
   border-radius: 30px;
@@ -298,6 +334,11 @@ button.next-btn,
   &:hover {
     opacity: .8;
   }
+}
+
+a.next-btn {
+  line-height: 33px;
+  border-color: $green;
 }
 
 .back-link {

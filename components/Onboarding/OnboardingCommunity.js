@@ -1,9 +1,43 @@
 import styles from "./Onboarding.module.scss"
 import Image from 'next/image'
-import { useTranslation } from "react-i18next"
 import Link from "next/link"
+import { useTranslation } from "react-i18next"
+import { useState } from 'react';
+
+function saveToCache(data) {
+  const dataString = JSON.stringify(data);
+  localStorage.setItem('cachedData', dataString);
+  console.log(localStorage.getItem('cachedData'));
+}
 
 function OnboardingCommunity() {
+
+  const [nameCommunity, setName] = useState('');
+  const [logoCommunity, setLogo] = useState('');
+  const [descriptionCommunity, setDescription] = useState('');
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
+
+  const handleLogoChange = (e) => {
+    setLogo(e.target.value);
+  };
+
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+  };
+
+  const handleButtonClick = () => {
+
+    const formData = {
+      nameCommunity,
+      logoCommunity,
+      descriptionCommunity
+    };
+
+    saveToCache(formData);
+  };
 
   const { t } = useTranslation()
 
@@ -13,29 +47,19 @@ function OnboardingCommunity() {
         <h1>{t("welcome")}</h1>
         <ul>
           <li className={styles["done-step"]}>
-            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done icon" />
+            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done" />
             <p>{t("connect-wallet")}</p>
           </li>
           <li className={styles["done-step"]}>
-            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done step icon" />
+            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done" />
             <p>{t("profile-selection")}</p>
           </li>
           <li className={styles["current-step"]}>
-            <Image
-              src="/onboarding/current-icon.svg"
-              width={20}
-              height={23}
-              alt="Current step icon"
-            />
+            <Image src="/onboarding/current-icon.svg" width={20} height={23} alt="Current" />
             <p>{t("initial-setup")}</p>
           </li>
           <li>
-            <Image
-              src="/onboarding/next-step-icon.svg"
-              width={20}
-              height={23}
-              alt="Next step icon"
-            />
+            <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Next" />
             <p>{t("terms-conditions")}</p>
           </li>
         </ul>
@@ -51,17 +75,31 @@ function OnboardingCommunity() {
 
         <section className={"columns"}>
           <div className={"col-01"}>
-            <label htmlFor="community-name-input">{t("name")}</label>
-            <input type="text" id="community-name-input" tabIndex={1} />
+            <label htmlFor="community-name-input">{t("name")} <span>*</span></label>
+            <input
+              type="text"
+              onChange={handleNameChange}
+              id="community-name-input"
+              tabIndex={1}
+            />
           </div>
           <div className={"col-02"}>
-            <label htmlFor="community-avatar-input">{t("avatar")}</label>
-            <input type="text" id="community-avatar-input" tabIndex={2} />
+            <label htmlFor="community-logo-input">{t("logo")}</label>
+            <input type="text"
+              onChange={handleLogoChange}
+              id="community-logo-input"
+              tabIndex={2}
+            />
           </div>
         </section>
 
-        <label htmlFor="community-description-input">{t("description")}</label>
-        <textarea type="text" id="community-description-input" tabIndex={3}></textarea>
+        <label htmlFor="community-description-input">{t("description")} <span>*</span></label>
+        <textarea
+          type="text"
+          onChange={handleDescriptionChange}
+          id="community-description-input"
+          tabIndex={3}
+        ></textarea>
 
         <h3>
           Token
@@ -88,7 +126,7 @@ function OnboardingCommunity() {
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </Link>
-          <button type="submit" className={styles["next-btn"]} tabIndex={6}>
+          <button onClick={handleButtonClick} className={styles["next-btn"]} tabIndex={6}>
             {t("next-step")}
           </button>
         </section>

@@ -12,10 +12,10 @@ export const getTokens = (chain) => {
     }
 
     if (chain === 'solana') {
-        return [...tokens, { name: 'fakeSOL', address: FAKE_SOL, "decimals": 8}];
+        return [...tokens, { name: 'fakeStable', address: FAKE_SOL, "decimals": 8}];
     }
 
-    if (chain === 'evm') {
+    if (chain === 'ethereum') {
         return [...tokens, { name: 'fakeStable', address: FAKE_EVM, "decimals": 18}];
     }
 

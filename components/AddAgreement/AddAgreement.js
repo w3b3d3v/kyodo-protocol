@@ -148,35 +148,45 @@ function AddAgreementForm(props) {
       <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>
         <section className={"columns"}>
           <div className={"col-01"}>
+
             <label htmlFor="title-input">{t("title")}</label>
             {formErrors.title && <div className={"validation-msg"}>{formErrors.title}</div>}
-            <input
-              type="text"
-              id="title-input"
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              tabIndex={1}
-            />
+            <div className={styles["generic-field"]}>
+              <span>
+                <Image src="/agreement-title-icon.svg" width={17} height={17} alt="Agreement" />
+              </span>
+              <input
+                type="text"
+                id="title-input"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                tabIndex={1}
+              />
+            </div>
 
             <label htmlFor="professional-input">{t("professional-wallet")}</label>
             {formErrors.professional && (
               <div className={"validation-msg"}>{formErrors.professional}</div>
             )}
-            <input
-              type="text"
-              id="professional-input"
-              value={professional}
-              onChange={(event) => setProfessional(event.target.value)}
-              tabIndex={2}
-            />
+            <div className={styles["generic-field"]}>
+              <span>
+                <Image src="/agreement-wallet-icon.svg" width={16} height={16} alt="Wallet" />
+              </span>
+              <input
+                type="text"
+                id="professional-input"
+                value={professional}
+                onChange={(event) => setProfessional(event.target.value)}
+                tabIndex={2}
+              />
+            </div>
 
             <label htmlFor="payment-amount-input">{t("payment-amount")}</label>
             {formErrors.paymentAmount && (
               <div className={"validation-msg"}>{formErrors.paymentAmount}</div>
             )}
-
             <div className={styles["amount-field"]}>
-              <span className={styles["usd-label"]}>USD</span>
+              <span>USD</span>
               <input
                 type="number"
                 id="payment-amount-input"
@@ -185,6 +195,30 @@ function AddAgreementForm(props) {
                 tabIndex={3}
               />
             </div>
+            <label htmlFor="community-input">{t("community")}</label>
+            <div className={"custom-select"}>
+              <select
+                tabIndex={5}
+                id="community-input"
+              >
+                <option>{t("select-option")}</option>
+                <option>Phala Network</option>
+                <option>Web3dev</option>
+                <option>Web3Garden</option>
+                <option>DecentralizeTech</option>
+                <option>CryptoCollective</option>
+                <option>NFTCreatorsDAO</option>
+                <option>DeFiAlliance</option>
+                <option>MetaMakersDAO</option>
+                <option>BlockchainBuilders</option>
+                <option>EtherGovernance</option>
+                <option>DecentralizedDreamers</option>
+                <option>TokenTorch</option>
+                <option>SmartWebSociety</option>
+                <option>DeFiDragons</option>
+              </select>
+            </div>
+            
           </div>
 
           <div className={"col-02"}>

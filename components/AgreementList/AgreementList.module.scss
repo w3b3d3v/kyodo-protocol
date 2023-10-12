@@ -334,8 +334,15 @@ AGREEMENT LIST
 }
 
 .no-agreement-message {
-  padding: 20px;
+  padding: 70px 20px;
   text-align: center;
-  font-weight: bold;
-  color: red;
+  border: 1px solid $dark-blue-2;
+  border-radius: 6px;
+  font-size: $font-medium;
+  font-weight: 500;
+  color: $light-gray;
+
+  img {
+    margin-bottom: 10px;
+  }
 }

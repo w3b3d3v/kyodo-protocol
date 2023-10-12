@@ -7,6 +7,10 @@ form {
 
   label {
     color: $light-gray;
+
+    span {
+      color: $red;
+    }
   }
 }
 
@@ -37,7 +41,15 @@ textarea,
   }
 
   option {
-    background-color: $dark-blue-2;
+    
+  }
+
+  option:nth-child(even) {
+    background-color: $dark-gray;
+  }
+
+  option:nth-child(odd) {
+    background-color: #020202;
   }
 }
 
@@ -55,7 +67,8 @@ textarea {
   max-height: 140px;
 }
 
-#community-description-input {
+#community-description-input,
+#contractor-about-input {
   min-height: 72px;
 }
 
@@ -64,11 +77,4 @@ textarea {
   font-size: $font-small;
   color: $red;
   margin-top: 5px;
-}
-
-
-// Custom select
-
-.custom-select {
-
 }

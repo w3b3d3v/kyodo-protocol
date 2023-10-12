@@ -138,9 +138,10 @@ function AgreementList() {
       <div className={styles["card-list"]}>
         {agreements.length === 0 ? (
           <div className={styles["no-agreement-message"]}>
-            {t("no-agreements")}
+            <Image src="/no-agreement-icon.svg" width={58} height={58} alt="No agreement" />
+            <p>{t("no-agreements")}</p>
           </div>
-          ) : (
+        ) : (
           agreements.map((agreement, index) => {
           return (
             <div key={index} className={styles["card"]}>
