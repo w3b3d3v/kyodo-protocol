@@ -1,6 +1,7 @@
 import addAgreement from "./transactions/addAgreement";
 import fetchAgreements from "./transactions/fetchAgreements";
 import payAgreement from "./transactions/payAgreement";
+import fetchUserBalances from "./transactions/fetchUserBalances";
 
 const EVENT_TIMEOUT = 30000;
 
@@ -33,6 +34,7 @@ const transactions = {
     handleTransactionPromise, 
     addAgreement,
     fetchAgreements,
-    payAgreement
+    payAgreement,
+    fetchUserBalances
 }
 export default transactions

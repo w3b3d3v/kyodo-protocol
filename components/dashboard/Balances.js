@@ -8,12 +8,13 @@ import { ethers } from "ethers";
 import Payments from './Payments';
 import Image from 'next/image'
 import Link from "next/link"
+import transactionManager from '../../chains/transactionManager'
 import { useTranslation } from "react-i18next"
 
 function Balances(props) {
   const { t } = useTranslation()
   const { vaultContract, vaultLoading } = useVaultContract()
-  const { account } = useAccount()
+  const { account, selectedChain} = useAccount()
   const [userBalances, setUserBalances] = useState([])
   const [showRedeemInput, setShowRedeemInput] = useState(null)
   const [redeemValue, setRedeemValue] = useState("")
@@ -56,28 +57,21 @@ function Balances(props) {
   }
 
   async function fetchUserBalances() {
-    const tokenAddresses = [process.env.NEXT_PUBLIC_STABLE_VAULT_ADDRESS]
-    const balances = []
+    try {
+      const details = {
+        account
+      };
 
-    for (let address of tokenAddresses) {
-      try {
-        const tokenContract = new ERC20Token(address)
-        const balance = await tokenContract.balanceOf(account)
-        const decimals = await tokenContract.decimals()
-
-        if (balance > 0) {
-          balances.push({
-            tokenAddress: address,
-            tokenDecimals: decimals,
-            amount: balance,
-          })
-        }
-      } catch (error) {
-        console.error(`Error when retrieving balance for ${address}:`, error)
+      const balances = await transactionManager["fetchUserBalances"](selectedChain, details)
+      if (!balances) {
+        return
       }
+      setUserBalances(balances)
+    } catch (error) {
+      console.error("Error when fetching balances:", error)
+    } finally {
+      setIsLoading(false)
     }
-
-    setUserBalances(balances)
   }
 
   const handleWithdraw = async (amount, balance) => {
