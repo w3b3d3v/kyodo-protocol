@@ -32,6 +32,10 @@ class TransactionManager {
   async withdrawFromVault(chain, ...args) {
     return this.chains[chain].withdrawFromVault(...args);
   }
+
+  async fetchPaidAgreements(chain, ...args) {
+    return this.chains[chain].fetchPaidAgreements(...args);
+  }
 }
 
 const manager = new TransactionManager();
