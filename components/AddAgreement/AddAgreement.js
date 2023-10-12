@@ -174,7 +174,6 @@ function AddAgreementForm(props) {
             {formErrors.paymentAmount && (
               <div className={"validation-msg"}>{formErrors.paymentAmount}</div>
             )}
-
             <div className={styles["amount-field"]}>
               <span className={styles["usd-label"]}>USD</span>
               <input
@@ -185,6 +184,30 @@ function AddAgreementForm(props) {
                 tabIndex={3}
               />
             </div>
+            <label htmlFor="community-input">{t("community")} <span>*</span></label>
+            <div className={"custom-select"}>
+              <select
+                tabIndex={5}
+                id="community-input"
+              >
+                <option>{t("select-option")}</option>
+                <option>Phala Network</option>
+                <option>Web3dev</option>
+                <option>Web3Garden</option>
+                <option>DecentralizeTech</option>
+                <option>CryptoCollective</option>
+                <option>NFTCreatorsDAO</option>
+                <option>DeFiAlliance</option>
+                <option>MetaMakersDAO</option>
+                <option>BlockchainBuilders</option>
+                <option>EtherGovernance</option>
+                <option>DecentralizedDreamers</option>
+                <option>TokenTorch</option>
+                <option>SmartWebSociety</option>
+                <option>DeFiDragons</option>
+              </select>
+            </div>
+            
           </div>
 
           <div className={"col-02"}>
