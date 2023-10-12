@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { BeatLoader } from "react-spinners";
 import { useVaultContract } from "../../contexts/ContractContext";
 import { useAccount } from "../../contexts/AccountContext";
 import ERC20Token from '../../utils/ERC20Token';
@@ -8,7 +7,10 @@ import { ethers } from "ethers";
 import Payments from './Payments';
 import Image from 'next/image'
 import Link from "next/link"
+import Loader from '../utils/Loader';
+import Toast from '../utils/Toast';
 import transactionManager from '../../chains/transactionManager'
+import useTransactionHandler from '../../hooks/useTransactionHandler';
 import { useTranslation } from "react-i18next"
 
 function Balances(props) {
@@ -18,7 +20,17 @@ function Balances(props) {
   const [userBalances, setUserBalances] = useState([])
   const [showRedeemInput, setShowRedeemInput] = useState(null)
   const [redeemValue, setRedeemValue] = useState("")
-  const [isLoading, setIsLoading] = useState(true)
+  const {
+    isLoading,
+    setIsLoading,
+    transactionSuccess,
+    transactionPending,
+    transactionFail,
+    errorMessage,
+    sendTransaction,
+    transactionHash,
+  } = useTransactionHandler();
+
 
   const handleRedeemClick = (index) => {
     setShowRedeemInput(index)
@@ -59,7 +71,7 @@ function Balances(props) {
   async function fetchUserBalances() {
     try {
       const details = {
-        account
+        account,
       };
 
       const balances = await transactionManager["fetchUserBalances"](selectedChain, details)
@@ -74,26 +86,28 @@ function Balances(props) {
     }
   }
 
-  const handleWithdraw = async (amount, balance) => {
-    const redeemAmountInWei = ethers.utils.parseUnits(amount.toString(), balance.tokenDecimals)
-
-    if (redeemAmountInWei.gt(balance.amount)) {
-      alert("You cannot redeem more than your balance!")
-      setRedeemValue("") // Reset the input value
-    }
+  const withdrawFromVault = async (amount, balance) => {
     try {
       setIsLoading(true)
-      const tx = await vaultContract.withdraw(
-        redeemAmountInWei,
-        process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
-      )
-      await tx.wait()
-      await fetchUserBalances()
+
+      const details = {
+        amount,
+        balance,
+        contract: vaultContract
+      };
+    
+      const onConfirmation = () => {
+        setShowRedeemInput(false)
+        setIsLoading(false)
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      };
+    
+      await sendTransaction("withdrawFromVault", details, "Withdrawal", onConfirmation)
+      
     } catch (error) {
       console.error("Error during withdrawal:", error)
-    } finally {
-      setShowRedeemInput(false)
-      setIsLoading(false)
     }
   }
 
@@ -120,26 +134,17 @@ function Balances(props) {
     fetchData()
   }, [vaultLoading])
 
-  const handleInvestClick = () => {
-    alert("Future feature")
-  }
-
-  if (isLoading) {
-    return (
-      <div className={"loading-overlay"}>
-        <div className={"sweet-loading"}>
-          <BeatLoader loading={isLoading} size={50} />
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div>
       <section className={styles["user-home"]}>
-        {/* {userBalances.length > 0 && (
-          <h1>Balances</h1>
-        )} */}
+      <Loader isLoading={isLoading} />
+      <Toast
+        transactionSuccess={transactionSuccess}
+        transactionPending={transactionPending}
+        transactionFail={transactionFail}
+        errorMessage={errorMessage}
+        transactionHash={transactionHash}
+      />
 
         <div className={styles["dashboard-header"]}>
           <h1>{t("gm")}</h1>
@@ -167,7 +172,7 @@ function Balances(props) {
                         onChange={(e) => handleRedeemValueChange(e)}
                         placeholder="USD"
                       />
-                      <button onClick={() => handleWithdraw(redeemValue, balance)}>
+                      <button onClick={() => withdrawFromVault(redeemValue, balance)}>
                         {t("confirm")}
                       </button>
                     </div>
