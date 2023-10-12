@@ -12,9 +12,9 @@
     "decimals": 18
   },
   {
-    "address": "0xb02EA32031901b9bad59975De5106D0D55E7a118",
+    "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
     "logo": "src/components/assets/your-token-logo.svg",
-    "name": "fakeStable",
+    "name": "USDT",
     "decimals": 18
   }
 ]
