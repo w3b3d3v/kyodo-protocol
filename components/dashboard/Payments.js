@@ -5,21 +5,26 @@ import { useAgreementContract } from "../../contexts/ContractContext";
 import { useAccount } from "../../contexts/AccountContext";
 import styles from "./Dashboard.module.scss"
 import Image from 'next/image'
+import Loader from '../utils/Loader';
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
+import useTransactionHandler from '../../hooks/useTransactionHandler';
+import transactionManager from '../../chains/transactionManager'
 
 function Payments ({ limit }) {
   const { contract, loading } = useAgreementContract();
-  const { account } = useAccount();
+  const { account, selectedChain} = useAccount();
   const [paidAgreements, setPaidAgreements] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const { t } = useTranslation()
+  const {
+    isLoading,
+    setIsLoading
+  } = useTransactionHandler();
   
   useEffect(() => {
     setIsLoading(true);
     if (!loading) {
       fetchPaidAgreements();
-      setIsLoading(false);
     }
   }, [loading]);
 
@@ -29,20 +34,20 @@ function Payments ({ limit }) {
 
   async function fetchPaidAgreements() {
     try {
-      const companyFilter = contract.filters.PaymentMade(account, null);
-      const professionalFilter = contract.filters.PaymentMade(null, account);
-  
-      const companyAgreements = await contract.queryFilter(companyFilter);
-      const professionalAgreements = await contract.queryFilter(professionalFilter);
-  
-      const allAgreements = [...companyAgreements, ...professionalAgreements];
-  
-      setPaidAgreements(allAgreements.map(event => ({
-      ...event.args,
-      transactionHash: event.transactionHash
-      })));
+      const details = {
+        account,
+        contract
+      };
+
+      const agreements = await transactionManager["fetchPaidAgreements"](selectedChain, details)
+      if (!agreements) {
+        return
+      }
+      setPaidAgreements(agreements)
     } catch (error) {
-      // TODO: Move implementation to promiseHandler hook
+      console.error("Error when fetching agreements:", error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -85,19 +90,10 @@ function Payments ({ limit }) {
       </div>
     ))
   }
-
-  if (isLoading) {
-    return (
-      <div className={"loading-overlay"}>
-        <div className={"sweet-loading"}>
-          <BeatLoader loading={isLoading} size={50} />
-        </div>
-      </div>
-    )
-  }
   
   return (
     <div className={styles["payments-section"]}>
+      <Loader isLoading={isLoading} />
       <h2>{t("payments")}</h2>
       <div>
         {renderPaidAgreements()}

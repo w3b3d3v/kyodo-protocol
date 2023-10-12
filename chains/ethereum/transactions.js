@@ -3,6 +3,7 @@ import fetchAgreements from "./transactions/fetchAgreements";
 import payAgreement from "./transactions/payAgreement";
 import fetchUserBalances from "./transactions/fetchUserBalances";
 import withdrawFromVault from "./transactions/withdrawFromVault";
+import fetchPaidAgreements from "./transactions/fetchPaidAgreements";
 
 const EVENT_TIMEOUT = 30000;
 
@@ -37,6 +38,7 @@ const transactions = {
     fetchAgreements,
     payAgreement,
     fetchUserBalances,
-    withdrawFromVault
+    withdrawFromVault,
+    fetchPaidAgreements
 }
 export default transactions
