@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import { BeatLoader } from "react-spinners";
-import { ethers } from "ethers";
 import { useAgreementContract } from "../../contexts/ContractContext";
 import { useAccount } from "../../contexts/AccountContext";
 import styles from "./Dashboard.module.scss"
@@ -10,6 +8,7 @@ import Link from "next/link"
 import { useTranslation } from "react-i18next"
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import transactionManager from '../../chains/transactionManager'
+import getExplorerLink from '../../chains/utils/utils.js';
 
 function Payments ({ limit }) {
   const { contract, loading } = useAgreementContract();
@@ -53,22 +52,25 @@ function Payments ({ limit }) {
 
   function renderPaidAgreements() {
     const displayedAgreements = limit ? paidAgreements.slice(0, limit) : paidAgreements;
+    const explorerLink = getExplorerLink(selectedChain);
+
     return displayedAgreements.map((agreement, index) => (
       <div key={index} className={styles["payment-item"]}>
         <div className={styles["payment-avatar"]}>
-          <Image src="coins/usdc-icon.svg" width={40} height={40} alt="USDC" />
+          <Image src="/coins/usdc-icon.svg" width={40} height={40} alt="USDC" />
         </div>
         <h3>Agreement ID: {agreement.agreementId.toString()}</h3>
+        
         <Link
-          href={`https://polygonscan.com/tx/${agreement.transactionHash}`}
+          href={explorerLink + agreement.transactionHash}
           target="_blank"
           rel="noopener noreferrer"
         >
-          {t("polygonscan")}
-        </Link>
+          {t("view-on")}
+      </Link>
         <p className={styles["value-status"]}>
           <em>
-            {parseFloat(ethers.utils.formatUnits(agreement.amount, 18))
+            {parseFloat(agreement.amount)
               .toFixed(2)
               .replace(/\.00$/, "")}{" "}
             USD
