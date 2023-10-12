@@ -1,17 +1,21 @@
 import { PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 
+function lamportsToSol(lamports) {
+    return Math.round(lamports / Math.pow(10, 8)).toString();
+}
+
 function transformAgreementData(agreement) {
-  return {
-      title: agreement.title,
-      description: agreement.description,
-      status: agreement.status,
-      professional: agreement.professional?.toString(),
-      company: agreement.company?.toString(),
-      skills: agreement.skills,
-      payment: {"amount": agreement.paymentAmount?.toString()},
-      totalPaid: agreement.totalPaid?.toString()
-  };
+    return {
+        title: agreement.title,
+        description: agreement.description,
+        status: agreement.status,
+        professional: agreement.professional?.toString(),
+        company: agreement.company?.toString(),
+        skills: agreement.skills,
+        amount: lamportsToSol(agreement.paymentAmount),
+        totalPaid: lamportsToSol(agreement.totalPaid)
+    };
 }
 
 
