@@ -3,8 +3,6 @@ import { PublicKey } from "@solana/web3.js";
 
 export const addAgreement = async (details) => {
   const companyAccount = details.publicKey
-  console.log("details", details)
-  
   const agreementData = {
     title: details.title,
     description: details.description,

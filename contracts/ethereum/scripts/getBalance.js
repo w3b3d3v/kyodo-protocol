@@ -7,8 +7,6 @@ async function main() {
     const TokenContract = await ethers.getContractFactory("StableVault");
     const token = await TokenContract.attach(STABLE_VAULT_ADDRESS);
     const tx = await token.balanceOf("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
-    // const tx = await token.totalSupply()
-    console.log("Balance: ",tx);
 }
 
 main()

@@ -20,7 +20,6 @@ function ConnectWalletButton(props) {
     async function checkSolana() {
       if (connected) {
         props.value.setAccount(publicKey);
-        console.log("publicKey", publicKey);
         localStorage.setItem('selectedChain', "solana");
         await verifyChain("solana");
       }

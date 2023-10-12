@@ -35,7 +35,6 @@ export function AccountProvider({ children }) {
   }
 
   const updateAccount = async () => {
-    console.log("mudou")
     if (selectedChain === "ethereum" && window.ethereum) {
       try {
         const accounts = await window.ethereum.request({ method: "eth_accounts" })

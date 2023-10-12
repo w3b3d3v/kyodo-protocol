@@ -6,15 +6,6 @@ function weiToEther(weiValue) {
 }
 
 function transformAgreementData(agreement) {
-  // console.log("agreement data", agreement)
-  // console.log("agreement", agreement.id.toString())
-  // console.log("title",agreement.title)
-  // console.log("description",agreement.description)
-  // console.log("professional",agreement.professional)
-  // console.log("skills",agreement.skills)
-  // console.log("payment",agreement.payment.toString())
-  // console.log("totalPaid",agreement.totalPaid)
-
   return {
       id: agreement.id, 
       title: agreement.title,
