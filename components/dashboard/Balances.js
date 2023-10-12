@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useVaultContract } from "../../contexts/ContractContext";
 import { useAccount } from "../../contexts/AccountContext";
-import ERC20Token from '../../utils/ERC20Token';
 import styles from "./Dashboard.module.scss"
 import { ethers } from "ethers";
 import Payments from './Payments';
@@ -45,29 +44,6 @@ function Balances(props) {
     }
   }
 
-  const handleWithdrawal = async (user, amount, asset) => {
-    if (user.toLowerCase() == account.toLowerCase()) {
-      if (!localStorage.getItem(asset)) {
-        const tokenContract = new ERC20Token(asset)
-        const symbol = await tokenContract.symbol()
-        const decimals = await tokenContract.decimals()
-
-        await window.ethereum.request({
-          method: "wallet_watchAsset",
-          params: {
-            type: "ERC20",
-            options: {
-              address: asset,
-              symbol: symbol,
-              decimals: decimals,
-            },
-          },
-        })
-        localStorage.setItem(asset, "added")
-      }
-    }
-  }
-
   async function fetchUserBalances() {
     try {
       const details = {
@@ -91,6 +67,7 @@ function Balances(props) {
       setIsLoading(true)
 
       const details = {
+        account,
         amount,
         balance,
         contract: vaultContract
@@ -99,9 +76,9 @@ function Balances(props) {
       const onConfirmation = () => {
         setShowRedeemInput(false)
         setIsLoading(false)
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 3000);
       };
     
       await sendTransaction("withdrawFromVault", details, "Withdrawal", onConfirmation)
@@ -118,11 +95,6 @@ function Balances(props) {
       try {
         if (!vaultLoading) {
           await fetchUserBalances()
-          vaultContract.on("Withdrawal", handleWithdrawal)
-
-          return () => {
-            vaultContract.off("Withdrawal", handleWithdrawal)
-          }
         }
       } catch (error) {
         console.error("Erro ao buscar dados:", error)
