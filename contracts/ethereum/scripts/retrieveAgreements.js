@@ -9,7 +9,6 @@ async function getAllAgreements() {
   const agreementContract = await AgreementContract.attach(AGREEMENT_CONTRACT_ADDRESS);
 
   const agreements = await agreementContract.getAllAgreements();
-  console.log("All Agreements:");
   agreements.forEach((agreement) => {
     console.log(`
       Title: ${agreement.title}

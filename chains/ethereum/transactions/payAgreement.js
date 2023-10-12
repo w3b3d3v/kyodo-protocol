@@ -33,7 +33,6 @@ export const payAgreement = async (details) => {
         
         const userAllowance = await checkAllowance(details.account, details.contract.address, details.selectedPaymentToken.address)
         if (!userAllowance.gte(paymentAmountInWei)) {
-            console.log("User allowance is less than payment amount, approving...")
             await handleApprove(details.paymentValue, details.contract.address, details.selectedPaymentToken)
         }
   

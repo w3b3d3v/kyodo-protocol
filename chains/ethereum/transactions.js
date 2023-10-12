@@ -7,7 +7,6 @@ const EVENT_TIMEOUT = 30000;
 async function handleTransactionPromise(contract, txResponse, eventName, account, setTransactionHash) {
     // TODO: Make event filters more robust based on parameters
     const eventReceived = new Promise((resolve, reject) => {
-        console.log("Promise created")
         const timeout = setTimeout(async () => {
             const tx = await contract.provider.getTransaction(txResponse.hash);
             if (tx && tx.blockNumber) {

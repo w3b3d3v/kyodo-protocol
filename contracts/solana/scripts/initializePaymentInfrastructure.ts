@@ -78,7 +78,12 @@ async function addPaymentToken(tokenPubkey, acceptedPaymentPubkey, adminPubkey) 
     }).rpc();
 };
 
-async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasuryKeypair, feesKeypair, acceptedPaymentTokensKeypair) {
+async function initializePaymentInfrastructure(communityDaoKeypair, 
+        kyodoTreasuryKeypair, 
+        feesKeypair, 
+        acceptedPaymentTokensKeypair, 
+        professionalPubkey
+    ) {
     const payer = (provider.wallet as NodeWallet).payer;
     const adminKeypair = loadKeypairFromJSONFile(wallet);
     const company = provider.wallet.publicKey;
@@ -87,7 +92,7 @@ async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasur
     const acceptedPaymentTokensPubkey = new PublicKey(acceptedPaymentTokensKeypair.publicKey);
     const kyodoTreasuryPubkey = new PublicKey(kyodoTreasuryKeypair);
     const communityDaoPubkey = new PublicKey(communityDaoKeypair);
-    const professionalPubkey = new PublicKey(process.env.NEXT_PUBLIC_SOL_PROFESSIONAL_ADDRESS); //TODO FIX: issue #106
+    professionalPubkey = new PublicKey(professionalPubkey); //TODO FIX: issue #106
     const feesPubkey = new PublicKey(feesKeypair.publicKey);
 
 
@@ -179,10 +184,15 @@ async function initializePaymentInfrastructure(communityDaoKeypair, kyodoTreasur
 
 async function main() {
     try {
-        // This need to be created only once for production, and saved in a safe place.
-        // both public key and secret key.
-        const communityDaoKeypair = process.env.NEXT_PUBLIC_SOL_COMMUNITY_TREASURY_ADDRESS
-        const kyodoTreasuryKeypair = process.env.NEXT_PUBLIC_SOL_KYODO_TREASURY_ADDRESS
+        if (!process.env.SOL_COMMUNITY_TREASURY_ADDRESS || 
+            !process.env.SOL_KYODO_TREASURY_ADDRESS || 
+            !process.env.SOL_PROFESSIONAL_ADDRESS) {
+            throw new Error("Missing required environment variables.");
+        }
+    
+        const communityDaoKeypair = process.env.SOL_COMMUNITY_TREASURY_ADDRESS;
+        const kyodoTreasuryKeypair = process.env.SOL_KYODO_TREASURY_ADDRESS;
+        const professionalPubkey = process.env.SOL_PROFESSIONAL_ADDRESS;
         const feesKeypair = anchor.web3.Keypair.generate();
         const acceptedPaymentTokensKeypair = anchor.web3.Keypair.generate();
         
@@ -190,14 +200,15 @@ async function main() {
             communityDaoKeypair,
             kyodoTreasuryKeypair,
             feesKeypair,
-            acceptedPaymentTokensKeypair
-        )
-
-        console.log("Payment Infrastructure Initialized")
-
+            acceptedPaymentTokensKeypair,
+            professionalPubkey
+        );
+    
+        console.log("Payment Infrastructure Initialized");
+    
     } catch (error) {
-        console.error("error initializing payment infrastructure:", error);
-    }
+        console.error("Error initializing payment infrastructure:", error.message);
+    }    
 }
 
 async function getOrCreateNeededAssociatedTokenAccount(payer, tokenAddress, owner) {
