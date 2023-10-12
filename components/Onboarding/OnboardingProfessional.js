@@ -128,6 +128,18 @@ function OnboardingProfessional() {
                 <option>{t("select-option")}</option>
                 <option>Phala Network</option>
                 <option>Web3dev</option>
+                <option>Web3Garden</option>
+                <option>DecentralizeTech</option>
+                <option>CryptoCollective</option>
+                <option>NFTCreatorsDAO</option>
+                <option>DeFiAlliance</option>
+                <option>MetaMakersDAO</option>
+                <option>BlockchainBuilders</option>
+                <option>EtherGovernance</option>
+                <option>DecentralizedDreamers</option>
+                <option>TokenTorch</option>
+                <option>SmartWebSociety</option>
+                <option>DeFiDragons</option>
               </select>
             </div>
           </div>
