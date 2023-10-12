@@ -26,7 +26,8 @@ ADD AGREEMENT
 
 // Amount
 
-.amount-field {
+.generic-field,
+.amount-field  {
   position: relative;
 
   span {
@@ -35,12 +36,37 @@ ADD AGREEMENT
     color: $light-gray;
     display: inline-block;
     background-color: $dark-blue-2;
-    padding: 0 15px;
     height: 40px;
-    line-height: 40px;
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
+    text-align: center;
     left: 0;
+  }
+
+  .usd-label {
+    padding: 0 15px;
+    width: auto;
+  }
+}
+
+.generic-field {
+
+  span {
+    width: 40px;
+    line-height: 46px;
+  }
+
+  input {
+    padding-left: 53px;
+  }
+}
+
+.amount-field  {
+  position: relative;
+
+  span {
+    padding: 0 15px;
+    line-height: 40px;
   }
 
   input {
