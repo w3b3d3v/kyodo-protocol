@@ -184,7 +184,7 @@ function AddAgreementForm(props) {
                 tabIndex={3}
               />
             </div>
-            <label htmlFor="community-input">{t("community")} <span>*</span></label>
+            <label htmlFor="community-input">{t("community")}</label>
             <div className={"custom-select"}>
               <select
                 tabIndex={5}

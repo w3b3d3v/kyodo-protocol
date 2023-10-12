@@ -41,7 +41,15 @@ textarea,
   }
 
   option {
-    background-color: $dark-blue-2;
+    
+  }
+
+  option:nth-child(even) {
+    background-color: $dark-gray;
+  }
+
+  option:nth-child(odd) {
+    background-color: #020202;
   }
 }
 
