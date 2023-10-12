@@ -74,15 +74,7 @@ async function deployAgreementsContract(vaultAddress) {
 
   copyABI();
 
-
-  const allowedTokensData = fs.readFileSync("../../public/allowedTokens.json", "utf8");
-  const allowedTokens = JSON.parse(allowedTokensData);
-
-
-  for (const token of allowedTokens) {
-    await contract.addAcceptedPaymentToken(token.address);
-  
-  }
+  await contract.addAcceptedPaymentToken(proces.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS);
 
   await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
   await contract.setStableVaultAddress(vaultAddress);
