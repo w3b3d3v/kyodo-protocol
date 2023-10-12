@@ -56,7 +56,7 @@ function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress)
   console.log(`Updated contract addresses in ${envPath}`);
 }
 
-async function deployAgreementsContract(vaultAddress) {
+async function deployAgreementsContract(vaultAddress, tokenAddress) {
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
   console.log(process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS, 
     process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS,)
@@ -74,7 +74,7 @@ async function deployAgreementsContract(vaultAddress) {
 
   copyABI();
 
-  await contract.addAcceptedPaymentToken(proces.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS);
+  await contract.addAcceptedPaymentToken(tokenAddress);
 
   await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
   await contract.setStableVaultAddress(vaultAddress);
@@ -92,30 +92,7 @@ async function deployToken() {
   await token.deployed();
 
   console.log("Token deployed to:", token.address);
-
-
-  const allowedTokensPath = '../../public/allowedTokens.json';
-  const allowedTokensData = fs.readFileSync(allowedTokensPath, 'utf8');
-  const allowedTokens = JSON.parse(allowedTokensData);
-
-
-  if (allowedTokens.length > 0) {
-    
-      const lastToken = allowedTokens[allowedTokens.length - 1];
-      lastToken.address = token.address;
-      lastToken.logo = "src/components/assets/your-token-logo.svg";
-      lastToken.name = "fakeStable";
-      lastToken.decimals = FAKE_STABLE_DECIMALS;
-
-    
-      const updatedAllowedTokensData = JSON.stringify(allowedTokens, null, 2);
-      fs.writeFileSync(allowedTokensPath, updatedAllowedTokensData, 'utf8');
-
-      console.log("Last token in allowedTokens.json updated");
-      return token.address
-  } else {
-      console.log("No tokens found in allowedTokens.json");
-  }
+  return token.address
 }
 
 async function deployStableVault() {
@@ -134,7 +111,7 @@ async function main() {
   try {
     const tokenAddress = await deployToken();
     const vaultAddress = await deployStableVault();  
-    const agreementAddress = await deployAgreementsContract(vaultAddress);
+    const agreementAddress = await deployAgreementsContract(vaultAddress, tokenAddress);
     updateConfig(agreementAddress, tokenAddress, vaultAddress); 
     process.exit(0);
   } catch (error) {
