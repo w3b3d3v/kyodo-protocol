@@ -1,10 +1,5 @@
 import { ethers } from "ethers";
 
-function weiToEther(weiValue) {
-  const ether = ethers.utils.formatEther(weiValue);
-  return Math.round(ether).toString();
-}
-
 function transformAgreementData(agreement) {
   return {
       id: agreement.id, 

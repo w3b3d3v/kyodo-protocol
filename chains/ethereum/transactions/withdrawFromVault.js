@@ -29,8 +29,8 @@ const handleWithdrawal = async (user, amount, asset, account) => {
 
 export const withdrawFromVault = async (details) => {
     const redeemAmountInWei = ethers.utils.parseUnits(details.amount.toString(), details.balance.tokenDecimals)
-
-    if (redeemAmountInWei.gt(details.balance.amount)) {
+    const balanceInWei = ethers.utils.parseUnits(details.balance.amount, details.balance.tokenDecimals)
+    if (redeemAmountInWei.gt(balanceInWei)) {
       alert("You cannot redeem more than your balance!")
       setRedeemValue("")
     }

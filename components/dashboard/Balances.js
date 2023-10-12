@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useVaultContract } from "../../contexts/ContractContext";
 import { useAccount } from "../../contexts/AccountContext";
 import styles from "./Dashboard.module.scss"
-import { ethers } from "ethers";
 import Payments from './Payments';
 import Image from 'next/image'
 import Link from "next/link"
@@ -12,7 +11,7 @@ import transactionManager from '../../chains/transactionManager'
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import { useTranslation } from "react-i18next"
 
-function Balances(props) {
+function Balances() {
   const { t } = useTranslation()
   const { vaultContract, vaultLoading } = useVaultContract()
   const { account, selectedChain} = useAccount()
@@ -75,10 +74,9 @@ function Balances(props) {
     
       const onConfirmation = () => {
         setShowRedeemInput(false)
-        setIsLoading(false)
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 3000);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
       };
     
       await sendTransaction("withdrawFromVault", details, "Withdrawal", onConfirmation)
@@ -126,12 +124,11 @@ function Balances(props) {
               <p className={styles["usd-balance"]}>
                 <Image src="/usd-icon.svg" alt="USD icon" width={32} height={32} />
                 <span>
-                  {parseFloat(ethers.utils.formatUnits(balance.amount, 18))
+                  {parseFloat(balance.amount)
                     .toFixed(2)
                     .replace(/\.00$/, "")}
                 </span>
               </p>
-              <p>
                 {showRedeemInput !== index && (
                   <a onClick={() => handleRedeemClick(index)}>{t("redeem")}</a>
                 )}
@@ -150,7 +147,6 @@ function Balances(props) {
                     </div>
                   </>
                 )}
-              </p>
             </div>
           ))}
         </div>
