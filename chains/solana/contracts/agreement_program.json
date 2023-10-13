@@ -16,7 +16,17 @@
           "isSigner": true
         },
         {
+          "name": "professional",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "companyAgreements",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "professionalAgreements",
           "isMut": true,
           "isSigner": false
         },
@@ -129,17 +139,53 @@
       ]
     },
     {
-      "name": "processPayment",
+      "name": "withdraw",
       "accounts": [
         {
-          "name": "agreement",
+          "name": "professional",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "professionalAta",
           "isMut": true,
           "isSigner": false
         },
         {
+          "name": "vaultAta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "professionalAgreements",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "processPayment",
+      "accounts": [
+        {
           "name": "company",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "agreement",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "fromAta",
@@ -147,17 +193,37 @@
           "isSigner": false
         },
         {
-          "name": "toAta",
+          "name": "communityDaoAta",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "communityDao",
+          "name": "treasuryAta",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "treasury",
+          "name": "paymentToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "professional",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "professionalVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "companyAgreements",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "professionalAgreements",
           "isMut": true,
           "isSigner": false
         },
@@ -175,13 +241,14 @@
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": [
-        {
-          "name": "paymentToken",
-          "type": "publicKey"
-        },
         {
           "name": "amountToPay",
           "type": "u64"
@@ -261,6 +328,34 @@
       }
     },
     {
+      "name": "VaultAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "deposits",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "withdraws",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "totalDeposits",
+            "type": "u64"
+          },
+          {
+            "name": "totalWithdraws",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
       "name": "AcceptedPaymentTokensAccount",
       "type": {
         "kind": "struct",
@@ -275,10 +370,32 @@
       }
     },
     {
+      "name": "ProfessionalAgreements",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "balance",
+            "type": "u64"
+          },
+          {
+            "name": "agreements",
+            "type": {
+              "vec": "publicKey"
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "CompanyAgreements",
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "totalPaid",
+            "type": "u64"
+          },
           {
             "name": "agreements",
             "type": {
@@ -353,6 +470,18 @@
       }
     }
   ],
+  "events": [
+    {
+      "name": "MyEvent",
+      "fields": [
+        {
+          "name": "data",
+          "type": "string",
+          "index": false
+        }
+      ]
+    }
+  ],
   "errors": [
     {
       "code": 6000,
@@ -396,6 +525,6 @@
     }
   ],
   "metadata": {
-    "address": "FqaqjUy4n1ysFZi6Jr7XeGDzu5f1gt7a85mVLGjP1cRX"
+    "address": "HtpwrE1546kgGZfgkELGDZvHKwLwPUfMV9nujDwZNnSF"
   }
 }

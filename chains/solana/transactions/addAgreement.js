@@ -3,12 +3,14 @@ import { PublicKey } from "@solana/web3.js";
 
 export const addAgreement = async (details) => {
   const companyAccount = details.publicKey
+  const professionalPubkey = new PublicKey(details.professional)
+  
   const agreementData = {
     title: details.title,
     description: details.description,
     skills: details.skills,
     paymentAmount: new anchor.BN(details.paymentAmount),
-    professional: new PublicKey(details.professional),
+    professional: professionalPubkey,
     company: companyAccount,
   }
 
@@ -18,13 +20,22 @@ export const addAgreement = async (details) => {
     details.contract.programId
   );
 
+  const stringProfessionalBuffer = Buffer.from("professional_agreements", "utf-8");
+  const [professionalAgreementsPublicKey, __] = anchor.web3.PublicKey.findProgramAddressSync(
+    [stringProfessionalBuffer, professionalPubkey.toBuffer()],
+    details.contract.programId
+  );
+
   try {
     const agreementAddress = anchor.web3.Keypair.generate();
 
     const tx = await details.contract.methods
-      .initializeAgreement(agreementData).accounts({
+      .initializeAgreement(agreementData)
+      .accounts({
           agreement: agreementAddress.publicKey,
           company: companyAccount,
+          professional:professionalPubkey,
+          professionalAgreements: professionalAgreementsPublicKey,
           companyAgreements: companyAgreementsPublicKey, 
           systemProgram: anchor.web3.SystemProgram.programId,
         }).signers([agreementAddress]).rpc();
