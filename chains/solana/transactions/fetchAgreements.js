@@ -2,7 +2,7 @@ import { PublicKey } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 
 function lamportsToSol(lamports) {
-    return Math.round(lamports / Math.pow(10, 8)).toString();
+    return Math.round(lamports.toString() / Math.pow(10, 8)).toString();
 }
 
 function transformAgreementData(agreement) {
@@ -13,7 +13,7 @@ function transformAgreementData(agreement) {
         professional: agreement.professional?.toString(),
         company: agreement.company?.toString(),
         skills: agreement.skills,
-        amount: lamportsToSol(agreement.paymentAmount),
+        amount: agreement.paymentAmount.toString(),
         totalPaid: lamportsToSol(agreement.totalPaid)
     };
 }
