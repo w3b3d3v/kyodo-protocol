@@ -203,7 +203,7 @@ function AddAgreementForm(props) {
               >
                 <option>{t("select-option")}</option>
                 <option>Phala Network</option>
-                <option>Web3dev</option>
+                <option>WEB3DEV</option>
                 <option>Web3Garden</option>
                 <option>DecentralizeTech</option>
                 <option>CryptoCollective</option>
