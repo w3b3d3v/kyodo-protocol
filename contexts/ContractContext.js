@@ -42,10 +42,11 @@ export function VaultContractProvider({ children }) {
   const [vaultContract, setContract] = useState(null)
   const [vaultLoading, setLoading] = useState(true)
   const { selectedChain } = useAccount()
+  const { wallet } = useWallet()
 
   useEffect(() => {
     async function initializeContract() {
-      const initializedContract = contractManager.chains[selectedChain].vaultContract()
+      const initializedContract = contractManager.chains[selectedChain].vaultContract(wallet)
       setContract(initializedContract)
       setLoading(false)
     }
