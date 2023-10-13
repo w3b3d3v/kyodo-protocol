@@ -37,8 +37,8 @@ function AddAgreementForm(props) {
 
   const addressValidators = {
     ethereum: /^0x[a-fA-F0-9]{40}$/,
-    solana: /^[1-9A-HJ-NP-Za-km-z]{44}$/,
-  };
+    solana: /^[1-9A-HJ-NP-Za-km-z]{43,44}$/,
+  }
   
   const AgreementSchema = Yup.object().shape({
     title: Yup.string().required(),
