@@ -131,8 +131,20 @@ HEADER
   }
 }
 
-
 // User wallet
+.wallet-adapter-button {
+  padding: 10px !important;
+  height: 35px !important;
+}
+
+.wallet-adapter-modal-list .wallet-adapter-button {
+  height: 50px !important;
+  padding: 20px !important;
+}
+
+.wallet-adapter-dropdown-list-item {
+  line-height: 35px;
+}
 
 .user-wallet {
   border-radius: 15px;

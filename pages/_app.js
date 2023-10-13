@@ -8,8 +8,7 @@ import { useTranslation } from "react-i18next"
 import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWalletButton"
 import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import Head from 'next/head';
-import { PublicKey } from "@solana/web3.js"
+import Head from "next/head"
 
 function formatAddress(address) {
   return address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : ""
@@ -42,9 +41,7 @@ function PageContent({ Component, pageProps }) {
 }
 
 function Header() {
-  
-  const { account } = useAccount()
-  const isPublicKey = account instanceof PublicKey;
+  const { account, selectedChain } = useAccount()
   const router = useRouter()
   const { t, i18n } = useTranslation()
   const { locale } = router
@@ -58,16 +55,16 @@ function Header() {
 
   // Mobile header and footer
 
-  const mobileScreenWidth = 800;
-  const isSmallScreen = window.innerWidth <= mobileScreenWidth;
+  const mobileScreenWidth = 800
+  const isSmallScreen = window.innerWidth <= mobileScreenWidth
 
-  const [visibleMenu, setVisibleMenu] = useState(!isSmallScreen);
-  const [visibleFooter, setVisibleFooter] = useState(!isSmallScreen);
+  const [visibleMenu, setVisibleMenu] = useState(!isSmallScreen)
+  const [visibleFooter, setVisibleFooter] = useState(!isSmallScreen)
 
   const toggleElement = () => {
-    setVisibleMenu(!visibleMenu);
-    setVisibleFooter(!visibleFooter);
-  };
+    setVisibleMenu(!visibleMenu)
+    setVisibleFooter(!visibleFooter)
+  }
 
   return (
     <div>
@@ -105,17 +102,17 @@ function Header() {
                 </ul>
               </nav>
             )}
-            <div className={"user-wallet"}>
-              {isPublicKey ? (
-                <WalletMultiButton />
-              ) : (
+            {selectedChain == "solana" ? (
+              <WalletMultiButton />
+            ) : (
+              <div className={"user-wallet"}>
                 <div>
                   <span className={"wallet-on"}>Status</span>
                   <em>{formatAddress(account)}</em>
                   <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
                 </div>
-              )}
-            </div>
+              </div>
+            )}
             <Image
               src="/menu-icon.svg"
               alt="menu icon"
