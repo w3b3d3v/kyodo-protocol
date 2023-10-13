@@ -18,7 +18,7 @@ async function createAgreement() {
     const companyAddress = provider.wallet.publicKey;
 
     // Generate a new keypair for the professional's address.
-    const professionalAddress = new PublicKey("ApJwCVP7QitDWjQ5K9tCQAP6ajrN2BRPD47Ku9Wsgeub")
+    const professionalAddress = new PublicKey(process.env.SOL_PROFESSIONAL_ADDRESS);
     
     // Converting the string "company_agreements" to a buffer to be used for PDA calculations.
     const stringBuffer = Buffer.from("company_agreements", "utf-8");

@@ -6,7 +6,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local')
 
 async function readAgreements() {
   try {
-    const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
+    const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
     anchor.setProvider(provider);
 
     // Carrega o programa de acordos do espaço de trabalho.

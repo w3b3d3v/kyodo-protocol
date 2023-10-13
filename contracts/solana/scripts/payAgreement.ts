@@ -11,12 +11,12 @@ import {
 } from "@solana/spl-token";
 dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local') });
 
-const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
+const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
 anchor.setProvider(provider);
 const program = anchor.workspace.AgreementProgram;
 
 async function readAgreements() {
-    const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
+    const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
     anchor.setProvider(provider);
 
     const program = anchor.workspace.AgreementProgram;
@@ -50,17 +50,16 @@ async function readAgreements() {
     return agreements;
 }
 
-async function processPayment(agreement, company, acceptedPaymentTokensAddress, feesAddress,) {
+async function processPayment(agreement, company, acceptedPaymentTokensAddress, feesAddress) {
     const payer = (provider.wallet as NodeWallet).payer;
     const amountToPay = new anchor.BN(1000 * Math.pow(10, 8))
 
     const associatedTokenAddressCompany = new PublicKey(process.env.NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY);
     const associatedTokenAddressCommunity = new PublicKey(process.env.NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY);
     const associatedTokenAddressTreasury = new PublicKey(process.env.NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY);
-    const associatedTokenAddressVault = new PublicKey(process.env.NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_VAULT);
     const fakeStableAddress = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS);
-    const vaultAddress = new PublicKey(process.env.NEXT_PUBLIC_SOL_VAULT_ADDRESS);
-    const professionalAddress = new PublicKey(process.env.NEXT_SOL_PROFESSIONAL_ADDRESS);
+    const professionalAddress = new PublicKey(process.env.SOL_PROFESSIONAL_ADDRESS);
+
     const stringBufferCompany = Buffer.from("company_agreements", "utf-8");
 
     const [companyAgreementsPublicKey, _] = anchor.web3.PublicKey.findProgramAddressSync(
@@ -75,15 +74,22 @@ async function processPayment(agreement, company, acceptedPaymentTokensAddress, 
       program.programId
     );
 
-    const tx = await program.methods.processPayment(fakeStableAddress, amountToPay)
+    const [professionalVaultPublicKey, ___] =
+    anchor.web3.PublicKey.findProgramAddressSync(
+      [professionalAddress.toBytes(), fakeStableAddress.toBytes()],
+      program.programId
+    );
+
+    const tx = await program.methods.processPayment(amountToPay)
     .accounts({
       company: company,
       agreement: agreement[agreement.length - 1].publicKey,
-      vault: vaultAddress,
       fromAta: associatedTokenAddressCompany,
       communityDaoAta: associatedTokenAddressCommunity,
       treasuryAta: associatedTokenAddressTreasury,
-      vaultAta: associatedTokenAddressVault,
+      paymentToken: fakeStableAddress,
+      professional: professionalAddress,
+      professionalVault: professionalVaultPublicKey,
       companyAgreements: companyAgreementsPublicKey,
       professionalAgreements: professionalAgreementsPublicKey,
       acceptedPaymentTokens: acceptedPaymentTokensAddress,
@@ -103,8 +109,12 @@ async function processPayment(agreement, company, acceptedPaymentTokensAddress, 
 
 async function main(){
     const company = provider.wallet.publicKey;
-    const acceptedPaymentTokensPubkey = new PublicKey(process.env.SOL_ACCEPTED_PAYMENT_TOKENS_ADDRESS);
-    const feesPubkey = new PublicKey(process.env.SOL_FEES_ADDRESS);
+    const acceptedPaymentTokensPubkey = new PublicKey(process.env.NEXT_PUBLIC_SOL_ACCEPTED_PAYMENT_TOKENS_ADDRESS);
+    const feesPubkey = new PublicKey(process.env.NEXT_PUBLIC_SOL_FEES_ADDRESS);
+
+    console.log("companyAddress -> ", company);
+    console.log("acceptedPaymentTokensPubkey -> ", acceptedPaymentTokensPubkey);
+    console.log("feesPubkey -> ", feesPubkey);
 
     const agreement = await readAgreements()
     // console.log("agreement", agreement)
@@ -112,18 +122,5 @@ async function main(){
     const processPaymentResult = await processPayment(agreement, company, acceptedPaymentTokensPubkey, feesPubkey)
     console.log("processPaymentResult", processPaymentResult)
 }
-
-async function getOrCreateAssociatedTokenAccountKyodo(payer, tokenAddress, owner) {
-  return await getOrCreateAssociatedTokenAccount(
-      provider.connection,
-      payer,
-      tokenAddress,
-      owner,
-      false,
-      null, null,
-      TOKEN_PROGRAM_ID,
-      ASSOCIATED_TOKEN_PROGRAM_ID
-  );
-};
 
 main()
