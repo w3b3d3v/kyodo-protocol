@@ -10,6 +10,28 @@ function OnboardingComplete() {
   return (
     <div className={styles["onboarding"]}>
 
+      <div className={styles["onboarding-steps"]}>
+        <h1>{t("welcome")}</h1>
+        <ul>
+          <li className={styles["done-step"]}>
+            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done" />
+            <p>{t("connect-wallet")}</p>
+          </li>
+          <li className={styles["done-step"]}>
+            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done" />
+            <p>{t("profile-selection")}</p>
+          </li>
+          <li className={styles["done-step"]}>
+            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done" />
+            <p>{t("initial-setup")}</p>
+          </li>
+          <li className={styles["done-step"]}>
+            <Image src="/onboarding/checked-icon.svg" width={20} height={23} alt="Done" />
+            <p>{t("terms-conditions")}</p>
+          </li>
+        </ul>
+      </div>
+
       <div className={styles["onboarding-success"]}>
         <Image src="/onboarding/big-success-icon.svg" width={100} height={100} alt="Success!" />
         <p>{t("onboarding-success")}</p>
