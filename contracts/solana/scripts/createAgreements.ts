@@ -7,7 +7,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local')
 async function createAgreement() {
   try {
     // Configure the client to use the local Solana cluster.
-    const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
+    const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
 
     anchor.setProvider(provider);
 
@@ -22,6 +22,7 @@ async function createAgreement() {
     
     // Converting the string "company_agreements" to a buffer to be used for PDA calculations.
     const stringBuffer = Buffer.from("company_agreements", "utf-8");
+    const stringProfessionalBuffer = Buffer.from("professional_agreements", "utf-8");
 
     // Generating a new keypair for the agreement's address.
     const agreementAddress = anchor.web3.Keypair.generate();
@@ -34,6 +35,11 @@ async function createAgreement() {
       program.programId
     );
 
+    // Finding the Program Derived Address (PDA) for company agreements using the buffer and company address.
+    const [professionalAgreementsPublicKey, __] = anchor.web3.PublicKey.findProgramAddressSync(
+      [stringProfessionalBuffer, professionalAddress.toBuffer()],
+      program.programId
+    );
     // const amount = new anchor.BN(1000);
     const amount = new anchor.BN(1000 * Math.pow(10, 8))
     
@@ -52,6 +58,8 @@ async function createAgreement() {
       .accounts({
         agreement: agreementAddress.publicKey,
         company: companyAddress,
+        professional: professionalAddress,
+        professionalAgreements: professionalAgreementsPublicKey,
         companyAgreements: companyAgreementsPublicKey, // The PDA address, you'll have to compute this based on your program logic
         systemProgram: anchor.web3.SystemProgram.programId,
       })
