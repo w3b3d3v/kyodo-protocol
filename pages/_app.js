@@ -10,7 +10,7 @@ import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import Head from 'next/head';
 import { PublicKey } from '@solana/web3.js';
-import OnboardingProfileSelection from '../components/Onboarding/OnboardingProfileSelection';
+import OnboardingTerms from '../components/Onboarding/OnboardingTerms';
 
 function formatAddress(address) {
   return address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : '';
@@ -31,7 +31,7 @@ function PageContent({ Component, pageProps }) {
         ) : (
           <div>
             <Header />
-            <OnboardingProfileSelection />
+            <OnboardingTerms />
           </div>
         )
       ) : (

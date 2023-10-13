@@ -2,6 +2,7 @@ import styles from "./Onboarding.module.scss"
 import Image from 'next/image'
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
+import { useAccount} from "../../contexts/AccountContext";
 
 function OnboardingTerms() {
 
