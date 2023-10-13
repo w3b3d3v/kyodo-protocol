@@ -217,7 +217,6 @@ ONBOARDING
   @media #{$smartphones-1} {
     width: 100%;
     max-width: 100%;
-    padding-bottom: 50px;
   }
 
   h2 {
@@ -312,6 +311,10 @@ ONBOARDING
   display: flex;
   justify-content: space-between;
   flex-direction: row;
+
+  @media #{$smartphones-1} {
+    padding-bottom: 40px;
+  }
 }
 
 a.next-btn,
@@ -366,9 +369,20 @@ a.next-btn {
   font-weight: 500;
   color: $light-gray;
 
+  @media #{$smartphones-1} {
+    padding-top: 40px;
+    padding-bottom: 50px;
+  }
+
   img {
     width: 100px;
     margin-bottom: 30px;
+
+    @media #{$smartphones-1} {
+      width: 70px;
+      margin-bottom: 20px;
+    }
+  
   }
 
   a {
