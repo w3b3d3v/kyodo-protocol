@@ -87,14 +87,18 @@ function OnboardingContractor() {
 
         <section className={"columns"}>
           <div className={"col-01"}>
-            <label htmlFor="contractor-name-input">{t("company-name")} <span>*</span></label>
+            <label htmlFor="contractor-name-input">
+              {t("company-name")} <span>*</span>
+            </label>
             <input
               type="text"
               onChange={handleNameChange}
               id="contractor-name-input"
               tabIndex={1}
             />
-            <label htmlFor="contractor-document-input">{t("company-document")} <span>*</span></label>
+            <label htmlFor="contractor-document-input">
+              {t("company-document")} <span>*</span>
+            </label>
             <input
               type="text"
               onChange={handleDocumentChange}
@@ -120,7 +124,9 @@ function OnboardingContractor() {
           </div>
         </section>
 
-        <label htmlFor="contractor-about-input">{t("about")} <span>*</span></label>
+        <label htmlFor="contractor-about-input">
+          {t("about")} <span>*</span>
+        </label>
         <textarea
           type="text"
           onChange={handleAboutChange}
@@ -132,11 +138,10 @@ function OnboardingContractor() {
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </Link>
-          <button onClick={handleButtonClick} className={styles["next-btn"]} tabIndex={6}>
+          <Link href="/onboarding/terms" className={styles["next-btn"]} tabIndex={6}>
             {t("next-step")}
-          </button>
+          </Link>
         </section>
-
       </form>
     </div>
   )

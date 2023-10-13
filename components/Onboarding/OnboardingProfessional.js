@@ -3,53 +3,45 @@ import Image from 'next/image'
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
 import { useState } from 'react';
+import { useRouter } from "next/router"
 
 function saveToCache(data) {
-  const dataString = JSON.stringify(data);
-  localStorage.setItem('cachedData', dataString);
-  console.log(localStorage.getItem('cachedData'));
+  const dataString = JSON.stringify(data)
+  localStorage.setItem("cachedData", dataString)
+  console.log(localStorage.getItem("cachedData"))
 }
 
 function OnboardingProfessional() {
-
-  const [nameProfessional, setName] = useState('');
-  const [bioProfessional, setBio] = useState('');
-  const [avatarProfessional, setAvatar] = useState('');
-  const [websiteProfessional, setWebsite] = useState('');
-  const [communityProfessional, setCommunity] = useState('');
+  const [nameProfessional, setName] = useState("")
+  const [bioProfessional, setBio] = useState("")
+  const [avatarProfessional, setAvatar] = useState("")
+  const [websiteProfessional, setWebsite] = useState("")
+  const [communityProfessional, setCommunity] = useState("")
+  const { router } = useRouter()
 
   const handleNameChange = (e) => {
-    setName(e.target.value);
-  };
+    setName(e.target.value)
+  }
 
   const handleBioChange = (e) => {
-    setBio(e.target.value);
-  };
+    setBio(e.target.value)
+  }
 
   const handleAvatarChange = (e) => {
-    setAvatar(e.target.value);
-  };
+    setAvatar(e.target.value)
+  }
 
   const handleWebsiteChange = (e) => {
-    setWebsite(e.target.value);
-  };
+    setWebsite(e.target.value)
+  }
 
   const handleCommunityChange = (e) => {
-    setCommunity(e.target.value);
-  };
+    setCommunity(e.target.value)
+  }
 
   const handleButtonClick = () => {
-
-    const formData = {
-      nameProfessional,
-      bioProfessional,
-      avatarProfessional,
-      websiteProfessional,
-      communityProfessional
-    };
-
-    saveToCache(formData);
-  };
+    router.push("/onboarding/terms")
+  }
 
   const { t } = useTranslation()
 
@@ -87,14 +79,18 @@ function OnboardingProfessional() {
 
         <section className={"columns"}>
           <div className={"col-01"}>
-            <label htmlFor="professional-name-input">{t("name")} <span>*</span></label>
+            <label htmlFor="professional-name-input">
+              {t("name")} <span>*</span>
+            </label>
             <input
               type="text"
               onChange={handleNameChange}
               id="professional-name-input"
               tabIndex={1}
             />
-            <label htmlFor="professional-bio-input">{t("bio")} <span>*</span></label>
+            <label htmlFor="professional-bio-input">
+              {t("bio")} <span>*</span>
+            </label>
             <textarea
               type="text"
               onChange={handleBioChange}
@@ -118,7 +114,9 @@ function OnboardingProfessional() {
               id="professional-website-input"
               tabIndex={4}
             />
-            <label htmlFor="professional-community-input">{t("community")} <span>*</span></label>
+            <label htmlFor="professional-community-input">
+              {t("community")} <span>*</span>
+            </label>
             <div className={"custom-select"}>
               <select
                 tabIndex={5}
@@ -148,9 +146,9 @@ function OnboardingProfessional() {
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </Link>
-          <button onClick={handleButtonClick} className={styles["next-btn"]} tabIndex={6}>
+          <Link href="/onboarding/terms" className={styles["next-btn"]} tabIndex={6}>
             {t("next-step")}
-          </button>
+          </Link>
         </section>
       </form>
     </div>

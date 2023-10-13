@@ -75,25 +75,20 @@ function OnboardingCommunity() {
 
         <section className={"columns"}>
           <div className={"col-01"}>
-            <label htmlFor="community-name-input">{t("name")} <span>*</span></label>
-            <input
-              type="text"
-              onChange={handleNameChange}
-              id="community-name-input"
-              tabIndex={1}
-            />
+            <label htmlFor="community-name-input">
+              {t("name")} <span>*</span>
+            </label>
+            <input type="text" onChange={handleNameChange} id="community-name-input" tabIndex={1} />
           </div>
           <div className={"col-02"}>
             <label htmlFor="community-logo-input">{t("logo")}</label>
-            <input type="text"
-              onChange={handleLogoChange}
-              id="community-logo-input"
-              tabIndex={2}
-            />
+            <input type="text" onChange={handleLogoChange} id="community-logo-input" tabIndex={2} />
           </div>
         </section>
 
-        <label htmlFor="community-description-input">{t("description")} <span>*</span></label>
+        <label htmlFor="community-description-input">
+          {t("description")} <span>*</span>
+        </label>
         <textarea
           type="text"
           onChange={handleDescriptionChange}
@@ -126,9 +121,9 @@ function OnboardingCommunity() {
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </Link>
-          <button onClick={handleButtonClick} className={styles["next-btn"]} tabIndex={6}>
+          <Link href="/onboarding/terms" className={styles["next-btn"]} tabIndex={6}>
             {t("next-step")}
-          </button>
+          </Link>
         </section>
       </form>
     </div>

@@ -9,39 +9,36 @@ import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWa
 import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import Head from 'next/head';
-import { PublicKey } from '@solana/web3.js';
-import OnboardingTerms from '../components/Onboarding/OnboardingTerms';
+import { PublicKey } from "@solana/web3.js"
 
 function formatAddress(address) {
-  return address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : '';
+  return address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : ""
 }
 
 function PageContent({ Component, pageProps }) {
+  const router = useRouter()
+  const { account, setAccount, selectedChain, setSelectedChain, isOnboardingComplete } =
+    useAccount()
 
-  const { account, setAccount, selectedChain, setSelectedChain, isOnboardingComplete} = useAccount();
+  if (account && !isOnboardingComplete && !router.pathname.startsWith("/onboarding")) {
+    router.push("/onboarding")
+    return null
+  }
 
   return (
     <>
       {account ? (
-        isOnboardingComplete ? (
-          <div>
-            <Header />
-            <Component {...pageProps} />
-          </div>
-        ) : (
-          <div>
-            <Header />
-            <OnboardingTerms />
-          </div>
-        )
+        <div>
+          <Header />
+          <Component {...pageProps} />
+        </div>
       ) : (
         <div>
           <ConnectWalletButton value={{ account, setAccount, selectedChain, setSelectedChain }} />
         </div>
       )}
     </>
-  );
-  
+  )
 }
 
 function Header() {
