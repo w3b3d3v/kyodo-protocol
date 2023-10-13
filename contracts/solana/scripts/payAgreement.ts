@@ -11,15 +11,15 @@ import {
 } from "@solana/spl-token";
 dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local') });
 
-const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
+const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
 anchor.setProvider(provider);
 const program = anchor.workspace.AgreementProgram;
 
 async function readAgreements() {
-    const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
-    anchor.setProvider(provider);
+    // const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
+    // anchor.setProvider(provider);
 
-    const program = anchor.workspace.AgreementProgram;
+    // const program = anchor.workspace.AgreementProgram;
     const companyAddress = provider.wallet.publicKey;
 
     const stringBuffer = Buffer.from("company_agreements", "utf-8");

@@ -25,7 +25,7 @@ if [ "$env" == "devnet" ]; then
 
     # Deploy the program and capture the Program ID
     echo "Deploying the program..."
-    DEPLOY_OUTPUT=$(anchor deploy --provider.cluster localnet)
+    DEPLOY_OUTPUT=$(anchor deploy --provider.cluster devnet)
     echo "$DEPLOY_OUTPUT"
 
     # Extract the Program ID from the deploy output using awk

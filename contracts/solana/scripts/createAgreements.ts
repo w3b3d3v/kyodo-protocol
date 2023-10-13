@@ -7,7 +7,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local')
 async function createAgreement() {
   try {
     // Configure the client to use the local Solana cluster.
-    const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
+    const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
 
     anchor.setProvider(provider);
 
@@ -41,7 +41,7 @@ async function createAgreement() {
       program.programId
     );
     // const amount = new anchor.BN(1000);
-    const amount = new anchor.BN(1000 * Math.pow(10, 8))
+    const amount = new anchor.BN(1000)
     
     const agreement = {
       title: "new test from backend",

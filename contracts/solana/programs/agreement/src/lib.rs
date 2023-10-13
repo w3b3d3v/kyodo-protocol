@@ -227,7 +227,9 @@ pub mod agreement_program {
 
         professional_agreements_account.balance += professional_payment;
         company_agreements_account.total_paid += amount_to_pay;
-
+        emit!(MyEvent {
+            data: "Hello Event!".to_string()
+        });
         // Return Ok to indicate successful execution.
         Ok(())
     }
@@ -424,4 +426,9 @@ pub enum ErrorCode {
     InvalidFeePercentage,
     #[msg("Payment exeeded the total amount")]
     PaymentExeeded
+}
+
+#[event]
+pub struct MyEvent {
+    pub data: String
 }

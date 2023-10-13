@@ -12,13 +12,13 @@ import {
 } from "@solana/spl-token";
 dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local') });
 
-const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
+const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
 anchor.setProvider(provider);
 const program = anchor.workspace.AgreementProgram;
 
 async function withdrawFromVault(professionalKeypair, fakeStableAddress) {
     const payer = (provider.wallet as NodeWallet).payer;
-    const amountToWithdraw= new anchor.BN(1000)
+    const amountToWithdraw = new anchor.BN(20 * Math.pow(10, 8))
 
     const stringBufferProfessional = Buffer.from("professional_agreements", "utf-8");
 
@@ -58,12 +58,21 @@ async function main(){
 
     const professionalKeypair = anchor.web3.Keypair.fromSecretKey(bs58.decode(professionalPrivateKey));
 
-    const withdraw = await withdrawFromVault(professionalKeypair, fakeStableAddress);
+    const [professionalVaultPublicKey, ___] =
+      anchor.web3.PublicKey.findProgramAddressSync(
+        [professionalKeypair.publicKey.toBytes(), fakeStableAddress.toBytes()],
+        program.programId
+      );
 
-    console.log(withdraw);
+    const professionalBalance = await provider.connection.getTokenAccountBalance(professionalVaultPublicKey);
+    console.log("Initial professionalBalance: ", professionalBalance.value);
+
+    // const withdraw = await withdrawFromVault(professionalKeypair, fakeStableAddress);
+    // console.log(withdraw);
+    const finalProfessionalBalance = await provider.connection.getTokenAccountBalance(professionalVaultPublicKey);
+    console.log("Initial finalProfessionalBalance: ", finalProfessionalBalance.value);
+
 }
-
-main()
 
 async function getOrCreateNeededAssociatedTokenAccount(payer, tokenAddress, owner) {
   return await getOrCreateAssociatedTokenAccount(
@@ -77,3 +86,5 @@ async function getOrCreateNeededAssociatedTokenAccount(payer, tokenAddress, owne
       ASSOCIATED_TOKEN_PROGRAM_ID
   );
 };
+
+main()

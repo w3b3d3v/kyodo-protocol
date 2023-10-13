@@ -45,7 +45,7 @@ function updateConfig(fakeStableAddress) {
 async function createFakeToken() {
   try {
     // Configure the client to use the local Solana cluster.
-    const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
+    const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
     anchor.setProvider(provider);
 
     // Fetch the public key of the company from the provider's wallet.

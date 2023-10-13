@@ -13,7 +13,7 @@ import {
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env.development.local') });
 
-const provider = anchor.AnchorProvider.local("http://127.0.0.1:8899");
+const provider = anchor.AnchorProvider.local("https://api.devnet.solana.com");
 anchor.setProvider(provider);
 const program = anchor.workspace.AgreementProgram;
 
@@ -30,7 +30,7 @@ function loadKeypairFromJSONFile(filePath: string): Keypair {
     return keypair;
   }
 
-const wallet = "/Users/brunobarros/.config/solana/id.json"
+const wallet = process.env.ANCHOR_WALLET
 
 function updateConfig(
         associatedTokenAddressCompany, 
