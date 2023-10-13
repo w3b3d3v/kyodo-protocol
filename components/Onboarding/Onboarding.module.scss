@@ -315,7 +315,8 @@ ONBOARDING
 }
 
 a.next-btn,
-button.next-btn,
+a.i-agree-btn,
+//button.next-btn,
 .back-link {
   border-radius: 30px;
   text-decoration: none;
@@ -336,10 +337,15 @@ button.next-btn,
   }
 }
 
+a.i-agree-btn {
+  border-color: $green;
+  line-height: 35px;
+}
+
 a.next-btn {
   line-height: 33px;
-  border-color: $green;
 }
+
 
 .back-link {
   border: none;

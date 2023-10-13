@@ -93,7 +93,7 @@ function OnboardingTerms() {
         <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
           {t("back")}
         </Link>
-        <Link onClick={handleCompleteOnboarding} href="#" className={styles["next-btn"]}>
+        <Link onClick={handleCompleteOnboarding} href="#" className={styles["i-agree-btn"]}>
           {t("i-agree")}
         </Link>
       </section>
