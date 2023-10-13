@@ -9,7 +9,7 @@ footer {
   position: fixed;
   bottom: 0;
   left: 0;
-  background: rgba($medium-blue, .09);
+  background-color: $dark-gray;
   font-size: $font-medium;
   z-index: 600;
   @extend %clearfix;
