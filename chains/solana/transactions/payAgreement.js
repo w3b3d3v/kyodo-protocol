@@ -40,41 +40,60 @@ export const payAgreement = async (details) => {
         const selectedPaymentTokenPubkey = new PublicKey(details.selectedPaymentToken.address);
 
         // Creating or fetching the associated token account for the professional.
-        console.log("details.agreement.professional", details.agreement.professional)
-        const associatedTokenAddressProfessional = await getOrCreateAssociatedNecessaryTokenAccount(
-            details.contract.provider,              
-            details.publicKey,                          // payer: Entity funding the transaction.
-            selectedPaymentTokenPubkey,               // Mint's public key.
-            details.agreement.professional,      // Owner of the associated token account.
+        // console.log("details.agreement.professional", details.agreement.professional)
+        // const associatedTokenAddressProfessional = await getOrCreateAssociatedNecessaryTokenAccount(
+        //     details.contract.provider,              
+        //     details.publicKey,                          // payer: Entity funding the transaction.
+        //     selectedPaymentTokenPubkey,               // Mint's public key.
+        //     details.agreement.professional,      // Owner of the associated token account.
+        // );
+
+        // console.log("associatedTokenAddressProfessional", associatedTokenAddressProfessional);
+
+        console.log("Step 1")
+
+        const professionalPubkey = new PublicKey(details.agreement.professional)
+        const companyPubkey = new PublicKey(details.account)
+
+        const [professionalVaultPublicKey, ___] =
+        anchor.web3.PublicKey.findProgramAddressSync(
+          [professionalPubkey.toBytes(), selectedPaymentTokenPubkey.toBytes()],
+          details.contract.programId
         );
 
-        console.log("associatedTokenAddressProfessional", associatedTokenAddressProfessional);
-        
+        console.log("professionalVaultPublicKey", professionalVaultPublicKey)
+
+        const stringBufferCompany = Buffer.from("company_agreements", "utf-8");
+        const [companyAgreementsPublicKey, _] = anchor.web3.PublicKey.findProgramAddressSync(
+            [stringBufferCompany, companyPubkey.toBuffer()],
+            details.contract.programId
+        );
+
+        console.log("companyAgreementsPublicKey", companyAgreementsPublicKey)
+
+        const stringBufferProfessional = Buffer.from("professional_agreements", "utf-8");
+        const [professionalAgreementsPublicKey, __] = anchor.web3.PublicKey.findProgramAddressSync(
+          [stringBufferProfessional, professionalPubkey.toBytes()],
+          details.contract.programId
+        );
+
+        console.log("professionalAgreementsPublicKey", professionalAgreementsPublicKey)
+
         const amountInLamports = new anchor.BN(details.paymentValue * Math.pow(10, details.selectedPaymentToken.decimals));
 
-        console.log({
-            agreement: details.agreement.publicKey,
-            company: details.wallet,
-            fromAta: associatedTokenAddressCompany,
-            toAta: associatedTokenAddressProfessional.address,
-            communityDao: associatedTokenAddressCommunity,
-            treasury: associatedTokenAddressTreasury,
-            acceptedPaymentTokens: acceptedPaymentTokensPubkey,
-            paymentToken: selectedPaymentTokenPubkey,
-            fees: feesPubkey,
-            tokenProgram: TOKEN_PROGRAM_ID,
-        });
-
-        const tx = await details.contract.methods.processPayment(selectedPaymentTokenPubkey, amountInLamports)
+        const tx = await details.contract.methods.processPayment(amountInLamports)
         .accounts({
+            company: companyPubkey,
             agreement: details.agreement.publicKey,
-            company: details.publicKey,
             fromAta: associatedTokenAddressCompany,
-            toAta: associatedTokenAddressProfessional.address,
-            communityDao: associatedTokenAddressCommunity,
-            treasury: associatedTokenAddressTreasury,
-            acceptedPaymentTokens: acceptedPaymentTokensPubkey,
+            communityDaoAta: associatedTokenAddressCommunity,
+            treasuryAta: associatedTokenAddressTreasury,
             paymentToken: selectedPaymentTokenPubkey,
+            professional: professionalPubkey,
+            professionalVault: professionalVaultPublicKey,
+            companyAgreements: companyAgreementsPublicKey,
+            professionalAgreements: professionalAgreementsPublicKey,
+            acceptedPaymentTokens: acceptedPaymentTokensPubkey,
             fees: feesPubkey,
             tokenProgram: TOKEN_PROGRAM_ID,
         })

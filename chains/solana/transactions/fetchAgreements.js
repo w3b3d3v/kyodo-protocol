@@ -6,6 +6,7 @@ function lamportsToSol(lamports) {
 }
 
 function transformAgreementData(agreement) {
+    console.log("agreement: ", agreement)
     return {
         title: agreement.title,
         description: agreement.description,
