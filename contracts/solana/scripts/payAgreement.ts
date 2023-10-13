@@ -54,32 +54,43 @@ async function processPayment(agreement, company, acceptedPaymentTokensAddress, 
     const payer = (provider.wallet as NodeWallet).payer;
     const amountToPay = new anchor.BN(1000 * Math.pow(10, 8))
 
-    const associatedTokenAddressCompany = new PublicKey(process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY);
-    const associatedTokenAddressCommunity = new PublicKey(process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY);
-    const associatedTokenAddressTreasury = new PublicKey(process.env.SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY);
-    const fakeStablePubkey = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS);
+    const associatedTokenAddressCompany = new PublicKey(process.env.NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY);
+    const associatedTokenAddressCommunity = new PublicKey(process.env.NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY);
+    const associatedTokenAddressTreasury = new PublicKey(process.env.NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY);
+    const associatedTokenAddressVault = new PublicKey(process.env.NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_VAULT);
+    const fakeStableAddress = new PublicKey(process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS);
+    const vaultAddress = new PublicKey(process.env.NEXT_PUBLIC_SOL_VAULT_ADDRESS);
+    const professionalAddress = new PublicKey(process.env.NEXT_SOL_PROFESSIONAL_ADDRESS);
+    const stringBufferCompany = Buffer.from("company_agreements", "utf-8");
 
-    // Creating or fetching the associated token account for the professional.
-    const associatedTokenAddressProfessional = await getOrCreateAssociatedTokenAccountKyodo(
-        payer,                          // Entity funding the transaction.
-        fakeStablePubkey,               // Mint's public key.
-        agreement[agreement.length - 1].professional,      // Owner of the associated token account.
+    const [companyAgreementsPublicKey, _] = anchor.web3.PublicKey.findProgramAddressSync(
+      [stringBufferCompany, payer.publicKey.toBuffer()],
+      program.programId
     );
 
-      const tx = await program.methods.processPayment(fakeStablePubkey, amountToPay)
-      .accounts({
-        agreement: agreement[agreement.length - 1].publicKey,
-        company: company,
-        fromAta: associatedTokenAddressCompany,
-        toAta: associatedTokenAddressProfessional.address,
-        communityDao: associatedTokenAddressCommunity,
-        treasury: associatedTokenAddressTreasury,
-        acceptedPaymentTokens: acceptedPaymentTokensAddress,
-        paymentToken: fakeStablePubkey,
-        fees: feesAddress,
-        tokenProgram: TOKEN_PROGRAM_ID,
-      })
-      .rpc();
+    const stringBufferProfessional = Buffer.from("professional_agreements", "utf-8");
+
+    const [professionalAgreementsPublicKey, __] = anchor.web3.PublicKey.findProgramAddressSync(
+      [stringBufferProfessional, professionalAddress.toBuffer()],
+      program.programId
+    );
+
+    const tx = await program.methods.processPayment(fakeStableAddress, amountToPay)
+    .accounts({
+      company: company,
+      agreement: agreement[agreement.length - 1].publicKey,
+      vault: vaultAddress,
+      fromAta: associatedTokenAddressCompany,
+      communityDaoAta: associatedTokenAddressCommunity,
+      treasuryAta: associatedTokenAddressTreasury,
+      vaultAta: associatedTokenAddressVault,
+      companyAgreements: companyAgreementsPublicKey,
+      professionalAgreements: professionalAgreementsPublicKey,
+      acceptedPaymentTokens: acceptedPaymentTokensAddress,
+      fees: feesAddress,
+      tokenProgram: TOKEN_PROGRAM_ID,
+    })
+    .rpc();
 
     const fetchedAgreement = await program.account.agreementAccount.fetch(
         agreement[agreement.length - 1].publicKey

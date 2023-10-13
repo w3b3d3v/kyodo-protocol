@@ -29,12 +29,14 @@ function loadKeypairFromJSONFile(filePath: string): Keypair {
     return keypair;
   }
 
-const wallet = "/Users/nomadbitcoin/.config/solana/id.json"
+const wallet = "/Users/brunobarros/.config/solana/id.json"
 
 function updateConfig(
         associatedTokenAddressCompany, 
         associatedTokenAddressCommunity, 
         associatedTokenAddressTreasury,
+        associatedTokenAddressVault,
+        vaultAddress,
         feesAddress,
         acceptedPaymentTokensAddress
     ) {
@@ -47,7 +49,10 @@ function updateConfig(
         'NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_COMPANY': associatedTokenAddressCompany,
         'NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_COMMUNITY': associatedTokenAddressCommunity,
         'NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_TREASURY': associatedTokenAddressTreasury,
+        'NEXT_PUBLIC_SOL_ASSOCIATED_TOKEN_ADDRESS_VAULT': associatedTokenAddressVault,
         'NEXT_PUBLIC_SOL_ACCEPTED_PAYMENT_TOKENS_ADDRESS': acceptedPaymentTokensAddress,
+        'NEXT_PUBLIC_SOL_VAULT_ADDRESS': vaultAddress,
+        'NEXT_PUBLIC_SOL_PROFESSIONAL_ADDRESS': vaultAddress,
         'NEXT_PUBLIC_SOL_FEES_ADDRESS': feesAddress,
     };
   
@@ -80,6 +85,7 @@ async function addPaymentToken(tokenPubkey, acceptedPaymentPubkey, adminPubkey) 
 
 async function initializePaymentInfrastructure(communityDaoKeypair, 
         kyodoTreasuryKeypair, 
+        vaultKeypair,
         feesKeypair, 
         acceptedPaymentTokensKeypair, 
         professionalPubkey
@@ -92,6 +98,7 @@ async function initializePaymentInfrastructure(communityDaoKeypair,
     const acceptedPaymentTokensPubkey = new PublicKey(acceptedPaymentTokensKeypair.publicKey);
     const kyodoTreasuryPubkey = new PublicKey(kyodoTreasuryKeypair);
     const communityDaoPubkey = new PublicKey(communityDaoKeypair);
+    const vaultPubkey = new PublicKey(vaultKeypair);
     professionalPubkey = new PublicKey(professionalPubkey); //TODO FIX: issue #106
     const feesPubkey = new PublicKey(feesKeypair.publicKey);
 
@@ -160,15 +167,26 @@ async function initializePaymentInfrastructure(communityDaoKeypair,
     const associatedTokenAddressProfessional = await getOrCreateNeededAssociatedTokenAccount(
         payer,                      // Entity funding the transaction.
         fakeStablePubkey,           // Mint's public key.
-        professionalPubkey,                    // Owner of the associated token account.
+        professionalPubkey,         // Owner of the associated token account.
     );
 
     console.log("associatedTokenAddressProfessional Account Initialized", associatedTokenAddressProfessional)
+
+
+    const associatedTokenAddressVault = await getOrCreateNeededAssociatedTokenAccount(
+        payer,                      // Entity funding the transaction.
+        fakeStablePubkey,           // Mint's public key.
+        vaultPubkey,         // Owner of the associated token account.
+    );
+
+    console.log("associatedTokenAddressVault Account Initialized", associatedTokenAddressVault)
 
     updateConfig(
         associatedTokenAddressCompany.address, 
         associatedTokenAddressCommunity.address, 
         associatedTokenAddressTreasury.address,
+        associatedTokenAddressVault.address,
+        vaultPubkey,
         feesPubkey,
         acceptedPaymentTokensPubkey
     )
@@ -177,6 +195,7 @@ async function initializePaymentInfrastructure(communityDaoKeypair,
         associatedTokenAddressCompany,
         associatedTokenAddressCommunity,
         associatedTokenAddressTreasury,
+        associatedTokenAddressVault,
         feesPubkey,
         acceptedPaymentTokensPubkey
     };
@@ -184,21 +203,25 @@ async function initializePaymentInfrastructure(communityDaoKeypair,
 
 async function main() {
     try {
-        if (!process.env.SOL_COMMUNITY_TREASURY_ADDRESS || 
-            !process.env.SOL_KYODO_TREASURY_ADDRESS || 
-            !process.env.SOL_PROFESSIONAL_ADDRESS) {
+        if (!process.env.NEXT_SOL_COMMUNITY_TREASURY_ADDRESS || 
+            !process.env.NEXT_SOL_KYODO_TREASURY_ADDRESS || 
+            !process.env.NEXT_SOL_PROFESSIONAL_ADDRESS || 
+            !process.env.NEXT_SOL_VAULT_ADDRESS) {
             throw new Error("Missing required environment variables.");
         }
     
-        const communityDaoKeypair = process.env.SOL_COMMUNITY_TREASURY_ADDRESS;
-        const kyodoTreasuryKeypair = process.env.SOL_KYODO_TREASURY_ADDRESS;
+        const communityDaoPublickey = process.env.SOL_COMMUNITY_TREASURY_ADDRESS;
+        const kyodoTreasuryPublickey = process.env.SOL_KYODO_TREASURY_ADDRESS;
         const professionalPubkey = process.env.SOL_PROFESSIONAL_ADDRESS;
+
+        const vaultKeypair = anchor.web3.Keypair.generate();
         const feesKeypair = anchor.web3.Keypair.generate();
         const acceptedPaymentTokensKeypair = anchor.web3.Keypair.generate();
         
         await initializePaymentInfrastructure(
-            communityDaoKeypair,
-            kyodoTreasuryKeypair,
+            communityDaoPublickey,
+            kyodoTreasuryPublickey,
+            vaultKeypair,
             feesKeypair,
             acceptedPaymentTokensKeypair,
             professionalPubkey
