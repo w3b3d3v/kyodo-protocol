@@ -10,6 +10,7 @@ import Toast from '../utils/Toast';
 import transactionManager from '../../chains/transactionManager'
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import { useTranslation } from "react-i18next"
+import { useWallet, useConnection} from '@solana/wallet-adapter-react';
 
 function Balances() {
   const { t } = useTranslation()
@@ -17,6 +18,8 @@ function Balances() {
   const { account, selectedChain} = useAccount()
   const [userBalances, setUserBalances] = useState([])
   const [showRedeemInput, setShowRedeemInput] = useState(null)
+  const { publicKey, wallet } = useWallet();
+  const { connection } = useConnection();
   const [redeemValue, setRedeemValue] = useState("")
   const {
     isLoading,
@@ -47,6 +50,7 @@ function Balances() {
     try {
       const details = {
         account,
+        connection
       };
 
       const balances = await transactionManager["fetchUserBalances"](selectedChain, details)
