@@ -1,8 +1,8 @@
 [features]
 seeds = false
 skip-lint = false
-[programs.devnet]
-agreement_program = "CBSQAPewE2kKVypu3536Xczdf6MYab547G3mFchcN8X1"
+[programs.Devnet]
+agreement_program = "FVz7RJ6H6zFUkTx1sGuCDHDmYr96EQHR4g52xTmL8ZPn"
 
 [registry]
 url = "https://api.devnet.solana.com"

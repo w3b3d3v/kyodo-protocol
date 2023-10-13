@@ -64,13 +64,6 @@ pub mod agreement_program {
         Ok(())
     }
 
-    pub fn initialize_vault(
-        _ctx: Context<InitializeVault>,
-    ) -> Result<()> {
-        msg!("Vault Initialized!");
-        Ok(())
-    }
-
     pub fn initialize_accepted_payment_tokens(
         _ctx: Context<InitializeAcceptedPaymentTokens>,
     ) -> Result<()> {
@@ -286,26 +279,6 @@ pub struct InitializeAcceptedPaymentTokens<'info> {
 }
 
 #[derive(Accounts)]
-pub struct InitializeVault<'info> {
-    #[account(
-        init_if_needed,
-        payer = company,
-        seeds = [b"professional_vault".as_ref(), professional.key().as_ref()],
-        bump,
-        token::mint = mint,
-        token::authority = professional,
-    )]
-    pub professional_vault: Account<'info, TokenAccount>,
-    pub mint: Account<'info, Mint>,
-    #[account(mut)]
-    pub company: Signer<'info>,
-    /// CHECK:` doc comment explaining why no checks through types are necessary.
-    pub professional: AccountInfo<'info>,
-    pub token_program: Program<'info, Token>,
-    pub system_program: Program<'info, System>,
-}
-
-#[derive(Accounts)]
 pub struct SetFees<'info> {
     #[account(mut)]
     pub fees: Account<'info, FeesAccount>,
@@ -339,7 +312,7 @@ pub struct ProcessPayment<'info> {
     #[account(
         init_if_needed,
         payer = company,
-        seeds = [b"professional_vault".as_ref(), professional.key().as_ref()],
+        seeds = [professional.key().as_ref(), payment_token.key().as_ref()],
         bump,
         token::mint = payment_token,
         token::authority = professional,

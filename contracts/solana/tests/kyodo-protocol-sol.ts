@@ -60,7 +60,6 @@ describe("agreement_program", () => {
   let associatedTokenAddressProfessional;   // Will be asign, and then used to recieve payment from the company
   let associatedTokenAddressCommunity;      // Will be asign, and then used to recieve fees
   let associatedTokenAddressTreasury;       // Will be asign, and then used to recieve fees
-  let associatedTokenAddressVault           // Will be asign, and then updated when the payment is processed
   let toPayFirstAgreementAddress;           // Will be asign, and then updated when the payment is processed
   let toPaySecondAgreementAddress;          // Will be asign, and then updated when the payment is processed
   
@@ -86,34 +85,6 @@ describe("agreement_program", () => {
 
     // Logging the minted token's address and the transaction signature.
     console.log("Your Token Account Address:", fakeMint.publicKey);
-    console.log("Your Transaction Signature:", tx);
-  });
-
-  it("Initializes Vault Account", async () => {
-
-    const stringBufferVault = Buffer.from("professional_vault", "utf-8");
-
-    // Finding the Program Derived Address (PDA) for company agreements using the buffer and company address.
-    // https://www.anchor-lang.com/docs/pdas
-    // https://solanacookbook.com/core-concepts/pdas.html#facts
-    // TODO: check for programs sign / modify pda 
-    const [professionalVaultPublicKey, _] =
-      anchor.web3.PublicKey.findProgramAddressSync(
-        [stringBufferVault, professionalKeypair.publicKey.toBytes()],
-        program.programId
-      );
-
-    const tx = await program.methods
-      .initializeVault()
-      .accounts({
-        professionalVault: professionalVaultPublicKey,
-        professional: professionalKeypair.publicKey,
-        mint: fakeMint.publicKey,
-        company: companyPubkey,
-        systemProgram: anchor.web3.SystemProgram.programId,
-      }).rpc();
-
-    console.log("Your Vault Account Address:", professionalVaultPublicKey);
     console.log("Your Transaction Signature:", tx);
   });
 
@@ -222,18 +193,6 @@ describe("agreement_program", () => {
       fakeMint.publicKey,                 // Mint's public key.
       kyodoTreasuryKeypair.publicKey,     // Owner of the associated token account.
       false,                              // Indicates if the function should throw an error if the account already exists.
-      null, null,                         // Optional configs (multiSig and options).
-      TOKEN_PROGRAM_ID,                   // SPL token program ID.
-      ASSOCIATED_TOKEN_PROGRAM_ID         // SPL associated token program ID.
-    );
-
-    // Creating or fetching the associated token account for the professional.
-    associatedTokenAddressVault = await getOrCreateAssociatedTokenAccount(
-      provider.connection,                // Current provider's connection.
-      payer,                              // Entity funding the transaction. TODO: change if needed
-      fakeMint.publicKey,                 // Mint's public key.
-      professionalVaultPublicKey,         // Owner of the associated token account.
-      true,                               // Indicates if the function should throw an error if the account already exists.
       null, null,                         // Optional configs (multiSig and options).
       TOKEN_PROGRAM_ID,                   // SPL token program ID.
       ASSOCIATED_TOKEN_PROGRAM_ID         // SPL associated token program ID.
@@ -437,7 +396,6 @@ describe("agreement_program", () => {
   // Test case for processing a payment related to an agreement.
   it("Process 1/10 Payment on First Agreement", async () => {
 
-    const stringBufferVault = Buffer.from("professional_vault", "utf-8");
     const stringBufferCompany = Buffer.from("company_agreements", "utf-8");
     const stringBufferProfessional = Buffer.from("professional_agreements", "utf-8");
 
@@ -459,20 +417,17 @@ describe("agreement_program", () => {
 
     const [professionalVaultPublicKey, ___] =
       anchor.web3.PublicKey.findProgramAddressSync(
-        [stringBufferVault, professionalKeypair.publicKey.toBytes()],
+        [professionalKeypair.publicKey.toBytes(), fakeMint.publicKey.toBytes()],
         program.programId
       );
 
     // Fetching the initial balances of the associated token accounts.
     const initialCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
-    const initialVaultBalance = await provider.connection.getTokenAccountBalance(professionalVaultPublicKey)
-    const initialTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address)
     const initialKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
     const initialCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
 
     // Logging the initial balances for debugging.
     console.log("Initial Company Balance:", initialCompanyBalance.value);
-    console.log("Initial Treasury Balance:", initialTreasuryBalance.value);
     console.log("Initial Kyodo Treasury Balance:", initialKyodoTreasuryBalance.value);
     console.log("Initial Community DAO Balance:", initialCommunityDAOBalance.value);
 
@@ -505,14 +460,12 @@ describe("agreement_program", () => {
     // Fetching the final balances of the associated token accounts.
     const finalCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
     const finalVaultBalance = await provider.connection.getTokenAccountBalance(professionalVaultPublicKey)
-    const finalTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address)
     const finalKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
     const finalCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
 
     // Logging the final balances for debugging.
     console.log("Final Company Balance:", finalCompanyBalance.value);
     console.log("Final Vault Balance:", finalVaultBalance.value);
-    console.log("Final Treasury Balance:", finalTreasuryBalance.value);
     console.log("Final Kyodo Treasury Balance:", finalKyodoTreasuryBalance.value);
     console.log("Final Community DAO Balance:", finalCommunityDAOBalance.value);
 
@@ -524,7 +477,6 @@ describe("agreement_program", () => {
   // Test case for processing a payment related to an agreement.
   it("Process Full Payment on Second Agreement", async () => {
 
-    const stringBufferVault = Buffer.from("professional_vault", "utf-8");
     const stringBufferCompany = Buffer.from("company_agreements", "utf-8");
     const stringBufferProfessional = Buffer.from("professional_agreements", "utf-8");
 
@@ -546,21 +498,19 @@ describe("agreement_program", () => {
 
     const [professionalVaultPublicKey, ___] =
       anchor.web3.PublicKey.findProgramAddressSync(
-        [stringBufferVault, professionalKeypair.publicKey.toBytes()],
+        [professionalKeypair.publicKey.toBytes(), fakeMint.publicKey.toBytes()],
         program.programId
       );
 
     // Fetching the initial balances of the associated token accounts.
     const initialCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
     const initialVaultBalance = await provider.connection.getTokenAccountBalance(professionalVaultPublicKey)
-    const initialTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address)
     const initialKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
     const initialCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
 
     // Logging the initial balances for debugging.
     console.log("Initial Company Balance:", initialCompanyBalance.value);
     console.log("Initial Vault Balance:", initialVaultBalance.value);
-    console.log("Initial Treasury Balance:", initialTreasuryBalance.value);
     console.log("Initial Kyodo Treasury Balance:", initialKyodoTreasuryBalance.value);
     console.log("Initial Community DAO Balance:", initialCommunityDAOBalance.value);
 
@@ -593,14 +543,12 @@ describe("agreement_program", () => {
     // Fetching the final balances of the associated token accounts.
     const finalCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
     const finalVaultBalance = await provider.connection.getTokenAccountBalance(professionalVaultPublicKey)
-    const finalTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address)
     const finalKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
     const finalCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
 
     // Logging the final balances for debugging.
     console.log("Final Company Balance:", finalCompanyBalance.value);
     console.log("Final Vault Balance:", finalVaultBalance.value);
-    console.log("Final Treasury Balance:", finalTreasuryBalance.value);
     console.log("Final Kyodo Treasury Balance:", finalKyodoTreasuryBalance.value);
     console.log("Final Community DAO Balance:", finalCommunityDAOBalance.value);
 
@@ -611,7 +559,6 @@ describe("agreement_program", () => {
 
   it("Process 9/10 Payment on First Agreement, to Fulfill", async () => {
 
-    const stringBufferVault = Buffer.from("professional_vault", "utf-8");
     const stringBufferCompany = Buffer.from("company_agreements", "utf-8");
     const stringBufferProfessional = Buffer.from("professional_agreements", "utf-8");
 
@@ -633,21 +580,19 @@ describe("agreement_program", () => {
 
     const [professionalVaultPublicKey, ___] =
       anchor.web3.PublicKey.findProgramAddressSync(
-        [stringBufferVault, professionalKeypair.publicKey.toBytes()],
+        [professionalKeypair.publicKey.toBytes(), fakeMint.publicKey.toBytes()],
         program.programId
       );
 
     // Fetching the initial balances of the associated token accounts.
     const initialCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
     const initialVaultBalance = await provider.connection.getTokenAccountBalance(professionalVaultPublicKey)
-    const initialTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address)
     const initialKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
     const initialCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
 
     // Logging the initial balances for debugging.
     console.log("Initial Company Balance:", initialCompanyBalance.value);
     console.log("Initial Vault Balance:", initialVaultBalance.value);
-    console.log("Initial Treasury Balance:", initialTreasuryBalance.value);
     console.log("Initial Kyodo Treasury Balance:", initialKyodoTreasuryBalance.value);
     console.log("Initial Community DAO Balance:", initialCommunityDAOBalance.value);
 
@@ -681,14 +626,12 @@ describe("agreement_program", () => {
     // Fetching the final balances of the associated token accounts.
     const finalCompanyBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCompany.address)
     const finalVaultBalance = await provider.connection.getTokenAccountBalance(professionalVaultPublicKey)
-    const finalTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address)
     const finalKyodoTreasuryBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressTreasury.address);
     const finalCommunityDAOBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressCommunity.address);
 
     // Logging the final balances for debugging.
     console.log("Final Company Balance:", finalCompanyBalance.value);
     console.log("Final Vault Balance:", finalVaultBalance.value);
-    console.log("Final Treasury Balance:", finalTreasuryBalance.value);
     console.log("Final Kyodo Treasury Balance:", finalKyodoTreasuryBalance.value);
     console.log("Final Community DAO Balance:", finalCommunityDAOBalance.value);
 
@@ -699,7 +642,7 @@ describe("agreement_program", () => {
 
   // Test case for initializing the first agreement.
   it("Professional Withdraw", async () => {
-    const stringBufferVault = Buffer.from("professional_vault", "utf-8");
+    
     const stringBufferProfessional = Buffer.from("professional_agreements", "utf-8");
 
     // Finding the Program Derived Address (PDA) for company agreements using the buffer and company address.
@@ -714,12 +657,12 @@ describe("agreement_program", () => {
 
     const [professionalVaultPublicKey, ___] =
       anchor.web3.PublicKey.findProgramAddressSync(
-        [stringBufferVault, professionalKeypair.publicKey.toBytes()],
+        [professionalKeypair.publicKey.toBytes(), fakeMint.publicKey.toBytes()],
         program.programId
       );
 
     // Fetching the initial balances of the associated token accounts.
-    const initialVaultBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressVault.address)
+    const initialVaultBalance = await provider.connection.getTokenAccountBalance(professionalVaultPublicKey)
     const initialProfessionalBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressProfessional.address)
 
     // Logging the initial balances for debugging.
@@ -739,7 +682,7 @@ describe("agreement_program", () => {
       }).signers([professionalKeypair]).rpc();
 
     // Fetching details of the agreement post-payment to verify changes.
-    const finalVaultBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressVault.address)
+    const finalVaultBalance = await provider.connection.getTokenAccountBalance(professionalVaultPublicKey)
     const finalProfessionalBalance = await provider.connection.getTokenAccountBalance(associatedTokenAddressProfessional.address)
 
     console.log("Final Vault Balance:", finalVaultBalance.value);
