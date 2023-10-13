@@ -347,3 +347,41 @@ a.next-btn {
   line-height: 38px;
   color: $medium-gray;
 }
+
+
+// Success
+
+.onboarding-success {
+  padding: 70px 20px;
+  text-align: center;
+  border: 1px solid $dark-blue-2;
+  border-radius: 6px;
+  font-size: $font-medium;
+  font-weight: 500;
+  color: $light-gray;
+  margin-top: 100px;
+
+  img {
+    width: 100px;
+    margin-bottom: 30px;
+  }
+
+  a {
+    display: inline-block;
+    padding: 0 15px;
+    border: 1px solid $dark-blue-2;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 20px;
+    font-size: $font-medium;
+    color: $medium-gray;
+    text-decoration: none;
+    cursor: pointer;
+    margin-top: 20px;
+  
+    &:hover {
+      border-color: $medium-gray;
+      color: $white;
+    }
+  }
+}

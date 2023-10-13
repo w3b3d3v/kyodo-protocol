@@ -3,15 +3,19 @@ import Image from 'next/image'
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
 import { useAccount} from "../../contexts/AccountContext";
+import { useRouter } from "next/router"
 
 function OnboardingTerms() {
 
   const { t } = useTranslation()
 
+  const router = useRouter()
+
   const { completeOnboarding } = useAccount();
 
   const handleCompleteOnboarding = () => {
     completeOnboarding();
+    router.push("/onboarding/complete");
   }
 
   return (
