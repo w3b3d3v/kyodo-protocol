@@ -28,6 +28,9 @@ import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet"; // NodeWallet is
 // Main test suite for the agreement program functionalities.
 describe("agreement_program", () => {
 
+  let txAgreement;
+  let txPayment;
+  let txWithdraw;
   // Setting up the client configuration to connect to a local Solana cluster.
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
@@ -322,7 +325,7 @@ describe("agreement_program", () => {
     } as any;
 
     // Initializing the agreement on-chain.
-    const tx = await program.methods
+    txAgreement = await program.methods
       .initializeAgreement(agreement)
       .accounts({
         agreement: agreementAddress.publicKey,
@@ -347,7 +350,7 @@ describe("agreement_program", () => {
     // Logging the details of the agreement, company's agreements, and the transaction for debugging.
     console.log("Your Agreement Account Address:", fetchedAgreement);
     console.log("Your Company Agreements:", fetchedCompanyAgreements);
-    console.log("Your Transaction Signature:", tx);
+    console.log("Your Transaction Signature:", txAgreement);
   });
 
   // Test case for initializing the first agreement.
@@ -472,6 +475,10 @@ describe("agreement_program", () => {
     // Logging details of the agreement after the payment and the transaction signature for verification.
     console.log("Your Paid Agreement Account:", fetchedAgreement);
     console.log("Your Transaction Signature:", tx);
+
+    const tx2 = await provider.connection.getParsedTransaction(tx, {
+      commitment: "confirmed",
+    });
   });
 
   // Test case for processing a payment related to an agreement.
@@ -517,7 +524,7 @@ describe("agreement_program", () => {
     const amountToPay = new anchor.BN(1000);
 
     // Processing the payment for the agreement.
-    const tx = await program.methods.processPayment(amountToPay)
+    txPayment = await program.methods.processPayment(amountToPay)
       .accounts({
         company: companyPubkey,
         agreement: toPayFirstAgreementAddress.publicKey,
@@ -554,7 +561,7 @@ describe("agreement_program", () => {
 
     // Logging details of the agreement after the payment and the transaction signature for verification.
     console.log("Your Paid Agreement Account:", fetchedAgreement);
-    console.log("Your Transaction Signature:", tx);
+    console.log("Your Transaction Signature:", txPayment);
   });
 
   it("Process 9/10 Payment on First Agreement, to Fulfill", async () => {
@@ -672,7 +679,7 @@ describe("agreement_program", () => {
     // Constructing the amount data.
     const amount = new anchor.BN(20);
 
-    const tx = await program.methods.withdraw(amount)
+    txWithdraw = await program.methods.withdraw(amount)
       .accounts({
         professional: professionalKeypair.publicKey,
         professionalAta: associatedTokenAddressProfessional.address,
@@ -687,7 +694,45 @@ describe("agreement_program", () => {
 
     console.log("Final Vault Balance:", finalVaultBalance.value);
     console.log("Final Professional Balance:", finalProfessionalBalance.value);
-    console.log("Your Transaction Signature:", tx);
+    console.log("Your Transaction Signature:", txWithdraw);
+  });
+
+  it("Catch Agreement Event", async () => {
+
+    setTimeout(async () => {
+      const tx = await provider.connection.getParsedTransaction(txAgreement, {commitment: "confirmed"});
+  
+      const eventsParser = new anchor.EventParser(program.programId, new anchor.BorshCoder(program.idl));
+      const events = eventsParser.parseLogs(tx.meta.logMessages);
+      console.log(events.next().value);
+    }, 1000);
+
+  });
+
+
+  it("Catch Payment Event", async () => {
+
+    setTimeout(async () => {
+      const tx = await provider.connection.getParsedTransaction(txPayment, {commitment: "confirmed"});
+  
+      const eventsParser = new anchor.EventParser(program.programId, new anchor.BorshCoder(program.idl));
+      const events = eventsParser.parseLogs(tx.meta.logMessages);
+      console.log(events.next().value);
+    }, 1500);
+
+  });
+
+
+  it("Catch Withdraw Event", async () => {
+
+    setTimeout(async () => {
+      const tx = await provider.connection.getParsedTransaction(txWithdraw, {commitment: "confirmed"});
+  
+      const eventsParser = new anchor.EventParser(program.programId, new anchor.BorshCoder(program.idl));
+      const events = eventsParser.parseLogs(tx.meta.logMessages);
+      console.log(events.next().value);
+    }, 2000);
+
   });
 
 });

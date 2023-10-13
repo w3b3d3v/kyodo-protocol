@@ -46,8 +46,15 @@ pub mod agreement_program {
         // Add the agreement's key to the company's list of agreements.
         company_agreements.agreements.push(agreement_account.key());
         professional_agreements.agreements.push(agreement_account.key());
+
+        emit!(AgreementEvent {
+            company: company_account.key(),
+            professional: agreement.professional,
+            agreement_id: agreement_account.key(),
+            amount: agreement.payment_amount
+        });
+
         msg!("Agreement Added to Company Agreements!");
-        // Return Ok to indicate successful execution.
         Ok(())
     }
 
@@ -136,6 +143,11 @@ pub mod agreement_program {
             amount,
         )?;
 
+        emit!(WithdrawEvent {
+            professional: professional_account.key(),
+            amount: amount
+        });
+
         msg!("Token Withdrawned from Vault");
         Ok(())
     }
@@ -150,11 +162,11 @@ pub mod agreement_program {
         let community_dao = &ctx.accounts.community_dao_ata;
         let treasury = &ctx.accounts.treasury_ata;
         let payment_token = &ctx.accounts.payment_token;
-        let payment_from = &mut ctx.accounts.company;
+        let company_account = &mut ctx.accounts.company;
         let professional_vault = &ctx.accounts.professional_vault;
         let source = &ctx.accounts.from_ata;
         let token_program = &ctx.accounts.token_program;
-
+        let professional_account = &ctx.accounts.professional;
         // Check if the amount to be paid is a valid amount.
         if amount_to_pay <= 0 {
             return err!(ErrorCode::InvalidPaymentAmount);
@@ -181,7 +193,7 @@ pub mod agreement_program {
         let cpi_accounts = SplTransfer {
             from: source.to_account_info().clone(),
             to: professional_vault.to_account_info().clone(),
-            authority: payment_from.to_account_info().clone(),
+            authority: company_account.to_account_info().clone(),
         };
         let cpi_program = token_program.to_account_info();
 
@@ -195,7 +207,7 @@ pub mod agreement_program {
         let cpi_accounts = SplTransfer {
             from: source.to_account_info().clone(),
             to: community_dao.to_account_info().clone(),
-            authority: payment_from.to_account_info().clone(),
+            authority: company_account.to_account_info().clone(),
         };
         let cpi_program = token_program.to_account_info();
 
@@ -209,7 +221,7 @@ pub mod agreement_program {
         let cpi_accounts = SplTransfer {
             from: source.to_account_info().clone(),
             to: treasury.to_account_info().clone(),
-            authority: payment_from.to_account_info().clone(),
+            authority: company_account.to_account_info().clone(),
         };
         let cpi_program = token_program.to_account_info();
 
@@ -227,8 +239,11 @@ pub mod agreement_program {
 
         professional_agreements_account.balance += professional_payment;
         company_agreements_account.total_paid += amount_to_pay;
-        emit!(MyEvent {
-            data: "Hello Event!".to_string()
+        emit!(PaymentEvent {
+            company: company_account.key(),
+            professional: professional_account.key(),
+            agreement_id: agreement_account.key(),
+            amount: professional_payment
         });
         // Return Ok to indicate successful execution.
         Ok(())
@@ -429,6 +444,23 @@ pub enum ErrorCode {
 }
 
 #[event]
-pub struct MyEvent {
-    pub data: String
+pub struct AgreementEvent {
+    company: Pubkey,
+    professional: Pubkey,
+    agreement_id: Pubkey,
+    amount: u64
+}
+
+#[event]
+pub struct PaymentEvent {
+    company: Pubkey,
+    professional: Pubkey,
+    agreement_id: Pubkey,
+    amount: u64
+}
+
+#[event]
+pub struct WithdrawEvent {
+    pub professional: Pubkey,
+    pub amount: u64
 }

@@ -1,11 +1,11 @@
 [features]
 seeds = false
 skip-lint = false
-[programs.devnet]
-agreement_program = "HtpwrE1546kgGZfgkELGDZvHKwLwPUfMV9nujDwZNnSF"
+[programs.Localnet]
+agreement_program = "EZpoWJdAQXAnn96aMiUyPQwsF3owW9CHykknULmDuswQ"
 
 [registry]
-url = "https://api.devnet.solana.com"
+url = "http://127.0.0.1:8899"
 
 [provider]
 cluster = "devnet"
