@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#!/bin/bash
-
 # Check if an argument was provided
 if [ -z "$1" ]; then
   echo "No environment specified. Usage: ./deploy.sh [env]"
@@ -43,12 +41,12 @@ if [ "$env" == "devnet" ]; then
 
     # Deploy the fake Stablecoin
     echo "Creating fake token..."
-    DEPLOY_FAKE_STABLE_OUTPUT=$(ts-node $DIR/createFakeToken.ts)
+    DEPLOY_FAKE_STABLE_OUTPUT=$(npx ts-node $DIR/createFakeToken.ts)
     echo "$DEPLOY_FAKE_STABLE_OUTPUT"
 
     # Initialize Payment Infrastructure
     echo "Initializing payment infrastructure..."
-    DEPLOY_FAKE_STABLE_OUTPUT=$(ts-node $DIR/initializePaymentInfrastructure.ts)
+    DEPLOY_FAKE_STABLE_OUTPUT=$(npx ts-node $DIR/initializePaymentInfrastructure.ts)
     echo "$DEPLOY_FAKE_STABLE_OUTPUT"
 
 elif [ "$env" == "testnet" ]; then

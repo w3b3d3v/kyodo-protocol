@@ -14,7 +14,7 @@ use anchor_spl::token::{self, Token, TokenAccount, Transfer as SplTransfer};
 use solana_program::system_instruction; // Import system_instruction from the solana_program crate. // Import modules from the anchor SPL token crate.
 
 // Declare the ID for this smart contract program.
-declare_id!("FVz7RJ6H6zFUkTx1sGuCDHDmYr96EQHR4g52xTmL8ZPn");
+declare_id!("CBSQAPewE2kKVypu3536Xczdf6MYab547G3mFchcN8X1");
 
 // Begin the program module declaration.
 #[program]

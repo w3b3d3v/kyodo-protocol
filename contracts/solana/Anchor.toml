@@ -2,14 +2,14 @@
 seeds = false
 skip-lint = false
 [programs.devnet]
-agreement_program = "FqaqjUy4n1ysFZi6Jr7XeGDzu5f1gt7a85mVLGjP1cRX"
+agreement_program = "CBSQAPewE2kKVypu3536Xczdf6MYab547G3mFchcN8X1"
 
 [registry]
 url = "https://api.devnet.solana.com"
 
 [provider]
 cluster = "devnet"
-wallet = "/Users/nomadbitcoin/.config/solana/id.json"
+wallet = "~/.config/solana/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

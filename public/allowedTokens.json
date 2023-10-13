@@ -12,9 +12,9 @@
     "decimals": 18
   },
   {
-    "address": "0xBD21A10F619BE90d6066c941b04e340841F1F989",
-    "logo": "src/components/assets/tether-usdt-logo.svg",
-    "name": "USDT",
-    "decimals": 6
+    "address": "0xb02EA32031901b9bad59975De5106D0D55E7a118",
+    "logo": "src/components/assets/your-token-logo.svg",
+    "name": "fakeStable",
+    "decimals": 18
   }
 ]
