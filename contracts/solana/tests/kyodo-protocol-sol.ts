@@ -697,15 +697,41 @@ describe("agreement_program", () => {
     console.log("Your Transaction Signature:", txWithdraw);
   });
 
-  it("Catch Agreement Event", async () => {
+  it("Get Professional Signatures" ,async () => {
+    const signatures = await provider.connection.getSignaturesForAddress(professionalKeypair.publicKey, {}, "confirmed");
 
+    const filteredSignatures = [];
+    
+    for (const { signature } of signatures) {
+      const tx = await provider.connection.getParsedTransaction(signature, "confirmed");
+      
+      if (tx) {
+        for (const instruction of tx.transaction.message.instructions) {
+          // Check if this instruction involves the program you're interested in
+          if (instruction.programId.toString() === program.programId.toString()) {
+            filteredSignatures.push(signature);
+            break;
+          }
+        }
+      }
+    }
+
+      const txs = await provider.connection.getParsedTransactions(filteredSignatures, {commitment: "confirmed"});
+      const eventsParser = new anchor.EventParser(program.programId, new anchor.BorshCoder(program.idl));
+      for (const { meta } of txs) {
+          const events = eventsParser.parseLogs(meta.logMessages);
+          console.log(events.next().value);
+      }
+  });
+
+  it("Catch Agreement Event", async () => {
     setTimeout(async () => {
       const tx = await provider.connection.getParsedTransaction(txAgreement, {commitment: "confirmed"});
   
       const eventsParser = new anchor.EventParser(program.programId, new anchor.BorshCoder(program.idl));
       const events = eventsParser.parseLogs(tx.meta.logMessages);
       console.log(events.next().value);
-    }, 1000);
+    }, 1500);
 
   });
 
@@ -715,10 +741,11 @@ describe("agreement_program", () => {
     setTimeout(async () => {
       const tx = await provider.connection.getParsedTransaction(txPayment, {commitment: "confirmed"});
   
+      //provider.connection.
       const eventsParser = new anchor.EventParser(program.programId, new anchor.BorshCoder(program.idl));
       const events = eventsParser.parseLogs(tx.meta.logMessages);
       console.log(events.next().value);
-    }, 1500);
+    }, 2000);
 
   });
 
@@ -731,7 +758,7 @@ describe("agreement_program", () => {
       const eventsParser = new anchor.EventParser(program.programId, new anchor.BorshCoder(program.idl));
       const events = eventsParser.parseLogs(tx.meta.logMessages);
       console.log(events.next().value);
-    }, 2000);
+    }, 2500);
 
   });
 
