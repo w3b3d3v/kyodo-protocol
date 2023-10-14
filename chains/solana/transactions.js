@@ -3,6 +3,7 @@ import fetchAgreements from "./transactions/fetchAgreements";
 import payAgreement from "./transactions/payAgreement";
 import fetchUserBalances from "./transactions/fetchUserBalances";
 import fetchPaidAgreements from "./transactions/fetchPaidAgreements";
+import withdrawFromVault from "./transactions/withdrawFromVault";
 
 async function handleTransactionPromise(contract, txResponse) {
     const EVENT_TIMEOUT = 30000;  // 30 seconds timeout
@@ -36,6 +37,7 @@ const transactions = { handleTransactionPromise,
     fetchAgreements, 
     payAgreement,
     fetchUserBalances,
-    fetchPaidAgreements
+    fetchPaidAgreements,
+    withdrawFromVault
 }
 export default transactions
