@@ -50,7 +50,8 @@ function Balances() {
     try {
       const details = {
         account,
-        connection
+        connection,
+        contract: vaultContract
       };
 
       const balances = await transactionManager["fetchUserBalances"](selectedChain, details)
