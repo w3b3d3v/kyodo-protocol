@@ -66,6 +66,7 @@ function Balances() {
     }
   }
 
+  
   const withdrawFromVault = async (amount, balance) => {
     try {
       setIsLoading(true)
@@ -76,16 +77,16 @@ function Balances() {
         balance,
         contract: vaultContract
       };
-    
+
       const onConfirmation = () => {
         setShowRedeemInput(false)
         setTimeout(() => {
           window.location.reload();
         }, 3000);
       };
-    
+
       await sendTransaction("withdrawFromVault", details, "Withdrawal", onConfirmation)
-      
+
     } catch (error) {
       console.error("Error during withdrawal:", error)
     }

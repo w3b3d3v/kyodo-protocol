@@ -38,7 +38,7 @@ function useTransactionHandler() {
           account,
           setTransactionHash
         )
-        
+
         if (response){
           setTransactionSuccess(true);
           setTransactionPending(false);
