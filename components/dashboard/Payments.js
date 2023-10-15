@@ -59,8 +59,14 @@ function Payments ({ limit }) {
         <div className={styles["payment-avatar"]}>
           <Image src="/coins/usdc-icon.svg" width={40} height={40} alt="USDC" />
         </div>
-        <h3>Agreement ID: {agreement.agreementId.toString()}</h3>
-        
+        <h3>
+          Agreement ID: {
+            (!isNaN(agreement.agreementId) && Number.isInteger(Number(agreement.agreementId)))
+              ? agreement.agreementId.toString()
+              : `${agreement.agreementId.substring(0, 4)}...${agreement.agreementId.substring(agreement.agreementId.length - 4)}`
+          }
+        </h3>
+                
         <Link
           href={explorerLink + agreement.transactionHash}
           target="_blank"

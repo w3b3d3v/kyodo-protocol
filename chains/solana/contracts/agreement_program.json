@@ -472,11 +472,66 @@
   ],
   "events": [
     {
-      "name": "MyEvent",
+      "name": "AgreementEvent",
       "fields": [
         {
-          "name": "data",
-          "type": "string",
+          "name": "company",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "professional",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "agreementId",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "PaymentEvent",
+      "fields": [
+        {
+          "name": "company",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "professional",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "agreementId",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "WithdrawEvent",
+      "fields": [
+        {
+          "name": "professional",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
           "index": false
         }
       ]
@@ -525,6 +580,6 @@
     }
   ],
   "metadata": {
-    "address": "HtpwrE1546kgGZfgkELGDZvHKwLwPUfMV9nujDwZNnSF"
+    "address": "DnrqwpaQQWm2GVvmiAdSge3esyXuZ8BQJwT6gMEU48Zf"
   }
 }
