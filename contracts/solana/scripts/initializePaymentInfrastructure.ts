@@ -83,8 +83,7 @@ async function initializePaymentInfrastructure(
         communityDaoKeypair, 
         kyodoTreasuryKeypair, 
         feesKeypair, 
-        acceptedPaymentTokensKeypair, 
-        professionalPubkey
+        acceptedPaymentTokensKeypair
     ) {
     
     const payer = (provider.wallet as NodeWallet).payer;
@@ -96,7 +95,7 @@ async function initializePaymentInfrastructure(
     const acceptedPaymentTokensPubkey = new PublicKey(acceptedPaymentTokensKeypair.publicKey);
     const kyodoTreasuryPubkey = new PublicKey(kyodoTreasuryKeypair);
     const communityDaoPubkey = new PublicKey(communityDaoKeypair);
-    professionalPubkey = new PublicKey(professionalPubkey); //TODO FIX: issue #106
+    // professionalPubkey = new PublicKey(professionalPubkey); //TODO FIX: issue #106
     const feesPubkey = new PublicKey(feesKeypair.publicKey);
 
 
@@ -131,16 +130,6 @@ async function initializePaymentInfrastructure(
         .rpc();
   
     console.log("Accepted Tokens Account Initialized")
-
-    // 3. Initialize Vault Account
-    const stringBufferVault = Buffer.from("professional_vault", "utf-8");
-
-    const [professionalVaultPublicKey, _] =
-      anchor.web3.PublicKey.findProgramAddressSync(
-        [stringBufferVault, professionalPubkey.toBytes()],
-        program.programId
-      );
-
   
     // Add fake stable token as accepted payment token
     await addPaymentToken(fakeStablePubkey, acceptedPaymentTokensPubkey, adminPubkey);
@@ -172,16 +161,13 @@ async function initializePaymentInfrastructure(
   
     console.log("associatedTokenAddressTreasury Account Initialized")
 
-    const associatedTokenAddressProfessional = await getOrCreateNeededAssociatedTokenAccount(
-        payer,                      // Entity funding the transaction.
-        fakeStablePubkey,           // Mint's public key.
-        professionalPubkey,         // Owner of the associated token account.
-    );
+    // const associatedTokenAddressProfessional = await getOrCreateNeededAssociatedTokenAccount(
+    //     payer,                      // Entity funding the transaction.
+    //     fakeStablePubkey,           // Mint's public key.
+    //     professionalPubkey,                    // Owner of the associated token account.
+    // );
 
-    console.log("associatedTokenAddressProfessional Account Initialized", associatedTokenAddressProfessional)
-
-
-
+    // console.log("associatedTokenAddressProfessional Account Initialized", associatedTokenAddressProfessional)
 
     updateConfig(
         associatedTokenAddressCompany.address, 
@@ -203,8 +189,7 @@ async function initializePaymentInfrastructure(
 async function main() {
     try {
         if (!process.env.SOL_COMMUNITY_TREASURY_ADDRESS || 
-            !process.env.SOL_KYODO_TREASURY_ADDRESS || 
-            !process.env.SOL_PROFESSIONAL_ADDRESS) {
+            !process.env.SOL_KYODO_TREASURY_ADDRESS) {
             throw new Error("Missing required environment variables.");
         }
     
@@ -214,17 +199,17 @@ async function main() {
 
         const communityDaoPublickey = process.env.SOL_COMMUNITY_TREASURY_ADDRESS;
         const kyodoTreasuryPublickey = process.env.SOL_KYODO_TREASURY_ADDRESS;
-        const professionalPubkey = process.env.SOL_PROFESSIONAL_ADDRESS;
 
         const feesKeypair = anchor.web3.Keypair.generate();
         const acceptedPaymentTokensKeypair = anchor.web3.Keypair.generate();
+
+        
         
         await initializePaymentInfrastructure(
             communityDaoPublickey,
             kyodoTreasuryPublickey,
             feesKeypair,
-            acceptedPaymentTokensKeypair,
-            professionalPubkey,
+            acceptedPaymentTokensKeypair
         );
     
         console.log("Payment Infrastructure Initialized");

@@ -1,8 +1,8 @@
 [features]
 seeds = false
 skip-lint = false
-[programs.Localnet]
-agreement_program = "EZpoWJdAQXAnn96aMiUyPQwsF3owW9CHykknULmDuswQ"
+[programs.devnet]
+agreement_program = "DnrqwpaQQWm2GVvmiAdSge3esyXuZ8BQJwT6gMEU48Zf"
 
 [registry]
 url = "http://127.0.0.1:8899"
