@@ -8,6 +8,7 @@ import {
   getAccount,
   createAssociatedTokenAccountInstruction,
 } from "@solana/spl-token";
+import bs58 from 'bs58';
 
 function lamportsToSol(lamports) {
   return new BN(Math.round(lamports * Math.pow(10, 8)));
@@ -38,12 +39,13 @@ export const withdrawFromVault = async (details) => {
   );
 
   let account;
+  let transaction = new anchor.web3.Transaction()
   try {
     account = await getAccount(connection, associatedTokenAddressProfessional, "confirmed", TOKEN_PROGRAM_ID);
   }
   catch (error) {
     try {
-      const transaction = new anchor.web3.Transaction().add(
+      transaction.add(
         createAssociatedTokenAccountInstruction(
           professionalPublicKey,
           associatedTokenAddressProfessional,
@@ -54,16 +56,11 @@ export const withdrawFromVault = async (details) => {
         )
       );
 
-      const latestBlockhash = await connection.getLatestBlockhash();
-      transaction.feePayer = professionalPublicKey;
-      transaction.recentBlockhash = latestBlockhash.blockhash;
-
-      const tx = await details.contract.provider.wallet.signTransaction(transaction);
-      await connection.sendRawTransaction(tx.serialize());
     } catch (error) {
       console.log(error);
     }
   }
+  
 const [professionalVaultPublicKey, ___] =
   anchor.web3.PublicKey.findProgramAddressSync(
     [professionalPublicKey.toBytes(), fakeStablePubkey.toBytes()],
@@ -77,7 +74,7 @@ const [professionalAgreementsPublicKey, __] = anchor.web3.PublicKey.findProgramA
 );
 
 try {
-  const tx = await details.contract.methods
+  const instructionWithdraw = await details.contract.methods
     .withdraw(amountInLamports)
     .accounts({
       professional: professionalPublicKey,
@@ -85,10 +82,21 @@ try {
       vaultAta: professionalVaultPublicKey,
       professionalAgreements: professionalAgreementsPublicKey,
       tokenProgram: TOKEN_PROGRAM_ID,
-    }).rpc();
+    }).instruction();
 
-  console.log("Your transaction signature:", tx);
-  return tx;
+  transaction.add(instructionWithdraw);
+
+  const latestBlockhash = await connection.getLatestBlockhash();
+  transaction.feePayer = professionalPublicKey;
+  transaction.recentBlockhash = latestBlockhash.blockhash;
+
+  const tx = await details.contract.provider.wallet.signTransaction(transaction);
+  await connection.sendRawTransaction(tx.serialize());
+
+  const decodedSignature = bs58.encode(tx.signature);
+  console.log("Your transaction signature:", decodedSignature);
+
+  return decodedSignature;
 } catch (error) {
   console.log(error)
   throw new Error("Error in withdrawFromVault: ", error);
