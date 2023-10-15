@@ -1,18 +1,15 @@
 import { PublicKey } from "@solana/web3.js";
 import idl from "./agreement_program.json";
-import {Connection } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
 
 const opts ={
   preflightCommitment: "processed"
 }
 
-export function agreementContract(wallet) {
-  // const connection = new Connection("http://127.0.0.1:8899", opts.preflightCommitment);
-  const connection = new Connection("https://api.devnet.solana.com");
+export function agreementContract(details) {
   const provider = new anchor.AnchorProvider(
-    connection,
-    wallet.adapter,
+    details.connection,
+    details.wallet.adapter,
     anchor.AnchorProvider.defaultOptions()
   )
   anchor.setProvider(provider);

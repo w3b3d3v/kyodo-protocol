@@ -4,9 +4,7 @@ import * as anchor from "@coral-xyz/anchor";
 import {
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
-  getOrCreateAssociatedTokenAccount,
   getAssociatedTokenAddress,
-  createAssociatedTokenAccount,
   getAccount,
   createAssociatedTokenAccountInstruction,
 } from "@solana/spl-token";
@@ -20,8 +18,9 @@ export const withdrawFromVault = async (details) => {
   const balanceInLamports = lamportsToSol(details.balance.amount)
 
   if (amountInLamports.gt(balanceInLamports)) {
-    alert("You cannot redeem more than your balance!")
-    setRedeemValue("")
+    // alert("You cannot redeem more than your balance!")
+    throw new Error("You cannot redeem more than your balance!");
+    return
   }
 
   const professionalPublicKey = new PublicKey(details.account)
