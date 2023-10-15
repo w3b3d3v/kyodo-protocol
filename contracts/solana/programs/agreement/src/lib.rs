@@ -12,7 +12,7 @@ use anchor_lang::prelude::*; // Import anchor's prelude for boilerplate and util
 use anchor_spl::token::{self, Token, Mint, TokenAccount, Transfer as SplTransfer};
 
 // Declare the ID for this smart contract program.
-declare_id!("DnrqwpaQQWm2GVvmiAdSge3esyXuZ8BQJwT6gMEU48Zf");
+declare_id!("CBSQAPewE2kKVypu3536Xczdf6MYab547G3mFchcN8X1");
 
 // Begin the program module declaration.
 #[program]

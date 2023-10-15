@@ -2,7 +2,7 @@
 seeds = false
 skip-lint = false
 [programs.devnet]
-agreement_program = "DnrqwpaQQWm2GVvmiAdSge3esyXuZ8BQJwT6gMEU48Zf"
+agreement_program = "CBSQAPewE2kKVypu3536Xczdf6MYab547G3mFchcN8X1"
 
 [registry]
 url = "http://127.0.0.1:8899"
