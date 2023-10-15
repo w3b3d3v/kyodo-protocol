@@ -7,28 +7,33 @@ import withdrawFromVault from "./transactions/withdrawFromVault";
 
 async function handleTransactionPromise(contract, txResponse) {
     const EVENT_TIMEOUT = 30000;  // 30 seconds timeout
+    const RETRY_INTERVAL = 1000;  // 1 second retry interval
+
     const checkTransaction = async () => {
         const result = await contract.provider.connection.getTransaction(txResponse, {
             commitment: 'confirmed',
         });
         
-        if (!result || result.meta?.err) {
-            throw new Error('Transaction failed on Solana');
+        if (result && !result.meta?.err) {
+            return true;
         }
 
-        return true;
+        return false;  // Return false instead of throwing an error
     };
 
-    const timeoutPromise = new Promise((_, reject) => {
-        const id = setTimeout(() => {
-            clearTimeout(id);
-            reject(new Error(`Timeout waiting for transaction confirmation`));
-        }, EVENT_TIMEOUT);
-    });
+    const startTime = Date.now();
+    
+    while (Date.now() - startTime < EVENT_TIMEOUT) {
+        const success = await checkTransaction();
+        if (success) {
+            return true;
+        }
 
-    const result = await Promise.race([checkTransaction(), timeoutPromise]);
+        // Wait for the retry interval before trying again
+        await new Promise(resolve => setTimeout(resolve, RETRY_INTERVAL));
+    }
 
-    return result;
+    throw new Error('Transaction failed on Solana');  // Throw an error if the timeout is reached without success
 }
 
 
