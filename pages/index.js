@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { VaultContractProvider, AgreementContractProvider } from "../contexts/ContractContext";
-import Balances from '../components/dashboard/Balances.js';
+import Balances from "../components/Dashboard/Balances.js"
 
 export default function Home() {
   return (
