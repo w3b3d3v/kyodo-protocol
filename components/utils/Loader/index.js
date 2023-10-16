@@ -1,6 +1,6 @@
 // Loader.js
 import React from 'react';
-import { BeatLoader } from "react-spinners";
+import { PuffLoader } from "react-spinners";
 
 function Loader({ isLoading }) {
   if (!isLoading) return null;
@@ -10,7 +10,7 @@ function Loader({ isLoading }) {
       {isLoading && (
         <div className="loading-overlay">
           <div className="sweet-loading">
-            <BeatLoader loading={isLoading} size={50} />
+            <PuffLoader color="#fff" loading={isLoading} size={100} />
           </div>
         </div>
       )}
