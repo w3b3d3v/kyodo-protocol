@@ -19,6 +19,7 @@
     "@solana/wallet-adapter-sollet": "^0.11.17",
     "@solana/wallet-adapter-wallets": "^0.19.22",
     "@solana/web3.js": "^1.78.5",
+    "axios": "^1.5.1",
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "i18next": "^23.5.1",
