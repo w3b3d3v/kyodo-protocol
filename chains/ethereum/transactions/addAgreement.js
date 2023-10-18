@@ -12,8 +12,7 @@ export const addAgreement = async (details) => {
       paymentAmountInWei
     );
 
-    const receipt = await tx.wait();
-    return receipt;
+    return tx;
   } catch (error) {
       console.error("Error in addAgreement:", error);
       throw error;

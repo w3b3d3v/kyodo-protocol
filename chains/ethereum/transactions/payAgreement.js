@@ -42,8 +42,8 @@ export const payAgreement = async (details) => {
             details.selectedPaymentToken.address
         )
 
-        const receipt = await tx.wait();
-        return receipt;
+        // const receipt = await tx.wait();
+        return tx;
     } catch (error) {
         console.error("Error in payAgreement:", error);
         throw error;

@@ -5,7 +5,7 @@ import fetchUserBalances from "./transactions/fetchUserBalances";
 import withdrawFromVault from "./transactions/withdrawFromVault";
 import fetchPaidAgreements from "./transactions/fetchPaidAgreements";
 
-const EVENT_TIMEOUT = 30000;
+const EVENT_TIMEOUT = 40000;
 
 async function handleTransactionPromise(contract, txResponse, eventName, account, setTransactionHash) {
     // TODO: Make event filters more robust based on parameters
