@@ -26,7 +26,7 @@ function copyVaultABI() {
   console.log(`Copied StableVault ABI to ${destinationPath}`);
 }
 
-function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress) {
+function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress, deploymentBlockNumber) {
   const envPath = path.join(__dirname, '../../../.env.development.local');
   let envData = fs.readFileSync(envPath, 'utf8');
   const lines = envData.split('\n');
@@ -34,7 +34,8 @@ function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress)
   const keysToUpdate = {
     'NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS': agreementContractAddress,
     'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
-    'NEXT_PUBLIC_STABLE_VAULT_ADDRESS': vaultAddress
+    'NEXT_PUBLIC_STABLE_VAULT_ADDRESS': vaultAddress,
+    'NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER': deploymentBlockNumber
   };
 
   Object.keys(keysToUpdate).forEach(key => {
@@ -69,7 +70,7 @@ async function deployAgreementsContract(vaultAddress, tokenAddress) {
   console.log("AgreementContract deployed to:", contract.address);
 
   // Wait for the deployment transaction to be mined
-  await contract.deployTransaction.wait();
+  const deployReceipt = await contract.deployTransaction.wait();
 
   // Now that the deployment is mined, you can call contract methods safely
   const tx = await contract.addAcceptedPaymentToken(tokenAddress);
@@ -84,7 +85,10 @@ async function deployAgreementsContract(vaultAddress, tokenAddress) {
   console.log("setStableVaultAddress transaction hash: ", tx3.hash);
   await tx3.wait(); // Wait for the transaction to be mined
 
-  return contract.address;
+  return {
+    address: contract.address,
+    deploymentBlock: deployReceipt.blockNumber
+  };
 }
 
 
@@ -119,8 +123,8 @@ async function main() {
     const tokenAddress = await deployToken();
     const vaultAddress = await deployStableVault();
     
-    const agreementAddress = await deployAgreementsContract(vaultAddress, tokenAddress);
-    updateConfig(agreementAddress, tokenAddress, vaultAddress); 
+    const agreementData = await deployAgreementsContract(vaultAddress, tokenAddress);
+    updateConfig(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"]); 
     process.exit(0);
   } catch (error) {
     console.error(error);
