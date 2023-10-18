@@ -41,10 +41,9 @@ export const withdrawFromVault = async (details) => {
         process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS // TODO: Make user select the token desired to withdraw
       )
       
-      const receipt = await tx.wait()
       details.contract.on("Withdrawal", (user, amount, asset) => handleWithdrawal(user, amount, asset, details.account));
 
-      return receipt
+      return tx
     } catch (error) {
         throw new Error("Error in withdrawFromVault: ", error);
     }
