@@ -58,28 +58,35 @@ function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress)
 
 async function deployAgreementsContract(vaultAddress, tokenAddress) {
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
-  console.log(process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS, 
-    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS,)
-  contract = await AgreementContract
-  .deploy
-  (
-    process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS, 
-    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS,
+  console.log(process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS, process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS)
+  const contract = await AgreementContract.deploy(
+    process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS,
+    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
   );
 
   await contract.deployed();
 
   console.log("AgreementContract deployed to:", contract.address);
 
+  // Wait for the deployment transaction to be mined
+  await contract.deployTransaction.wait();
 
-  copyABI();
+  // Now that the deployment is mined, you can call contract methods safely
+  const tx = await contract.addAcceptedPaymentToken(tokenAddress);
+  console.log("addAcceptedPaymentToken transaction hash: ", tx.hash);
+  await tx.wait(); // Wait for the transaction to be mined
 
-  await contract.addAcceptedPaymentToken(tokenAddress);
+  const tx2 = await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
+  console.log("setFees transaction hash: ", tx2.hash);
+  await tx2.wait(); // Wait for the transaction to be mined
+  
+  const tx3 = await contract.setStableVaultAddress(vaultAddress);
+  console.log("setStableVaultAddress transaction hash: ", tx3.hash);
+  await tx3.wait(); // Wait for the transaction to be mined
 
-  await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
-  await contract.setStableVaultAddress(vaultAddress);
-  return contract.address
+  return contract.address;
 }
+
 
 async function deployToken() {
   const [deployer] = await ethers.getSigners();
@@ -110,7 +117,8 @@ async function deployStableVault() {
 async function main() {
   try {
     const tokenAddress = await deployToken();
-    const vaultAddress = await deployStableVault();  
+    const vaultAddress = await deployStableVault();
+    
     const agreementAddress = await deployAgreementsContract(vaultAddress, tokenAddress);
     updateConfig(agreementAddress, tokenAddress, vaultAddress); 
     process.exit(0);
