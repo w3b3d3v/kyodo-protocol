@@ -8,6 +8,12 @@ const PROTOCOL_FEE = 500;
 const COMMUNITY_FEE = 500;
 const FAKE_STABLE_DECIMALS = 18;
 
+let = SPARK_DATA_PROVIDER = "0x0000000000000000000000000000000000000000";
+let = SPARK_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; //doesn't exist for kovan
+let = SPARK_LENDING_POOL= "0x26ca51Af4506DE7a6f0785D20CD776081a05fF6d";
+
+const DAI_GOERLI = "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844"
+
 function copyABI() {
   const sourcePath = path.join(__dirname, "../artifacts/contracts/AgreementContract.sol/AgreementContract.json");
   const destinationPath = path.join(__dirname, "../../../contexts/contracts/AgreementContract.json");
@@ -33,7 +39,7 @@ function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress,
 
   const keysToUpdate = {
     'NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS': agreementContractAddress,
-    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
+    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': DAI_GOERLI,
     'NEXT_PUBLIC_STABLE_VAULT_ADDRESS': vaultAddress,
     'NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER': deploymentBlockNumber
   };
@@ -73,7 +79,7 @@ async function deployAgreementsContract(vaultAddress, tokenAddress) {
   const deployReceipt = await contract.deployTransaction.wait();
 
   // Now that the deployment is mined, you can call contract methods safely
-  const tx = await contract.addAcceptedPaymentToken(tokenAddress);
+  const tx = await contract.addAcceptedPaymentToken(DAI_GOERLI);
   console.log("addAcceptedPaymentToken transaction hash: ", tx.hash);
   await tx.wait(); // Wait for the transaction to be mined
 
@@ -111,6 +117,13 @@ async function deployStableVault() {
   const [admin] = await ethers.getSigners();
   const vault = await StableVault.deploy(admin.address, "StableVaultToken", "STBLV");
   await vault.deployed();
+    
+  // Wait for the deployment transaction to be mined
+  await vault.deployTransaction.wait();
+
+  const tx =await vault.setSparkSettings(SPARK_DATA_PROVIDER, SPARK_INCENTIVES_CONTROLLER, SPARK_LENDING_POOL);
+  await tx.wait(); // Wait for the transaction to be mined
+  console.log("setSparkSettings transaction hash: ", tx.hash);
 
   console.log("StableVault deployed to:", vault.address);
   copyVaultABI();
