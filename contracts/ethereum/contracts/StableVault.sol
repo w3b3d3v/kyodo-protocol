@@ -17,7 +17,8 @@ import "./Admin.sol";
 
 contract StableVault is ReentrancyGuard, Admin, ERC20 {
     uint256 private _vaultBalance;
-    
+    mapping(address => bool) public userSetCompound;
+
     using SafeERC20 for IERC20;
 
     address private SPARK_LENDING_POOL;
@@ -26,6 +27,7 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
 
     event BalanceUpdated(uint256 _vaultBalance);
     event Withdrawal(address indexed user, uint256 amount, address indexed asset);
+    event DepositSpark(address indexed user, address asset, uint256 amount);
 
     constructor(
         address admin, 
@@ -55,7 +57,9 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         IERC20(_asset).safeTransferFrom(msg.sender, address(this), amount);
         _mint(_beneficiary, correctedAmount);
         _increaseBalance(correctedAmount);
-        depositToSpark(_asset, correctedAmount);
+        if (userSetCompound[_beneficiary]) {
+            depositSpark(_asset, amount);
+        }
         return true;
     }
 
@@ -131,9 +135,10 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         return true;
     }
     
-    function depositToSpark(address _asset, uint256 _amount) private whenNotPaused() {
+    function depositSpark(address _asset, uint256 _amount) private whenNotPaused() {
         IERC20(_asset).safeApprove(SPARK_LENDING_POOL, _amount);
         ILendingPool(SPARK_LENDING_POOL).deposit(_asset, _amount, address(this), 0);
+        emit DepositSpark(msg.sender, _asset, _amount);
     } 
 
     function withdrawFromSpark(address _asset, uint256 _amount, address _to) private whenNotPaused() {
@@ -150,7 +155,7 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         return IDataProvider(SPARK_DATA_PROVIDER).getRewardsBalance(assets, address(this));
     }
 
-    function getSparkbalance(address _asset) public view returns(uint){
+    function getSparkBalance(address _asset) public view returns(uint){
         address aToken;
         (aToken,,) = IDataProvider(SPARK_DATA_PROVIDER).getReserveTokensAddresses(_asset);
         return IERC20(aToken).balanceOf(address(this));
@@ -165,5 +170,10 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         SPARK_DATA_PROVIDER = _SPARK_DATA_PROVIDER;
         SPARK_INCENTIVES_CONTROLLER = _SPARK_INCENTIVES_CONTROLLER;
         SPARK_LENDING_POOL = _SPARK_LENDING_POOL;
+    }
+
+    function setUserCompoundPreference(bool useCompound) external {
+        require(hasRole(keccak256("CHANGE_PARAMETERS"), msg.sender), "Caller is not authorized");
+        userSetCompound[msg.sender] = useCompound;
     }
 }
