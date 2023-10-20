@@ -1,6 +1,6 @@
 // Toast.js
-import React from 'react';
-import Image from 'next/image';
+import React, { useEffect, useState } from "react" // <-- Import useEffect and useState
+import Image from "next/image"
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
 
@@ -12,6 +12,25 @@ function Toast({
   transactionHash,
 }) {
   const { t } = useTranslation()
+  const [visible, setVisible] = useState(true) // <-- Add a state to manage visibility
+
+  useEffect(() => {
+    if (visible) {
+      const timer = setTimeout(() => {
+        setVisible(false) // <-- Hide the toast after 3 seconds
+      }, 3000)
+      return () => clearTimeout(timer) // <-- Clear the timer when component unmounts or if visibility changes
+    }
+  }, [visible])
+
+  useEffect(() => {
+    if (transactionSuccess || transactionFail || transactionPending) {
+      setVisible(true) // <-- Show the toast when transaction succeeds or fails
+    }
+  }, [transactionSuccess, transactionPending, transactionFail])
+
+  if (!visible) return null // <-- Don't render the component if it's not visible
+
   if (transactionSuccess) {
     return (
       <div className="flash-success transaction-info">

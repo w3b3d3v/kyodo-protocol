@@ -80,9 +80,7 @@ function Balances() {
 
       const onConfirmation = () => {
         setShowRedeemInput(false)
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        fetchUserBalances()
       };
 
       await sendTransaction("withdrawFromVault", details, "Withdrawal", onConfirmation)
