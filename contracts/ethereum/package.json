@@ -4,8 +4,9 @@
     "private": true,
     "scripts": {},
     "dependencies": {
-        "ethersjs": "^0.0.1-security",
+        "@gnosis.pm/safe-core-sdk": "^3.2.0",
         "dotenv": "^16.0.3",
+        "ethersjs": "^0.0.1-security",
         "hardhat": "^2.12.6",
         "hardhat-jest-plugin": "^0.0.6",
         "sol2uml": "^2.4.3",
