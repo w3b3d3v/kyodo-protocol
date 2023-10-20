@@ -51,7 +51,7 @@ Run a Hardhat node:
 
 ```bash
 cd contracts/ethereum
-npx hardhat node
+npx hardhat node --fork https://rpc.ankr.com/eth_goerli
 ```
 
 The node will generate some accounts. Add the first one to Metamask.
