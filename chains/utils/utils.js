@@ -1,7 +1,7 @@
 const getExplorerLink = (selectedChain) => {
     switch (selectedChain) {
       case 'ethereum':
-        return `https://etherscan.io/tx/`
+        return `https://goerli.etherscan.io/tx/`
       case 'solana':
         return `https://explorer.solana.com/tx/`
       case 'polygon':

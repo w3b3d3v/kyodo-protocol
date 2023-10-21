@@ -7,14 +7,13 @@ import fetchPaidAgreements from "./transactions/fetchPaidAgreements";
 
 const EVENT_TIMEOUT = 60000;
 
-async function handleTransactionPromise(contract, txResponse, eventName, account, setTransactionHash) {
+async function handleTransactionPromise(contract, txResponse, eventName, account) {
     // TODO: Make event filters more robust based on parameters
     const eventReceived = new Promise((resolve, reject) => {
         const timeout = setTimeout(async () => {
             const tx = await contract.provider.getTransaction(txResponse.hash);
             if (tx && tx.blockNumber) {
                 resolve({ event: tx });
-                setTransactionHash(tx.hash)
             } else {
                 reject(new Error(`Timeout waiting for ${eventName} event`));
             }

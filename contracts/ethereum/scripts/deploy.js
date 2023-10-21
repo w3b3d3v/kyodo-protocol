@@ -128,6 +128,8 @@ async function deployStableVault() {
   console.log("setSparkSettings transaction hash: ", tx.hash);
 
   await vault.updateValidNetworks("depositSpark", SPARK_VALID_CHAIN_IDS);
+  await vault.addProfile(admin.address);
+  await vault.setUserCompoundPreference(true);
 
   console.log("StableVault deployed to:", vault.address);
 
