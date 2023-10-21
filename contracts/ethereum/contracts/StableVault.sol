@@ -137,7 +137,7 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
     }
     
     function depositSpark(address _asset, uint256 _amount) private whenNotPaused() {
-        if (!validNetworks["depositSpark"][getChainID()) {
+        if (!validNetworks["depositSpark"][getChainID()]) {
             return;
         }
         IERC20(_asset).safeApprove(SPARK_LENDING_POOL, _amount);
