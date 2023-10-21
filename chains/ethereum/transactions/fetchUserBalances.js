@@ -7,23 +7,30 @@ export const fetchUserBalances = async (details) => {
   const balances = []
 
   for (let address of tokenAddresses) {
-      try {
-          const tokenContract = new ERC20Token(address);
-          const rawBalance = await tokenContract.balanceOf(details.account);
-          const decimals = await tokenContract.decimals();
+    try {
+      const tokenContract = new ERC20Token(address)
+      const rawBalance = await tokenContract.balanceOf(details.account)
+      const decimals = await tokenContract.decimals()
 
-          const formattedBalance = ethers.utils.formatUnits(rawBalance, decimals);
+      const formattedBalance = ethers.utils.formatUnits(rawBalance, decimals)
 
-          balances.push({
-              tokenAddress: address,
-              tokenDecimals: decimals,
-              amount: formattedBalance,
-          });
-      } catch (error) {
-          console.error(`Error when retrieving balance for ${address}:`, error);
-      }
+      balances.push({
+        tokenAddress: address,
+        tokenDecimals: decimals,
+        amount: formattedBalance,
+      })
+    } catch (error) {
+      console.error(`Error when retrieving balance for ${address}:`, error)
+    }
   }
-  return balances;
+
+  const sparkBalance = await details.contract.getSparkBalance(
+    process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
+  )
+  const formattedBalance = ethers.utils.formatUnits(sparkBalance, 18)
+  console.log("Spark total balance: " + formattedBalance)
+
+  return balances
 };
   
   

@@ -137,11 +137,13 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
     }
     
     function depositSpark(address _asset, uint256 _amount) private whenNotPaused() {
-        require(validNetworks["depositSpark"][getChainID()], "depositSpark: Invalid network");
+        if (!validNetworks["depositSpark"][getChainID()) {
+            return;
+        }
         IERC20(_asset).safeApprove(SPARK_LENDING_POOL, _amount);
         ILendingPool(SPARK_LENDING_POOL).deposit(_asset, _amount, address(this), 0);
         emit DepositSpark(msg.sender, _asset, _amount);
-    } 
+    }
 
     function withdrawFromSpark(address _asset, uint256 _amount, address _to) private whenNotPaused() {
         ILendingPool(SPARK_LENDING_POOL).withdraw(_asset, _amount, _to);
@@ -174,10 +176,11 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         SPARK_LENDING_POOL = _SPARK_LENDING_POOL;
     }
 
-    function setUserCompoundPreference(bool useCompound) external {
+    function setUserCompoundPreference(bool useCompound, address wallet) external {
         require(hasRole(keccak256("CHANGE_PARAMETERS"), msg.sender), "Caller is not authorized");
-        userSetCompound[msg.sender] = useCompound;
+        userSetCompound[wallet] = useCompound;
     }
+
 
     function getChainID() public view returns (uint256) {
         uint256 chainID;
