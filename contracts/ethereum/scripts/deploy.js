@@ -7,6 +7,7 @@ const TOTAL_FEE = 20;
 const PROTOCOL_FEE = 500;
 const COMMUNITY_FEE = 500;
 const FAKE_STABLE_DECIMALS = 18;
+const SPARK_VALID_CHAIN_IDS = [31337, 1, 5];
 
 let = SPARK_DATA_PROVIDER = "0x86C71796CcDB31c3997F8Ec5C2E3dB3e9e40b985"; // GOERLY_ADDRESS
 let = SPARK_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
@@ -39,7 +40,7 @@ function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress,
 
   const keysToUpdate = {
     'NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS': agreementContractAddress,
-    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': DAI_GOERLI,
+    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
     'NEXT_PUBLIC_STABLE_VAULT_ADDRESS': vaultAddress,
     'NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER': deploymentBlockNumber
   };
@@ -79,24 +80,25 @@ async function deployAgreementsContract(vaultAddress, tokenAddress) {
   const deployReceipt = await contract.deployTransaction.wait();
 
   // Now that the deployment is mined, you can call contract methods safely
-  const tx = await contract.addAcceptedPaymentToken(DAI_GOERLI);
-  console.log("addAcceptedPaymentToken transaction hash: ", tx.hash);
+  const tx = await contract.addAcceptedPaymentToken(tokenAddress);
   await tx.wait(); // Wait for the transaction to be mined
+  console.log("addAcceptedPaymentToken transaction hash: ", tx.hash);
 
   const tx2 = await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
-  console.log("setFees transaction hash: ", tx2.hash);
   await tx2.wait(); // Wait for the transaction to be mined
+  console.log("setFees transaction hash: ", tx2.hash);
   
   const tx3 = await contract.setStableVaultAddress(vaultAddress);
-  console.log("setStableVaultAddress transaction hash: ", tx3.hash);
   await tx3.wait(); // Wait for the transaction to be mined
+  console.log("setStableVaultAddress transaction hash: ", tx3.hash);
+
+  copyABI();
 
   return {
     address: contract.address,
     deploymentBlock: deployReceipt.blockNumber
   };
 }
-
 
 async function deployToken() {
   const [deployer] = await ethers.getSigners();
@@ -125,7 +127,10 @@ async function deployStableVault() {
   await tx.wait(); // Wait for the transaction to be mined
   console.log("setSparkSettings transaction hash: ", tx.hash);
 
+  await vault.updateValidNetworks("depositSpark", SPARK_VALID_CHAIN_IDS);
+
   console.log("StableVault deployed to:", vault.address);
+
   copyVaultABI();
   return vault.address;
 }
@@ -133,8 +138,9 @@ async function deployStableVault() {
 
 async function main() {
   try {
-    const tokenAddress = await deployToken();
+    // const tokenAddress = await deployToken();
     const vaultAddress = await deployStableVault();
+    const tokenAddress = DAI_GOERLI
     
     const agreementData = await deployAgreementsContract(vaultAddress, tokenAddress);
     updateConfig(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"]); 

@@ -18,6 +18,7 @@ import "./Admin.sol";
 contract StableVault is ReentrancyGuard, Admin, ERC20 {
     uint256 private _vaultBalance;
     mapping(address => bool) public userSetCompound;
+    mapping(string => mapping(uint256 => bool)) public validNetworks;
 
     using SafeERC20 for IERC20;
 
@@ -136,6 +137,7 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
     }
     
     function depositSpark(address _asset, uint256 _amount) private whenNotPaused() {
+        require(validNetworks["depositSpark"][getChainID()], "depositSpark: Invalid network");
         IERC20(_asset).safeApprove(SPARK_LENDING_POOL, _amount);
         ILendingPool(SPARK_LENDING_POOL).deposit(_asset, _amount, address(this), 0);
         emit DepositSpark(msg.sender, _asset, _amount);
@@ -175,5 +177,28 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
     function setUserCompoundPreference(bool useCompound) external {
         require(hasRole(keccak256("CHANGE_PARAMETERS"), msg.sender), "Caller is not authorized");
         userSetCompound[msg.sender] = useCompound;
+    }
+
+    function getChainID() public view returns (uint256) {
+        uint256 chainID;
+        assembly {
+            chainID := chainid()
+        }
+        return chainID;
+    }
+
+    function isValidNetworkForFunction(string memory functionName) public view returns (bool) {
+        return validNetworks[functionName][getChainID()];
+    }
+
+    function updateValidNetworks(string memory functionName, uint256[] memory chainIDs) external {
+        // Reset the mapping for this function name
+        for (uint256 i = 0; i < 255; i++) {
+            validNetworks[functionName][i] = false;
+        }
+        // Set the valid networks
+        for (uint256 i = 0; i < chainIDs.length; i++) {
+            validNetworks[functionName][chainIDs[i]] = true;
+        }
     }
 }

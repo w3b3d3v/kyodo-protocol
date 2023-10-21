@@ -2,7 +2,7 @@ const { ethers } = require("hardhat");
 require('dotenv').config({ path: '../../.env.development.local' });
 
 const AGREEMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS
-const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
+const FAKE_STABLE_ADDRESS = process.env.DAI_GOERLY
 
 async function payUserAgreement() {
   const [signer] = await ethers.getSigners();

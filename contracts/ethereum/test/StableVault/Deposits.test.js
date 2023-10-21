@@ -31,25 +31,34 @@ describe("vault", function () {
     it("Should deposit automatically to spark", async function () {
       // Assign CHANGE_PARAMETERS role to user1
       await vault.connect(user1).addProfile(user1.address);
-    
+  
+      // Update valid networks for the depositSpark function
+      await vault.connect(admin).updateValidNetworks("depositSpark", [31337, 1, 5]);
+  
+      // Validate that the current network is valid for depositSpark
+      const isValid = await vault.isValidNetworkForFunction("depositSpark");
+      expect(isValid).to.equal(true);
+  
       // Set userSetCompound to true
       await vault.connect(user1).setUserCompoundPreference(true);
-    
+  
+      // Transfer tokens to user1
       await token.connect(admin).transfer(user1.address, ethers.utils.parseEther("50"));
+  
       const depositAmount = ethers.utils.parseUnits("50", 18);
       const expectedVaultAmount = ethers.utils.parseUnits("50", 18);
-    
+  
       const initialSparkBalance = await vault.getSparkBalance(token.address);
-    
-      // Assume depositSpark is an event emitted when depositing to Spark
+  
+      // Execute deposit and validate events are emitted
       await expect(vault.connect(user1).deposit(depositAmount, token.address, user1.address))
         .to.emit(vault, "BalanceUpdated")
         .to.emit(vault, "DepositSpark")
         .withArgs(user1.address, token.address, depositAmount);
-    
+  
       const userBalance = await vault.balanceOf(user1.address);
       expect(userBalance).to.equal(expectedVaultAmount);
-    
+  
       const finalSparkBalance = await vault.getSparkBalance(token.address);
       expect(finalSparkBalance.sub(initialSparkBalance)).to.equal(depositAmount);
     });
@@ -80,6 +89,26 @@ describe("vault", function () {
       const amount = ethers.utils.parseEther("1");
 
       await expect(vault.connect(admin).deposit(amount, token.address, admin.address)).to.be.revertedWith("Pausable: paused");
+    });
+
+    it("Should revert when trying to deposit on an invalid network", async function () {
+      // Assign CHANGE_PARAMETERS role to user1
+      await vault.connect(user1).addProfile(user1.address);
+  
+      // Update valid networks for the depositSpark function to exclude the current network (e.g., 31337)
+      await vault.connect(admin).updateValidNetworks("depositSpark", [900, 600]);  // Assume 1 and 5 are mainnet and Goerli, excluding 31337 (Hardhat Network)
+  
+      // Set userSetCompound to true
+      await vault.connect(user1).setUserCompoundPreference(true);
+  
+      // Transfer tokens to user1
+      await token.connect(admin).transfer(user1.address, ethers.utils.parseEther("50"));
+  
+      const depositAmount = ethers.utils.parseUnits("50", 18);
+  
+      // Attempt to execute deposit and expect a revert with a specific error message
+      await expect(vault.connect(user1).deposit(depositAmount, token.address, user1.address))
+          .to.be.revertedWith("depositSpark: Invalid network");
     });
   });
 });
