@@ -30,6 +30,11 @@ let config = {
       url: "https://rpc-mumbai.maticvigil.com/" || "",
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    goerly: {
+      url: "https://rpc.ankr.com/eth_goerli" || "",
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     }
   },
   contractSizer: {
