@@ -36,31 +36,29 @@ function copyVaultABI() {
   console.log(`Copied StableVault ABI to ${destinationPath}`)
 }
 
-function updateConfig(
-  agreementContractAddress,
-  fakeStableAddress,
-  vaultAddress,
-  deploymentBlockNumber
-) {
-  const envPath = path.join(__dirname, "../../../.env.development.local")
-  let envData = fs.readFileSync(envPath, "utf8")
-  const lines = envData.split("\n")
+function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress, deploymentBlockNumber, kyodoRegistryContract) {
+  const envPath = path.join(__dirname, '../../../.env.development.local');
+  let envData = fs.readFileSync(envPath, 'utf8');
+  const lines = envData.split('\n');
 
   const keysToUpdate = {
-    NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS: agreementContractAddress,
-    NEXT_PUBLIC_FAKE_STABLE_ADDRESS: fakeStableAddress,
-    NEXT_PUBLIC_STABLE_VAULT_ADDRESS: vaultAddress,
-    NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER: deploymentBlockNumber,
-  }
+    'NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS': agreementContractAddress,
+    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
+    'NEXT_PUBLIC_STABLE_VAULT_ADDRESS': vaultAddress,
+    'NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER': deploymentBlockNumber,
+    'NEXT_PUBLIC_KYODO_REGISTRY': kyodoRegistryContract.address,
+  };
 
-  Object.keys(keysToUpdate).forEach((key) => {
-    let found = false
+  Object.keys(keysToUpdate).forEach(async key => {
+    let found = false;
     for (let i = 0; i < lines.length; i++) {
       if (lines[i].startsWith(`${key}=`)) {
         lines[i] = `${key}=${keysToUpdate[key]}`
         found = true
         break
       }
+      // Saving on KyodoRegistry
+      await saveOnKyodoRegistry(kyodoRegistryContract, key, keysToUpdate[key])
     }
     if (!found) {
       lines.push(`${key}=${keysToUpdate[key]}`)
@@ -70,6 +68,10 @@ function updateConfig(
   envData = lines.join("\n")
   fs.writeFileSync(envPath, envData)
   console.log(`Updated contract addresses in ${envPath}`)
+}
+
+async function saveOnKyodoRegistry(kyodoRegistryContract, key, value){
+  await kyodoRegistryContract.setRegistry(key, value)
 }
 
 async function deployAgreementsContract(vaultAddress, tokenAddress) {
@@ -153,15 +155,26 @@ async function deployStableVault() {
   return vault.address
 }
 
+async function deployKyodoRegistry() {
+  const KyodoRegistry = await ethers.getContractFactory("KyodoRegistry");
+  const [admin] = await ethers.getSigners();
+  const kyodoRegistry = await KyodoRegistry.deploy(admin.address);
+  await kyodoRegistry.deployed();
+
+  console.log("KyodoRegistry deployed to:", kyodoRegistry.address);
+  copyVaultABI();
+  return kyodoRegistry;
+}
+
 
 async function main() {
   try {
     // const tokenAddress = await deployToken();
     const vaultAddress = await deployStableVault();
-    const tokenAddress = DAI_GOERLI
+    const kyodoRegistryContract = await deployKyodoRegistry();
     
     const agreementData = await deployAgreementsContract(vaultAddress, tokenAddress);
-    updateConfig(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"]); 
+    updateConfig(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"], kyodoRegistryContract); 
     process.exit(0);
   } catch (error) {
     console.error(error);
