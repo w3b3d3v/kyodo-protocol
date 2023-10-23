@@ -38,6 +38,9 @@ yarn install
   - [Contribution](#contribution)
   - [Contact](#contact)
   - [License](#license)
+  - [Editing styles](#editing-styles)
+    - [Global SASS](#global-sass)
+    - [Modules](#modules)
 
 ---
 
@@ -93,7 +96,7 @@ npx hardhat run scripts/retrieveAgreements.js
 Pay for the agreement you've created:
 ```bash
 cd contracts/ethereum
-npx hardhat run scripts/payAgreements.js
+npx hardhat run scripts/payAgreement.js
 ```
 
 ### Via Frontend
