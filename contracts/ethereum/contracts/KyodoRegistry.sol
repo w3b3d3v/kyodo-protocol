@@ -12,31 +12,27 @@ contract KyodoRegistry is Admin {
     constructor(address admin) Admin(admin) {}
 
     function setRegistry(string memory registry, address value) external onlyAdmin() whenNotPaused() {
-        bytes4 key = returnKey(registry);
+        bytes32 key = returnKey(registry);
         require(registryStorage[key] == address(0), 'The registry already exists');
         registryStorage[key] = value;
         emit RegistrySet(key, value);
     }
 
     function updateRegistry(string memory registry, address value) external onlyAdmin() whenNotPaused() {
-        bytes4 key = returnKey(registry);
+        bytes32 key = returnKey(registry);
         require(registryStorage[key] != address(0), 'Registry does not exists');
         registryStorage[key] = value;
         emit RegistryUpdated(key, value);
     }
 
     function getRegistry(string memory registry) external view returns (address) {
-        bytes4 key = returnKey(registry);
+        bytes32 key = returnKey(registry);
         address addressToReturn = registryStorage[key];
         require(addressToReturn != address(0), 'Registry does not exists');
         return addressToReturn;
     }
 
-    function returnKey(string memory registry) private pure returns (bytes4){
-        return bytes32ToBytes4(keccak256(abi.encodePacked(registry)));
-    }
-
-    function bytes32ToBytes4(bytes32 input) private pure returns (bytes4) {
-        return bytes4(uint32(uint256(input)));
+    function returnKey(string memory registry) private pure returns (bytes32){
+        return keccak256(abi.encodePacked(registry));
     }
 }
