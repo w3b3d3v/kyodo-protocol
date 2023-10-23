@@ -56,10 +56,13 @@ function Payments ({ limit }) {
   async function fetchPaidAgreements() {
     const KyodoRegistry = await contractManager.chains[selectedNetworkId].kyodoRegistry;
     try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const network = await provider.getNetwork();
+
       const details = {
         account,
         contract,
-        KyodoRegistry
+        chainId: network.chainId
       };
 
       const agreements = await transactionManager["fetchPaidAgreements"](selectedNetworkId, details)
