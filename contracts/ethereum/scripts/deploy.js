@@ -36,7 +36,32 @@ function copyVaultABI() {
   console.log(`Copied StableVault ABI to ${destinationPath}`)
 }
 
-function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress, deploymentBlockNumber, kyodoRegistryContract) {
+function updateKyodoRegistry(kyodoRegistryContract){
+  const keysToUpdate = {
+    'NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS': agreementContractAddress,
+    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
+    'NEXT_PUBLIC_STABLE_VAULT_ADDRESS': vaultAddress,
+    'NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER': deploymentBlockNumber,
+    'NEXT_PUBLIC_KYODO_REGISTRY': kyodoRegistryContract.address,
+  };
+  Object.keys(keysToUpdate).forEach(async key => {
+    let found = false;
+    for (let i = 0; i < lines.length; i++) {
+      // Saving on KyodoRegistry
+      try {
+        await kyodoRegistryContract.setRegistry(key, value)
+      } catch (error) {
+        console.log('error trying to save key on KyodoRegistry', error)
+      }
+    }
+  });
+}
+
+function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress, deploymentBlockNumber, kyodoRegistryAddress) {
+  console.log('agreement', agreementContractAddress);
+  console.log('vault', vaultAddress);
+  console.log('deploymentblock', deploymentBlockNumber);
+  console.log('endereco', kyodoRegistryAddress);
   const envPath = path.join(__dirname, '../../../.env.development.local');
   let envData = fs.readFileSync(envPath, 'utf8');
   const lines = envData.split('\n');
@@ -46,7 +71,7 @@ function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress,
     'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
     'NEXT_PUBLIC_STABLE_VAULT_ADDRESS': vaultAddress,
     'NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER': deploymentBlockNumber,
-    'NEXT_PUBLIC_KYODO_REGISTRY': kyodoRegistryContract.address,
+    'NEXT_PUBLIC_KYODO_REGISTRY': kyodoRegistryAddress,
   };
 
   Object.keys(keysToUpdate).forEach(async key => {
@@ -57,8 +82,6 @@ function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress,
         found = true
         break
       }
-      // Saving on KyodoRegistry
-      await saveOnKyodoRegistry(kyodoRegistryContract, key, keysToUpdate[key])
     }
     if (!found) {
       lines.push(`${key}=${keysToUpdate[key]}`)
@@ -68,10 +91,6 @@ function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress,
   envData = lines.join("\n")
   fs.writeFileSync(envPath, envData)
   console.log(`Updated contract addresses in ${envPath}`)
-}
-
-async function saveOnKyodoRegistry(kyodoRegistryContract, key, value){
-  await kyodoRegistryContract.setRegistry(key, value)
 }
 
 async function deployAgreementsContract(vaultAddress, tokenAddress) {
@@ -174,7 +193,8 @@ async function main() {
     const kyodoRegistryContract = await deployKyodoRegistry();
     
     const agreementData = await deployAgreementsContract(vaultAddress, tokenAddress);
-    updateConfig(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"], kyodoRegistryContract); 
+    // updateKyodoRegistry(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"], kyodoRegistryContract); 
+    updateConfig(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"], kyodoRegistryContract.address); 
     process.exit(0);
   } catch (error) {
     console.error(error);
