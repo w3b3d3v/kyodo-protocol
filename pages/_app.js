@@ -107,7 +107,13 @@ function Header() {
             ) : (
               <div className={"user-wallet"}>
                 <Link href="#" className={"select-chain"} onClick={() => setShowModal(true)}>
-                  Chain
+                  Select chain
+                  <Image
+                    src="/arrow-down.svg"
+                    alt="Select chain"
+                    width={11}
+                    height={11}
+                  />
                 </Link>
                 <div>
                   <span className={"wallet-on"}>Status</span>

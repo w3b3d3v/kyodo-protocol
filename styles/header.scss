@@ -23,7 +23,6 @@ HEADER
     flex-direction: row;
     align-content: center;
     align-items: center;
-    width: 75%;
   }
 
   nav {
@@ -69,7 +68,7 @@ HEADER
     a {
       height: 30px;
       line-height: 30px;
-      font-size: $font-medium;
+      font-size: $font-small;
       font-weight: normal;
       color: $dark-blue;
       text-decoration: none;
@@ -117,7 +116,7 @@ HEADER
 .logo {
 
   @media #{$smartphones-1} {
-    width: 49px;
+    width: 38px;
   }
 }
 
@@ -164,6 +163,7 @@ HEADER
 
   @media #{$smartphones-1} {
     padding-right: 12px;
+    font-size: $font-verysmall;
   }
 
   img {
@@ -209,12 +209,22 @@ HEADER
   font-weight: bold;
   cursor: pointer;
   font-size: $font-small;
-  color: $medium-gray;
+  color: $medium-blue;
   line-height: 30px;
   text-decoration: none;
 
+  @media #{$smartphones-1} {
+    padding: 0 12px;
+    font-size: $font-verysmall;
+  }
+
   &:hover {
     opacity: .8;
+  }
+
+  img {
+    margin-top: 10px;
+    margin-left: 5px;
   }
 }
 
