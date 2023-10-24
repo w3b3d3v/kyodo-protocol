@@ -14,7 +14,7 @@ async function getAllAgreements() {
       Title: ${agreement.title}
       Description: ${agreement.description}
       Status: ${agreement.status}
-      Developer: ${agreement.developer}
+      Developer: ${agreement.professional}
       Company: ${agreement.company}
       Skills: ${agreement.skills.join(", ")}
       Payment Amount: ${ethers.utils.formatEther(agreement.payment.amount)} tokens
@@ -30,9 +30,9 @@ async function getUserAgreements() {
 
   const accounts = await ethers.getSigners();
   const userAddress = accounts[0].address
+  console.log(`Agreements for user at address ${userAddress}:`);
   const userAgreementIds = await agreementContract.getUserAgreements(userAddress);
 
-  console.log(`Agreements for user at address ${userAddress}:`);
 
   for (const agreementId of userAgreementIds) {
     const agreement = await agreementContract.getAgreementById(agreementId);
@@ -57,7 +57,7 @@ async function getUserAgreements() {
 //     process.exit(1);
 // });
 
-getUserAgreements()
+getAllAgreements()
   .then(() => process.exit(0))
   .catch((error) => {
     console.error(error);

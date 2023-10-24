@@ -18,7 +18,6 @@ function Balances() {
   const { account, selectedChain} = useAccount()
   const [userBalances, setUserBalances] = useState([])
   const [showRedeemInput, setShowRedeemInput] = useState(null)
-  const { publicKey, wallet } = useWallet();
   const { connection } = useConnection();
   const [redeemValue, setRedeemValue] = useState("")
   const {
@@ -80,9 +79,7 @@ function Balances() {
 
       const onConfirmation = () => {
         setShowRedeemInput(false)
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        fetchUserBalances()
       };
 
       await sendTransaction("withdrawFromVault", details, "Withdrawal", onConfirmation)

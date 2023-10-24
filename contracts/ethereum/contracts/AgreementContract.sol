@@ -164,12 +164,11 @@ contract AgreementContract {
             token.transferFrom(msg.sender, address(this), _amountToPay),
             "User must approve the amount of the agreement"
         );
-
-        token.transfer(kyodoTreasury, kyodoTreasuryShare);
-        token.transfer(communityDAO, communityDAOShare);
         
-        token.approve(address(StableVault), professionalPayment);
+        token.approve(address(StableVault), _amountToPay);
         StableVault.deposit(professionalPayment, address(token), agreement.professional);
+        StableVault.deposit(kyodoTreasuryShare, address(token), kyodoTreasury);
+        StableVault.deposit(communityDAOShare, address(token), communityDAO);
 
         unchecked {
             agreement.totalPaid += _amountToPay;

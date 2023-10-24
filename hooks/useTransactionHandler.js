@@ -29,14 +29,15 @@ function useTransactionHandler() {
           timeoutPromise
         ]);
 
+        setTransactionHash(txResponse)
+
         const response = await transactionManager.handleTransactionPromise
         (
           selectedChain,
           details.contract,
           txResponse,
           eventName,
-          account,
-          setTransactionHash
+          account
         )
 
         if (response){
@@ -69,6 +70,7 @@ function useTransactionHandler() {
     transactionFail,
     errorMessage,
     sendTransaction,
+    transactionHash
   }
 }
 

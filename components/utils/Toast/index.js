@@ -1,8 +1,10 @@
 // Toast.js
-import React from 'react';
-import Image from 'next/image';
+import React, { useEffect, useState } from "react" // <-- Import useEffect and useState
+import Image from "next/image"
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
+import getExplorerLink from '../../../chains/utils/utils.js';
+import { useAccount } from "../../../contexts/AccountContext";
 
 function Toast({
   transactionSuccess,
@@ -12,13 +14,41 @@ function Toast({
   transactionHash,
 }) {
   const { t } = useTranslation()
+  const { account, selectedChain} = useAccount();
+  const [visible, setVisible] = useState(true) // <-- Add a state to manage visibility
+
+  useEffect(() => {
+    if (visible) {
+      const timer = setTimeout(() => {
+        setVisible(false) // <-- Hide the toast after 3 seconds
+      }, 3000)
+      return () => clearTimeout(timer) // <-- Clear the timer when component unmounts or if visibility changes
+    }
+  }, [visible])
+
+  useEffect(() => {
+    if (transactionSuccess || transactionFail || transactionPending) {
+      setVisible(true) // <-- Show the toast when transaction succeeds or fails
+    }
+  }, [transactionSuccess, transactionPending, transactionFail])
+
+  if (!visible) return null // <-- Don't render the component if it's not visible
+
   if (transactionSuccess) {
+    const explorerLink = getExplorerLink(selectedChain)
     return (
       <div className="flash-success transaction-info">
         <p>
           <Image src="/success-icon.svg" width={20} height={20} alt="Success icon" />
           {t("transaction-success")}
         </p>
+        <Link
+          href={explorerLink + transactionHash.hash}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t("view-on")}
+        </Link>
       </div>
     )
   }

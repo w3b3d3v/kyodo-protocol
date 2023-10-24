@@ -33,10 +33,10 @@ async function main() {
 
     const signer = accounts[i % numberOfAccounts]; 
 
-    const agreementContractWithSigner = agreementContract.connect(signer);
+    // const agreementContractWithSigner = agreementContract(signer);
 
     
-    const tx = await agreementContractWithSigner.createAgreement(
+    const tx = await agreementContract.createAgreement(
       "New Agreement",
       description,
       "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", // Second test wallet
@@ -46,8 +46,11 @@ async function main() {
 
     await tx.wait(); 
 
-    
     console.log(`Agreement "${title}" created. User: ${signer.address} Transaction hash: ${tx.hash}`);
+
+    const agreements = await agreementContract.getAllAgreements();   
+    console.log("agreements", agreements)
+
   }
 }
 

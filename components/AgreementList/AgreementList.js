@@ -70,9 +70,7 @@ function AgreementList() {
     const onConfirmation = () => {
       setShowPaymentInput(false)
       setPaymentValue("");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      fetchAgreements()
     };
   
     await sendTransaction("payAgreement", details, "PaymentMade", onConfirmation)

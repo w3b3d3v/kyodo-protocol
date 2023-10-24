@@ -8,9 +8,14 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 contract Admin is AccessControl, Pausable {
     event NewAdminAdded(address indexed new_admin);
     event RemovedAdmin(address indexed removed_admin);
+    event NewProfileAdded(address indexed profile);
+
+
+    bytes32 public constant CHANGE_PARAMETERS = keccak256("CHANGE_PARAMETERS");
 
     constructor(address admin) {
         _setupRole(DEFAULT_ADMIN_ROLE, admin);
+        _setupRole(CHANGE_PARAMETERS, admin);
     }
 
     modifier onlyAdmin() {
@@ -35,4 +40,9 @@ contract Admin is AccessControl, Pausable {
     function unpause() external onlyAdmin() whenPaused() {
         _unpause();
     }
+
+    function addProfile(address account) external whenNotPaused() {
+        _setupRole(CHANGE_PARAMETERS, account);
+        emit NewProfileAdded(account);
+    } 
 }
