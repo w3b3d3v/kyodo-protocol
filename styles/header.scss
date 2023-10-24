@@ -65,40 +65,38 @@ HEADER
     @media #{$smartphones-1} {
       display: block;
     }
-  }
 
-  a {
-    height: 30px;
-    line-height: 30px;
-    float: right;
-    font-size: $font-medium;
-    font-weight: normal;
-    color: $dark-blue;
-    text-decoration: none;
-    cursor: pointer;
-
-    @media #{$smartphones-1} {
-      width: 100%;
-      color: $light-gray;
-      height: 36px;
-      line-height: 36px;
-      border-radius: 4px;
-      background: rgba($white, .05);
-      padding: 0 15px;
-      margin: 0 0 2px 0;
-      display: block;
-      float: none;
-    }
-
-    &:hover {
-      opacity: .8;
+    a {
+      height: 30px;
+      line-height: 30px;
+      font-size: $font-medium;
+      font-weight: normal;
+      color: $dark-blue;
+      text-decoration: none;
+      cursor: pointer;
+  
+      @media #{$smartphones-1} {
+        width: 100%;
+        color: $light-gray;
+        height: 36px;
+        line-height: 36px;
+        border-radius: 4px;
+        background: rgba($white, .05);
+        padding: 0 15px;
+        margin: 0 0 2px 0;
+        display: block;
+        float: none;
+      }
+  
+      &:hover {
+        opacity: .8;
+      }
     }
   }
 
   a.local-trigger {
     font-weight: bold;
     color: $normal-gray;
-    font-size: $font-small;
   }
 }
 
@@ -119,7 +117,7 @@ HEADER
 .logo {
 
   @media #{$smartphones-1} {
-    width: 85px;
+    width: 49px;
   }
 }
 
@@ -156,11 +154,13 @@ HEADER
   padding: 0 15px 0 0;
   height: 30px;
   line-height: 30px;
-  float: right;
   font-size: $font-small;
   font-weight: normal;
   border: 1px solid $light-gray;
   color: #5F7482;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 
   @media #{$smartphones-1} {
     padding-right: 12px;
@@ -200,5 +200,21 @@ HEADER
 
 .wallet-off {
   background: #C6DBE8;
+}
+
+.select-chain {
+  display: inline-block;
+  border-right: 1px solid $light-gray;
+  padding: 0 15px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: $font-small;
+  color: $medium-gray;
+  line-height: 30px;
+  text-decoration: none;
+
+  &:hover {
+    opacity: .8;
+  }
 }
 
