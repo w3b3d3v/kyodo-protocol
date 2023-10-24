@@ -73,8 +73,8 @@ function Header() {
           <Image
             src="/logo.svg"
             alt="Kyodo Protocol logo"
-            width={120}
-            height={32}
+            width={49}
+            height={49}
             className={"logo"}
           />
           <div className={"header-right"}>
@@ -106,6 +106,9 @@ function Header() {
               <WalletMultiButton />
             ) : (
               <div className={"user-wallet"}>
+                <Link href="#" className={"select-chain"} onClick={() => setShowModal(true)}>
+                  Chain
+                </Link>
                 <div>
                   <span className={"wallet-on"}>Status</span>
                   <em>{formatAddress(account)}</em>
