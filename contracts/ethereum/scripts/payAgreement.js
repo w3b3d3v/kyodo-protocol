@@ -30,7 +30,8 @@ async function payUserAgreement() {
   const TokenContract = await ethers.getContractFactory("fakeStable");
   const tokenContract = await TokenContract.attach(kyodoRegistry("FAKE_STABLE"));
 
-  await tokenContract.connect(signer).approve(agreementContract.address, paymentAmount);
+  const tx = await tokenContract.connect(signer).approve(agreementContract.address, paymentAmount);
+  await tx.wait();
 
   await agreementContract.connect(signer).makePayment(firstAgreementId, paymentAmount, tokenContract.address);
 
