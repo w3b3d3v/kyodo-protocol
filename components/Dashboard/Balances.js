@@ -11,6 +11,8 @@ import transactionManager from '../../chains/transactionManager'
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import { useTranslation } from "react-i18next"
 import { useWallet, useConnection} from '@solana/wallet-adapter-react';
+import Drawer from '@jahlgren/react-drawer';
+import '@jahlgren/react-drawer/dist/index.css';
 
 function Balances() {
   const { t } = useTranslation()
@@ -31,6 +33,8 @@ function Balances() {
     transactionHash,
   } = useTransactionHandler();
 
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleRedeemClick = (index) => {
     setShowRedeemInput(index)
@@ -170,19 +174,70 @@ function Balances() {
             <p>{t("phrase-02")}</p>
             <Link href="/agreements/new">{t("btn-02")}</Link>
           </li>
-          <li className={styles["disabled"]}>
+          <li>
             <h2>
-              Refer and<br></br> earn
+              Update personal info
             </h2>
-            <p>
-              Professionals or contractors that refer the usage of Kyodo, can earn a % of paid value
-              to the protocol.
-            </p>
-            <Link href="#">Get referral link</Link>
+            <Link href="#" onClick={() => setIsOpen(true)}>Update</Link>
           </li>
         </ul>
       </section>
       <Payments limit={2} />
+      <Drawer open={isOpen} onClose={() => setIsOpen(false)} className={styles["drawer"]}>
+        <h2>Personal info</h2>
+        <form>
+          <label htmlFor="user-name">Name</label>
+          <input
+            type="text"
+            id="user-name"
+            tabIndex={1}
+          />
+          <label htmlFor="user-bio">Bio</label>
+          <textarea
+            type="text"
+            id="user-bio"
+            tabIndex={2}
+          ></textarea>
+          <label htmlFor="user-avatar">Avatar URL</label>
+          <input
+            type="text"
+            id="user-avatar"
+            tabIndex={3}
+          />
+          <label htmlFor="user-website">Website</label>
+          <input
+            type="text"
+            id="user-website"
+            tabIndex={4}
+          />
+          <label htmlFor="user-community">Community</label>
+          <div className={"custom-select"}>
+           <select
+              tabIndex={5}
+              id="user-community"
+            >
+              <option>{t("select-option")}</option>
+              <option>Phala Network</option>
+              <option>WEB3DEV</option>
+              <option>Web3Garden</option>
+              <option>DecentralizeTech</option>
+              <option>CryptoCollective</option>
+              <option>NFTCreatorsDAO</option>
+              <option>DeFiAlliance</option>
+              <option>MetaMakersDAO</option>
+              <option>BlockchainBuilders</option>
+              <option>EtherGovernance</option>
+              <option>DecentralizedDreamers</option>
+              <option>TokenTorch</option>
+              <option>SmartWebSociety</option>
+              <option>DeFiDragons</option>
+            </select>
+          </div>
+          <button>
+            Save
+          </button>
+        </form>
+      </Drawer>
     </div>
   )
 }

@@ -40,10 +40,6 @@ textarea,
     color: $white;
   }
 
-  option {
-    
-  }
-
   option:nth-child(even) {
     background-color: $dark-gray;
   }
@@ -71,7 +67,6 @@ textarea {
 #contractor-about-input {
   min-height: 72px;
 }
-
 
 .validation-msg {
   font-size: $font-small;
