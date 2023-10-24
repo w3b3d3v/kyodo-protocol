@@ -1,0 +1,42 @@
+/**
+DRAWER
+===========================
+*/
+
+.drawer {
+  background: rgb(6,6,6);
+  background: linear-gradient(180deg, rgba(6,6,6,1) 69%, rgba(18,18,18,1) 100%);
+  padding: 40px;
+  z-index: 9999;
+
+  @media #{$smartphones-1} {
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+
+  h2 {
+    margin: 0 0 40px 0;
+    font-weight: normal;
+  }
+
+  label {
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+  button {
+    border-radius: 25px;
+    color: $white;
+    border: 1px solid $medium-gray;
+    background: rgba(255, 255, 255, 0.01);
+    display: inline-block;
+    height: 40px;
+    font-size: $font-medium;
+    padding: 0 20px;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $white;
+    }
+  }
+}

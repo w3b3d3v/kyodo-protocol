@@ -183,7 +183,7 @@ function Balances() {
         </ul>
       </section>
       <Payments limit={2} />
-      <Drawer open={isOpen} onClose={() => setIsOpen(false)} className={styles["drawer"]}>
+      <Drawer open={isOpen} onClose={() => setIsOpen(false)} className="drawer">
         <h2>Personal info</h2>
         <form>
           <label htmlFor="user-name">Name</label>
