@@ -2,7 +2,7 @@ const { ethers } = require("hardhat");
 require('dotenv').config({ path: '../../.env.development.local' });
 
 const AGREEMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS
-const FAKE_STABLE_ADDRESS = process.env.DAI_GOERLY
+const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
 async function payUserAgreement() {
   const [signer] = await ethers.getSigners();
@@ -25,7 +25,8 @@ async function payUserAgreement() {
   const TokenContract = await ethers.getContractFactory("fakeStable");
   const tokenContract = await TokenContract.attach(FAKE_STABLE_ADDRESS);
 
-  await tokenContract.connect(signer).approve(agreementContract.address, paymentAmount);
+  const tx = await tokenContract.connect(signer).approve(agreementContract.address, paymentAmount);
+  await tx.wait();
 
   await agreementContract.connect(signer).makePayment(firstAgreementId, paymentAmount, FAKE_STABLE_ADDRESS);
 

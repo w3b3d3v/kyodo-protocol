@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next"
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import transactionManager from '../../chains/transactionManager'
 import getExplorerLink from '../../chains/utils/utils.js';
+import { ethers } from "ethers";
 
 function Payments ({ limit }) {
   const { contract, loading } = useAgreementContract();

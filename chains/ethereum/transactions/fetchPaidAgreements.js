@@ -8,12 +8,13 @@ export const fetchPaidAgreements = async (details) => {
       details.chainId,
       details.account
     );
-
+    
     const agreements = allAgreements.map((event) => {
-      let formattedAmount = ethers.utils.formatUnits(event.args.amount, 18); //TODO: get the correct amount of decimals based on the token
+      let formattedAmount = ethers.utils.formatUnits(event.amount, 18); //TODO: get the correct amount of decimals based on the token
       return {
-        ...event.args,
+        ...event,
         amount: formattedAmount,
+        transactionHash: event.transactionHash
       };
     });
 

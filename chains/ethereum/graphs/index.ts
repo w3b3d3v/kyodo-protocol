@@ -30,6 +30,8 @@ class KyodoGraph {
       fetchPolicy: "cache-first",
     });
 
+    // console.log("response",response);
+
     return response?.data.paymentMades ?? [];
   }
 }

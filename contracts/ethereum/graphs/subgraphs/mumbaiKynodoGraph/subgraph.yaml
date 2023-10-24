@@ -6,7 +6,7 @@ dataSources:
     name: AgreementContract
     network: mumbai
     source:
-      address: "0xD1D04Aa7771955c93feA4eD6367E49a786CB2db9"
+      address: "0x9dBb5874481Fa6B265d2fC68e52d5B4ae1Ffe94c"
       abi: AgreementContract
       startBlock: 41450478
     mapping:
@@ -29,9 +29,9 @@ dataSources:
     name: StableVaultContract
     network: mumbai
     source:
-      address: "0x512c5cd1eB14E2232836f91FA6dCdE5895c0a445"
+      address: "0xEA7dC554607Bfc913fD5120b95DD6392376581AA"
       abi: StableVaultContract
-      startBlock: 41450474
+      startBlock: 41597692
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

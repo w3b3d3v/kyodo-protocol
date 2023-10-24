@@ -156,9 +156,9 @@ async function deployStableVault() {
 
 async function main() {
   try {
-    // const tokenAddress = await deployToken();
+    const tokenAddress = await deployToken();
     const vaultAddress = await deployStableVault();
-    const tokenAddress = DAI_GOERLI
+    // const tokenAddress = DAI_GOERLI
     
     const agreementData = await deployAgreementsContract(vaultAddress, tokenAddress);
     updateConfig(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"]); 
