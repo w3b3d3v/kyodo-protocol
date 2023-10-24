@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next"
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import transactionManager from '../../chains/transactionManager'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import { ethers } from "ethers";
 
 function Payments ({ limit }) {
   const [contract, setContract] = useState(null)
