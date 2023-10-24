@@ -4,11 +4,13 @@ import KyodoGraph from "../graphs";
 
 export const fetchPaidAgreements = async (details) => {
   try {
+    const chainId = window.ethereum.networkVersion
+
     const allAgreements = await KyodoGraph.fetchPaidAgreements(
-      details.chainId,
+      chainId,
       details.account
     );
-    
+
     const agreements = allAgreements.map((event) => {
       let formattedAmount = ethers.utils.formatUnits(event.amount, 18); //TODO: get the correct amount of decimals based on the token
       return {

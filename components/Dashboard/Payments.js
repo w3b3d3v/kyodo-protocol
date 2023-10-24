@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useAgreementContract } from "../../contexts/ContractContext";
 import { useAccount } from "../../contexts/AccountContext";
 import styles from "./Dashboard.module.scss"
 import Image from 'next/image'
@@ -9,10 +8,8 @@ import { useTranslation } from "react-i18next"
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import transactionManager from '../../chains/transactionManager'
 import getExplorerLink from '../../chains/utils/utils.js';
-import { ethers } from "ethers";
 
 function Payments ({ limit }) {
-  const { contract, loading } = useAgreementContract();
   const { account, selectedChain} = useAccount();
   const [paidAgreements, setPaidAgreements] = useState([]);
   const { t } = useTranslation()
@@ -22,37 +19,28 @@ function Payments ({ limit }) {
   } = useTransactionHandler();
   
   useEffect(() => {
-    setIsLoading(true);
-    if (!loading) {
-      fetchPaidAgreements();
+    async function loadAgreements() {
+      setIsLoading(true);
+  
+      try {
+        await fetchPaidAgreements();
+      } catch (error) {
+        console.error("Error when fetching agreements:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
-  }, [loading]);
-
-  if (paidAgreements.length === 0) {
-    return null;
-  }
+  
+    loadAgreements();
+  }, [account, selectedChain]);
 
   async function fetchPaidAgreements() {
-    try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const network = await provider.getNetwork();
+    const details = {
+      account
+    };
 
-      const details = {
-        account,
-        contract,
-        chainId: network.chainId
-      };
-
-      const agreements = await transactionManager["fetchPaidAgreements"](selectedChain, details)
-      if (!agreements) {
-        return
-      }
-      setPaidAgreements(agreements)
-    } catch (error) {
-      console.error("Error when fetching agreements:", error)
-    } finally {
-      setIsLoading(false)
-    }
+    const agreements = await transactionManager["fetchPaidAgreements"](selectedChain, details)
+    setPaidAgreements(agreements)
   }
 
   function renderPaidAgreements() {
@@ -109,7 +97,15 @@ function Payments ({ limit }) {
       <Loader isLoading={isLoading} />
       <h2>{t("payments")}</h2>
       <div>
-        {renderPaidAgreements()}
+        {}
+        {paidAgreements.length === 0 ? (
+          <div className={styles["no-payment-message"]}>
+            <Image src="/no-agreement-icon.svg" width={58} height={58} alt="No agreement" />
+            <p>{t("no-payments")}</p>
+          </div>
+        ) : 
+          renderPaidAgreements()
+        }
         {limit && paidAgreements.length > limit && (
           <a onClick={() => window.location.href='/payments'} className={"view-all"}>
             {t("view-all")}
