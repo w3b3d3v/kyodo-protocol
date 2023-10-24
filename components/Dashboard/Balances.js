@@ -175,10 +175,10 @@ function Balances() {
             <Link href="/agreements/new">{t("btn-02")}</Link>
           </li>
           <li>
-            <h2>
-              Update personal info
-            </h2>
-            <Link href="#" onClick={() => setIsOpen(true)}>Update</Link>
+            <h2>{t("call-03")}</h2>
+            <Link href="#" onClick={() => setIsOpen(true)}>
+              {t("btn-03")}
+            </Link>
           </li>
         </ul>
       </section>
