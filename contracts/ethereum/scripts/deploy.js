@@ -13,8 +13,6 @@ let = SPARK_DATA_PROVIDER = "0x86C71796CcDB31c3997F8Ec5C2E3dB3e9e40b985"; // GOE
 let = SPARK_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
 let = SPARK_LENDING_POOL= "0x26ca51Af4506DE7a6f0785D20CD776081a05fF6d"; // GOERLY_ADDRESS
 
-const DAI_GOERLI = "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844"
-
 function copyABI() {
   const sourcePath = path.join(
     __dirname,
@@ -42,11 +40,11 @@ function updateConfig(agreementContractAddress, fakeStableAddress, vaultAddress,
   const lines = envData.split('\n');
 
   const keysToUpdate = {
-    'NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS': agreementContractAddress,
-    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
-    'NEXT_PUBLIC_STABLE_VAULT_ADDRESS': vaultAddress,
-    'NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER': deploymentBlockNumber,
     'NEXT_PUBLIC_KYODO_REGISTRY': kyodoRegistryAddress,
+    'NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS': agreementContractAddress,
+    'NEXT_PUBLIC_STABLE_VAULT_ADDRESS': vaultAddress,
+    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
+    'NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER': deploymentBlockNumber,
   };
 
   Object.keys(keysToUpdate).forEach(async key => {
@@ -151,17 +149,19 @@ async function deployKyodoRegistry(agreementContractAddress, vaultAddress) {
     'AGREEMENT_CONTRACT_ADDRESS': agreementContractAddress,
     'STABLE_VAULT_ADDRESS': vaultAddress,
   };
-  Object.keys(keysToUpdate).forEach(async key => {
-    for (let i = 0; i < lines.length; i++) {
-      // Saving on KyodoRegistry
-      try {
-        const tx = await kyodoRegistryContract.createRegistry(key, value)
-        tx.wait()
-      } catch (error) {
-        console.log('error trying to save key on KyodoRegistry', error)
-      }
+  for (const [key, value] of Object.entries(keysToUpdate)) {
+    try {
+      const tx = await kyodoRegistry.createRegistry(key, value);
+      
+      await tx.wait();
+    } catch (error) {
+      console.log('error trying to save key on KyodoRegistry', error);
     }
-  });
+  }
+
+  const address = await kyodoRegistry.getRegistry("AGREEMENT_CONTRACT_ADDRESS");
+  console.log("address Saved", address)
+
 
   console.log("KyodoRegistry deployed to:", kyodoRegistry.address);
   return kyodoRegistry.address;
