@@ -129,7 +129,6 @@ function AddAgreementForm(props) {
   }
 
   const addAgreement = async () => {
-    console.log("contract", contract)
     const details = {
       title,
       description,
