@@ -3,7 +3,7 @@ import ERC20Token from '../../../utils/ERC20Token';
 
 export const fetchUserBalances = async (details) => {
   // TODO: Make tokens come from accpeted tokens list
-  const tokenAddresses = [process.env.NEXT_PUBLIC_STABLE_VAULT_ADDRESS]
+  const tokenAddresses = [details.contract.address] //Vault Token Address
   const balances = []
 
   for (let address of tokenAddresses) {
