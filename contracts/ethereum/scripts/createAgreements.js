@@ -3,12 +3,17 @@ const path = require("path");
 const { ethers } = require("hardhat");
 require('dotenv').config({ path: '../../.env.development.local' });
 
-const AGREEMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS
-const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
+async function kyodoRegistry(contractName) {
+  const KyodoRegistryContract = await ethers.getContractFactory("KyodoRegistry")
+  const kyodoRegistryContract = await KyodoRegistryContract.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+  
+  const address = await kyodoRegistryContract.getRegistry(contractName)
+  return address
+}
 
 async function main() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract")
-  const agreementContract = await AgreementContract.attach(AGREEMENT_CONTRACT_ADDRESS);
+  const agreementContract = await AgreementContract.attach(kyodoRegistry("AGREEMENT_CONTRACT_ADDRESS"));
 
   const agreementsPath = path.join(__dirname, "assets", "agreements.json");
   const agreementsData = JSON.parse(fs.readFileSync(agreementsPath, "utf-8"));
@@ -37,7 +42,7 @@ async function main() {
 
     
     const tx = await agreementContract.createAgreement(
-      "New Agreement",
+      "New Agreementa",
       description,
       "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", // Second test wallet
       skills,

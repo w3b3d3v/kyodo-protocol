@@ -42,8 +42,6 @@ function updateConfig(agreementData, vaultData, fakeStableAddress, kyodoRegistry
   const keysToUpdate = {
     'NEXT_PUBLIC_KYODO_REGISTRY': kyodoRegistryAddress,
     'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
-    'NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS': agreementData["address"],
-    'NEXT_PUBLIC_STABLE_VAULT_ADDRESS': vaultData["address"],
     'NEXT_PUBLIC_AGREEMENT_DEPLOYMENT_BLOCK_NUMBER': agreementData["deploymentBlock"],
     'NEXT_PUBLIC_VAULT_DEPLOYMENT_BLOCK_NUMBER': vaultData["deploymentBlock"],
   };
@@ -152,9 +150,7 @@ async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress) 
   const keysToUpdate = {
     'FAKE_STABLE_ADDRESS': fakeStableAddress,
     'AGREEMENT_CONTRACT_ADDRESS': agreementData["address"],
-    'VAULT_CONTRACT_ADDRESS': vaultData["address"],
-    // 'AGREEMENT_DEPLOYMENT_BLOCK_NUMBER': agreementData["deploymentBlock"],
-    // 'VAULT_DEPLOYMENT_BLOCK_NUMBER': vaultData["deploymentBlock"],
+    'VAULT_CONTRACT_ADDRESS': vaultData["address"]
   };
 
   for (const [key, value] of Object.entries(keysToUpdate)) {

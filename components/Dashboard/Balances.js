@@ -90,22 +90,31 @@ function Balances() {
   }
 
   useEffect(() => {
-    async function fetchData() {
-      setIsLoading(true);
+    async function initializeContract() {
+      try {
+        setIsLoading(true);
+        const details = {
+          wallet,
+          connection
+        }
   
-      const details = {
-        wallet,
-        connection,
-      };
-
-      const vaultContract = await contractManager.chains[selectedChain].vaultContract(details);
-      setContract(vaultContract);
-      await fetchUserBalances();
-      setIsLoading(false);
+        const vaultContract = await contractManager.chains[selectedChain].vaultContract(details);
+        setContract(vaultContract);
+      } catch (error) {
+        console.error("Error initializing the agreements contract", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
   
-    fetchData();
+    initializeContract();
   }, [selectedChain, wallet, connection]);
+
+  useEffect(() => {
+    if (!isLoading && contract) {
+      fetchUserBalances();
+    }
+  }, [account, isLoading, contract]);
   
 
   return (
