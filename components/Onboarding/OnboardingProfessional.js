@@ -12,12 +12,14 @@ function saveToCache(data) {
 }
 
 function OnboardingProfessional() {
+
   const [nameProfessional, setName] = useState("")
   const [bioProfessional, setBio] = useState("")
   const [avatarProfessional, setAvatar] = useState("")
   const [websiteProfessional, setWebsite] = useState("")
   const [communityProfessional, setCommunity] = useState("")
-  const { router } = useRouter()
+
+  const router = useRouter();
 
   const handleNameChange = (e) => {
     setName(e.target.value)
@@ -38,9 +40,20 @@ function OnboardingProfessional() {
   const handleCommunityChange = (e) => {
     setCommunity(e.target.value)
   }
-
+  
   const handleButtonClick = () => {
-    router.push("/onboarding/terms")
+
+    const formData = {
+      nameProfessional,
+      bioProfessional,
+      avatarProfessional,
+      websiteProfessional,
+      communityProfessional,
+    };
+
+    saveToCache(formData);
+
+    router.push("/onboarding/terms");
   }
 
   const { t } = useTranslation()
@@ -146,7 +159,7 @@ function OnboardingProfessional() {
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </Link>
-          <Link href="/onboarding/terms" className={styles["next-btn"]} tabIndex={6}>
+          <Link href="#" onClick={handleButtonClick}  className={styles["next-btn"]} tabIndex={6}>
             {t("next-step")}
           </Link>
         </section>

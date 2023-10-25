@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
 import { useState } from 'react';
+import { useRouter } from "next/router"
 
 function saveToCache(data) {
   const dataString = JSON.stringify(data);
@@ -15,6 +16,8 @@ function OnboardingCommunity() {
   const [nameCommunity, setName] = useState('');
   const [logoCommunity, setLogo] = useState('');
   const [descriptionCommunity, setDescription] = useState('');
+
+  const router = useRouter();
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -37,6 +40,8 @@ function OnboardingCommunity() {
     };
 
     saveToCache(formData);
+
+    router.push("/onboarding/terms");
   };
 
   const { t } = useTranslation()
@@ -121,7 +126,7 @@ function OnboardingCommunity() {
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </Link>
-          <Link href="/onboarding/terms" className={styles["next-btn"]} tabIndex={6}>
+          <Link href="#" onClick={handleButtonClick} className={styles["next-btn"]} tabIndex={6}>
             {t("next-step")}
           </Link>
         </section>
