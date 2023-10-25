@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useAccount } from "../../contexts/AccountContext"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import styles from "./AddAgreement.module.scss"
 import Image from 'next/image'
 import Link from "next/link"
@@ -9,12 +9,13 @@ import Toast from '../utils/Toast';
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import { useTranslation } from "react-i18next"
 import * as Yup from "yup"
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useAgreementContract } from "../../contexts/ContractContext"
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import contractManager from '../../chains/ContractManager';
 
 function AddAgreementForm(props) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
+  const [contract, setContract] = useState("")
   const [professional, setProfessional] = useState("")
   const [skills, setSkills] = useState("")
   const [paymentAmount, setPaymentAmount] = useState("")
@@ -22,7 +23,8 @@ function AddAgreementForm(props) {
   const router = useRouter()
   const { account, selectedChain } = useAccount()
   const { publicKey, wallet } = useWallet();
-  const { contract } = useAgreementContract();
+  const { connection } = useConnection();
+  // const { contract } = useAgreementContract();
   const { t } = useTranslation()
   const {
     isLoading,
@@ -34,6 +36,27 @@ function AddAgreementForm(props) {
     sendTransaction,
     transactionHash,
   } = useTransactionHandler();
+
+  useEffect(() => {
+    async function initializeContract() {
+      try {
+        setIsLoading(true);
+        const details = {
+          wallet,
+          connection
+        }
+  
+        const agreementContract = await contractManager.chains[selectedChain].agreementContract(details);
+        setContract(agreementContract);
+      } catch (error) {
+        console.error("Houve um problema ao inicializar o contrato", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  
+    initializeContract();
+  }, [selectedChain, wallet, connection]);
 
   const addressValidators = {
     ethereum: /^0x[a-fA-F0-9]{40}$/,
@@ -106,6 +129,7 @@ function AddAgreementForm(props) {
   }
 
   const addAgreement = async () => {
+    console.log("contract", contract)
     const details = {
       title,
       description,

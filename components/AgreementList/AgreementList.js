@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./AgreementList.module.scss"
 import { useAccount } from "../../contexts/AccountContext"
-import { useAgreementContract } from "../../contexts/ContractContext"
+import contractManager from '../../chains/ContractManager';
 import { useRouter } from "next/router"
 import Image from "next/image"
 import { useTranslation } from "react-i18next"
 import transactionManager from '../../chains/transactionManager'
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import Loader from '../utils/Loader';
 import Toast from '../utils/Toast';
@@ -15,7 +15,7 @@ import { getTokens } from './tokenConfig.js';
 function AgreementList() {
   const { account, selectedChain } = useAccount()
   const tokens = getTokens(selectedChain);
-  const { contract, loading } = useAgreementContract()
+  const [contract, setContract] = useState(null)
   const [agreements, setAgreements] = useState([])
   const [paymentValue, setPaymentValue] = useState("")
   const [showPaymentInput, setShowPaymentInput] = useState(null)
@@ -23,6 +23,7 @@ function AgreementList() {
   const router = useRouter()
   const { t } = useTranslation()
   const { publicKey, wallet } = useWallet()
+  const { connection } = useConnection();
   const {
     isLoading,
     setIsLoading,
@@ -94,12 +95,32 @@ function AgreementList() {
       setIsLoading(false)
     }
   }
+  useEffect(() => {
+    async function initializeContract() {
+      try {
+        setIsLoading(true);
+        const details = {
+          wallet,
+          connection
+        }
+  
+        const agreementContract = await contractManager.chains[selectedChain].agreementContract(details);
+        setContract(agreementContract);
+      } catch (error) {
+        console.error("Error initializing the agreements contract", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  
+    initializeContract();
+  }, [selectedChain, wallet, connection]);
 
   useEffect(() => {
-    if (!loading && contract) {
+    if (!isLoading && contract) {
       fetchAgreements();
     }
-  }, [account, loading, contract]);
+  }, [account, isLoading, contract]);
 
   return (
     <div className={styles["agreement-list"]}>

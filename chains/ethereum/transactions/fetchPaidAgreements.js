@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 export const fetchPaidAgreements = async (details) => {
   try {
     // Define the starting block
-    const startBlock = parseInt(process.env.NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER);
+    const startBlock = parseInt(process.env.NEXT_PUBLIC_AGREEMENT_DEPLOYMENT_BLOCK_NUMBER);
     const latestBlock = await details.contract.provider.getBlockNumber(); // get the latest block number
     
     const companyFilter = details.contract.filters.PaymentMade(details.account, null);
