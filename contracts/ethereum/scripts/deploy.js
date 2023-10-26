@@ -1,4 +1,8 @@
 const { ethers } = require("hardhat");
+const ethersJs = require('ethers');
+const { EthersAdapter } = require('@safe-global/protocol-kit');
+const SafeFactory = require('@safe-global/protocol-kit').default
+
 const fs = require("fs");
 const path = require("path");
 require('dotenv').config({ path: '../../.env.development.local' });
@@ -40,7 +44,9 @@ function updateConfig(
   agreementContractAddress,
   fakeStableAddress,
   vaultAddress,
-  deploymentBlockNumber
+  deploymentBlockNumber,
+  kyodoTreasureContractAddress,
+  communityTreasureContractAddress
 ) {
   const envPath = path.join(__dirname, "../../../.env.development.local")
   let envData = fs.readFileSync(envPath, "utf8")
@@ -51,6 +57,8 @@ function updateConfig(
     NEXT_PUBLIC_FAKE_STABLE_ADDRESS: fakeStableAddress,
     NEXT_PUBLIC_STABLE_VAULT_ADDRESS: vaultAddress,
     NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER: deploymentBlockNumber,
+    NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS: kyodoTreasureContractAddress,
+    NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS: communityTreasureContractAddress
   }
 
   Object.keys(keysToUpdate).forEach((key) => {
@@ -153,6 +161,33 @@ async function deployStableVault() {
   return vault.address
 }
 
+async function deployMultiSig(multiSigName) {
+  const RPC_URL_GOERLI ='https://eth-goerli.public.blastapi.io'
+  const provider = new ethersJs.providers.JsonRpcProvider(RPC_URL_GOERLI)
+  const owner1 = await ethers.Wallet.createRandom()
+  const owner2 = await ethers.Wallet.createRandom()
+  const owner3 = await ethers.Wallet.createRandom()
+  const owner1Signer = new ethers.Wallet(owner1.privateKey, provider)
+  const owner2Signer = new ethers.Wallet(owner2.privateKey, provider)
+  const owner3Signer = new ethers.Wallet(owner3.privateKey, provider)
+  const ethAdapterOwner1 = new EthersAdapter({
+    ethers: ethersJs,
+    signerOrProvider: owner1Signer
+  })
+  const safeFactory = await SafeFactory.create({ ethAdapter: ethAdapterOwner1 })
+  const safeAccountConfig = {
+    owners: [
+      await owner1Signer.getAddress(),
+      await owner2Signer.getAddress(),
+      await owner3Signer.getAddress(),
+    ],
+    threshold: 2,
+  }
+  const safeSdkOwner1 = await safeFactory.deploySafe({ safeAccountConfig })
+  console.log(`Multisig ${multiSigName} has been deployed to ${safeSdkOwner1.getAddress()}`);
+  return safeSdkOwner1.getAddress();
+}
+
 
 async function main() {
   try {
@@ -161,7 +196,9 @@ async function main() {
     const tokenAddress = DAI_GOERLI
     
     const agreementData = await deployAgreementsContract(vaultAddress, tokenAddress);
-    updateConfig(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"]); 
+    const kyodoTreasureContractAddress = await deployMultiSig('Kyodo Treasure Contract');
+    const communityTreasureContractAddress = await deployMultiSig('Community Treasure Contract');
+    updateConfig(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"], kyodoTreasureContractAddress, communityTreasureContractAddress); 
     process.exit(0);
   } catch (error) {
     console.error(error);
