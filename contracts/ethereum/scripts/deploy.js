@@ -1,7 +1,5 @@
 const { ethers } = require("hardhat");
-const ethersJs = require('ethers');
-const { EthersAdapter } = require('@safe-global/protocol-kit');
-const SafeFactory = require('@safe-global/protocol-kit').default
+const { EthersAdapter, SafeFactory } = require('@safe-global/protocol-kit');
 
 const fs = require("fs");
 const path = require("path");
@@ -80,15 +78,12 @@ function updateConfig(
   console.log(`Updated contract addresses in ${envPath}`)
 }
 
-async function deployAgreementsContract(vaultAddress, tokenAddress) {
+async function deployAgreementsContract(vaultAddress, tokenAddress, kyodoTreasureContractAddress, communityTreasureContractAddress) {
   const AgreementContract = await ethers.getContractFactory("AgreementContract")
-  console.log(
-    process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS,
-    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
-  )
+
   const contract = await AgreementContract.deploy(
-    process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS,
-    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
+    kyodoTreasureContractAddress,
+    communityTreasureContractAddress
   )
 
   await contract.deployed()
@@ -161,43 +156,44 @@ async function deployStableVault() {
   return vault.address
 }
 
-async function deployMultiSig(multiSigName) {
-  const RPC_URL_GOERLI ='https://eth-goerli.public.blastapi.io'
-  const provider = new ethersJs.providers.JsonRpcProvider(RPC_URL_GOERLI)
-  const owner1 = await ethers.Wallet.createRandom()
-  const owner2 = await ethers.Wallet.createRandom()
-  const owner3 = await ethers.Wallet.createRandom()
-  const owner1Signer = new ethers.Wallet(owner1.privateKey, provider)
-  const owner2Signer = new ethers.Wallet(owner2.privateKey, provider)
-  const owner3Signer = new ethers.Wallet(owner3.privateKey, provider)
-  const ethAdapterOwner1 = new EthersAdapter({
-    ethers: ethersJs,
-    signerOrProvider: owner1Signer
-  })
-  const safeFactory = await SafeFactory.create({ ethAdapter: ethAdapterOwner1 })
+async function deployMultiSig(multiSigName, signer, owners) {
+  if (!signer) signer = await ethers.getSigner();
+  if (!owners) owners = await getMultiSigOwners();
+  const ethAdapterOwner = new EthersAdapter({
+    ethers: ethers,
+    signerOrProvider: signer
+  });
+
+  const safeFactory = await SafeFactory.create({ ethAdapter: ethAdapterOwner });
   const safeAccountConfig = {
     owners: [
-      await owner1Signer.getAddress(),
-      await owner2Signer.getAddress(),
-      await owner3Signer.getAddress(),
+      await signer.getAddress(),
+      owners[0],
+      owners[1],
     ],
     threshold: 2,
-  }
-  const safeSdkOwner1 = await safeFactory.deploySafe({ safeAccountConfig })
-  console.log(`Multisig ${multiSigName} has been deployed to ${safeSdkOwner1.getAddress()}`);
-  return safeSdkOwner1.getAddress();
+  };
+  const safe = await safeFactory.deploySafe({ safeAccountConfig });
+  console.log(`Multisig ${multiSigName} has been deployed to ${await safe.getAddress()}`);
+  const safeAddress = await safe.getAddress();
+  return safeAddress
 }
 
+async function getMultiSigOwners(){
+  const owner1 = await ethers.Wallet.createRandom().getAddress();
+  const owner2 = await ethers.Wallet.createRandom().getAddress();
+  const ownerWallets = [owner1, owner2];
+  return ownerWallets;
+}
 
 async function main() {
   try {
     // const tokenAddress = await deployToken();
     const vaultAddress = await deployStableVault();
     const tokenAddress = DAI_GOERLI
-    
-    const agreementData = await deployAgreementsContract(vaultAddress, tokenAddress);
-    const kyodoTreasureContractAddress = await deployMultiSig('Kyodo Treasure Contract');
-    const communityTreasureContractAddress = await deployMultiSig('Community Treasure Contract');
+    const kyodoTreasureContractAddress = await deployMultiSig('Kyodo Treasure Contract', await ethers.getSigner(), await getMultiSigOwners());
+    const communityTreasureContractAddress = await deployMultiSig('Community Treasure Contract' , await ethers.getSigner(), await getMultiSigOwners());
+    const agreementData = await deployAgreementsContract(vaultAddress, tokenAddress, kyodoTreasureContractAddress, communityTreasureContractAddress);
     updateConfig(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"], kyodoTreasureContractAddress, communityTreasureContractAddress); 
     process.exit(0);
   } catch (error) {
