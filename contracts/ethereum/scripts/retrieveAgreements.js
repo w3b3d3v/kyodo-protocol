@@ -1,12 +1,18 @@
 const { ethers } = require("hardhat");
 require('dotenv').config({ path: '../../.env.development.local' });
 
-const AGREEMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS
+async function kyodoRegistry(contractName) {
+  const KyodoRegistryContract = await ethers.getContractFactory("KyodoRegistry")
+  const kyodoRegistryContract = await KyodoRegistryContract.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+  
+  const address = await kyodoRegistryContract.getRegistry(contractName)
+  return address
+}
 
 async function getAllAgreements() {
 
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
-  const agreementContract = await AgreementContract.attach(AGREEMENT_CONTRACT_ADDRESS);
+  const agreementContract = await AgreementContract.attach(kyodoRegistry("AGREEMENT_CONTRACT_ADDRESS"));
 
   const agreements = await agreementContract.getAllAgreements();
   agreements.forEach((agreement) => {
@@ -26,7 +32,7 @@ async function getAllAgreements() {
 
 async function getUserAgreements() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
-  const agreementContract = await AgreementContract.attach(AGREEMENT_CONTRACT_ADDRESS);
+  const agreementContract = await AgreementContract.attach(kyodoRegistry("AGREEMENT_CONTRACT_ADDRESS"));
 
   const accounts = await ethers.getSigners();
   const userAddress = accounts[0].address

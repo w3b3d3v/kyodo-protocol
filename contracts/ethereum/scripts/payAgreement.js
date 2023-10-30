@@ -1,13 +1,18 @@
 const { ethers } = require("hardhat");
 require('dotenv').config({ path: '../../.env.development.local' });
 
-const AGREEMENT_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS
-const FAKE_STABLE_ADDRESS = process.env.DAI_GOERLY
+async function kyodoRegistry(contractName) {
+  const KyodoRegistryContract = await ethers.getContractFactory("KyodoRegistry")
+  const kyodoRegistryContract = await KyodoRegistryContract.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+  
+  const address = await kyodoRegistryContract.getRegistry(contractName)
+  return address
+}
 
 async function payUserAgreement() {
   const [signer] = await ethers.getSigners();
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
-  const agreementContract = await AgreementContract.attach(AGREEMENT_CONTRACT_ADDRESS);
+  const agreementContract = await AgreementContract.attach(kyodoRegistry("AGREEMENT_CONTRACT_ADDRESS"));
 
   let userAgreements = await agreementContract.connect(signer).getUserAgreements(signer.address);
   userAgreements = userAgreements.map(id => id.toString());
@@ -23,11 +28,11 @@ async function payUserAgreement() {
   const paymentAmount = agreementDetails.payment.amount.toString()
 
   const TokenContract = await ethers.getContractFactory("fakeStable");
-  const tokenContract = await TokenContract.attach(FAKE_STABLE_ADDRESS);
+  const tokenContract = await TokenContract.attach(kyodoRegistry("FAKE_STABLE_ADDRESS"));
 
   await tokenContract.connect(signer).approve(agreementContract.address, paymentAmount);
 
-  await agreementContract.connect(signer).makePayment(firstAgreementId, paymentAmount, FAKE_STABLE_ADDRESS);
+  await agreementContract.connect(signer).makePayment(firstAgreementId, paymentAmount, tokenContract.address);
 
   console.log(`Pagamento de ${paymentAmount} tokens feito para o acordo com ID ${firstAgreementId}.`);
 }

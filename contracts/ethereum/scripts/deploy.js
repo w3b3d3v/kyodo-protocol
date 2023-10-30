@@ -1,6 +1,5 @@
 const { ethers } = require("hardhat");
 const { EthersAdapter, SafeFactory } = require('@safe-global/protocol-kit');
-
 const fs = require("fs");
 const path = require("path");
 require('dotenv').config({ path: '../../.env.development.local' });
@@ -15,14 +14,12 @@ let = SPARK_DATA_PROVIDER = "0x86C71796CcDB31c3997F8Ec5C2E3dB3e9e40b985"; // GOE
 let = SPARK_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
 let = SPARK_LENDING_POOL= "0x26ca51Af4506DE7a6f0785D20CD776081a05fF6d"; // GOERLY_ADDRESS
 
-const DAI_GOERLI = "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844"
-
 function copyABI() {
   const sourcePath = path.join(
     __dirname,
     "../artifacts/contracts/AgreementContract.sol/AgreementContract.json"
   )
-  const destinationPath = path.join(__dirname, "../../../contexts/contracts/AgreementContract.json")
+  const destinationPath = path.join(__dirname, "../../../chains/ethereum/abis/AgreementContract.json")
 
   const sourceData = fs.readFileSync(sourcePath, "utf8")
   fs.writeFileSync(destinationPath, sourceData)
@@ -31,36 +28,29 @@ function copyABI() {
 
 function copyVaultABI() {
   const sourcePath = path.join(__dirname, "../artifacts/contracts/StableVault.sol/StableVault.json")
-  const destinationPath = path.join(__dirname, "../../../contexts/contracts/StableVault.json")
+  const destinationPath = path.join(__dirname, "../../../chains/ethereum/abis/StableVault.json")
 
   const sourceData = fs.readFileSync(sourcePath, "utf8")
   fs.writeFileSync(destinationPath, sourceData)
   console.log(`Copied StableVault ABI to ${destinationPath}`)
 }
 
-function updateConfig(
-  agreementContractAddress,
-  fakeStableAddress,
-  vaultAddress,
-  deploymentBlockNumber,
-  kyodoTreasureContractAddress,
-  communityTreasureContractAddress
-) {
-  const envPath = path.join(__dirname, "../../../.env.development.local")
-  let envData = fs.readFileSync(envPath, "utf8")
-  const lines = envData.split("\n")
+function updateConfig(agreementData, vaultData, fakeStableAddress, kyodoRegistryAddress, kyodoTreasureContractAddress, communityTreasureContractAddress) {
+  const envPath = path.join(__dirname, '../../../.env.development.local');
+  let envData = fs.readFileSync(envPath, 'utf8');
+  const lines = envData.split('\n');
 
   const keysToUpdate = {
-    NEXT_PUBLIC_AGREEMENT_CONTRACT_ADDRESS: agreementContractAddress,
-    NEXT_PUBLIC_FAKE_STABLE_ADDRESS: fakeStableAddress,
-    NEXT_PUBLIC_STABLE_VAULT_ADDRESS: vaultAddress,
-    NEXT_PUBLIC_DEPLOYMENT_BLOCK_NUMBER: deploymentBlockNumber,
-    NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS: kyodoTreasureContractAddress,
-    NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS: communityTreasureContractAddress
-  }
+    'NEXT_PUBLIC_KYODO_REGISTRY': kyodoRegistryAddress,
+    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
+    'NEXT_PUBLIC_AGREEMENT_DEPLOYMENT_BLOCK_NUMBER': agreementData["deploymentBlock"],
+    'NEXT_PUBLIC_VAULT_DEPLOYMENT_BLOCK_NUMBER': vaultData["deploymentBlock"],
+    'NEXT_PUBLIC_KYODO_TREASURE_CONTRACT_ADDRESS': kyodoTreasureContractAddress,
+    'NEXT_PUBLIC_COMMUNITY_TREASURE_CONTRACT_ADDRESS': communityTreasureContractAddress
+  };
 
-  Object.keys(keysToUpdate).forEach((key) => {
-    let found = false
+  Object.keys(keysToUpdate).forEach(async key => {
+    let found = false;
     for (let i = 0; i < lines.length; i++) {
       if (lines[i].startsWith(`${key}=`)) {
         lines[i] = `${key}=${keysToUpdate[key]}`
@@ -78,12 +68,11 @@ function updateConfig(
   console.log(`Updated contract addresses in ${envPath}`)
 }
 
-async function deployAgreementsContract(vaultAddress, tokenAddress, kyodoTreasureContractAddress, communityTreasureContractAddress) {
+async function deployAgreementsContract(vaultAddress, tokenAddress) {
   const AgreementContract = await ethers.getContractFactory("AgreementContract")
-
   const contract = await AgreementContract.deploy(
-    kyodoTreasureContractAddress,
-    communityTreasureContractAddress
+    process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS,
+    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
   )
 
   await contract.deployed()
@@ -104,7 +93,7 @@ async function deployAgreementsContract(vaultAddress, tokenAddress, kyodoTreasur
 
   const tx3 = await contract.setStableVaultAddress(vaultAddress)
   await tx3.wait() // Wait for the transaction to be mined
-  console.log("setStableVaultAddress transaction hash: ", tx3.hash)
+  console.log(`setStableVaultAddress ${vaultAddress} transaction hash: `, tx3.hash)
 
   copyABI()
 
@@ -115,10 +104,6 @@ async function deployAgreementsContract(vaultAddress, tokenAddress, kyodoTreasur
 }
 
 async function deployToken() {
-  const [deployer] = await ethers.getSigners()
-
-  console.log("Deploying contracts with the account:", deployer.address)
-
   const Token = await ethers.getContractFactory("fakeStable")
   const token = await Token.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS)
   await token.deployed()
@@ -134,7 +119,7 @@ async function deployStableVault() {
   await vault.deployed()
 
   // Wait for the deployment transaction to be mined
-  await vault.deployTransaction.wait()
+  const deployReceipt = await vault.deployTransaction.wait()
 
   const tx = await vault.setSparkSettings(
     SPARK_DATA_PROVIDER,
@@ -149,11 +134,45 @@ async function deployStableVault() {
   // await vault.setUserCompoundPreference(true)
   // FIXME add real address or way to user set its own wallet.
   // this wallet is the second hardhat wallet
-  await vault.setUserCompoundPreference(true, "0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
+  await vault.setUserCompoundPreference(false, admin.address) // LOCALNETWORK: False, otherwise will fail because Spark/AAve does not exist in local network
   console.log("StableVault deployed to:", vault.address)
 
   copyVaultABI()
-  return vault.address
+  return {
+    address: vault.address,
+    deploymentBlock: deployReceipt.blockNumber,
+  }
+}
+
+async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress, kyodoTreasureContractAddress, communityTreasureContractAddress) {
+  const KyodoRegistry = await ethers.getContractFactory("KyodoRegistry");
+  const [admin] = await ethers.getSigners();
+  const kyodoRegistry = await KyodoRegistry.deploy(admin.address);
+  await kyodoRegistry.deployed()
+
+  const keysToUpdate = {
+    'FAKE_STABLE_ADDRESS': fakeStableAddress,
+    'AGREEMENT_CONTRACT_ADDRESS': agreementData["address"],
+    'VAULT_CONTRACT_ADDRESS': vaultData["address"],
+    'KYODO_TREASURE_CONTRACT_ADDRESS': kyodoTreasureContractAddress,
+    'COMMUNITY_TREASURE_CONTRACT_ADDRESS': communityTreasureContractAddress
+  };
+
+  for (const [key, value] of Object.entries(keysToUpdate)) {
+    try {
+      const tx = await kyodoRegistry.createRegistry(key, value);
+      
+      await tx.wait();
+    } catch (error) {
+      console.log(`error trying to save ${key} on KyodoRegistry`, error);
+    }
+  }
+
+  const address = await kyodoRegistry.getRegistry("AGREEMENT_CONTRACT_ADDRESS");
+  console.log("address Saved", address)
+
+  console.log("KyodoRegistry deployed to:", kyodoRegistry.address);
+  return kyodoRegistry.address;
 }
 
 async function deployMultiSig(multiSigName, signer, owners) {
@@ -188,13 +207,43 @@ async function getMultiSigOwners(){
 
 async function main() {
   try {
-    // const tokenAddress = await deployToken();
-    const vaultAddress = await deployStableVault();
-    const tokenAddress = DAI_GOERLI
-    const kyodoTreasureContractAddress = await deployMultiSig('Kyodo Treasure Contract', await ethers.getSigner(), await getMultiSigOwners());
-    const communityTreasureContractAddress = await deployMultiSig('Community Treasure Contract' , await ethers.getSigner(), await getMultiSigOwners());
-    const agreementData = await deployAgreementsContract(vaultAddress, tokenAddress, kyodoTreasureContractAddress, communityTreasureContractAddress);
-    updateConfig(agreementData["address"], tokenAddress, vaultAddress, agreementData["deploymentBlock"], kyodoTreasureContractAddress, communityTreasureContractAddress); 
+    const [deployer] = await ethers.getSigners();
+    console.log("Deploying contracts with the account:", deployer.address);
+    
+    const tokenAddress = await deployToken();
+    const vaultData = await deployStableVault();
+    const agreementData = await deployAgreementsContract(vaultData['address'], tokenAddress);
+    
+    const kyodoTreasureContractAddress = await deployMultiSig(
+      'Kyodo Treasure Contract',
+      await ethers.getSigner(),
+      await getMultiSigOwners()
+    );
+
+    const communityTreasureContractAddress = await deployMultiSig(
+      'Community Treasure Contract',
+      await ethers.getSigner(),
+      await getMultiSigOwners()
+    );
+
+    const kyodoRegistry = await deployKyodoRegistry(
+      agreementData,
+      vaultData,
+      tokenAddress,
+      kyodoTreasureContractAddress,
+      communityTreasureContractAddress
+    );
+
+
+    updateConfig(
+      agreementData,
+      vaultData,
+      tokenAddress,
+      kyodoRegistry,
+      kyodoTreasureContractAddress,
+      communityTreasureContractAddress
+    ); 
+    
     process.exit(0);
   } catch (error) {
     console.error(error);

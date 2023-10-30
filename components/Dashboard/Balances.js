@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useVaultContract } from "../../contexts/ContractContext";
+import contractManager from '../../chains/ContractManager';
 import { useAccount } from "../../contexts/AccountContext";
 import styles from "./Dashboard.module.scss"
 import Payments from './Payments';
@@ -14,10 +14,11 @@ import { useWallet, useConnection} from '@solana/wallet-adapter-react';
 
 function Balances() {
   const { t } = useTranslation()
-  const { vaultContract, vaultLoading } = useVaultContract()
+  const [contract, setContract] = useState(null)
   const { account, selectedChain} = useAccount()
   const [userBalances, setUserBalances] = useState([])
   const [showRedeemInput, setShowRedeemInput] = useState(null)
+  const { wallet } = useWallet()
   const { connection } = useConnection();
   const [redeemValue, setRedeemValue] = useState("")
   const {
@@ -50,7 +51,7 @@ function Balances() {
       const details = {
         account,
         connection,
-        contract: vaultContract
+        contract
       };
 
       const balances = await transactionManager["fetchUserBalances"](selectedChain, details)
@@ -60,8 +61,6 @@ function Balances() {
       setUserBalances(balances)
     } catch (error) {
       console.error("Error when fetching balances:", error)
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -74,12 +73,13 @@ function Balances() {
         account,
         amount,
         balance,
-        contract: vaultContract
+        contract
       };
 
       const onConfirmation = () => {
         setShowRedeemInput(false)
         fetchUserBalances()
+        setIsLoading(false)
       };
 
       await sendTransaction("withdrawFromVault", details, "Withdrawal", onConfirmation)
@@ -90,22 +90,32 @@ function Balances() {
   }
 
   useEffect(() => {
-    setIsLoading(true)
-
-    const fetchData = async () => {
+    async function initializeContract() {
       try {
-        if (!vaultLoading) {
-          await fetchUserBalances()
+        setIsLoading(true);
+        const details = {
+          wallet,
+          connection
         }
+  
+        const vaultContract = await contractManager.chains[selectedChain].vaultContract(details);
+        setContract(vaultContract);
       } catch (error) {
-        console.error("Erro ao buscar dados:", error)
+        console.error("Error initializing the agreements contract", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
+  
+    initializeContract();
+  }, [selectedChain, wallet, connection]);
 
-    fetchData()
-  }, [vaultLoading])
+  useEffect(() => {
+    if (!isLoading && contract) {
+      fetchUserBalances();
+    }
+  }, [account, isLoading, contract]);
+  
 
   return (
     <div>

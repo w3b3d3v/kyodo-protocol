@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAgreementContract } from "../../contexts/ContractContext";
+import contractManager from '../../chains/ContractManager';
 import { useAccount } from "../../contexts/AccountContext";
 import styles from "./Dashboard.module.scss"
 import Image from 'next/image'
@@ -8,24 +8,47 @@ import Link from "next/link"
 import { useTranslation } from "react-i18next"
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import transactionManager from '../../chains/transactionManager'
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import getExplorerLink from '../../chains/utils/utils.js';
 
 function Payments ({ limit }) {
-  const { contract, loading } = useAgreementContract();
+  const [contract, setContract] = useState(null)
   const { account, selectedChain} = useAccount();
+  const { publicKey, wallet } = useWallet()
+  const { connection } = useConnection();
   const [paidAgreements, setPaidAgreements] = useState([]);
   const { t } = useTranslation()
   const {
     isLoading,
     setIsLoading
   } = useTransactionHandler();
-  
+
   useEffect(() => {
-    setIsLoading(true);
-    if (!loading) {
+    async function initializeContract() {
+      try {
+        setIsLoading(true);
+        const details = {
+          wallet,
+          connection
+        }
+  
+        const agreementContract = await contractManager.chains[selectedChain].agreementContract(details);
+        setContract(agreementContract);
+      } catch (error) {
+        console.error("Error initializing the agreements contract", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  
+    initializeContract();
+  }, [selectedChain, wallet, connection]);
+
+  useEffect(() => {
+    if (!isLoading && contract) {
       fetchPaidAgreements();
     }
-  }, [loading]);
+  }, [account, isLoading, contract]);
 
   if (paidAgreements.length === 0) {
     return null;
