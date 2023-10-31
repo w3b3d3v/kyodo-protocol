@@ -41,7 +41,7 @@ function updateConfig(agreementData, vaultData, fakeStableAddress, kyodoRegistry
 
   const keysToUpdate = {
     'NEXT_PUBLIC_KYODO_REGISTRY': kyodoRegistryAddress,
-    'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
+    // 'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
     'NEXT_PUBLIC_AGREEMENT_DEPLOYMENT_BLOCK_NUMBER': agreementData["deploymentBlock"],
     'NEXT_PUBLIC_VAULT_DEPLOYMENT_BLOCK_NUMBER': vaultData["deploymentBlock"],
   };
@@ -157,8 +157,8 @@ async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress) 
   for (const [key, value] of Object.entries(keysToUpdate)) {
     try {
       const tx = await kyodoRegistry.createRegistry(key, value);
-      
       await tx.wait();
+      console.log(`\nKey ${key} stored on KyodoRegistry`, tx.hash);
     } catch (error) {
       console.log(`error trying to save ${key} on KyodoRegistry`, error);
     }

@@ -10,11 +10,10 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import Loader from '../utils/Loader';
 import Toast from '../utils/Toast';
-import { getTokens } from './tokenConfig.js';
 
 function AgreementList() {
   const { account, selectedChain } = useAccount()
-  const tokens = getTokens(selectedChain);
+  const tokens = contractManager.tokens(selectedChain)
   const [contract, setContract] = useState(null)
   const [agreements, setAgreements] = useState([])
   const [paymentValue, setPaymentValue] = useState("")
