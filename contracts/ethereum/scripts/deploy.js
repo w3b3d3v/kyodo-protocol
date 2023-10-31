@@ -146,6 +146,7 @@ async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress) 
   const [admin] = await ethers.getSigners();
   const kyodoRegistry = await KyodoRegistry.deploy(admin.address);
   await kyodoRegistry.deployed()
+  await kyodoRegistry.deployTransaction.wait()
 
   const keysToUpdate = {
     'FAKE_STABLE_ADDRESS': fakeStableAddress,
@@ -166,16 +167,22 @@ async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress) 
   const address = await kyodoRegistry.getRegistry("AGREEMENT_CONTRACT_ADDRESS");
   console.log("address Saved", address)
 
-  console.log("KyodoRegistry deployed to:", kyodoRegistry.address);
   return kyodoRegistry.address;
 }
 
 
 async function main() {
   try {
-    const [deployer] = await ethers.getSigners()
-    console.log("Deploying contracts with the account:", deployer.address)
-
+    const [deployer] = await hre.ethers.getSigners();
+    const chainId = await deployer.getChainId();
+    const nonce = await deployer.getTransactionCount();
+    const balance = await deployer.getBalance();  // Get the balance of the deployer
+    
+    console.log(`\nDeploying contracts with the account: ${deployer.address}`);
+    console.log(`Chain ID: ${chainId}`);
+    console.log(`Nonce: ${nonce}`);
+    console.log(`Balance: ${hre.ethers.utils.formatEther(balance)} ETH\n`);  // Convert Wei to ETH for readability
+    
     const tokenAddress = await deployToken();
     const vaultData = await deployStableVault();
     const agreementData = await deployAgreementsContract(vaultData['address'], tokenAddress);
@@ -185,6 +192,8 @@ async function main() {
       vaultData,
       tokenAddress
     );
+
+    console.log(`\nKyodoRegistry Contract deployed at address: ${kyodoRegistry}`);
     
     updateConfig(
       agreementData,
