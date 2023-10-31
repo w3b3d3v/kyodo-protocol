@@ -10,8 +10,9 @@ const { HDNode } = require("@ethersproject/hdnode");
 
 const seed = mnemonicToSeedSync(process.env.MNEMONIC);
 const masterNode = HDNode.fromSeed(seed);
-const account = masterNode.derivePath("m/44'/60'/0'/0/9");  // The last number is the index. 9 gives us the 5th address.
-// console.log("pvt address: " + account.privateKey);
+const account = masterNode.derivePath("m/44'/60'/0'/0/10");  // The last number is the index. 9 gives us the 5th address.
+console.log("pvt address: " + account.privateKey);
+console.log("public address: " + account.address);
 
 /** @type import('hardhat/config').HardhatUserConfig */
 
@@ -28,14 +29,14 @@ let config = {
     testing: {
       url: "http://127.0.0.1:8545/"
     },
-    scroll: {
+    scrollTestnet: {
       url: "https://sepolia-rpc.scroll.io" || "",
       accounts: [account.privateKey]
       // accounts:
       //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     mumbai: {
-      url: "https://rpc-mumbai.maticvigil.com/" || "",
+      url: "https://rpc.ankr.com/polygon_mumbai" || "",
       accounts: [account.privateKey]
       // accounts:
       //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],

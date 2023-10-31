@@ -144,9 +144,19 @@ async function deployStableVault() {
 async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress) {
   const KyodoRegistry = await ethers.getContractFactory("KyodoRegistry");
   const [admin] = await ethers.getSigners();
-  const kyodoRegistry = await KyodoRegistry.deploy(admin.address);
-  await kyodoRegistry.deployed()
-  await kyodoRegistry.deployTransaction.wait()
+  // Check if a contract already exists at the specified address
+  const codeAtAddress = await ethers.provider.getCode(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+    
+  let kyodoRegistry;
+  if (codeAtAddress === '0x') {
+    // Deploy if no contract exists at the address
+    kyodoRegistry = await KyodoRegistry.deploy(admin.address);
+    await kyodoRegistry.deployed()
+    await kyodoRegistry.deployTransaction.wait()
+  } else {
+    // If a contract is already deployed, connect to it instead of redeploying
+    kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+  }
 
   const keysToUpdate = {
     'FAKE_STABLE_ADDRESS': fakeStableAddress,

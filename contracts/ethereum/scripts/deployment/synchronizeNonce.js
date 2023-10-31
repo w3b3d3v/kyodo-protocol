@@ -2,12 +2,14 @@ const { ethers } = require("hardhat");
 require('dotenv').config({ path: '../../.env' });
 const { mnemonicToSeedSync } = require("bip39");
 const { HDNode } = require("@ethersproject/hdnode");
+const networks = require("./networks.json");
 
 const seed = mnemonicToSeedSync(process.env.MNEMONIC);
 const masterNode = HDNode.fromSeed(seed);
-const account = masterNode.derivePath("m/44'/60'/0'/0/9");  // The last /9 defines the account index
+const account = masterNode.derivePath("m/44'/60'/0'/0/10");  // The last /9 defines the account index
+const rpcList = networks.rpcList;
 
-async function synchronizeNonces(rpcList, privateKey) {
+async function synchronizeNonces(privateKey) {
   const nonces = [];
   const wallets = [];
 
@@ -43,11 +45,6 @@ async function synchronizeNonces(rpcList, privateKey) {
     }
   }
 }
-const rpcList = [
-  'https://sepolia-rpc.scroll.io',
-  'https://rpc-mumbai.maticvigil.com',
-  'https://data-seed-prebsc-1-s1.binance.org:8545',
-  'https://rpc.testnet.fantom.network'
-];
+
 const privateKey = account.privateKey
-synchronizeNonces(rpcList, privateKey);
+synchronizeNonces(privateKey);
