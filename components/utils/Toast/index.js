@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react" // <-- Import useEffect and u
 import Image from "next/image"
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
-import getExplorerLink from '../../../chains/utils/utils.js';
+import contractManager from '../../../chains/ContractManager';
 import { useAccount } from "../../../contexts/AccountContext";
 
 function Toast({
@@ -35,7 +35,7 @@ function Toast({
   if (!visible) return null // <-- Don't render the component if it's not visible
 
   if (transactionSuccess) {
-    const explorerLink = getExplorerLink(selectedChain)
+    const explorerLink = contractManager.blockExplorer(selectedChain)
     return (
       <div className="flash-success transaction-info">
         <p>

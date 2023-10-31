@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next"
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import transactionManager from '../../chains/transactionManager'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
-import getExplorerLink from '../../chains/utils/utils.js';
 
 function Payments ({ limit }) {
   const [contract, setContract] = useState(null)
@@ -75,7 +74,7 @@ function Payments ({ limit }) {
 
   function renderPaidAgreements() {
     const displayedAgreements = limit ? paidAgreements.slice(0, limit) : paidAgreements;
-    const explorerLink = getExplorerLink(selectedChain);
+    const explorerLink = contractManager.blockExplorer(selectedChain)
 
     return displayedAgreements.map((agreement, index) => (
       <div key={index} className={styles["payment-item"]}>
