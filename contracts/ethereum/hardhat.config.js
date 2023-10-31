@@ -4,12 +4,19 @@ require('dotenv').config();
 require("hardhat-jest-plugin");
 require("hardhat-gas-reporter");
 require('hardhat-contract-sizer');
-require('dotenv').config({ path: '../../.env.development.local' });
+require('dotenv').config({ path: '../../.env' });
+const { mnemonicToSeedSync } = require("bip39");
+const { HDNode } = require("@ethersproject/hdnode");
+
+const seed = mnemonicToSeedSync(process.env.MNEMONIC);
+const masterNode = HDNode.fromSeed(seed);
+const account = masterNode.derivePath("m/44'/60'/0'/0/9");  // The last number is the index. 9 gives us the 5th address.
+// console.log("pvt address: " + account.privateKey);
 
 /** @type import('hardhat/config').HardhatUserConfig */
 
 let config = {
-  defaultNetwork: "testing",
+  // defaultNetwork: "testing",
   solidity: "0.8.1",
   settings: {
     optimizer: {
@@ -19,22 +26,34 @@ let config = {
   },
   networks: {
     testing: {
-      url: "http://127.0.0.1:8545/",
+      url: "http://127.0.0.1:8545/"
     },
     scroll: {
       url: "https://sepolia-rpc.scroll.io" || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts: [account.privateKey]
+      // accounts:
+      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     mumbai: {
       url: "https://rpc-mumbai.maticvigil.com/" || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts: [account.privateKey]
+      // accounts:
+      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
-    goerly: {
+    goerli: {
       url: "https://rpc.ankr.com/eth_goerli" || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts: [account.privateKey]
+      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    bnbTesnet: {
+      url: "https://data-seed-prebsc-1-s1.binance.org:8545" || "",
+      accounts: [account.privateKey]
+      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    fantomTesnet: {
+      url: "https://rpc.testnet.fantom.network" || "",
+      accounts: [account.privateKey]
+      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     }
   },
   contractSizer: {
