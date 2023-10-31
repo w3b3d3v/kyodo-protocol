@@ -5,12 +5,11 @@ const { HDNode } = require("@ethersproject/hdnode");
 
 const seed = mnemonicToSeedSync(process.env.MNEMONIC);
 const masterNode = HDNode.fromSeed(seed);
-const account = masterNode.derivePath("m/44'/60'/0'/0/9"); 
+const account = masterNode.derivePath("m/44'/60'/0'/0/9");  // The last /9 defines the account index
 
 async function synchronizeNonces(rpcList, privateKey) {
   const nonces = [];
   const wallets = [];
-
 
   for (const rpcUrl of rpcList) {
     const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
