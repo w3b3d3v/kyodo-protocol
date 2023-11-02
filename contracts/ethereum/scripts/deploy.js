@@ -199,7 +199,6 @@ async function main() {
       kyodoRegistry
     );
     await deployUserDataRegistry()
-    await deployUserDataRegistry()
     
     process.exit(0);
   } catch (error) {
