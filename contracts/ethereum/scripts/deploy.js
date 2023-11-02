@@ -170,6 +170,12 @@ async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress) 
   return kyodoRegistry.address;
 }
 
+async function deployUserDataRegistry() {
+  const UserDataRegistry = await ethers.getContractFactory("UserDataRegistry");
+  const userDataRegistry = await UserDataRegistry.deploy();
+  await userDataRegistry.deployed()
+  console.log("UserDataRegistry deployed to:", userDataRegistry.address)
+}
 
 async function main() {
   try {
@@ -191,7 +197,9 @@ async function main() {
       vaultData,
       tokenAddress,
       kyodoRegistry
-    ); 
+    );
+    await deployUserDataRegistry()
+    await deployUserDataRegistry()
     
     process.exit(0);
   } catch (error) {
