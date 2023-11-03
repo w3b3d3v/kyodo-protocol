@@ -66,6 +66,8 @@ function Balances() {
 
   
   const withdrawFromVault = async (amount, balance) => {
+    const KyodoRegistry = await contractManager.chains[selectedChain].kyodoRegistry;
+
     try {
       setIsLoading(true)
 
@@ -73,7 +75,8 @@ function Balances() {
         account,
         amount,
         balance,
-        contract
+        contract,
+        KyodoRegistry
       };
 
       const onConfirmation = () => {

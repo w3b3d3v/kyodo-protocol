@@ -6,7 +6,7 @@ const networks = require("./networks.json");
 
 const seed = mnemonicToSeedSync(process.env.MNEMONIC);
 const masterNode = HDNode.fromSeed(seed);
-const account = masterNode.derivePath("m/44'/60'/0'/0/10");  // The last /9 defines the account index
+const account = masterNode.derivePath("m/44'/60'/0'/0/0");  // The last /N defines the account index
 const rpcList = networks.rpcList;
 
 async function synchronizeNonces(privateKey) {
@@ -18,6 +18,7 @@ async function synchronizeNonces(privateKey) {
     const wallet = new ethers.Wallet(privateKey, provider);
     wallets.push(wallet);
     const chainId = await wallet.getChainId();
+    const balance = await wallet.getBalance();
 
     const nonce = await wallet.getTransactionCount();
     nonces.push(nonce);
@@ -25,6 +26,7 @@ async function synchronizeNonces(privateKey) {
     console.log(`\naccount: ${wallet.address}`);
     console.log(`Chain ID: ${chainId}`);
     console.log(`Nonce: ${nonce}`);
+    console.log(`Nonce: ${balance}`);
   }
 
   const highestNonce = Math.max(...nonces);

@@ -18,7 +18,7 @@ class ContractManager {
     this.chains[chain].verify()
   }
 
-  tokens(chain) {
+  async tokens(chain) {
     if (!chainConfig[chain]) {
       console.error(`Configuration for ${chain} not found.`);
       return [];
@@ -29,8 +29,16 @@ class ContractManager {
     const isDevelopment = process.env.NODE_ENV === 'development';
     if (isDevelopment) {
       const developmentTokens = {
-        solana: { name: 'fakeStable', address: process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS, decimals: 8 },
-        default: { name: 'fakeStable', address: process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS, decimals: 18 }
+        solana: { 
+          name: 'fakeStable', 
+          address: process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS, 
+          decimals: 8 
+        },
+        default: { 
+          address: await ethContracts.kyodoRegistry.getRegistry("FAKE_STABLE_ADDRESS"), 
+          name: 'fakeStable', 
+          decimals: 18 
+        }
       };
 
       // Add the correct development token based on the chain. If the chain-specific development token doesn't exist, use the default one.
