@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next"
 import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWalletButton"
 import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { useWeb3Modal } from '@web3modal/wagmi/react'
 import Head from "next/head"
 
 function formatAddress(address) {
@@ -45,6 +46,7 @@ function Header() {
   const router = useRouter()
   const { t, i18n } = useTranslation()
   const { locale } = router
+  const { open } = useWeb3Modal()
   const currentLanguage = i18n.language
 
   function changeLanguage() {
@@ -106,7 +108,7 @@ function Header() {
               <WalletMultiButton />
             ) : (
               <div className={"user-wallet"}>
-                <Link href="#" className={"select-chain"} onClick={() => setShowModal(true)}>
+                <button className={"select-chain"} onClick={() => open({ view: 'Networks' })}>
                   Select chain
                   <Image
                     src="/arrow-down.svg"
@@ -114,7 +116,7 @@ function Header() {
                     width={11}
                     height={11}
                   />
-                </Link>
+                </button>
                 <div>
                   <span className={"wallet-on"}>Status</span>
                   <em>{formatAddress(account)}</em>
