@@ -8,8 +8,7 @@ const REGISTRY_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_KYODO_REGISTRY
 function getRegistryContract() {
   try {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const registryContractInstance = new ethers.Contract(REGISTRY_CONTRACT_ADDRESS, KyodoRegistry.abi, provider.getSigner());
-    return registryContractInstance;
+    return new ethers.Contract(REGISTRY_CONTRACT_ADDRESS, KyodoRegistry.abi, provider.getSigner());
   } catch (e) {
     console.error("Failed to instantiate the registry contract", e);
   }
@@ -30,7 +29,7 @@ async function getContractInstance(abi, contractName) {
 }
 
 const contracts = {
-  kyodoRegistry: getRegistryContract,
+  kyodoRegistry: getRegistryContract(),
   agreementContract: () => getContractInstance(AgreementContract.abi, "AGREEMENT_CONTRACT_ADDRESS"),
   vaultContract: () => getContractInstance(VaultContract.abi, "VAULT_CONTRACT_ADDRESS"),
   

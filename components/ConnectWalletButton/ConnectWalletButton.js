@@ -24,7 +24,7 @@ function ConnectWalletButton(props) {
     async function handleWalletConnection() {
       const selectedChain = localStorage.getItem('selectedChain');
       if (selectedChain === "ethereum" && address) {
-        await verifyChain("ethereum");
+        // await verifyChain("ethereum");
         props.value.setAccount(address);
         props.value.setSelectedChain("ethereum");
       } else if (selectedChain === "solana" && publicKey) {

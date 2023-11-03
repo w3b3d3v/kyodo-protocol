@@ -13,8 +13,8 @@ import Toast from '../utils/Toast';
 
 function AgreementList() {
   const { account, selectedChain } = useAccount()
-  const tokens = contractManager.tokens(selectedChain)
   const [contract, setContract] = useState(null)
+  const [tokens, setTokens] = useState(null)
   const [agreements, setAgreements] = useState([])
   const [paymentValue, setPaymentValue] = useState("")
   const [showPaymentInput, setShowPaymentInput] = useState(null)
@@ -104,6 +104,7 @@ function AgreementList() {
         }
   
         const agreementContract = await contractManager.chains[selectedChain].agreementContract(details);
+        setTokens(await contractManager.tokens(selectedChain))
         setContract(agreementContract);
       } catch (error) {
         console.error("Error initializing the agreements contract", error);
