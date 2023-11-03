@@ -5,6 +5,24 @@ import { clusterApiUrl } from '@solana/web3.js';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 
+import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
+import { WagmiConfig } from 'wagmi'
+import { polygonMumbai, fantomTestnet } from 'wagmi/chains'
+
+const metadata = {
+  name: 'Web3Modal',
+  description: 'Web3Modal Example',
+  url: 'https://web3modal.com',
+  icons: ['https://avatars.githubusercontent.com/u/37784886']
+}
+
+const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
+console.log("projectId", projectId)
+const chains = [polygonMumbai, fantomTestnet]
+const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
+
+createWeb3Modal({ wagmiConfig, projectId, chains })
+
 const AccountContext = createContext({
   account: null,
   setAccount: () => {},
@@ -94,11 +112,13 @@ export function AccountProvider({ children }) {
       isOnboardingComplete,
       completeOnboarding
     }}>
-      <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets} autoConnect>
-          <WalletModalProvider>{children}</WalletModalProvider>
-        </WalletProvider>
-      </ConnectionProvider>
+      <WagmiConfig config={wagmiConfig}>
+        <ConnectionProvider endpoint={endpoint}>
+          <WalletProvider wallets={wallets} autoConnect>
+            <WalletModalProvider>{children}</WalletModalProvider>
+          </WalletProvider>
+        </ConnectionProvider>
+      </WagmiConfig>
     </AccountContext.Provider>
   );
 }

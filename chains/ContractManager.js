@@ -5,7 +5,7 @@ import chainConfig from "./chainConfig.json";
 class ContractManager {
   constructor() {
     this.chains = {}
-    this.evmChains = ["ethereum", "mumbai"];
+    this.evmChains = ["hardhat","ethereum", "mumbai"];
 
     // Initialize contracts based on chain type
     for (const chain of this.evmChains) {
