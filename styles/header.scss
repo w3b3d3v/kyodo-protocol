@@ -212,6 +212,9 @@ HEADER
   color: $medium-blue;
   line-height: 30px;
   text-decoration: none;
+  border: none;  /* Add this line to remove the border */
+  background: none;  /* Add this line to remove the background */
+  outline: none;  /* Add this line to remove the focus outline */
 
   @media #{$smartphones-1} {
     padding: 0 12px;
@@ -227,4 +230,3 @@ HEADER
     margin-left: 5px;
   }
 }
-

@@ -7,7 +7,27 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
-import { polygonMumbai, fantomTestnet } from 'wagmi/chains'
+import { gnosisChiado, neonDevnet } from 'wagmi/chains'
+import { defineChain } from 'viem'
+
+export const coreDaoTestnet = defineChain({
+  id: 1115,
+  name: 'Core Chain TestNet',
+  network: 'coreDaoTestnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Test Core',
+    symbol: 'tCORE',
+  },
+  rpcUrls: {
+      default: { http: ['https://rpc.test.btcs.network'] },
+    public: { http: ['https://rpc.test.btcs.network'] },
+  },
+  blockExplorers: {
+    default: { name: 'CoreDao Testnet', url: 'https://scan.test.btcs.network' },
+  },
+  testnet: true,
+})
 
 const metadata = {
   name: 'Web3Modal',
@@ -18,10 +38,19 @@ const metadata = {
 
 const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
 console.log("projectId", projectId)
-const chains = [polygonMumbai, fantomTestnet]
+const chains = [gnosisChiado, neonDevnet, coreDaoTestnet]
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
 
-createWeb3Modal({ wagmiConfig, projectId, chains })
+createWeb3Modal({ 
+  wagmiConfig, 
+  projectId, 
+  chains,
+  chainImages: {
+    1115: "https://s1.coincarp.com/logo/1/core-dao.png",
+    10_200: "https://avatars.githubusercontent.com/u/92709226?s=200",
+    245_022_926: "https://neonevm.org/favicons/apple-touch-icon.png",
+  }
+})
 
 const AccountContext = createContext({
   account: null,
