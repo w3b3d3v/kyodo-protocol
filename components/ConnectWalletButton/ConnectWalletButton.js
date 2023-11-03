@@ -23,10 +23,10 @@ function ConnectWalletButton(props) {
   useEffect(() => {
     async function handleWalletConnection() {
       const selectedChain = localStorage.getItem('selectedChain');
-      if (selectedChain === "hardhat" && address) {
-        await verifyChain("hardhat");
+      if (selectedChain === "ethereum" && address) {
+        await verifyChain("ethereum");
         props.value.setAccount(address);
-        props.value.setSelectedChain("hardhat");
+        props.value.setSelectedChain("ethereum");
       } else if (selectedChain === "solana" && publicKey) {
         props.value.setAccount(publicKey);
         await verifyChain("solana");
@@ -40,7 +40,7 @@ function ConnectWalletButton(props) {
     setShowModal(false);
     if (window.ethereum) {
       open({ view: 'All wallets' });
-      localStorage.setItem('selectedChain', "hardhat");
+      localStorage.setItem('selectedChain', "ethereum");
     }
   }  
 
