@@ -5,6 +5,8 @@ import styles from "./ConnectWalletButton.module.scss"
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import contractManager from "../../chains/ContractManager"
+import { useWeb3Modal } from '@web3modal/wagmi/react'
+import { useAccount } from 'wagmi'
 require("@solana/wallet-adapter-react-ui/styles.css")
 
 async function verifyChain(chain) {
@@ -14,41 +16,38 @@ async function verifyChain(chain) {
 function ConnectWalletButton(props) {
   const [showModal, setShowModal] = useState(false);
   const { setVisible } = useWalletModal();
-  const { publicKey, connected} = useWallet();
+  const { open } = useWeb3Modal()
+  const { publicKey } = useWallet();
+  const { address } = useAccount()
 
   useEffect(() => {
-    async function checkSolana() {
-      if (connected) {
+    async function handleWalletConnection() {
+      const selectedChain = localStorage.getItem('selectedChain');
+      if (selectedChain === "hardhat" && address) {
+        await verifyChain("hardhat");
+        props.value.setAccount(address);
+        props.value.setSelectedChain("hardhat");
+      } else if (selectedChain === "solana" && publicKey) {
         props.value.setAccount(publicKey);
-        localStorage.setItem('selectedChain', "solana");
         await verifyChain("solana");
       }
     }
-
-    checkSolana();
-  }, [publicKey]);
-
+  
+    handleWalletConnection();
+  }, [address, publicKey]);
+  
   async function connectEthereumWallet() {
     setShowModal(false);
     if (window.ethereum) {
-      try {
-        await window.ethereum.request({ method: "eth_requestAccounts" });
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const accounts = await provider.listAccounts();
-        await verifyChain("ethereum")
-        
-        props.value.setAccount(accounts[0]);
-        props.value.setSelectedChain("ethereum");
-        localStorage.setItem('selectedChain', "ethereum");
-      } catch (error) {
-        console.error(error);
-      }
+      open({ view: 'All wallets' });
+      localStorage.setItem('selectedChain', "hardhat");
     }
-  }
+  }  
 
   async function connectSolanaWallet() {
     setShowModal(false);
     setVisible(true)
+    localStorage.setItem('selectedChain', "solana");
   }
 
   return (
