@@ -1,18 +1,4 @@
-import Head from 'next/head'
-import Balances from "../components/Dashboard/Balances.js"
-
+import Router from "next/router.js"
 export default function Home() {
-  return (
-    <div>
-      <Head>
-        <title>App - Kyōdō Protocol</title>
-        <meta name="description" content="The Future of Work Powered by Communities" />
-        <link rel="icon" href="/logo192.png" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-      <main>
-        <Balances />
-      </main>
-    </div>
-  )
+  Router.push("/dashboard")
 }

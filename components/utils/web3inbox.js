@@ -64,20 +64,28 @@ export default function Web3Inbox({ address }) {
             <div>Connect your wallet</div>
           ) : (
             <>
-              <div>Address: {address}</div>
-              <div>Account ID: {account}</div>
+              <p>Address: {address}</p>
+              <p>Account ID: {account}</p>
               {!isRegistered ? (
-                <div>
+                <p>
                   To manage notifications, sign and register an identity key:&nbsp;
-                  <button onClick={performRegistration} disabled={isRegistering}>
+                  <button
+                    className={"form-button"}
+                    onClick={performRegistration}
+                    disabled={isRegistering}
+                  >
                     {isRegistering ? "Signing..." : "Sign"}
                   </button>
-                </div>
+                </p>
               ) : (
                 <>
                   {!isSubscribed ? (
                     <>
-                      <button onClick={performSubscribe} disabled={isSubscribing}>
+                      <button
+                        className={"form-button"}
+                        onClick={performSubscribe}
+                        disabled={isSubscribing}
+                      >
                         {isSubscribing ? "Subscribing..." : "Subscribe to notifications"}
                       </button>
                     </>
