@@ -10,6 +10,7 @@ import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 import Head from "next/head"
+import contractManager from "../chains/ContractManager"
 
 function formatAddress(address) {
   return address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : ""
@@ -17,7 +18,8 @@ function formatAddress(address) {
 
 function PageContent({ Component, pageProps }) {
   const router = useRouter()
-  const { account, isOnboardingComplete } = useAccount()
+  const { account, setAccount, selectedChain, setSelectedChain, isOnboardingComplete } =
+  useAccount()
 
   if (account && !isOnboardingComplete && !router.pathname.startsWith("/onboarding")) {
     router.push("/onboarding")
@@ -33,7 +35,7 @@ function PageContent({ Component, pageProps }) {
         </div>
       ) : (
         <div>
-          <ConnectWalletButton />
+          <ConnectWalletButton value={{ account, setAccount, selectedChain, setSelectedChain }} />
         </div>
       )}
     </>
@@ -47,6 +49,7 @@ function Header() {
   const { locale } = router
   const { open } = useWeb3Modal()
   const currentLanguage = i18n.language
+  const chainMetadata = contractManager.chainMetadata(selectedChain)
 
   function changeLanguage() {
     const newLocale = currentLanguage === "en-US" ? "pt-BR" : "en-US"
@@ -54,8 +57,11 @@ function Header() {
     router.push(router.pathname, router.asPath, { locale: newLocale }) // Update Next.js router locale
   }
 
-  // Mobile header and footer
+  async function handleSelectChain() {
+    open({ view: 'Networks' })
+  }
 
+  // Mobile header and footer
   const mobileScreenWidth = 800
   const isSmallScreen = window.innerWidth <= mobileScreenWidth
 
@@ -107,13 +113,18 @@ function Header() {
               <WalletMultiButton />
             ) : (
               <div className={"user-wallet"}>
-                <button className={"select-chain"} onClick={() => open({ view: 'Networks' })}>
-                  Select chain
+                <button className={"select-chain"} onClick={handleSelectChain}>
+                  <Image 
+                    src={chainMetadata.logo} 
+                    width={22} 
+                    height={19} 
+                  />
+                  {chainMetadata?.name || "Select chain"}
                   <Image
                     src="/arrow-down.svg"
                     alt="Select chain"
-                    width={11}
-                    height={11}
+                    width={22} 
+                    height={19} 
                   />
                 </button>
                 <div>

@@ -1,28 +1,7 @@
 {
-  "polygon": {
-    "tokens": [
-        {
-          "address": "0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e",
-          "logo": "/public/coins/usdc-icon.svg",
-          "name": "USDC",
-          "decimals": 6
-        },
-        {
-          "address": "0x001B3B4d0F3714Ca98ba10F6042DaEbF0B1B7b6F",
-          "logo": "/public/coins/dai-icon.svg",
-          "name": "DAI",
-          "decimals": 18
-        },
-        {
-          "address": "0x9A676e781A523b5d0C0e43731313A708CB607508",
-          "logo": "/public/coins/usdt-icon.svg",
-          "name": "USDT",
-          "decimals": 18
-        }
-    ],
-    "blockExplorer": "https://polygonscan.com/"
-  },
-  "ethereum": {
+  "1": {
+    "name":"Ethereum",
+    "logo":"",
     "tokens": [
         {
           "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 
@@ -43,6 +22,149 @@
           "decimals": 6 
         }
     ],
-    "blockExplorer": "https://etherscan.io/"
+    "blockExplorer": {
+      "name": "Etherscan",
+      "url": "/chains/ethereum-eth-logo.svg"
+    }
+  },
+  "1115": {
+    "name":"CoreDaoTestnet",
+    "logo":"/chains/core-dao.png",
+    "tokens": [
+        {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 
+          "logo": "/public/coins/usdc-icon.svg",
+          "name": "USDC",
+          "decimals": 6
+        },
+        {
+          "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F", 
+          "logo": "/public/coins/dai-icon.svg",
+          "name": "DAI",
+          "decimals": 18
+        },
+        {
+          "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7", 
+          "logo": "/public/coins/usdt-icon.svg",
+          "name": "USDT",
+          "decimals": 6 
+        }
+    ],
+    "blockExplorer": {
+      "name": "Core Explorer",
+      "url": "https://scan.test.btcs.network/"
+    }
+  },
+  "10200": {
+    "name":"GnosisChiado",
+    "logo":"/chains/gnosis-chain.png",
+    "tokens": [
+        {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 
+          "logo": "/public/coins/usdc-icon.svg",
+          "name": "USDC",
+          "decimals": 6
+        },
+        {
+          "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F", 
+          "logo": "/public/coins/dai-icon.svg",
+          "name": "DAI",
+          "decimals": 18
+        },
+        {
+          "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7", 
+          "logo": "/public/coins/usdt-icon.svg",
+          "name": "USDT",
+          "decimals": 6 
+        }
+    ],
+    "blockExplorer": {
+      "name": "Blockscout",
+      "url": "https://blockscout.chiadochain.net/"
+    }
+  },
+  "245022926": {
+    "name":"NeonDevnet",
+    "logo":"/chains/neonevm-logo.png",
+    "tokens": [
+        {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 
+          "logo": "/public/coins/usdc-icon.svg",
+          "name": "USDC",
+          "decimals": 6
+        },
+        {
+          "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F", 
+          "logo": "/public/coins/dai-icon.svg",
+          "name": "DAI",
+          "decimals": 18
+        },
+        {
+          "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7", 
+          "logo": "/public/coins/usdt-icon.svg",
+          "name": "USDT",
+          "decimals": 6 
+        }
+    ],
+    "blockExplorer": {
+      "name": "Neonscan",
+      "url": "https://devnet.neonscan.org/"
+    }
+  },
+  "80001": {
+    "name":"Mumbai",
+    "logo":"/chains/polygon-matic-logo.svg",
+    "tokens": [
+        {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 
+          "logo": "/public/coins/usdc-icon.svg",
+          "name": "USDC",
+          "decimals": 6
+        },
+        {
+          "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F", 
+          "logo": "/public/coins/dai-icon.svg",
+          "name": "DAI",
+          "decimals": 18
+        },
+        {
+          "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7", 
+          "logo": "/public/coins/usdt-icon.svg",
+          "name": "USDT",
+          "decimals": 6 
+        }
+    ],
+    "blockExplorer": {
+      "name": "PolygonScan",
+      "url": "https://mumbai.polygonscan.com/"
+    }
+  },
+  "31337": {
+    "name":"Hardhat",
+    "logo":"/chains/hardhat.svg",
+    "tokens": [
+        {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 
+          "logo": "/public/coins/usdc-icon.svg",
+          "name": "USDC",
+          "decimals": 6
+        },
+        {
+          "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F", 
+          "logo": "/public/coins/dai-icon.svg",
+          "name": "DAI",
+          "decimals": 18
+        },
+        {
+          "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7", 
+          "logo": "/public/coins/usdt-icon.svg",
+          "name": "USDT",
+          "decimals": 6 
+        }
+    ],
+    "blockExplorer": {
+      "name": "LocalNetwork",
+      "url": "/"
+    }
   }
 }

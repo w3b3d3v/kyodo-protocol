@@ -38,7 +38,6 @@ const metadata = {
 }
 
 const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
-console.log("projectId", projectId)
 const chains = [gnosisChiado, neonDevnet, coreDaoTestnet]
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
 
@@ -85,7 +84,6 @@ export function AccountProvider({ children }) {
     if (typeof window !== "undefined") {
       return localStorage.getItem("selectedChain") || null
     }
-    return null
   })
 
   const network = WalletAdapterNetwork.Devnet
@@ -98,7 +96,7 @@ export function AccountProvider({ children }) {
   }
 
   const updateAccount = async () => {
-    if (selectedChain === "ethereum" && window.ethereum) {
+    if (!contractManager.getSupportedChains().includes(selectedChain) && window.ethereum) {  
       try {
         const accounts = await window.ethereum.request({ method: "eth_accounts" })
         if (accounts.length > 0 && accounts[0] !== account) {
@@ -110,6 +108,7 @@ export function AccountProvider({ children }) {
         if (!contractManager.getSupportedChains().includes(chainId)) {
           open({ view: 'Networks' });
         }
+        localStorage.setItem("selectedChain", parseInt(chainId))
       } catch (error) {
         console.error(error)
       }
@@ -127,22 +126,22 @@ export function AccountProvider({ children }) {
 
   useEffect(() => {
     updateAccount()
-    if (window[selectedChain]) {
-      try {
-        window[selectedChain].on("connect", updateAccount)
-        window[selectedChain].on("accountsChanged", updateAccount)
-        window[selectedChain].on("disconnect", handleDisconnect)
+    // if (window[selectedChain]) {
+    //   try {
+    //     window[selectedChain].on("connect", updateAccount)
+    //     window[selectedChain].on("accountsChanged", updateAccount)
+    //     window[selectedChain].on("disconnect", handleDisconnect)
   
-        return () => {
-          window[selectedChain].removeListener("connect", updateAccount)
-          window[selectedChain].removeListener("disconnect", handleDisconnect)
-        }
-      } catch (error) {
-        if (error instanceof UserRejectedRequestError) {
-          // Handle user rejection
-        }
-      }
-    }
+    //     return () => {
+    //       window[selectedChain].removeListener("connect", updateAccount)
+    //       window[selectedChain].removeListener("disconnect", handleDisconnect)
+    //     }
+    //   } catch (error) {
+    //     if (error instanceof UserRejectedRequestError) {
+    //       // Handle user rejection
+    //     }
+    //   }
+    // }
   }, [account, selectedChain])
 
   return (

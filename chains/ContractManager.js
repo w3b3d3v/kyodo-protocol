@@ -5,11 +5,14 @@ import chainConfig from "./chainConfig.json";
 class ContractManager {
   constructor() {
     this.chains = {}
-    this.evmChains = ["hardhat","ethereum", "mumbai"]
-    this.supportedNetworks = [1115, 10200, 245022926, 1399811149, 31337]
+    this.supportedNetworks = [1115, 10200, 245022926, 31337]
+    this.addressValidators = {
+      ethereum: /^0x[a-fA-F0-9]{40}$/,
+      solana: /^[1-9A-HJ-NP-Za-km-z]{43,44}$/,
+    };
 
     // Initialize contracts based on chain type
-    for (const chain of this.evmChains) {
+    for (const chain of this.supportedNetworks) {
       this.chains[chain] = ethContracts;
     }
     this.chains["solana"] = solContracts;
@@ -19,19 +22,29 @@ class ContractManager {
     this.chains[chain].verify()
   }
 
+  getAddressValidator(chain) {
+    if (this.supportedNetworks.includes(chain)) {
+      return this.addressValidators['ethereum'];
+    } else if (chain === 'solana') {
+      return this.addressValidators['solana'];
+    }
+    console.error(`Address Validator for ${chain} not found.`);
+    return null;  // ou talvez lançar um erro se a chain não for reconhecida
+  }
+
   getSupportedChains(){
     return this.supportedNetworks
   }
 
   async tokens(chain) {
     if (!chainConfig[chain]) {
-      console.error(`Configuration for ${chain} not found.`);
+      console.error(`Token List for ${chain} not found.`);
       return [];
     }
 
     let tokenList = chainConfig[chain].tokens || [];
 
-    const isDevelopment = process.env.NODE_ENV === 'development';
+    const isDevelopment = process.env.NODE_ENV !== 'production';
     if (isDevelopment) {
       const developmentTokens = {
         solana: { 
@@ -59,7 +72,18 @@ class ContractManager {
       console.error(`Configuration for ${chain} not found.`);
       return null;
     }
-    return chainConfig[chain].blockExplorer;
+    return chainConfig[chain].blockExplorer.url;
+  }
+
+  chainMetadata(chain) {
+    if (!chainConfig[chain]) {
+      console.error(`Metadata for ${chain} not found.`);
+      return null;
+    }
+    return {
+      "name": chainConfig[chain].name,
+      "logo": chainConfig[chain].logo,
+    };
   }
 }
 

@@ -58,11 +58,6 @@ function AddAgreementForm(props) {
     initializeContract();
   }, [selectedChain, wallet, connection]);
 
-  const addressValidators = {
-    ethereum: /^0x[a-fA-F0-9]{40}$/,
-    solana: /^[1-9A-HJ-NP-Za-km-z]{43,44}$/,
-  }
-  
   const AgreementSchema = Yup.object().shape({
     title: Yup.string().required(),
     description: Yup.string().required("Description is required"),
@@ -72,7 +67,7 @@ function AddAgreementForm(props) {
         'valid-chain-address',
         `Professional must be a valid ${selectedChain} address`,
         function(value) {
-          const validator = addressValidators[selectedChain];
+          const validator = contractManager.getAddressValidator(selectedChain);
           return validator && validator.test(value);
         }
       )
