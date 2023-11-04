@@ -4,13 +4,14 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import contractManager from "../chains/ContractManager"
 
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
 import { gnosisChiado, neonDevnet } from 'wagmi/chains'
 import { defineChain } from 'viem'
 
-export const coreDaoTestnet = defineChain({
+const coreDaoTestnet = defineChain({
   id: 1115,
   name: 'Core Chain TestNet',
   network: 'coreDaoTestnet',
@@ -20,8 +21,8 @@ export const coreDaoTestnet = defineChain({
     symbol: 'tCORE',
   },
   rpcUrls: {
-      default: { http: ['https://rpc.test.btcs.network'] },
     public: { http: ['https://rpc.test.btcs.network'] },
+    default: { http: ['https://rpc.test.btcs.network'] },
   },
   blockExplorers: {
     default: { name: 'CoreDao Testnet', url: 'https://scan.test.btcs.network' },
@@ -103,6 +104,12 @@ export function AccountProvider({ children }) {
         if (accounts.length > 0 && accounts[0] !== account) {
           setAccount(accounts[0])
         }
+        
+        const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
+        const chainId = parseInt(chainIdHex, 16);
+        if (!contractManager.getSupportedChains().includes(chainId)) {
+          open({ view: 'Networks' });
+        }
       } catch (error) {
         console.error(error)
       }
@@ -121,13 +128,19 @@ export function AccountProvider({ children }) {
   useEffect(() => {
     updateAccount()
     if (window[selectedChain]) {
-      window[selectedChain].on("connect", updateAccount)
-      window[selectedChain].on("accountsChanged", updateAccount)
-      window[selectedChain].on("disconnect", handleDisconnect)
-
-      return () => {
-        window[selectedChain].removeListener("connect", updateAccount)
-        window[selectedChain].removeListener("disconnect", handleDisconnect)
+      try {
+        window[selectedChain].on("connect", updateAccount)
+        window[selectedChain].on("accountsChanged", updateAccount)
+        window[selectedChain].on("disconnect", handleDisconnect)
+  
+        return () => {
+          window[selectedChain].removeListener("connect", updateAccount)
+          window[selectedChain].removeListener("disconnect", handleDisconnect)
+        }
+      } catch (error) {
+        if (error instanceof UserRejectedRequestError) {
+          // Handle user rejection
+        }
       }
     }
   }, [account, selectedChain])

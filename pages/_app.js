@@ -17,8 +17,7 @@ function formatAddress(address) {
 
 function PageContent({ Component, pageProps }) {
   const router = useRouter()
-  const { account, setAccount, selectedChain, setSelectedChain, isOnboardingComplete } =
-    useAccount()
+  const { account, isOnboardingComplete } = useAccount()
 
   if (account && !isOnboardingComplete && !router.pathname.startsWith("/onboarding")) {
     router.push("/onboarding")
@@ -34,7 +33,7 @@ function PageContent({ Component, pageProps }) {
         </div>
       ) : (
         <div>
-          <ConnectWalletButton value={{ account, setAccount, selectedChain, setSelectedChain }} />
+          <ConnectWalletButton />
         </div>
       )}
     </>
