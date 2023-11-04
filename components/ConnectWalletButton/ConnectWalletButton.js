@@ -21,6 +21,7 @@ function ConnectWalletButton(props) {
   const { selectedNetworkId } = useWeb3ModalState()
   const { publicKey } = useWallet();
   const { address } = useWagmiAccount();
+  const { setSelectedChain } = useAppAccount();
 
   useEffect(() => {
     async function handleWalletConnection() {

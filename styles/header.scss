@@ -195,7 +195,19 @@ HEADER
 }
 
 .wallet-on {
-  background: $green;
+  display: inline-block;
+  border-right: 1px solid $light-gray;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: $font-small;
+  color: $medium-blue;
+  line-height: 30px;
+  text-decoration: none;
+  border: none;
+  background: none;
+  outline: none;
+  text-align: right; /* Alinha o texto à esquerda */
+  vertical-align: middle; /* Alinha verticalmente no meio */
 }
 
 .wallet-off {
