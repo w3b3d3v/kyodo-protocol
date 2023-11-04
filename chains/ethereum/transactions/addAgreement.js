@@ -14,7 +14,8 @@ export const addAgreement = async (details) => {
 
     return tx;
   } catch (error) {
-      console.error("Error in addAgreement:", error);
+      console.log("Error in addAgreement:", error);
+      // console.log(error);
       throw error;
   }
 };

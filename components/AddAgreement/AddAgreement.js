@@ -135,6 +135,8 @@ function AddAgreementForm(props) {
       publicKey,
       wallet
     };
+
+    console.log("details: ", details)
   
     const onConfirmation = () => {
       setTitle("");

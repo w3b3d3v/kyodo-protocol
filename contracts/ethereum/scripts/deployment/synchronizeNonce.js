@@ -6,7 +6,7 @@ const networks = require("./networks.json");
 
 const seed = mnemonicToSeedSync(process.env.MNEMONIC);
 const masterNode = HDNode.fromSeed(seed);
-const account = masterNode.derivePath("m/44'/60'/0'/0/0");  // The last /N defines the account index
+const account = masterNode.derivePath("m/44'/60'/0'/0/5");  // The last /N defines the account index
 const rpcList = networks.rpcList;
 
 async function synchronizeNonces(privateKey) {
@@ -26,7 +26,7 @@ async function synchronizeNonces(privateKey) {
     console.log(`\naccount: ${wallet.address}`);
     console.log(`Chain ID: ${chainId}`);
     console.log(`Nonce: ${nonce}`);
-    console.log(`Nonce: ${balance}`);
+    console.log(`Balance: ${balance}`);
   }
 
   const highestNonce = Math.max(...nonces);
@@ -34,16 +34,16 @@ async function synchronizeNonces(privateKey) {
   for (let i = 0; i < rpcList.length; i++) {
     const difference = highestNonce - nonces[i];
     for (let j = 0; j < difference; j++) {
-      const tx = await wallets[i].sendTransaction({
-        to: wallets[i].address,
-        value: ethers.utils.parseEther('0')
-      });
-      const txReceipt = await tx.wait();
+      // const tx = await wallets[i].sendTransaction({
+      //   to: wallets[i].address,
+      //   value: ethers.utils.parseEther('0')
+      // });
+      // const txReceipt = await tx.wait();
 
-      const gasUsed = txReceipt.gasUsed;
-      console.log(`\nGas used for transaction ${j + 1} on ${rpcList[i]}: ${gasUsed.toString()} gwei`);
+      // const gasUsed = txReceipt.gasUsed;
+      // console.log(`\nGas used for transaction ${j + 1} on ${rpcList[i]}: ${gasUsed.toString()} gwei`);
 
-      console.log(`Sent dummy transaction ${j + 1} to ${rpcList[i]}`);
+      // console.log(`Sent dummy transaction ${j + 1} to ${rpcList[i]}`);
     }
   }
 }

@@ -75,20 +75,20 @@ async function deployAgreementsContract(vaultAddress, tokenAddress) {
   await contract.deployed()
 
   // Wait for the deployment transaction to be mined
-  const deployReceipt = await contract.deployTransaction.wait()
+  const deployReceipt = await contract.deployTransaction.wait(1)
   console.log(`Deployed AgreementContract ${contract.address} | Block ${deployReceipt.blockNumber}: `)
 
   // Now that the deployment is mined, you can call contract methods safely
   const tx = await contract.addAcceptedPaymentToken(tokenAddress)
-  await tx.wait() // Wait for the transaction to be mined
+  await tx.wait(1) // Wait for the transaction to be mined
   console.log("addAcceptedPaymentToken transaction hash: ", tx.hash)
 
   const tx2 = await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE)
-  await tx2.wait() // Wait for the transaction to be mined
+  await tx2.wait(1) // Wait for the transaction to be mined
   console.log("setFees transaction hash: ", tx2.hash)
 
   const tx3 = await contract.setStableVaultAddress(vaultAddress)
-  await tx3.wait() // Wait for the transaction to be mined
+  await tx3.wait(1) // Wait for the transaction to be mined
   
   copyABI()
 
@@ -103,7 +103,7 @@ async function deployToken() {
   const Token = await ethers.getContractFactory("fakeStable")
   const token = await Token.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS)
   await token.deployed()
-  const deployReceipt = await token.deployTransaction.wait()
+  const deployReceipt = await token.deployTransaction.wait(1)
   console.log(`Deployed Token ${token.address} | Block ${deployReceipt.blockNumber}: `)
   return token.address
 }
@@ -116,7 +116,7 @@ async function deployStableVault() {
   await vault.deployed()
 
   // Wait for the deployment transaction to be mined
-  const deployReceipt = await vault.deployTransaction.wait()
+  const deployReceipt = await vault.deployTransaction.wait(1)
   console.log(`Deployed setStableVaultAddress ${vault.address} | Block ${deployReceipt.blockNumber}: `)
 
   // const tx = await vault.setSparkSettings(
@@ -124,7 +124,7 @@ async function deployStableVault() {
   //   SPARK_INCENTIVES_CONTROLLER,
   //   SPARK_LENDING_POOL
   // )
-  // await tx.wait() // Wait for the transaction to be mined
+  // await tx.wait(1) // Wait for the transaction to be mined
   // console.log("setSparkSettings transaction hash: ", tx.hash)
 
   // await vault.updateValidNetworks("depositSpark", SPARK_VALID_CHAIN_IDS)
@@ -152,7 +152,7 @@ async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress) 
   //   // Deploy if no contract exists at the address
   //   kyodoRegistry = await KyodoRegistry.deploy(admin.address);
   //   await kyodoRegistry.deployed()
-  //   await kyodoRegistry.deployTransaction.wait()
+  //   await kyodoRegistry.deployTransaction.wait(1)
   // } else {
   //   // If a contract is already deployed, connect to it instead of redeploying
   //   kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
@@ -169,13 +169,13 @@ async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress) 
   for (const [key, value] of Object.entries(keysToUpdate)) {
     try {
       const tx = await kyodoRegistry.createRegistry(key, value);
-      await tx.wait();
+      await tx.wait(1);
       console.log(`\nKey ${key} stored on KyodoRegistry`, tx.hash);
     } catch (error) {
       if (error.message.includes("The registry already exists")) {
         try {
           const updateTx = await kyodoRegistry.updateRegistry(key, value);
-          await updateTx.wait();
+          await updateTx.wait(1);
           console.log(`\nKey ${key} updated on KyodoRegistry`, updateTx.hash);
         } catch (updateError) {
           console.log(`error trying to update ${key} on KyodoRegistry`, updateError);
@@ -192,7 +192,6 @@ async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress) 
   return kyodoRegistry.address;
 }
 
-
 async function main() {
   try {
     const [deployer] = await hre.ethers.getSigners();
@@ -206,23 +205,23 @@ async function main() {
     console.log(`Balance: ${hre.ethers.utils.formatEther(balance)} ETH\n`); 
     
     const tokenAddress = await deployToken();
-    // const vaultData = await deployStableVault();
-    // const agreementData = await deployAgreementsContract(vaultData['address'], tokenAddress);
+    const vaultData = await deployStableVault();
+    const agreementData = await deployAgreementsContract(vaultData['address'], tokenAddress);
 
-    // const kyodoRegistry = await deployKyodoRegistry(
-    //   agreementData,
-    //   vaultData,
-    //   tokenAddress
-    // );
+    const kyodoRegistry = await deployKyodoRegistry(
+      agreementData,
+      vaultData,
+      tokenAddress
+    );
 
-    // console.log(`\nKyodoRegistry Contract deployed at address: ${kyodoRegistry}`);
+    console.log(`\nKyodoRegistry Contract deployed at address: ${kyodoRegistry}`);
     
-    // updateConfig(
-    //   agreementData,
-    //   vaultData,
-    //   tokenAddress,
-    //   kyodoRegistry
-    // ); 
+    updateConfig(
+      agreementData,
+      vaultData,
+      tokenAddress,
+      kyodoRegistry
+    ); 
     
     process.exit(0);
   } catch (error) {
