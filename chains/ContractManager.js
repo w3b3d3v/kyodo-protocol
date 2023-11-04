@@ -23,10 +23,10 @@ class ContractManager {
   }
 
   getAddressValidator(chain) {
-    if (this.supportedNetworks.includes(chain)) {
-      return this.addressValidators['ethereum'];
-    } else if (chain === 'solana') {
-      return this.addressValidators['solana'];
+    if (this.supportedNetworks.includes(Number(chain))) {
+      return this.addressValidators["ethereum"]
+    } else if (chain === "solana") {
+      return this.addressValidators["solana"]
     }
     console.error(`Address Validator for ${chain} not found.`);
     return null;  // ou talvez lançar um erro se a chain não for reconhecida
