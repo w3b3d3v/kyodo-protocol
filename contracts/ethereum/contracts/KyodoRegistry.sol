@@ -5,24 +5,27 @@ import "./Admin.sol";
 
 contract KyodoRegistry is Admin {
     mapping(bytes32 => address) private addressRegistry;
+    mapping(bytes32 => uint) private blockDeployment;
 
-    event RegistryCreated(bytes32 indexed key, address value);
-    event RegistryUpdated(bytes32 indexed key, address value);
+    event RegistryCreated(bytes32 indexed key, address value, uint blockNumber);
+    event RegistryUpdated(bytes32 indexed key, address value, uint blockNumber);
 
     constructor(address admin) Admin(admin) {}
 
-    function createRegistry(string memory registry, address value) external onlyAdmin() whenNotPaused() {
+    function createRegistry(string memory registry, address value, uint blockNumber) external onlyAdmin() whenNotPaused() {
         bytes32 key = keccak256(abi.encodePacked(registry));
         require(addressRegistry[key] == address(0), 'The registry already exists');
         addressRegistry[key] = value;
-        emit RegistryCreated(key, value);
+        blockDeployment[key] = blockNumber;
+        emit RegistryCreated(key, value, blockNumber);
     }
 
-    function updateRegistry(string memory registry, address value) external onlyAdmin() whenNotPaused() {
+    function updateRegistry(string memory registry, address value, uint blockNumber) external onlyAdmin() whenNotPaused() {
         bytes32 key = keccak256(abi.encodePacked(registry));
         require(addressRegistry[key] != address(0), 'Registry does not exists');
         addressRegistry[key] = value;
-        emit RegistryUpdated(key, value);
+        blockDeployment[key] = blockNumber;
+        emit RegistryUpdated(key, value, blockNumber);
     }
 
     function getRegistry(string memory registry) external view returns (address) {
@@ -30,5 +33,11 @@ contract KyodoRegistry is Admin {
         address registeredAddress = addressRegistry[key];
         require(registeredAddress != address(0), 'Registry does not exists');
         return registeredAddress;
+    }
+
+    function getBlockDeployment(string memory registry) external view returns (uint) {
+        bytes32 key = keccak256(abi.encodePacked(registry));
+        uint blockNumber = blockDeployment[key];
+        return blockNumber;
     }
 }
