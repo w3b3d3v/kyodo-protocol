@@ -150,7 +150,7 @@ HEADER
 
 .user-wallet {
   border-radius: 15px;
-  padding: 0 15px 0 0;
+  padding: 0 15px 0 0px;
   height: 30px;
   line-height: 30px;
   font-size: $font-small;
@@ -212,9 +212,11 @@ HEADER
   color: $medium-blue;
   line-height: 30px;
   text-decoration: none;
-  border: none;  /* Add this line to remove the border */
-  background: none;  /* Add this line to remove the background */
-  outline: none;  /* Add this line to remove the focus outline */
+  border: none;
+  background: none;
+  outline: none;
+  text-align: left; /* Alinha o texto à esquerda */
+  vertical-align: middle; /* Alinha verticalmente no meio */
 
   @media #{$smartphones-1} {
     padding: 0 12px;
@@ -226,7 +228,11 @@ HEADER
   }
 
   img {
-    margin-top: 10px;
-    margin-left: 5px;
+    float: left;
+    margin: 5px 0 0 5px;
+
+    @media #{$smartphones-1} {
+      margin-left: 12px;
+    }
   }
 }

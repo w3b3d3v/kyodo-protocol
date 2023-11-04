@@ -3,10 +3,14 @@ import ethTransactions from "./ethereum/transactions"
 
 class TransactionManager {
   constructor() {
-    this.chains = {
-      ethereum: ethTransactions,
-      solana: solTransactions,
+    this.chains = {}
+    this.supportedNetworks = [1115, 10200, 245022926, 31337]
+
+    // Initialize transactions based on chain type
+    for (const chain of this.supportedNetworks) {
+      this.chains[chain] = ethTransactions;
     }
+    this.chains["solana"] = solTransactions;
   }
 
   async handleTransactionPromise(chain, ...args) {

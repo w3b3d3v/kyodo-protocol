@@ -43,7 +43,7 @@ function Toast({
           {t("transaction-success")}
         </p>
         <Link
-          href={explorerLink + transactionHash.hash}
+          href={explorerLink + "tx/" +transactionHash.hash}
           target="_blank"
           rel="noopener noreferrer"
         >
