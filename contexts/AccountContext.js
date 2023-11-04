@@ -5,11 +5,13 @@ import { clusterApiUrl } from '@solana/web3.js';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import contractManager from "../chains/ContractManager"
+import { useWeb3Modal, useWeb3ModalState, Web3Modal } from '@web3modal/wagmi/react'
 
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
 import { gnosisChiado, neonDevnet } from 'wagmi/chains'
 import { defineChain } from 'viem'
+import { useAccount as useWagmiAccount } from 'wagmi';
 
 const coreDaoTestnet = defineChain({
   id: 1115,
@@ -66,6 +68,7 @@ export function useAccount() {
 }
 
 export function AccountProvider({ children }) {
+  const { selectedNetworkId } = useWeb3ModalState()
 
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(() => {
     if (typeof window !== "undefined") {
@@ -93,6 +96,13 @@ export function AccountProvider({ children }) {
   const handleDisconnect = () => {
     setAccount(null)
     localStorage.setItem("selectedChain", null)
+    setSelectedChain(null)
+  }
+
+  const hancleChainChanged = () => {
+    localStorage.setItem("selectedChain", parseInt(selectedNetworkId))
+    setSelectedChain(selectedNetworkId)
+    window.location.reload()
   }
 
   const updateAccount = async () => {
@@ -109,6 +119,7 @@ export function AccountProvider({ children }) {
           open({ view: 'Networks' });
         }
         localStorage.setItem("selectedChain", parseInt(chainId))
+        setSelectedChain(chainId)
       } catch (error) {
         console.error(error)
       }
@@ -126,22 +137,23 @@ export function AccountProvider({ children }) {
 
   useEffect(() => {
     updateAccount()
-    // if (window[selectedChain]) {
-    //   try {
-    //     window[selectedChain].on("connect", updateAccount)
-    //     window[selectedChain].on("accountsChanged", updateAccount)
-    //     window[selectedChain].on("disconnect", handleDisconnect)
+
+    if (window.ethereum) {
+      try {
+        window.ethereum.on("chainChanged", hancleChainChanged)
+        window.ethereum.on("accountsChanged", updateAccount)
+        window.ethereum.on("disconnect", handleDisconnect)
   
-    //     return () => {
-    //       window[selectedChain].removeListener("connect", updateAccount)
-    //       window[selectedChain].removeListener("disconnect", handleDisconnect)
-    //     }
-    //   } catch (error) {
-    //     if (error instanceof UserRejectedRequestError) {
-    //       // Handle user rejection
-    //     }
-    //   }
-    // }
+        return () => {
+          window.ethereum.removeListener("connect", updateAccount)
+          window.ethereum.removeListener("disconnect", handleDisconnect)
+        }
+      } catch (error) {
+        if (error instanceof UserRejectedRequestError) {
+          // Handle user rejection
+        }
+      }
+    }
   }, [account, selectedChain])
 
   return (

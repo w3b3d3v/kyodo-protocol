@@ -61,6 +61,10 @@ function Header() {
     open({ view: 'Networks' })
   }
 
+  async function handleSelectWallet() {
+    open({ view: 'Account' })
+  }
+
   // Mobile header and footer
   const mobileScreenWidth = 800
   const isSmallScreen = window.innerWidth <= mobileScreenWidth
@@ -114,19 +118,20 @@ function Header() {
             ) : (
               <div className={"user-wallet"}>
                 <button className={"select-chain"} onClick={handleSelectChain}>
-                  <Image
-                    src={chainMetadata?.logo ? chainMetadata?.logo : "/info-icon.svg"}
-                    width={22}
-                    height={19}
-                    alt={chainMetadata?.name}
+                  <Image 
+                    src={chainMetadata?.logo} 
+                    width={22} 
+                    height={19} 
                   />
                   {chainMetadata?.name || "Select chain"}
                   <Image src="/arrow-down.svg" alt="Select chain" width={22} height={19} />
                 </button>
                 <div>
-                  <span className={"wallet-on"}>Status</span>
-                  <em>{formatAddress(account)}</em>
+                  <button className={"wallet-on"} 
+                    onClick={handleSelectWallet}>
+                    <em>{formatAddress(account)}</em>
                   <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
+                  </button>
                 </div>
               </div>
             )}
