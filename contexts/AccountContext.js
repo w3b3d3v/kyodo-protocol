@@ -5,7 +5,7 @@ import { clusterApiUrl } from '@solana/web3.js';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import contractManager from "../chains/ContractManager"
-import { useWeb3Modal, useWeb3ModalState, Web3Modal } from '@web3modal/wagmi/react'
+import { useWeb3ModalState, useWeb3Modal } from '@web3modal/wagmi/react'
 
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
@@ -68,6 +68,7 @@ export function useAccount() {
 }
 
 export function AccountProvider({ children }) {
+  const { open } = useWeb3Modal()
   const { selectedNetworkId } = useWeb3ModalState()
 
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(() => {
@@ -99,14 +100,23 @@ export function AccountProvider({ children }) {
     setSelectedChain(null)
   }
 
+
   const hancleChainChanged = () => {
     localStorage.setItem("selectedChain", parseInt(selectedNetworkId))
     setSelectedChain(selectedNetworkId)
     window.location.reload()
   }
 
+  const handleSelectChain = () => {
+    open({ view: 'Networks' })
+  }
+
+  const handleSelectWallet = () => {
+  open({ view: 'Account' })
+  }
+
   const updateAccount = async () => {
-    if (!contractManager.getSupportedChains().includes(selectedChain) && window.ethereum) {  
+    if (contractManager.getSupportedChains().includes(Number(selectedChain)) && window.ethereum) {  
       try {
         const accounts = await window.ethereum.request({ method: "eth_accounts" })
         if (accounts.length > 0 && accounts[0] !== account) {
@@ -163,7 +173,9 @@ export function AccountProvider({ children }) {
       selectedChain,
       setSelectedChain,
       isOnboardingComplete,
-      completeOnboarding
+      completeOnboarding,
+      handleSelectChain,
+      handleSelectWallet
     }}>
       <WagmiConfig config={wagmiConfig}>
         <ConnectionProvider endpoint={endpoint}>
