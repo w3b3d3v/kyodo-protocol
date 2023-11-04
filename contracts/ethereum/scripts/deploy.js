@@ -99,7 +99,7 @@ async function deployAgreementsContract(vaultAddress, tokenAddress) {
 }
 
 async function deployToken() {
-  StableVault
+  console.log(`\nDeploying Token...`)
   const Token = await ethers.getContractFactory("fakeStable")
   const token = await Token.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS)
   await token.deployed()
@@ -117,7 +117,7 @@ async function deployStableVault() {
 
   // Wait for the deployment transaction to be mined
   const deployReceipt = await vault.deployTransaction.wait()
-  console.log(`Deployed setStableVaultAddress ${vaultAddress} | Block ${deployReceipt.blockNumber}: `)
+  console.log(`Deployed setStableVaultAddress ${vault.address} | Block ${deployReceipt.blockNumber}: `)
 
   // const tx = await vault.setSparkSettings(
   //   SPARK_DATA_PROVIDER,
@@ -198,31 +198,31 @@ async function main() {
     const [deployer] = await hre.ethers.getSigners();
     const chainId = await deployer.getChainId();
     const nonce = await deployer.getTransactionCount();
-    const balance = await deployer.getBalance();  // Get the balance of the deployer
+    const balance = await deployer.getBalance(); 
     
     console.log(`\nDeploying contracts with the account: ${deployer.address}`);
     console.log(`Chain ID: ${chainId}`);
     console.log(`Nonce: ${nonce}`);
-    console.log(`Balance: ${hre.ethers.utils.formatEther(balance)} ETH\n`);  // Convert Wei to ETH for readability
+    console.log(`Balance: ${hre.ethers.utils.formatEther(balance)} ETH\n`); 
     
     const tokenAddress = await deployToken();
-    const vaultData = await deployStableVault();
-    const agreementData = await deployAgreementsContract(vaultData['address'], tokenAddress);
+    // const vaultData = await deployStableVault();
+    // const agreementData = await deployAgreementsContract(vaultData['address'], tokenAddress);
 
-    const kyodoRegistry = await deployKyodoRegistry(
-      agreementData,
-      vaultData,
-      tokenAddress
-    );
+    // const kyodoRegistry = await deployKyodoRegistry(
+    //   agreementData,
+    //   vaultData,
+    //   tokenAddress
+    // );
 
-    console.log(`\nKyodoRegistry Contract deployed at address: ${kyodoRegistry}`);
+    // console.log(`\nKyodoRegistry Contract deployed at address: ${kyodoRegistry}`);
     
-    updateConfig(
-      agreementData,
-      vaultData,
-      tokenAddress,
-      kyodoRegistry
-    ); 
+    // updateConfig(
+    //   agreementData,
+    //   vaultData,
+    //   tokenAddress,
+    //   kyodoRegistry
+    // ); 
     
     process.exit(0);
   } catch (error) {

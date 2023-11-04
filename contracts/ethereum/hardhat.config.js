@@ -10,14 +10,14 @@ const { HDNode } = require("@ethersproject/hdnode");
 
 const seed = mnemonicToSeedSync(process.env.MNEMONIC);
 const masterNode = HDNode.fromSeed(seed);
-const account = masterNode.derivePath("m/44'/60'/0'/0/0");  // The last number is the index. 9 gives us the 5th address.
+const account = masterNode.derivePath("m/44'/60'/0'/0/1");  // The last number is the index. 9 gives us the 5th address.
 console.log("pvt address: " + account.privateKey);
 console.log("public address: " + account.address);
 
 /** @type import('hardhat/config').HardhatUserConfig */
 
 let config = {
-  // defaultNetwork: "testing",
+  defaultNetwork: "testing",
   solidity: "0.8.1",
   settings: {
     optimizer: {
@@ -57,12 +57,17 @@ let config = {
       //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     gnosisChiado: {
-      url: "https://rpc.chiadochain.net" || "",
+      url: "https://rpc.chiado.gnosis.gateway.fm" || "",
       accounts: [account.privateKey]
       //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     neonDevnet: {
       url: "https://devnet.neonevm.org" || "",
+      accounts: [account.privateKey]
+      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    CoreDaoTestnet: {
+      url: "https://rpc.test.btcs.network" || "",
       accounts: [account.privateKey]
       //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     }
