@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next"
 import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWalletButton"
 import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { useWeb3Modal } from '@web3modal/wagmi/react'
 import Head from "next/head"
 import contractManager from "../chains/ContractManager"
 
@@ -43,11 +42,10 @@ function PageContent({ Component, pageProps }) {
 }
 
 function Header() {
-  const { account, selectedChain } = useAccount()
+  const { account, selectedChain, handleSelectChain, handleSelectWallet } = useAccount()
   const router = useRouter()
   const { t, i18n } = useTranslation()
   const { locale } = router
-  const { open } = useWeb3Modal()
   const currentLanguage = i18n.language
   const chainMetadata = contractManager.chainMetadata(selectedChain)
 
@@ -55,14 +53,6 @@ function Header() {
     const newLocale = currentLanguage === "en-US" ? "pt-BR" : "en-US"
     i18n.changeLanguage(newLocale)
     router.push(router.pathname, router.asPath, { locale: newLocale }) // Update Next.js router locale
-  }
-
-  async function handleSelectChain() {
-    open({ view: 'Networks' })
-  }
-
-  async function handleSelectWallet() {
-    open({ view: 'Account' })
   }
 
   // Mobile header and footer

@@ -41,7 +41,6 @@ function updateConfig(agreementData, vaultData, fakeStableAddress, kyodoRegistry
 
   const keysToUpdate = {
     'NEXT_PUBLIC_KYODO_REGISTRY': kyodoRegistryAddress,
-    // 'NEXT_PUBLIC_FAKE_STABLE_ADDRESS': fakeStableAddress,
     'NEXT_PUBLIC_AGREEMENT_DEPLOYMENT_BLOCK_NUMBER': agreementData["deploymentBlock"],
     'NEXT_PUBLIC_VAULT_DEPLOYMENT_BLOCK_NUMBER': vaultData["deploymentBlock"],
   };
@@ -66,6 +65,7 @@ function updateConfig(agreementData, vaultData, fakeStableAddress, kyodoRegistry
 }
 
 async function deployAgreementsContract(vaultAddress, tokenAddress) {
+  console.log(`\nDeploying AgreementsContract...`)
   const AgreementContract = await ethers.getContractFactory("AgreementContract")
   const contract = await AgreementContract.deploy(
     process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS,
@@ -74,10 +74,9 @@ async function deployAgreementsContract(vaultAddress, tokenAddress) {
 
   await contract.deployed()
 
-  console.log("AgreementContract deployed to:", contract.address)
-
   // Wait for the deployment transaction to be mined
   const deployReceipt = await contract.deployTransaction.wait()
+  console.log(`Deployed AgreementContract ${contract.address} | Block ${deployReceipt.blockNumber}: `)
 
   // Now that the deployment is mined, you can call contract methods safely
   const tx = await contract.addAcceptedPaymentToken(tokenAddress)
@@ -90,8 +89,7 @@ async function deployAgreementsContract(vaultAddress, tokenAddress) {
 
   const tx3 = await contract.setStableVaultAddress(vaultAddress)
   await tx3.wait() // Wait for the transaction to be mined
-  console.log(`setStableVaultAddress ${vaultAddress} transaction hash: `, tx3.hash)
-
+  
   copyABI()
 
   return {
@@ -101,15 +99,17 @@ async function deployAgreementsContract(vaultAddress, tokenAddress) {
 }
 
 async function deployToken() {
+  StableVault
   const Token = await ethers.getContractFactory("fakeStable")
   const token = await Token.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS)
   await token.deployed()
-
-  console.log("Token deployed to:", token.address)
+  const deployReceipt = await token.deployTransaction.wait()
+  console.log(`Deployed Token ${token.address} | Block ${deployReceipt.blockNumber}: `)
   return token.address
 }
 
 async function deployStableVault() {
+  console.log(`\nDeploying StableVault...`)
   const StableVault = await ethers.getContractFactory("StableVault")
   const [admin] = await ethers.getSigners()
   const vault = await StableVault.deploy(admin.address, "StableVaultToken", "STBLV")
@@ -117,23 +117,23 @@ async function deployStableVault() {
 
   // Wait for the deployment transaction to be mined
   const deployReceipt = await vault.deployTransaction.wait()
+  console.log(`Deployed setStableVaultAddress ${vaultAddress} | Block ${deployReceipt.blockNumber}: `)
 
-  const tx = await vault.setSparkSettings(
-    SPARK_DATA_PROVIDER,
-    SPARK_INCENTIVES_CONTROLLER,
-    SPARK_LENDING_POOL
-  )
-  await tx.wait() // Wait for the transaction to be mined
-  console.log("setSparkSettings transaction hash: ", tx.hash)
+  // const tx = await vault.setSparkSettings(
+  //   SPARK_DATA_PROVIDER,
+  //   SPARK_INCENTIVES_CONTROLLER,
+  //   SPARK_LENDING_POOL
+  // )
+  // await tx.wait() // Wait for the transaction to be mined
+  // console.log("setSparkSettings transaction hash: ", tx.hash)
 
-  await vault.updateValidNetworks("depositSpark", SPARK_VALID_CHAIN_IDS)
-  await vault.addProfile(admin.address)
-  // await vault.setUserCompoundPreference(true)
-  // FIXME add real address or way to user set its own wallet.
-  // this wallet is the second hardhat wallet
-  await vault.setUserCompoundPreference(false, admin.address) // LOCALNETWORK: False, otherwise will fail because Spark/AAve does not exist in local network
-  console.log("StableVault deployed to:", vault.address)
-
+  // await vault.updateValidNetworks("depositSpark", SPARK_VALID_CHAIN_IDS)
+  // await vault.addProfile(admin.address)
+  // // await vault.setUserCompoundPreference(true)
+  // // FIXME add real address or way to user set its own wallet.
+  // // this wallet is the second hardhat wallet
+  // await vault.setUserCompoundPreference(false, admin.address) // LOCALNETWORK: False, otherwise will fail because Spark/AAve does not exist in local network
+  
   copyVaultABI()
   return {
     address: vault.address,
@@ -144,19 +144,21 @@ async function deployStableVault() {
 async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress) {
   const KyodoRegistry = await ethers.getContractFactory("KyodoRegistry");
   const [admin] = await ethers.getSigners();
-  // Check if a contract already exists at the specified address
-  const codeAtAddress = await ethers.provider.getCode(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
-    
+  
   let kyodoRegistry;
-  if (codeAtAddress === '0x') {
-    // Deploy if no contract exists at the address
-    kyodoRegistry = await KyodoRegistry.deploy(admin.address);
-    await kyodoRegistry.deployed()
-    await kyodoRegistry.deployTransaction.wait()
-  } else {
-    // If a contract is already deployed, connect to it instead of redeploying
-    kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
-  }
+  // Check if a contract already exists at the specified address
+  // const codeAtAddress = await ethers.provider.getCode(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+  // if (codeAtAddress === '0x') {
+  //   // Deploy if no contract exists at the address
+  //   kyodoRegistry = await KyodoRegistry.deploy(admin.address);
+  //   await kyodoRegistry.deployed()
+  //   await kyodoRegistry.deployTransaction.wait()
+  // } else {
+  //   // If a contract is already deployed, connect to it instead of redeploying
+  //   kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+  // }
+
+  kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
 
   const keysToUpdate = {
     'FAKE_STABLE_ADDRESS': fakeStableAddress,
@@ -170,9 +172,19 @@ async function deployKyodoRegistry(agreementData, vaultData, fakeStableAddress) 
       await tx.wait();
       console.log(`\nKey ${key} stored on KyodoRegistry`, tx.hash);
     } catch (error) {
-      console.log(`error trying to save ${key} on KyodoRegistry`, error);
+      if (error.message.includes("The registry already exists")) {
+        try {
+          const updateTx = await kyodoRegistry.updateRegistry(key, value);
+          await updateTx.wait();
+          console.log(`\nKey ${key} updated on KyodoRegistry`, updateTx.hash);
+        } catch (updateError) {
+          console.log(`error trying to update ${key} on KyodoRegistry`, updateError);
+        }
+      } else {
+        console.log(`error trying to save ${key} on KyodoRegistry`, error);
+      }
     }
-  }
+  }  
 
   const address = await kyodoRegistry.getRegistry("AGREEMENT_CONTRACT_ADDRESS");
   console.log("address Saved", address)

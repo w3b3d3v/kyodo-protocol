@@ -60,6 +60,11 @@ let config = {
       url: "https://rpc.chiadochain.net" || "",
       accounts: [account.privateKey]
       //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    neonDevnet: {
+      url: "https://devnet.neonevm.org" || "",
+      accounts: [account.privateKey]
+      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     }
   },
   contractSizer: {
