@@ -10,6 +10,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import Loader from '../utils/Loader';
 import Toast from '../utils/Toast';
+import { ethers } from "ethers"
 
 function AgreementList() {
   const { account, selectedChain } = useAccount()
@@ -68,6 +69,9 @@ function AgreementList() {
     };
   
     const onConfirmation = () => {
+      fetch(
+        `/api/notify?type=payment&account=${ethers.utils.getAddress(account)}&value=${paymentValue}`
+      )
       setShowPaymentInput(false)
       setPaymentValue("");
       fetchAgreements()
