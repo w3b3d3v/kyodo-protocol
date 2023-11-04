@@ -96,6 +96,9 @@ function Header() {
                     <Link href="/agreements">{t("agreements")}</Link>
                   </li>
                   <li>
+                    <Link href="/notifications">{t("notifications")}</Link>
+                  </li>
+                  <li>
                     <a onClick={changeLanguage} className={"local-trigger"}>
                       {locale}
                     </a>
@@ -108,19 +111,14 @@ function Header() {
             ) : (
               <div className={"user-wallet"}>
                 <button className={"select-chain"} onClick={handleSelectChain}>
-                  <Image 
-                    src={chainMetadata?.logo} 
-                    width={22} 
-                    height={19} 
-                  />
+                  <Image src={chainMetadata?.logo} width={22} height={19} />
                   {chainMetadata?.name || "Select chain"}
                   <Image src="/arrow-down.svg" alt="Select chain" width={22} height={19} />
                 </button>
                 <div>
-                  <button className={"wallet-on"} 
-                    onClick={handleSelectWallet}>
+                  <button className={"wallet-on"} onClick={handleSelectWallet}>
                     <em>{formatAddress(account)}</em>
-                  <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
+                    <Image src="/metamask.svg" alt="Metamask icon" width={22} height={19} />
                   </button>
                 </div>
               </div>
