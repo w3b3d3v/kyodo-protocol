@@ -8,7 +8,7 @@ const networks = require("./networks.json");
 
 const seed = mnemonicToSeedSync(process.env.MNEMONIC);
 const masterNode = HDNode.fromSeed(seed);
-const account = masterNode.derivePath("m/44'/60'/0'/0/10");  // The last /9 defines the account index
+const account = masterNode.derivePath("m/44'/60'/0'/0/5");  // The last /9 defines the account index
 
 function updateConfig(kyodoRegistryAddress) {
   const envPath = path.join(__dirname, '../../../../.env.development.local');

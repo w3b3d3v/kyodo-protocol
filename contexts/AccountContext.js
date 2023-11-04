@@ -9,7 +9,7 @@ import { useWeb3ModalState, useWeb3Modal } from '@web3modal/wagmi/react'
 
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
-import { gnosisChiado, neonDevnet } from 'wagmi/chains'
+import { gnosisChiado, neonDevnet, polygonMumbai } from 'wagmi/chains'
 import { defineChain } from 'viem'
 import { useAccount as useWagmiAccount } from 'wagmi';
 
@@ -40,7 +40,7 @@ const metadata = {
 }
 
 const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
-const chains = [gnosisChiado, neonDevnet, coreDaoTestnet]
+const chains = [gnosisChiado, neonDevnet, coreDaoTestnet, polygonMumbai]
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
 
 createWeb3Modal({ 
@@ -48,9 +48,10 @@ createWeb3Modal({
   projectId, 
   chains,
   chainImages: {
-    1115: "https://s1.coincarp.com/logo/1/core-dao.png",
-    10_200: "https://avatars.githubusercontent.com/u/92709226?s=200",
-    245_022_926: "https://neonevm.org/favicons/apple-touch-icon.png",
+    1115: "/chains/core-dao.png",
+    10_200: "/chains/gnosis-chain.png",
+    245_022_926: "/chains/neonevm-logo.png",
+    80001: "/chains/polygon-matic-logo.svg",
   }
 })
 
@@ -112,7 +113,7 @@ export function AccountProvider({ children }) {
   }
 
   const handleSelectWallet = () => {
-  open({ view: 'Account' })
+    open({ view: 'Account' })
   }
 
   const updateAccount = async () => {
@@ -129,7 +130,7 @@ export function AccountProvider({ children }) {
           open({ view: 'Networks' });
         }
         localStorage.setItem("selectedChain", parseInt(chainId))
-        setSelectedChain(chainId)
+        setSelectedChain(parseInt(chainId))
       } catch (error) {
         console.error(error)
       }
