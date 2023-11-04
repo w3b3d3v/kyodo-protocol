@@ -123,14 +123,14 @@ function Balances() {
   return (
     <div>
       <section className={styles["user-home"]}>
-      <Loader isLoading={isLoading} />
-      <Toast
-        transactionSuccess={transactionSuccess}
-        transactionPending={transactionPending}
-        transactionFail={transactionFail}
-        errorMessage={errorMessage}
-        transactionHash={transactionHash}
-      />
+        <Loader isLoading={isLoading} />
+        <Toast
+          transactionSuccess={transactionSuccess}
+          transactionPending={transactionPending}
+          transactionFail={transactionFail}
+          errorMessage={errorMessage}
+          transactionHash={transactionHash}
+        />
 
         <div className={styles["dashboard-header"]}>
           <h1>{t("gm")}</h1>
@@ -139,63 +139,30 @@ function Balances() {
             <div key={index} className={styles["balance-heading"]}>
               <p className={styles["usd-balance"]}>
                 <Image src="/usd-icon.svg" alt="USD icon" width={32} height={32} />
-                <span>
-                  {parseFloat(balance.amount)
-                    .toFixed(2)
-                    .replace(/\.00$/, "")}
-                </span>
+                <span>{parseFloat(balance.amount).toFixed(2).replace(/\.00$/, "")}</span>
               </p>
-                {showRedeemInput !== index && (
-                  <a onClick={() => handleRedeemClick(index)}>{t("redeem")}</a>
-                )}
-                {showRedeemInput === index && (
-                  <>
-                    <div className={styles["opened-items"]}>
-                      <input
-                        type="number"
-                        value={redeemValue}
-                        onChange={(e) => handleRedeemValueChange(e)}
-                        placeholder="USD"
-                      />
-                      <button onClick={() => withdrawFromVault(redeemValue, balance)}>
-                        {t("confirm")}
-                      </button>
-                    </div>
-                  </>
-                )}
+              {showRedeemInput !== index && (
+                <a onClick={() => handleRedeemClick(index)}>{t("redeem")}</a>
+              )}
+              {showRedeemInput === index && (
+                <>
+                  <div className={styles["opened-items"]}>
+                    <input
+                      type="number"
+                      value={redeemValue}
+                      onChange={(e) => handleRedeemValueChange(e)}
+                      placeholder="USD"
+                    />
+                    <button onClick={() => withdrawFromVault(redeemValue, balance)}>
+                      {t("confirm")}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ))}
         </div>
-
-        <ul className={styles["home-calls"]}>
-          <li className={styles["disabled"]}>
-            <h2>Complete your profile to be visible</h2>
-            <div className={styles["progressbar"]}>
-              <div></div>
-            </div>
-            <p>
-              You profile is <strong>35%</strong> complete
-            </p>
-            <Link href="#">Complete profile</Link>
-          </li>
-          <li>
-            <h2>{t("call-02")}</h2>
-            <p>{t("phrase-02")}</p>
-            <Link href="/agreements/new">{t("btn-02")}</Link>
-          </li>
-          <li className={styles["disabled"]}>
-            <h2>
-              Refer and<br></br> earn
-            </h2>
-            <p>
-              Professionals or contractors that refer the usage of Kyodo, can earn a % of paid value
-              to the protocol.
-            </p>
-            <Link href="#">Get referral link</Link>
-          </li>
-        </ul>
       </section>
-      <Payments limit={2} />
     </div>
   )
 }

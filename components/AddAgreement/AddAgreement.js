@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next"
 import * as Yup from "yup"
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import contractManager from '../../chains/ContractManager';
+import { ethers } from "ethers"
 
 function AddAgreementForm(props) {
   const [title, setTitle] = useState("")
@@ -22,8 +23,8 @@ function AddAgreementForm(props) {
   const [formErrors, setFormErrors] = useState({})
   const router = useRouter()
   const { account, selectedChain } = useAccount()
-  const { publicKey, wallet } = useWallet();
-  const { connection } = useConnection();
+  const { publicKey, wallet } = useWallet()
+  const { connection } = useConnection()
   // const { contract } = useAgreementContract();
   const { t } = useTranslation()
   const {
@@ -35,28 +36,30 @@ function AddAgreementForm(props) {
     errorMessage,
     sendTransaction,
     transactionHash,
-  } = useTransactionHandler();
+  } = useTransactionHandler()
 
   useEffect(() => {
     async function initializeContract() {
       try {
-        setIsLoading(true);
+        setIsLoading(true)
         const details = {
           wallet,
-          connection
+          connection,
         }
-  
-        const agreementContract = await contractManager.chains[selectedChain].agreementContract(details);
-        setContract(agreementContract);
+
+        const agreementContract = await contractManager.chains[selectedChain].agreementContract(
+          details
+        )
+        setContract(agreementContract)
       } catch (error) {
-        console.error("Houve um problema ao inicializar o contrato", error);
+        console.error("Houve um problema ao inicializar o contrato", error)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     }
-  
-    initializeContract();
-  }, [selectedChain, wallet, connection]);
+
+    initializeContract()
+  }, [selectedChain, wallet, connection])
 
   const AgreementSchema = Yup.object().shape({
     title: Yup.string().required(),
@@ -64,18 +67,18 @@ function AddAgreementForm(props) {
     professional: Yup.string()
       .required("Professional is required")
       .test(
-        'valid-chain-address',
+        "valid-chain-address",
         `Professional must be a valid ${selectedChain} address`,
-        function(value) {
-          const validator = contractManager.getAddressValidator(selectedChain);
-          return validator && validator.test(value);
+        function (value) {
+          const validator = contractManager.getAddressValidator(selectedChain)
+          return validator && validator.test(value)
         }
       )
       .test(
         "is-not-company",
         "Professional address cannot be the same as the agreement owner or company",
-        function(value) {
-          return value.toLowerCase() !== account.toLowerCase();
+        function (value) {
+          return value.toLowerCase() !== account.toLowerCase()
         }
       ),
     skills: Yup.string()
@@ -112,7 +115,7 @@ function AddAgreementForm(props) {
       setFormErrors({})
       await addAgreement()
     } catch (errors) {
-      console.log(errors);
+      console.log(errors)
       if (errors instanceof Yup.ValidationError) {
         const errorMessages = {}
         errors.inner.forEach((error) => {
@@ -136,22 +139,21 @@ function AddAgreementForm(props) {
       wallet
     };
 
-    console.log("details: ", details)
-  
     const onConfirmation = () => {
-      setTitle("");
-      setDescription("");
-      setProfessional("");
-      setSkills("");
-      setPaymentAmount("");
+      fetch("/api/notify?type=agreement&account=" + ethers.utils.getAddress(account))
+      setTitle("")
+      setDescription("")
+      setProfessional("")
+      setSkills("")
+      setPaymentAmount("")
       setTimeout(() => {
         setIsLoading(false)
-        router.push("/agreements");
-      }, 3000);
-    };
-  
+        router.push("/agreements")
+      }, 3000)
+    }
+
     await sendTransaction("addAgreement", details, "AgreementCreated", onConfirmation)
-  };
+  }
 
   return (
     <div className={styles["add-agreement-form-container"]}>
@@ -168,7 +170,6 @@ function AddAgreementForm(props) {
       <form className={styles["add-agreement-form"]} onSubmit={handleSubmit}>
         <section className={"columns"}>
           <div className={"col-01"}>
-
             <label htmlFor="title-input">{t("title")}</label>
             {formErrors.title && <div className={"validation-msg"}>{formErrors.title}</div>}
             <div className={styles["generic-field"]}>
@@ -217,10 +218,7 @@ function AddAgreementForm(props) {
             </div>
             <label htmlFor="community-input">{t("community")}</label>
             <div className={"custom-select"}>
-              <select
-                tabIndex={5}
-                id="community-input"
-              >
+              <select tabIndex={5} id="community-input">
                 <option>{t("select-option")}</option>
                 <option>Phala Network</option>
                 <option>WEB3DEV</option>
@@ -238,7 +236,6 @@ function AddAgreementForm(props) {
                 <option>DeFiDragons</option>
               </select>
             </div>
-            
           </div>
 
           <div className={"col-02"}>

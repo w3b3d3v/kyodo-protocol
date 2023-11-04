@@ -1,20 +1,17 @@
-import Balances from '../../components/Dashboard/Balances.js';
-import Web3Inbox from "../../components/utils/web3inbox.js"
-import { useAccount } from "../../contexts/AccountContext"
+import Balances from "../../components/Dashboard/Balances.js"
+import Cards from "../../components/Dashboard/Cards.js"
+import Payments from "../../components/Dashboard/Payments.js"
 
 function Dashboard() {
-  const { account, selectedChain, projectId } = useAccount()
-
-  console.log(projectId)
-  console.log("legal")
-
   return (
     <div>
-      <h1>Dashboard</h1>
-      <Balances />
-      <Web3Inbox address={account} projectId={projectId} />
+      <section className={"user-home"}>
+        <Balances />
+        <Cards />
+        <Payments limit={2} />
+      </section>
     </div>
   )
 }
-  
-export default Dashboard;
+
+export default Dashboard
