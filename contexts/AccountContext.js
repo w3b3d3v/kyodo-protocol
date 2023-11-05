@@ -9,7 +9,7 @@ import { useWeb3ModalState, useWeb3Modal } from '@web3modal/wagmi/react'
 
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
-import { gnosisChiado, neonDevnet, polygonMumbai } from 'wagmi/chains'
+import { gnosisChiado, neonDevnet, polygonMumbai, polygonZkEvmTestnet } from 'wagmi/chains'
 import { defineChain } from 'viem'
 import { useAccount as useWagmiAccount } from 'wagmi';
 
@@ -40,7 +40,7 @@ const metadata = {
 }
 
 const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
-const chains = [gnosisChiado, neonDevnet, coreDaoTestnet, polygonMumbai]
+const chains = [gnosisChiado, neonDevnet, coreDaoTestnet, polygonMumbai, polygonZkEvmTestnet]
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
 
 createWeb3Modal({ 
@@ -48,6 +48,7 @@ createWeb3Modal({
   projectId, 
   chains,
   chainImages: {
+    1442: "/chains/polygon-zk-evm.png",
     1115: "/chains/core-dao.png",
     10_200: "/chains/gnosis-chain.png",
     245_022_926: "/chains/neonevm-logo.png",

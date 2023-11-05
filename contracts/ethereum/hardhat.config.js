@@ -17,7 +17,7 @@ console.log("public address: " + account.address);
 /** @type import('hardhat/config').HardhatUserConfig */
 
 let config = {
-  defaultNetwork: "testing",
+  // defaultNetwork: "testing",
   solidity: "0.8.1",
   settings: {
     optimizer: {
@@ -56,6 +56,11 @@ let config = {
       accounts: [account.privateKey]
       //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    gnosisChiado: {
+      url: "https://rpc.chiado.gnosis.gateway.fm" || "",
+      accounts: [account.privateKey]
+      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     neonDevnet: {
       url: "https://devnet.neonevm.org" || "",
       accounts: [account.privateKey]
@@ -63,6 +68,11 @@ let config = {
     },
     CoreDaoTestnet: {
       url: "https://rpc.test.btcs.network" || "",
+      accounts: [account.privateKey]
+      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    polygonZkEvmTestnet: {
+      url: "https://rpc.public.zkevm-test.net" || "",
       accounts: [account.privateKey]
       //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     }

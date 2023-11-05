@@ -4,7 +4,7 @@ import ethTransactions from "./ethereum/transactions"
 class TransactionManager {
   constructor() {
     this.chains = {}
-    this.supportedNetworks = [1115, 10200, 245022926, 31337, 80001]
+    this.supportedNetworks = [1115, 10200, 245022926, 31337, 80001, 1442]
 
     // Initialize transactions based on chain type
     for (const chain of this.supportedNetworks) {
