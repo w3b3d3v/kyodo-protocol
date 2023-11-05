@@ -9,7 +9,6 @@ function OnboardingComplete() {
 
   return (
     <div className={styles["onboarding"]}>
-
       <div className={styles["onboarding-steps"]}>
         <h1>{t("welcome")}</h1>
         <ul>
@@ -36,12 +35,11 @@ function OnboardingComplete() {
         <Image src="/onboarding/big-success-icon.svg" width={100} height={100} alt="Success!" />
         <p>{t("onboarding-success")}</p>
         <p>
-          <Link href="/dashboard" className={"view-all"}>
+          <Link href="/dashboard" className="view-all">
             {t("dashboard")}
           </Link>
         </p>
       </div>
-
     </div>
   )
 }

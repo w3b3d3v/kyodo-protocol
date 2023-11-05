@@ -38,6 +38,7 @@
 
   "dashboard": "Painel",
   "agreements": "Acordos",
+  "agreement": "Acordo",
 
   "gm": "Olá,",
   "redeem": "Resgatar",
@@ -58,7 +59,7 @@
   "terms-use": "Termos de uso",
 
   "validation": {
-    "required": "{{field}} é obrigatório"
+    "required": "{{field}} é um campo obrigatório"
   },
 
   "all-tab": "Todos",
@@ -81,5 +82,6 @@
   "add-btn": "Adicionar",
   "agreement-created": "Acordo criado com sucesso!",
   "agreement-pending": "Transação pendente. Aguarde um instante...",
-  "no-agreements": "Nenhum acordo encontrado. Click no link de adicionar acima"
+  "no-agreements": "Nenhum acordo encontrado. Click no link de adicionar acima",
+  "notifications": "Notificações"
 }

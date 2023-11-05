@@ -38,6 +38,7 @@
 
   "dashboard": "Dashboard",
   "agreements": "Agreements",
+  "agreement": "Agreement",
 
   "gm": "Hello,",
   "redeem": "Redeem",
@@ -81,5 +82,6 @@
   "add-btn": "Add",
   "transaction-success": "Transaction successful!",
   "agreement-pending": "Transaction is still pending, please wait.",
-  "no-agreements": "No agreements found. Click on the add icon above."
+  "no-agreements": "No agreements found. Click on the add icon above.",
+  "notifications": "Notifications"
 }

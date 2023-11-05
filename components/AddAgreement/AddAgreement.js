@@ -63,9 +63,9 @@ function AddAgreementForm(props) {
 
   const AgreementSchema = Yup.object().shape({
     title: Yup.string().required(),
-    description: Yup.string().required("Description is required"),
+    description: Yup.string().required(),
     professional: Yup.string()
-      .required("Professional is required")
+      .required()
       .test(
         "valid-chain-address",
         `Professional must be a valid ${selectedChain} address`,
@@ -82,7 +82,7 @@ function AddAgreementForm(props) {
         }
       ),
     skills: Yup.string()
-      .required("Skills are required")
+      .required()
       .test("is-comma-separated", "Skills should be comma-separated", (value) => {
         if (!value) return false
         const skillsArray = value.split(",")
@@ -92,7 +92,7 @@ function AddAgreementForm(props) {
       .transform((value, originalValue) => {
         return originalValue === "" ? undefined : value
       })
-      .required("Payment amount is required")
+      .required()
       .positive("Payment amount should be positive"),
   })
 

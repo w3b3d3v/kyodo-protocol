@@ -82,27 +82,23 @@ function Payments ({ limit }) {
           <Image src="/coins/usdc-icon.svg" width={40} height={40} alt="USDC" />
         </div>
         <h3>
-          Agreement ID: {
-            (!isNaN(agreement.agreementId) && Number.isInteger(Number(agreement.agreementId)))
-              ? agreement.agreementId.toString()
-              : `${agreement.agreementId.substring(0, 4)}...${agreement.agreementId.substring(agreement.agreementId.length - 4)}`
-          }
+          {t("agreement")} ID:{" "}
+          {!isNaN(agreement.agreementId) && Number.isInteger(Number(agreement.agreementId))
+            ? agreement.agreementId.toString()
+            : `${agreement.agreementId.substring(0, 4)}...${agreement.agreementId.substring(
+                agreement.agreementId.length - 4
+              )}`}
         </h3>
-                
+
         <Link
           href={explorerLink + agreement.transactionHash}
           target="_blank"
           rel="noopener noreferrer"
         >
           {t("view-on")}
-      </Link>
+        </Link>
         <p className={styles["value-status"]}>
-          <em>
-            {parseFloat(agreement.amount)
-              .toFixed(2)
-              .replace(/\.00$/, "")}{" "}
-            USD
-          </em>
+          <em>{parseFloat(agreement.amount).toFixed(2).replace(/\.00$/, "")} USD</em>
           <span>
             {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? (
               <>
@@ -128,13 +124,13 @@ function Payments ({ limit }) {
       <div>
         {renderPaidAgreements()}
         {limit && paidAgreements.length > limit && (
-          <a onClick={() => window.location.href='/payments'} className={"view-all"}>
+          <Link href="/payments" className="view-all">
             {t("view-all")}
-          </a>
+          </Link>
         )}
       </div>
     </div>
-  );
+  )
 }
 
 export default Payments;
