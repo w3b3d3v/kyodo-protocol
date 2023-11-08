@@ -4,9 +4,8 @@ import styles from "./ConnectWalletButton.module.scss"
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import contractManager from "../../chains/ContractManager"
-import { useWeb3Modal, useWeb3ModalState } from '@web3modal/wagmi/react'
+import { useWeb3Modal } from '@web3modal/wagmi/react'
 import { useAccount as useWagmiAccount } from 'wagmi';
-import { useAccount as useAppAccount } from "../../contexts/AccountContext";
 
 require("@solana/wallet-adapter-react-ui/styles.css")
 
@@ -18,45 +17,41 @@ function ConnectWalletButton(props) {
   const [showModal, setShowModal] = useState(false);
   const { setVisible } = useWalletModal();
   const { open } = useWeb3Modal()
-  const { selectedNetworkId } = useWeb3ModalState()
   const { publicKey } = useWallet();
   const { address } = useWagmiAccount();
-  const { setSelectedChain } = useAppAccount();
 
   useEffect(() => {
     async function handleWalletConnection() {
-      const selectedChain = localStorage.getItem('selectedChain');
-      if (contractManager.supportedNetworks.includes(selectedChain) && address) {
+      if (address) {
         const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
         const chainId = parseInt(chainIdHex, 16);
-        if (!contractManager.getSupportedChains().includes(chainId)) {
-          open({ view: 'Networks' });
+        const chainData = {
+          chain: "ethereum",
+          networkId: chainId
         }
         props.value.setAccount(address);
-        localStorage.setItem("selectedChain", parseInt(chainId))
-      } else if (selectedChain === "solana" && publicKey) {
+        props.value.setSelectedChain(chainData)
+        localStorage.setItem("selectedChain", chainData)
+      } else if (publicKey) {
         props.value.setAccount(publicKey);
         await verifyChain("solana");
       }
     }
-  
+
     handleWalletConnection();
-  }, [address, publicKey, selectedNetworkId]);
+  }, [address, publicKey]);
   
   async function connectEthereumWallet() {
     setShowModal(false);
     if (window.ethereum) {
       open({ view: 'All wallets' });
     }
-    const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
-    const chainId = parseInt(chainIdHex, 16);
-    setSelectedChain(chainId);
-    localStorage.setItem("selectedChain", parseInt(chainId))
   }  
 
   async function connectSolanaWallet() {
     setShowModal(false);
     setVisible(true)
+    props.value.setSelectedChain("solana")
     localStorage.setItem('selectedChain', "solana");
   }
 
