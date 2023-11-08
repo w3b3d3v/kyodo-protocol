@@ -23,11 +23,9 @@ function ConnectWalletButton(props) {
   useEffect(() => {
     async function handleWalletConnection() {
       if (address) {
-        const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
-        const chainId = parseInt(chainIdHex, 16);
         const chainData = {
           chain: "ethereum",
-          networkId: chainId
+          chainId: ""
         }
         props.value.setAccount(address);
         props.value.setSelectedChain(chainData)
@@ -43,16 +41,17 @@ function ConnectWalletButton(props) {
   
   async function connectEthereumWallet() {
     setShowModal(false);
-    if (window.ethereum) {
-      open({ view: 'All wallets' });
-    }
+    open({ view: 'All wallets' });
   }  
 
   async function connectSolanaWallet() {
     setShowModal(false);
     setVisible(true)
-    props.value.setSelectedChain("solana")
-    localStorage.setItem('selectedChain', "solana");
+    const chainData = {
+      chain: "solana"
+    }
+    props.value.setSelectedChain(chainData)
+    localStorage.setItem('selectedChain', chainData);
   }
 
   return (
