@@ -67,7 +67,9 @@ function useTransactionHandler() {
     setIsLoading,
     transactionSuccess,
     transactionPending,
+    setTransactionFail,
     transactionFail,
+    setErrorMessage,
     errorMessage,
     sendTransaction,
     transactionHash

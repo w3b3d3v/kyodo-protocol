@@ -9,7 +9,8 @@ import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWa
 import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import Head from "next/head"
-import contractManager from "../chains/ContractManager"
+import useTransactionHandler from '../hooks/useTransactionHandler';
+import Toast from '../components/utils/Toast';
 
 function formatAddress(address) {
   return address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : ""
@@ -17,8 +18,13 @@ function formatAddress(address) {
 
 function PageContent({ Component, pageProps }) {
   const router = useRouter()
-  const { account, setAccount, selectedChain, setSelectedChain, isOnboardingComplete } =
-  useAccount()
+  const { 
+    account, 
+    setAccount, 
+    selectedChain, 
+    setSelectedChain, 
+    isOnboardingComplete 
+  } = useAccount()
 
   if (account && !isOnboardingComplete && !router.pathname.startsWith("/onboarding")) {
     router.push("/onboarding")
@@ -47,7 +53,11 @@ function Header() {
   const { t, i18n } = useTranslation()
   const { locale } = router
   const currentLanguage = i18n.language
-  const chainMetadata = contractManager.chainMetadata(selectedChain)
+  const { 
+    transactionFail, 
+    errorMessage, 
+    chainMetadata 
+  } = useTransactionHandler();
 
   function changeLanguage() {
     const newLocale = currentLanguage === "en-US" ? "pt-BR" : "en-US"
@@ -70,6 +80,10 @@ function Header() {
   return (
     <div>
       <header className={"main-header"}>
+      <Toast
+        transactionFail={transactionFail}
+        errorMessage={errorMessage}
+      />
         <div className={"holder"}>
           <Image
             src="/logo.svg"

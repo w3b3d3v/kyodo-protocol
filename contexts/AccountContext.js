@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
@@ -6,12 +6,12 @@ import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import contractManager from "../chains/ContractManager"
 import { useWeb3ModalState, useWeb3Modal } from '@web3modal/wagmi/react'
+import useTransactionHandler from '../hooks/useTransactionHandler';
 
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
 import { gnosisChiado, neonDevnet, polygonMumbai, polygonZkEvmTestnet } from 'wagmi/chains'
 import { defineChain } from 'viem'
-import { useAccount as useWagmiAccount } from 'wagmi';
 
 const coreDaoTestnet = defineChain({
   id: 1115,
@@ -72,6 +72,7 @@ export function useAccount() {
 export function AccountProvider({ children }) {
   const { open } = useWeb3Modal()
   const { selectedNetworkId } = useWeb3ModalState()
+  const [chainMetadata, setChainMetadata] = useState(null);
 
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(() => {
     if (typeof window !== "undefined") {
@@ -86,11 +87,9 @@ export function AccountProvider({ children }) {
   };
 
   const [account, setAccount] = useState(null)
-  const [selectedChain, setSelectedChain] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("selectedChain") || null
-    }
-  })
+  const [selectedChain, setSelectedChain] = useState(null)
+
+  const { setTransactionFail, setErrorMessage, errorMessage, transactionFail} = useTransactionHandler();
 
   const network = WalletAdapterNetwork.Devnet
   const endpoint = clusterApiUrl(network)
@@ -101,14 +100,7 @@ export function AccountProvider({ children }) {
     localStorage.setItem("selectedChain", null)
     setSelectedChain(null)
   }
-
-
-  const hancleChainChanged = () => {
-    localStorage.setItem("selectedChain", parseInt(selectedNetworkId))
-    setSelectedChain(selectedNetworkId)
-    window.location.reload()
-  }
-
+  
   const handleSelectChain = () => {
     open({ view: 'Networks' })
   }
@@ -117,25 +109,41 @@ export function AccountProvider({ children }) {
     open({ view: 'Account' })
   }
 
+  const checkAndHandleChainMetadata = useCallback(() => {
+    const metadata = contractManager.chainMetadata(selectedChain);
+    if (!metadata) {
+      setTransactionFail(true); 
+      setErrorMessage("Unsupported Network");
+    } else {
+      setChainMetadata(metadata);
+    }
+  }, [selectedChain, setTransactionFail, setErrorMessage, handleSelectChain]);
+  
+  useEffect(() => {
+    checkAndHandleChainMetadata();
+  }, [selectedChain, selectedNetworkId, checkAndHandleChainMetadata]);
+
   const updateAccount = async () => {
-    if (contractManager.getSupportedChains().includes(Number(selectedChain)) && window.ethereum) {  
+    if (selectedChain && selectedChain.chain === "ethereum") {
       try {
-        const accounts = await window.ethereum.request({ method: "eth_accounts" })
+        const accounts = await window.ethereum.request({ method: "eth_accounts" });
         if (accounts.length > 0 && accounts[0] !== account) {
-          setAccount(accounts[0])
+          setAccount(accounts[0]);
         }
+  
+        setSelectedChain((prevChain) => {
+          return prevChain.chainId !== selectedNetworkId ? { ...prevChain, chainId: selectedNetworkId } : prevChain;
+        });
         
-        const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
-        const chainId = parseInt(chainIdHex, 16);
-        if (!contractManager.getSupportedChains().includes(chainId)) {
-          open({ view: 'Networks' });
+        if (!contractManager.getSupportedChains().includes(selectedChain) && account) {
+          setTransactionFail(true); 
+          setErrorMessage("Unsupported Network");
+          handleSelectChain()
         }
-        localStorage.setItem("selectedChain", parseInt(chainId))
-        setSelectedChain(parseInt(chainId))
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    } else if (selectedChain === "solana" && window.solana && window.solana.isConnected) {
+    } else if (selectedChain && selectedChain.chain === "solana" && window.solana && window.solana.isConnected) {
       try {
         const solanaAccount = window.solana.publicKey.toString()
         if (solanaAccount && solanaAccount !== account) {
@@ -146,33 +154,32 @@ export function AccountProvider({ children }) {
       }
     }
   }
-
-  useEffect(() => {
-    updateAccount()
-
-    if (window.ethereum) {
-      try {
-        window.ethereum.on("chainChanged", hancleChainChanged)
-        window.ethereum.on("accountsChanged", updateAccount)
-        window.ethereum.on("disconnect", handleDisconnect)
   
+  useEffect(() => {
+    updateAccount();
+  
+    if (selectedChain) {
+      const selectedChainInterface = window[selectedChain.chain];
+      if (selectedChainInterface) {
+        selectedChainInterface.on("chainChanged", updateAccount);
+        selectedChainInterface.on("accountsChanged", updateAccount);
+        selectedChainInterface.on("disconnect", handleDisconnect);
+    
         return () => {
-          window.ethereum.removeListener("connect", updateAccount)
-          window.ethereum.removeListener("disconnect", handleDisconnect)
-        }
-      } catch (error) {
-        if (error instanceof UserRejectedRequestError) {
-          // Handle user rejection
-        }
+          selectedChainInterface.removeListener("chainChanged", updateAccount);
+          selectedChainInterface.removeListener("accountsChanged", updateAccount);
+          selectedChainInterface.removeListener("disconnect", handleDisconnect);
+        };
       }
     }
-  }, [account, selectedChain])
+  }, [account, selectedChain, selectedNetworkId]);
 
   return (
     <AccountContext.Provider value={{
       account,
       setAccount,
       selectedChain,
+      chainMetadata,
       setSelectedChain,
       isOnboardingComplete,
       completeOnboarding,

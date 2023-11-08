@@ -29,7 +29,7 @@ class ContractManager {
       return this.addressValidators["solana"]
     }
     console.error(`Address Validator for ${chain} not found.`);
-    return null;  // ou talvez lançar um erro se a chain não for reconhecida
+    return null; 
   }
 
   getSupportedChains(){
