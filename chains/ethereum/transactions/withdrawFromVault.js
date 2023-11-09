@@ -38,7 +38,7 @@ export const withdrawFromVault = async (details) => {
     try {
       const tx = await details.contract.withdraw(
         redeemAmountInWei,
-        details.KyodoRegistry.getRegistry("FAKE_STABLE_ADDRESS") // TODO: Make user select the token desired to withdraw
+        details.KyodoRegistry.getRegistry("FAKE_STABLE") // TODO: Make user select the token desired to withdraw
       )
       
       details.contract.on("Withdrawal", (user, amount, asset) => handleWithdrawal(user, amount, asset, details.account));

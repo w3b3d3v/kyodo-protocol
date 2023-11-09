@@ -30,8 +30,8 @@ async function getContractInstance(abi, contractName) {
 
 const contracts = {
   kyodoRegistry: getRegistryContract(),
-  agreementContract: () => getContractInstance(AgreementContract.abi, "AGREEMENT_CONTRACT_ADDRESS"),
-  vaultContract: () => getContractInstance(VaultContract.abi, "VAULT_CONTRACT_ADDRESS"),
+  agreementContract: () => getContractInstance(AgreementContract.abi, "AGREEMENT_CONTRACT"),
+  vaultContract: () => getContractInstance(VaultContract.abi, "VAULT_CONTRACT"),
   
   verify: async () => {
     const TEST_NETWORKS = ["0x7A69", "31337", "534351"]

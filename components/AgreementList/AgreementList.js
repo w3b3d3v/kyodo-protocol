@@ -92,6 +92,9 @@ function AgreementList() {
         return
       }
       setAgreements(fetchedAgreements)
+
+      const chainTokens = await contractManager.tokens(selectedChain, selectedNetworkId)
+      setTokens(chainTokens)
     } catch (error) {
       console.error("Error when fetching agreements:", error)
     } finally {
@@ -107,9 +110,11 @@ function AgreementList() {
           connection
         }
   
-        const agreementContract = await contractManager.chains[selectedNetworkId].agreementContract(details);
-        setTokens(await contractManager.tokens(selectedChain, selectedNetworkId))
+        const agreementContract = await contractManager.chains[selectedNetworkId].agreementContract(
+          details
+        )
         setContract(agreementContract);
+
       } catch (error) {
         console.error("Error initializing the agreements contract", error);
       } finally {

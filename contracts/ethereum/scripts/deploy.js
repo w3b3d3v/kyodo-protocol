@@ -148,23 +148,23 @@ async function deployKyodoRegistry(agreementData, vaultData, tokenData) {
   
   let kyodoRegistry;
   // Check if a contract already exists at the specified address
-  const codeAtAddress = await ethers.provider.getCode(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
-  if (codeAtAddress === '0x') {
+  // const codeAtAddress = await ethers.provider.getCode(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+  // if (codeAtAddress === '0x') {
     // Deploy if no contract exists at the address
     kyodoRegistry = await KyodoRegistry.deploy(admin.address);
     await kyodoRegistry.deployed()
     await kyodoRegistry.deployTransaction.wait(1)
-  } else {
-    // If a contract is already deployed, connect to it instead of redeploying
-    kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
-  }
+  // } else {
+  //   // If a contract is already deployed, connect to it instead of redeploying
+  //   kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+  // }
 
   // kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
 
   const keysToUpdate = {
-    'FAKE_STABLE_ADDRESS': tokenData,
-    'AGREEMENT_CONTRACT_ADDRESS': agreementData,
-    'VAULT_CONTRACT_ADDRESS': vaultData
+    'FAKE_STABLE': tokenData,
+    'AGREEMENT_CONTRACT': agreementData,
+    'VAULT_CONTRACT': vaultData
   };
 
   for (const [key, data] of Object.entries(keysToUpdate)) {
@@ -187,7 +187,7 @@ async function deployKyodoRegistry(agreementData, vaultData, tokenData) {
     }
   }  
 
-  const address = await kyodoRegistry.getRegistry("AGREEMENT_CONTRACT_ADDRESS");
+  const address = await kyodoRegistry.getRegistry("AGREEMENT_CONTRACT");
   console.log("address Saved", address)
 
   return kyodoRegistry.address;
