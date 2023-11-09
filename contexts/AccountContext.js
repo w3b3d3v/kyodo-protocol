@@ -10,7 +10,7 @@ import useTransactionHandler from '../hooks/useTransactionHandler';
 
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
-import { gnosisChiado, neonDevnet, polygonMumbai, polygonZkEvmTestnet } from 'wagmi/chains'
+import { gnosisChiado, neonDevnet, polygonMumbai, polygonZkEvmTestnet, hardhat } from 'wagmi/chains'
 import { defineChain } from 'viem'
 
 const coreDaoTestnet = defineChain({
@@ -40,7 +40,7 @@ const metadata = {
 }
 
 const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
-const chains = [gnosisChiado, neonDevnet, coreDaoTestnet, polygonMumbai, polygonZkEvmTestnet]
+const chains = [gnosisChiado, neonDevnet, coreDaoTestnet, polygonMumbai, polygonZkEvmTestnet, hardhat]
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
 
 createWeb3Modal({ 
@@ -53,6 +53,7 @@ createWeb3Modal({
     10_200: "/chains/gnosis-chain.png",
     245_022_926: "/chains/neonevm-logo.png",
     80001: "/chains/polygon-matic-logo.svg",
+    31_337: "/chains/hardhat.svg",
   }
 })
 
@@ -86,7 +87,12 @@ export function AccountProvider({ children }) {
   };
 
   const [account, setAccount] = useState(null)
-  const [selectedChain, setSelectedChain] = useState(null)
+  const [selectedChain, setSelectedChain] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("selectedChain") || null
+    }
+    return null
+  })
 
   const { setTransactionFail, setErrorMessage} = useTransactionHandler();
 

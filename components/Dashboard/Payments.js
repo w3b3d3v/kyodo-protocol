@@ -54,10 +54,12 @@ function Payments ({ limit }) {
   }
 
   async function fetchPaidAgreements() {
+    const KyodoRegistry = await contractManager.chains[selectedNetworkId].kyodoRegistry;
     try {
       const details = {
         account,
-        contract
+        contract,
+        KyodoRegistry
       };
 
       const agreements = await transactionManager["fetchPaidAgreements"](selectedNetworkId, details)
@@ -89,7 +91,6 @@ function Payments ({ limit }) {
                 agreement.agreementId.length - 4
               )}`}
         </h3>
-            {console.log("data", explorerLink + "/tx/" + agreement.transactionHash)}
         <Link
           href={explorerLink + "/tx/" + agreement.transactionHash}
           target="_blank"

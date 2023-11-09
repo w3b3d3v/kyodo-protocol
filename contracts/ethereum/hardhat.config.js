@@ -17,7 +17,7 @@ console.log("public address: " + account.address);
 /** @type import('hardhat/config').HardhatUserConfig */
 
 let config = {
-  // defaultNetwork: "testing",
+  defaultNetwork: "testing",
   solidity: "0.8.1",
   settings: {
     optimizer: {
