@@ -9,7 +9,7 @@ function useTransactionHandler() {
   const [transactionFail, setTransactionFail] = useState(false);
   const [transactionHash, setTransactionHash] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
-  const { account, selectedChain} = useAccount()
+  const { account, selectedNetworkId } = useAccount()
 
   const sendTransaction = useCallback(async (functionName, details, eventName, onConfirmation) => {
     setIsLoading(true);
@@ -25,7 +25,7 @@ function useTransactionHandler() {
         });
 
         const txResponse = await Promise.race([
-          transactionManager[functionName](selectedChain, details),
+          transactionManager[functionName](selectedNetworkId, details),
           timeoutPromise
         ]);
 
@@ -33,7 +33,7 @@ function useTransactionHandler() {
 
         const response = await transactionManager.handleTransactionPromise
         (
-          selectedChain,
+          selectedNetworkId,
           details.contract,
           txResponse,
           eventName,
@@ -60,7 +60,7 @@ function useTransactionHandler() {
           setTransactionFail(true)
         }
     }
-  }, [])
+  }, [selectedNetworkId])
 
   return {
     isLoading,

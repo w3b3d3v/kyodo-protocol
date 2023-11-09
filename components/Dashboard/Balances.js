@@ -15,7 +15,7 @@ import { useWallet, useConnection} from '@solana/wallet-adapter-react';
 function Balances() {
   const { t } = useTranslation()
   const [contract, setContract] = useState(null)
-  const { account, selectedChain} = useAccount()
+  const { account, selectedNetworkId} = useAccount()
   const [userBalances, setUserBalances] = useState([])
   const [showRedeemInput, setShowRedeemInput] = useState(null)
   const { wallet } = useWallet()
@@ -54,7 +54,7 @@ function Balances() {
         contract
       };
 
-      const balances = await transactionManager["fetchUserBalances"](selectedChain, details)
+      const balances = await transactionManager["fetchUserBalances"](selectedNetworkId, details)
       if (!balances) {
         return
       }
@@ -66,7 +66,7 @@ function Balances() {
 
   
   const withdrawFromVault = async (amount, balance) => {
-    const KyodoRegistry = await contractManager.chains[selectedChain].kyodoRegistry;
+    const KyodoRegistry = await contractManager.chains[selectedNetworkId].kyodoRegistry;
 
     try {
       setIsLoading(true)
@@ -101,7 +101,7 @@ function Balances() {
           connection
         }
   
-        const vaultContract = await contractManager.chains[selectedChain].vaultContract(details);
+        const vaultContract = await contractManager.chains[selectedNetworkId].vaultContract(details);
         setContract(vaultContract);
       } catch (error) {
         console.error("Error initializing the agreements contract", error);
@@ -111,7 +111,7 @@ function Balances() {
     }
   
     initializeContract();
-  }, [selectedChain, wallet, connection]);
+  }, [selectedNetworkId, wallet, connection]);
 
   useEffect(() => {
     if (!isLoading && contract) {

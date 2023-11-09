@@ -13,7 +13,7 @@ import Toast from '../utils/Toast';
 import { ethers } from "ethers"
 
 function AgreementList() {
-  const { account, selectedChain } = useAccount()
+  const { account, selectedChain, selectedNetworkId } = useAccount()
   const [contract, setContract] = useState(null)
   const [tokens, setTokens] = useState(null)
   const [agreements, setAgreements] = useState([])
@@ -87,7 +87,7 @@ function AgreementList() {
         contract
       };
 
-      const fetchedAgreements = await transactionManager["fetchAgreements"](selectedChain, details)
+      const fetchedAgreements = await transactionManager["fetchAgreements"](selectedNetworkId, details)
       if (!fetchedAgreements) {
         return
       }
@@ -107,8 +107,8 @@ function AgreementList() {
           connection
         }
   
-        const agreementContract = await contractManager.chains[selectedChain].agreementContract(details);
-        setTokens(await contractManager.tokens(selectedChain))
+        const agreementContract = await contractManager.chains[selectedNetworkId].agreementContract(details);
+        setTokens(await contractManager.tokens(selectedChain, selectedNetworkId))
         setContract(agreementContract);
       } catch (error) {
         console.error("Error initializing the agreements contract", error);
@@ -118,7 +118,7 @@ function AgreementList() {
     }
   
     initializeContract();
-  }, [selectedChain, wallet, connection]);
+  }, [selectedNetworkId, wallet, connection]);
 
   useEffect(() => {
     if (!isLoading && contract) {

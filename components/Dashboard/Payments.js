@@ -12,8 +12,8 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
 function Payments ({ limit }) {
   const [contract, setContract] = useState(null)
-  const { account, selectedChain} = useAccount();
-  const { publicKey, wallet } = useWallet()
+  const { account, selectedChain, selectedNetworkId } = useAccount();
+  const { wallet } = useWallet()
   const { connection } = useConnection();
   const [paidAgreements, setPaidAgreements] = useState([]);
   const { t } = useTranslation()
@@ -31,7 +31,7 @@ function Payments ({ limit }) {
           connection
         }
   
-        const agreementContract = await contractManager.chains[selectedChain].agreementContract(details);
+        const agreementContract = await contractManager.chains[selectedNetworkId].agreementContract(details);
         setContract(agreementContract);
       } catch (error) {
         console.error("Error initializing the agreements contract", error);
@@ -41,7 +41,7 @@ function Payments ({ limit }) {
     }
   
     initializeContract();
-  }, [selectedChain, wallet, connection]);
+  }, [selectedNetworkId, wallet, connection]);
 
   useEffect(() => {
     if (!isLoading && contract) {
@@ -60,7 +60,7 @@ function Payments ({ limit }) {
         contract
       };
 
-      const agreements = await transactionManager["fetchPaidAgreements"](selectedChain, details)
+      const agreements = await transactionManager["fetchPaidAgreements"](selectedNetworkId, details)
       if (!agreements) {
         return
       }
@@ -74,7 +74,7 @@ function Payments ({ limit }) {
 
   function renderPaidAgreements() {
     const displayedAgreements = limit ? paidAgreements.slice(0, limit) : paidAgreements;
-    const explorerLink = contractManager.blockExplorer(selectedChain)
+    const explorerLink = contractManager.blockExplorer(selectedChain, selectedNetworkId)
 
     return displayedAgreements.map((agreement, index) => (
       <div key={index} className={styles["payment-item"]}>
@@ -89,9 +89,9 @@ function Payments ({ limit }) {
                 agreement.agreementId.length - 4
               )}`}
         </h3>
-
+            {console.log("data", explorerLink + "/tx/" + agreement.transactionHash)}
         <Link
-          href={explorerLink + agreement.transactionHash}
+          href={explorerLink + "/tx/" + agreement.transactionHash}
           target="_blank"
           rel="noopener noreferrer"
         >

@@ -23,7 +23,7 @@ class ContractManager {
   }
 
   getAddressValidator(chain) {
-    if (this.supportedNetworks.includes(Number(chain))) {
+    if (chain === "ethereum") {
       return this.addressValidators["ethereum"]
     } else if (chain === "solana") {
       return this.addressValidators["solana"]
@@ -36,44 +36,40 @@ class ContractManager {
     return this.supportedNetworks
   }
 
-  async tokens(chain) {
-    if (!chainConfig[chain]) {
-      console.error(`Token List for ${chain} not found.`);
+  async tokens(chain, networkId) {
+    const config = chain === 'ethereum' ? chainConfig[networkId] : chainConfig[chain];
+    
+    if (!config) {
+      console.error(`Token List for ${chain === 'ethereum' ? `Ethereum network ID ${networkId}` : chain} not found.`);
       return [];
     }
-
-    let tokenList = chainConfig[chain].tokens || [];
-
-    const isDevelopment = process.env.NODE_ENV !== 'production';
-    if (isDevelopment) {
-      const developmentTokens = {
-        solana: { 
-          name: 'fakeStable', 
-          address: process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS, 
-          decimals: 8 
-        },
-        default: { 
-          address: await ethContracts.kyodoRegistry.getRegistry("FAKE_STABLE_ADDRESS"), 
-          name: 'fakeStable', 
-          decimals: 18 
-        }
+    
+    let tokenList = [...(config.tokens || [])];
+    
+    if (process.env.NODE_ENV !== 'production') {
+      const developmentToken = {
+        name: 'fakeStable',
+        address: chain === 'solana' 
+          ? process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS 
+          : await ethContracts.kyodoRegistry.getRegistry("FAKE_STABLE_ADDRESS"),
+        decimals: chain === 'solana' ? 8 : 18,
       };
-
-      // Add the correct development token based on the chain. If the chain-specific development token doesn't exist, use the default one.
-      const developmentTokenToAdd = developmentTokens[chain] || developmentTokens.default;
-      tokenList = [...tokenList, developmentTokenToAdd];
+      tokenList.push(developmentToken);
     }
-
     return tokenList;
   }
-
-  blockExplorer(chain) {
-    if (!chainConfig[chain]) {
-      console.error(`Configuration for ${chain} not found.`);
+  
+  blockExplorer(chain, networkId) {
+    const config = chain === 'ethereum' ? chainConfig[networkId] : chainConfig[chain];
+    
+    if (!config) {
+      console.error(`Configuration for ${chain === 'ethereum' ? `Ethereum network ID ${networkId}` : chain} not found.`);
       return null;
     }
-    return chainConfig[chain].blockExplorer.url;
+    
+    return config.blockExplorer.url;
   }
+  
 
   chainMetadata(chain) {
     if (!chainConfig[chain]) {

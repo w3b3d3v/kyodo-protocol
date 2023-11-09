@@ -1,10 +1,11 @@
 import solTransactions from "./solana/transactions"
 import ethTransactions from "./ethereum/transactions"
+import contractManager from './ContractManager';
 
 class TransactionManager {
   constructor() {
     this.chains = {}
-    this.supportedNetworks = [1115, 10200, 245022926, 31337, 80001, 1442]
+    this.supportedNetworks = contractManager.supportedNetworks
 
     // Initialize transactions based on chain type
     for (const chain of this.supportedNetworks) {
