@@ -88,7 +88,7 @@
     }
   },
   "1442": {
-    "name":"Hardhat",
+    "name":"ZkEvmTestnet",
     "logo":"/chains/polygon-zk-evm.png",
     "tokens": [
         
@@ -96,6 +96,15 @@
     "blockExplorer": {
       "name": "polygonZkEvmTestnet",
       "url": "https://testnet-zkevm.polygonscan.com/"
+    }
+  },
+  "solana": {
+    "tokens": [
+        
+    ],
+    "blockExplorer": {
+      "name": "Solana Explorer",
+      "url": "https://explorer.solana.com/"
     }
   }
 }

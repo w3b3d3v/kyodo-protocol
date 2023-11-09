@@ -72,7 +72,6 @@ export function useAccount() {
 export function AccountProvider({ children }) {
   const { open } = useWeb3Modal()
   const { selectedNetworkId } = useWeb3ModalState()
-  const [chainMetadata, setChainMetadata] = useState(null);
 
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(() => {
     if (typeof window !== "undefined") {
@@ -89,7 +88,7 @@ export function AccountProvider({ children }) {
   const [account, setAccount] = useState(null)
   const [selectedChain, setSelectedChain] = useState(null)
 
-  const { setTransactionFail, setErrorMessage, errorMessage, transactionFail} = useTransactionHandler();
+  const { setTransactionFail, setErrorMessage} = useTransactionHandler();
 
   const network = WalletAdapterNetwork.Devnet
   const endpoint = clusterApiUrl(network)
@@ -109,41 +108,23 @@ export function AccountProvider({ children }) {
     open({ view: 'Account' })
   }
 
-  const checkAndHandleChainMetadata = useCallback(() => {
-    const metadata = contractManager.chainMetadata(selectedChain);
-    if (!metadata) {
-      setTransactionFail(true); 
-      setErrorMessage("Unsupported Network");
-    } else {
-      setChainMetadata(metadata);
-    }
-  }, [selectedChain, setTransactionFail, setErrorMessage, handleSelectChain]);
-  
-  useEffect(() => {
-    checkAndHandleChainMetadata();
-  }, [selectedChain, selectedNetworkId, checkAndHandleChainMetadata]);
-
   const updateAccount = async () => {
-    if (selectedChain && selectedChain.chain === "ethereum") {
+    if (selectedNetworkId && selectedChain === "ethereum") {
       try {
         const accounts = await window.ethereum.request({ method: "eth_accounts" });
         if (accounts.length > 0 && accounts[0] !== account) {
           setAccount(accounts[0]);
         }
-  
-        setSelectedChain((prevChain) => {
-          return prevChain.chainId !== selectedNetworkId ? { ...prevChain, chainId: selectedNetworkId } : prevChain;
-        });
         
-        if (!contractManager.getSupportedChains().includes(selectedChain) && account) {
-          setTransactionFail(true); 
+        if (!contractManager.getSupportedChains().includes(selectedNetworkId) && account) {
           setErrorMessage("Unsupported Network");
+          setTransactionFail(true);
           handleSelectChain()
         }
       } catch (error) {
         console.error(error);
       }
-    } else if (selectedChain && selectedChain.chain === "solana" && window.solana && window.solana.isConnected) {
+    } else if (selectedChain === "solana" && window.solana && window.solana.isConnected) {
       try {
         const solanaAccount = window.solana.publicKey.toString()
         if (solanaAccount && solanaAccount !== account) {
@@ -159,7 +140,7 @@ export function AccountProvider({ children }) {
     updateAccount();
   
     if (selectedChain) {
-      const selectedChainInterface = window[selectedChain.chain];
+      const selectedChainInterface = window[selectedChain];
       if (selectedChainInterface) {
         selectedChainInterface.on("chainChanged", updateAccount);
         selectedChainInterface.on("accountsChanged", updateAccount);
@@ -179,7 +160,7 @@ export function AccountProvider({ children }) {
       account,
       setAccount,
       selectedChain,
-      chainMetadata,
+      selectedNetworkId,
       setSelectedChain,
       isOnboardingComplete,
       completeOnboarding,

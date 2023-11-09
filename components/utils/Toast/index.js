@@ -14,7 +14,7 @@ function Toast({
   transactionHash,
 }) {
   const { t } = useTranslation()
-  const { account, selectedChain} = useAccount();
+  const { account, selectedChain, selectedNetworkId} = useAccount();
   const [visible, setVisible] = useState(true) // <-- Add a state to manage visibility
 
   useEffect(() => {
@@ -35,7 +35,7 @@ function Toast({
   if (!visible) return null // <-- Don't render the component if it's not visible
 
   if (transactionSuccess) {
-    const explorerLink = contractManager.blockExplorer(selectedChain)
+    const explorerLink = contractManager.blockExplorer(selectedChain, selectedNetworkId)
     return (
       <div className="flash-success transaction-info">
         <p>

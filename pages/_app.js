@@ -9,8 +9,7 @@ import { ConnectWalletButton } from "../components/ConnectWalletButton/ConnectWa
 import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import Head from "next/head"
-import useTransactionHandler from '../hooks/useTransactionHandler';
-import Toast from '../components/utils/Toast';
+import contractManager from "../chains/ContractManager"
 
 function formatAddress(address) {
   return address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : ""
@@ -21,7 +20,6 @@ function PageContent({ Component, pageProps }) {
   const { 
     account, 
     setAccount, 
-    selectedChain, 
     setSelectedChain, 
     isOnboardingComplete 
   } = useAccount()
@@ -40,7 +38,7 @@ function PageContent({ Component, pageProps }) {
         </div>
       ) : (
         <div>
-          <ConnectWalletButton value={{ account, setAccount, selectedChain, setSelectedChain }} />
+          <ConnectWalletButton value={{ account, setAccount, setSelectedChain }} />
         </div>
       )}
     </>
@@ -48,16 +46,12 @@ function PageContent({ Component, pageProps }) {
 }
 
 function Header() {
-  const { account, selectedChain, handleSelectChain, handleSelectWallet } = useAccount()
+  const { account, selectedChain, selectedNetworkId, handleSelectChain, handleSelectWallet } = useAccount()
   const router = useRouter()
   const { t, i18n } = useTranslation()
   const { locale } = router
   const currentLanguage = i18n.language
-  const { 
-    transactionFail, 
-    errorMessage, 
-    chainMetadata 
-  } = useTransactionHandler();
+  const chainMetadata = contractManager.chainMetadata(selectedNetworkId)
 
   function changeLanguage() {
     const newLocale = currentLanguage === "en-US" ? "pt-BR" : "en-US"
@@ -80,10 +74,6 @@ function Header() {
   return (
     <div>
       <header className={"main-header"}>
-      <Toast
-        transactionFail={transactionFail}
-        errorMessage={errorMessage}
-      />
         <div className={"holder"}>
           <Image
             src="/logo.svg"

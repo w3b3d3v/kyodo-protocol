@@ -22,7 +22,7 @@ function AddAgreementForm(props) {
   const [paymentAmount, setPaymentAmount] = useState("")
   const [formErrors, setFormErrors] = useState({})
   const router = useRouter()
-  const { account, selectedChain } = useAccount()
+  const { account, selectedChain, selectedNetworkId } = useAccount()
   const { publicKey, wallet } = useWallet()
   const { connection } = useConnection()
   // const { contract } = useAgreementContract();
@@ -47,7 +47,7 @@ function AddAgreementForm(props) {
           connection,
         }
 
-        const agreementContract = await contractManager.chains[selectedChain].agreementContract(
+        const agreementContract = await contractManager.chains[selectedNetworkId].agreementContract(
           details
         )
         setContract(agreementContract)
@@ -59,7 +59,7 @@ function AddAgreementForm(props) {
     }
 
     initializeContract()
-  }, [selectedChain, wallet, connection])
+  }, [selectedNetworkId, wallet, connection])
 
   const AgreementSchema = Yup.object().shape({
     title: Yup.string().required(),
