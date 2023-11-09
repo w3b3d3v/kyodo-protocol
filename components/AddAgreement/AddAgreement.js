@@ -52,7 +52,7 @@ function AddAgreementForm(props) {
         )
         setContract(agreementContract)
       } catch (error) {
-        console.error("Houve um problema ao inicializar o contrato", error)
+        console.error("Error when getting the contract", error)
       } finally {
         setIsLoading(false)
       }

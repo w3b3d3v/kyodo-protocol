@@ -51,7 +51,7 @@ class ContractManager {
         name: 'fakeStable',
         address: chain === 'solana' 
           ? process.env.NEXT_PUBLIC_SOLANA_FAKE_STABLE_ADDRESS 
-          : await ethContracts.kyodoRegistry.getRegistry("FAKE_STABLE_ADDRESS"),
+          : await ethContracts.kyodoRegistry.getRegistry("FAKE_STABLE"),
         decimals: chain === 'solana' ? 8 : 18,
       };
       tokenList.push(developmentToken);
