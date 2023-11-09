@@ -4,6 +4,8 @@ const { ethers } = require("hardhat");
 require('dotenv').config({ path: '../../.env.development.local' });
 
 async function kyodoRegistry(contractName) {
+  const codeAtAddress = await ethers.provider.getCode(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+  console.log("codeAtAddress", codeAtAddress)
   const KyodoRegistryContract = await ethers.getContractFactory("KyodoRegistry")
   const kyodoRegistryContract = await KyodoRegistryContract.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
   
@@ -13,7 +15,7 @@ async function kyodoRegistry(contractName) {
 
 async function main() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract")
-  const agreementContract = await AgreementContract.attach(kyodoRegistry("AGREEMENT_CONTRACT_ADDRESS"));
+  const agreementContract = await AgreementContract.attach(await kyodoRegistry("AGREEMENT_CONTRACT_ADDRESS"));
 
   const agreementsPath = path.join(__dirname, "assets", "agreements.json");
   const agreementsData = JSON.parse(fs.readFileSync(agreementsPath, "utf-8"));
