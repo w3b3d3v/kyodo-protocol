@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
@@ -32,16 +32,9 @@ const coreDaoTestnet = defineChain({
   testnet: true,
 })
 
-const metadata = {
-  name: 'Web3Modal',
-  description: 'Web3Modal Example',
-  url: 'https://web3modal.com',
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
-}
-
 const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
 const chains = [gnosisChiado, neonDevnet, coreDaoTestnet, polygonMumbai, polygonZkEvmTestnet, hardhat]
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
+const wagmiConfig = defaultWagmiConfig({ chains, projectId })
 
 createWeb3Modal({ 
   wagmiConfig, 

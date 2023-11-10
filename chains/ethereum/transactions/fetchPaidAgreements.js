@@ -12,7 +12,6 @@ export const fetchPaidAgreements = async (details) => {
     const professionalAgreements = await details.contract.queryFilter(professionalFilter, startBlock, latestBlock);
 
     const allAgreements = [...companyAgreements, ...professionalAgreements];
-    console.log("allAgreements: ", allAgreements)
 
     const agreements = allAgreements.map(event => {
       let formattedAmount = ethers.utils.formatUnits(event.args.amount, 18); //TODO: get the correct amount of decimals based on the token
