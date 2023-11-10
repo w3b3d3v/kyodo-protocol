@@ -1,9 +1,9 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-let = SPARK_DATA_PROVIDER = "0x86C71796CcDB31c3997F8Ec5C2E3dB3e9e40b985"; // GOERLY_ADDRESS
-let = SPARK_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
-let = SPARK_LENDING_POOL= "0x26ca51Af4506DE7a6f0785D20CD776081a05fF6d"; // GOERLY_ADDRESS
+let = AAVE_DATA_PROVIDER = "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
+let = AAVE_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
+let = AAVE_LENDING_POOL= "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
 
 describe("vault", function () {
   let StableVault, vault, Token, token, admin, user1;
@@ -14,7 +14,7 @@ describe("vault", function () {
     [admin, user1, user2] = await ethers.getSigners();
     vault = await StableVault.deploy(admin.address, "StableVaultToken", "STBLV");
     await vault.deployed()
-    await vault.setSparkSettings(SPARK_DATA_PROVIDER, SPARK_INCENTIVES_CONTROLLER, SPARK_LENDING_POOL);
+    await vault.setAaveSettings(AAVE_DATA_PROVIDER, AAVE_INCENTIVES_CONTROLLER, AAVE_LENDING_POOL);
 
     // Deploy mock token
     Token = await ethers.getContractFactory("fakeStable");
@@ -28,15 +28,15 @@ describe("vault", function () {
   });
 
   describe("Deposit", function () {
-    xit("Should deposit automatically to spark", async function () {
+    xit("Should deposit automatically to aave", async function () {
       // Assign CHANGE_PARAMETERS role to user1
       await vault.connect(user1).addProfile(user1.address);
   
-      // Update valid networks for the depositSpark function
-      await vault.connect(admin).updateValidNetworks("depositSpark", [31337, 1, 5]);
+      // Update valid networks for the depositAave function
+      await vault.connect(admin).updateValidNetworks("depositAave", [31337, 1, 5]);
   
-      // Validate that the current network is valid for depositSpark
-      const isValid = await vault.isValidNetworkForFunction("depositSpark");
+      // Validate that the current network is valid for depositAave
+      const isValid = await vault.isValidNetworkForFunction("depositAave");
       expect(isValid).to.equal(true);
   
       // Set userSetCompound to true
@@ -48,38 +48,38 @@ describe("vault", function () {
       const depositAmount = ethers.utils.parseUnits("50", 18);
       const expectedVaultAmount = ethers.utils.parseUnits("50", 18);
   
-      const initialSparkBalance = await vault.getSparkBalance(token.address);
+      const initialAaveBalance = await vault.getAaveBalance(token.address);
   
       // Execute deposit and validate events are emitted
       await expect(vault.connect(user1).deposit(depositAmount, token.address, user1.address))
         .to.emit(vault, "BalanceUpdated")
-        .to.emit(vault, "DepositSpark")
+        .to.emit(vault, "DepositAave")
         .withArgs(user1.address, token.address, depositAmount);
   
       const userBalance = await vault.balanceOf(user1.address);
       expect(userBalance).to.equal(expectedVaultAmount);
   
-      const finalSparkBalance = await vault.getSparkBalance(token.address);
-      expect(finalSparkBalance.sub(initialSparkBalance)).to.equal(depositAmount);
+      const finalAaveBalance = await vault.getAaveBalance(token.address);
+      expect(finalAaveBalance.sub(initialAaveBalance)).to.equal(depositAmount);
     });
     
     it("Should allow a user to make a deposit with userSetCompound set to false", async function () {
       const depositAmount = ethers.utils.parseUnits("50", 18);
       await token.connect(admin).transfer(user1.address, ethers.utils.parseEther("50"));
     
-      // const initialSparkBalance = await vault.getSparkBalance(token.address);
+      // const initialAaveBalance = await vault.getAaveBalance(token.address);
     
-      // Check that depositSpark event is not emitted
+      // Check that depositAave event is not emitted
       await expect(vault.connect(user1).deposit(depositAmount, token.address, user1.address))
         .to.emit(vault, "BalanceUpdated")
-        .to.not.emit(vault, "DepositSpark");
+        .to.not.emit(vault, "DepositAave");
     
       // Balance should still be updated
       const newBalance = await vault.balanceOf(user1.address);
       expect(newBalance).to.equal(ethers.utils.parseUnits("50", 18));
     
-      // const finalSparkBalance = await vault.getSparkBalance(token.address);
-      // expect(finalSparkBalance.sub(initialSparkBalance)).to.equal(0);  // No increase in Spark balance
+      // const finalAaveBalance = await vault.getAaveBalance(token.address);
+      // expect(finalAaveBalance.sub(initialAaveBalance)).to.equal(0);  // No increase in Aave balance
     });
     
 
@@ -91,12 +91,12 @@ describe("vault", function () {
       await expect(vault.connect(admin).deposit(amount, token.address, admin.address)).to.be.revertedWith("Pausable: paused");
     });
 
-    it("Should not revert when trying to deposit on an invalid Spark network", async function () {
+    it("Should not revert when trying to deposit on an invalid Aave network", async function () {
       // Assign CHANGE_PARAMETERS role to user1
       await vault.connect(user1).addProfile(user1.address);
   
-      // Update valid networks for the depositSpark function to exclude the current network (e.g., 31337)
-      await vault.connect(admin).updateValidNetworks("depositSpark", [900, 600]);  // Assume 1 and 5 are mainnet and Goerli, excluding 31337 (Hardhat Network)
+      // Update valid networks for the depositAave function to exclude the current network (e.g., 31337)
+      await vault.connect(admin).updateValidNetworks("depositAave", [900, 600]);  // Assume 1 and 5 are mainnet and Goerli, excluding 31337 (Hardhat Network)
   
       // Set userSetCompound to true
       await vault.connect(user1).setUserCompoundPreference(true, user1.address);
@@ -108,7 +108,7 @@ describe("vault", function () {
   
       await expect(vault.connect(user1).deposit(depositAmount, token.address, user1.address))
       .to.emit(vault, "BalanceUpdated")
-      .to.not.emit(vault, "DepositSpark");
+      .to.not.emit(vault, "DepositAave");
     });
   });
 });

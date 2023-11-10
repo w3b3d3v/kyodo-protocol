@@ -7,11 +7,11 @@ const TOTAL_FEE = 20;
 const PROTOCOL_FEE = 500;
 const COMMUNITY_FEE = 500;
 const FAKE_STABLE_DECIMALS = 18;
-const SPARK_VALID_CHAIN_IDS = [31337, 1, 5];
+const AAVE_VALID_CHAIN_IDS = [31337, 1, 5];
 
-let = SPARK_DATA_PROVIDER = "0x86C71796CcDB31c3997F8Ec5C2E3dB3e9e40b985"; // GOERLY_ADDRESS
-let = SPARK_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
-let = SPARK_LENDING_POOL= "0x26ca51Af4506DE7a6f0785D20CD776081a05fF6d"; // GOERLY_ADDRESS
+let = AAVE_DATA_PROVIDER = "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
+let = AAVE_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
+let = AAVE_LENDING_POOL= "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
 
 function copyABI() {
   const sourcePath = path.join(
@@ -120,20 +120,20 @@ async function deployStableVault() {
   const deployReceipt = await vault.deployTransaction.wait(1)
   console.log(`Deployed setStableVaultAddress ${vault.address} | Block ${deployReceipt.blockNumber}: `)
 
-  // const tx = await vault.setSparkSettings(
-  //   SPARK_DATA_PROVIDER,
-  //   SPARK_INCENTIVES_CONTROLLER,
-  //   SPARK_LENDING_POOL
+  // const tx = await vault.setAaveSettings(
+  //   AAVE_DATA_PROVIDER,
+  //   AAVE_INCENTIVES_CONTROLLER,
+  //   AAVE_LENDING_POOL
   // )
   // await tx.wait(1) // Wait for the transaction to be mined
-  // console.log("setSparkSettings transaction hash: ", tx.hash)
+  // console.log("setAaveSettings transaction hash: ", tx.hash)
 
-  // await vault.updateValidNetworks("depositSpark", SPARK_VALID_CHAIN_IDS)
+  // await vault.updateValidNetworks("depositAave", AAVE_VALID_CHAIN_IDS)
   // await vault.addProfile(admin.address)
   // // await vault.setUserCompoundPreference(true)
   // // FIXME add real address or way to user set its own wallet.
   // // this wallet is the second hardhat wallet
-  // await vault.setUserCompoundPreference(false, admin.address) // LOCALNETWORK: False, otherwise will fail because Spark/AAve does not exist in local network
+  // await vault.setUserCompoundPreference(false, admin.address) // LOCALNETWORK: False, otherwise will fail because Aave/AAve does not exist in local network
   
   copyVaultABI()
   return {

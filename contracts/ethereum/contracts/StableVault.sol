@@ -6,7 +6,7 @@ import "hardhat/console.sol";
 
 
 import "./dependencies/interfaces/ILendingPool.sol";
-import "./dependencies/interfaces/ISparkIncentivesController.sol";
+import "./dependencies/interfaces/IAaveIncentivesController.sol";
 import "./dependencies/interfaces/IDataProvider.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -22,13 +22,13 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
 
     using SafeERC20 for IERC20;
 
-    address private SPARK_LENDING_POOL;
-    address private SPARK_INCENTIVES_CONTROLLER;
-    address private SPARK_DATA_PROVIDER;
+    address private AAVE_LENDING_POOL;
+    address private AAVE_INCENTIVES_CONTROLLER;
+    address private AAVE_DATA_PROVIDER;
 
     event BalanceUpdated(uint256 _vaultBalance);
     event Withdrawal(address indexed user, uint256 amount, address indexed asset);
-    event DepositSpark(address indexed user, address asset, uint256 amount);
+    event DepositAave(address indexed user, address asset, uint256 amount);
 
     constructor(
         address admin, 
@@ -59,7 +59,7 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         _mint(_beneficiary, correctedAmount);
         _increaseBalance(correctedAmount);
         if (userSetCompound[_beneficiary]) {
-            depositSpark(_asset, amount);
+            depositAave(_asset, amount);
         }
         return true;
     }
@@ -136,44 +136,44 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         return true;
     }
     
-    function depositSpark(address _asset, uint256 _amount) private whenNotPaused() {
-        if (!validNetworks["depositSpark"][getChainID()]) {
+    function depositAave(address _asset, uint256 _amount) private whenNotPaused() {
+        if (!validNetworks["depositAave"][getChainID()]) {
             return;
         }
-        IERC20(_asset).safeApprove(SPARK_LENDING_POOL, _amount);
-        ILendingPool(SPARK_LENDING_POOL).deposit(_asset, _amount, address(this), 0);
-        emit DepositSpark(msg.sender, _asset, _amount);
+        IERC20(_asset).safeApprove(AAVE_LENDING_POOL, _amount);
+        ILendingPool(AAVE_LENDING_POOL).deposit(_asset, _amount, address(this), 0);
+        emit DepositAave(msg.sender, _asset, _amount);
     }
 
-    function withdrawFromSpark(address _asset, uint256 _amount, address _to) private whenNotPaused() {
-        ILendingPool(SPARK_LENDING_POOL).withdraw(_asset, _amount, _to);
+    function withdrawFromAave(address _asset, uint256 _amount, address _to) private whenNotPaused() {
+        ILendingPool(AAVE_LENDING_POOL).withdraw(_asset, _amount, _to);
     }
 
     function getRewardBalance(address _asset) private view returns(uint256){
         address aToken;
-        (aToken,,) = IDataProvider(SPARK_DATA_PROVIDER).getReserveTokensAddresses(_asset);
+        (aToken,,) = IDataProvider(AAVE_DATA_PROVIDER).getReserveTokensAddresses(_asset);
 
         address[] memory assets = new address[](1);
         assets[0] = aToken;
 
-        return IDataProvider(SPARK_DATA_PROVIDER).getRewardsBalance(assets, address(this));
+        return IDataProvider(AAVE_DATA_PROVIDER).getRewardsBalance(assets, address(this));
     }
 
-    function getSparkBalance(address _asset) public view returns(uint){
+    function getAaveBalance(address _asset) public view returns(uint){
         address aToken;
-        (aToken,,) = IDataProvider(SPARK_DATA_PROVIDER).getReserveTokensAddresses(_asset);
+        (aToken,,) = IDataProvider(AAVE_DATA_PROVIDER).getReserveTokensAddresses(_asset);
         return IERC20(aToken).balanceOf(address(this));
     }
 
-    function setSparkSettings(
-        address _SPARK_DATA_PROVIDER, 
-        address _SPARK_INCENTIVES_CONTROLLER, 
-        address _SPARK_LENDING_POOL
+    function setAaveSettings(
+        address _AAVE_DATA_PROVIDER, 
+        address _AAVE_INCENTIVES_CONTROLLER, 
+        address _AAVE_LENDING_POOL
         ) 
         external onlyAdmin() {
-        SPARK_DATA_PROVIDER = _SPARK_DATA_PROVIDER;
-        SPARK_INCENTIVES_CONTROLLER = _SPARK_INCENTIVES_CONTROLLER;
-        SPARK_LENDING_POOL = _SPARK_LENDING_POOL;
+        AAVE_DATA_PROVIDER = _AAVE_DATA_PROVIDER;
+        AAVE_INCENTIVES_CONTROLLER = _AAVE_INCENTIVES_CONTROLLER;
+        AAVE_LENDING_POOL = _AAVE_LENDING_POOL;
     }
 
     function setUserCompoundPreference(bool useCompound, address wallet) external {

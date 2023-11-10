@@ -7,9 +7,9 @@ const COMMUNITY_FEE = 500; // using 1000 basis points for fee calculation
 const KYODO_TREASURY_ADDRESS = ethers.Wallet.createRandom().address
 const COMMUNITY_TREASURY_ADDRESS = ethers.Wallet.createRandom().address
 const FAKE_STABLE_DECIMALS = 18;
-let = SPARK_DATA_PROVIDER = "0x0000000000000000000000000000000000000000";
-let = SPARK_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; //doesn't exist for kovan
-let = SPARK_LENDING_POOL= "0x26ca51Af4506DE7a6f0785D20CD776081a05fF6d";
+let = AAVE_DATA_PROVIDER = "0x0000000000000000000000000000000000000000";
+let = AAVE_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; //doesn't exist for kovan
+let = AAVE_LENDING_POOL= "0x0000000000000000000000000000000000000000";
 
 describe("PayAgreement", function () {
   let agreementContract;
@@ -37,7 +37,7 @@ describe("PayAgreement", function () {
     const StableVault = await ethers.getContractFactory("StableVault");
     vault = await StableVault.deploy(owner.address, "StableVaultToken", "STBLV");
     await vault.deployed();
-    await vault.setSparkSettings(SPARK_DATA_PROVIDER, SPARK_INCENTIVES_CONTROLLER, SPARK_LENDING_POOL);
+    await vault.setAaveSettings(AAVE_DATA_PROVIDER, AAVE_INCENTIVES_CONTROLLER, AAVE_LENDING_POOL);
 
     await agreementContract.setStableVaultAddress(vault.address);
   });
