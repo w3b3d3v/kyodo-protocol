@@ -92,7 +92,7 @@ function Payments ({ limit }) {
               )}`}
         </h3>
         <Link
-          href={explorerLink + "/tx/" + agreement.transactionHash}
+          href={explorerLink + "tx/" + agreement.transactionHash}
           target="_blank"
           rel="noopener noreferrer"
         >
