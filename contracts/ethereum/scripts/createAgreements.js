@@ -15,48 +15,28 @@ async function main() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract")
   const agreementContract = await AgreementContract.attach(await kyodoRegistry("AGREEMENT_CONTRACT"));
 
-  const agreementsPath = path.join(__dirname, "assets", "agreements.json");
-  const agreementsData = JSON.parse(fs.readFileSync(agreementsPath, "utf-8"));
+  const [deployer, contractor, developer] = await ethers.getSigners();
+  const paymentAmount = ethers.utils.parseUnits("100", 18)
 
-  const accounts = await ethers.getSigners();
-  
-  const numberOfAccounts = 1; 
-  
-  if (numberOfAccounts > accounts.length) {
-    console.log("Número de contas especificadas é maior do que as contas disponíveis.");
-    return;
-  }
+  skills = [
+    { name: "Programming", level: 50 },
+    { name: "Design", level: 50 }
+  ];
 
-  for (let i = 0; i < agreementsData.length; i++) {
-    const agreementData = agreementsData[i];
-    const {
-      title,
-      description,
-      skills,
-      paymentAmount,
-    } = agreementData;
+  const tx = await agreementContract.connect(contractor).createAgreement(
+    "Agreement 1 by cli test",
+    "Description 1",
+    developer.address,
+    skills,
+    paymentAmount
+  );
 
-    const signer = accounts[i % numberOfAccounts]; 
+  await tx.wait(); 
 
-    // const agreementContractWithSigner = agreementContract(signer);
+  console.log(`Agreement created. User: ${contractor.address} Transaction hash: ${tx.hash}`);
 
-    
-    const tx = await agreementContract.createAgreement(
-      "New Agreementa",
-      description,
-      "0x70997970C51812dc3A010C7d01b50e0d17dc79C8", // Second test wallet
-      skills,
-      paymentAmount
-    );
-
-    await tx.wait(); 
-
-    console.log(`Agreement "${title}" created. User: ${signer.address} Transaction hash: ${tx.hash}`);
-
-    const agreements = await agreementContract.getAllAgreements();   
-    console.log("agreements", agreements)
-
-  }
+  const agreements = await agreementContract.getAllAgreements();   
+  console.log("agreements", agreements)
 }
 
 main()
