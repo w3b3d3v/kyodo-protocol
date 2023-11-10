@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.1;
 
-interface ISparkIncentivesController {
+interface IAaveIncentivesController {
   function claimRewards(
     address[] calldata assets,
     uint amount,

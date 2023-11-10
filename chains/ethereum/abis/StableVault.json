@@ -84,7 +84,7 @@
           "type": "uint256"
         }
       ],
-      "name": "DepositSpark",
+      "name": "DepositAave",
       "type": "event"
     },
     {
@@ -502,7 +502,7 @@
           "type": "address"
         }
       ],
-      "name": "getSparkBalance",
+      "name": "getAaveBalance",
       "outputs": [
         {
           "internalType": "uint256",
@@ -684,21 +684,21 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "_SPARK_DATA_PROVIDER",
+          "name": "_AAVE_DATA_PROVIDER",
           "type": "address"
         },
         {
           "internalType": "address",
-          "name": "_SPARK_INCENTIVES_CONTROLLER",
+          "name": "_AAVE_INCENTIVES_CONTROLLER",
           "type": "address"
         },
         {
           "internalType": "address",
-          "name": "_SPARK_LENDING_POOL",
+          "name": "_AAVE_LENDING_POOL",
           "type": "address"
         }
       ],
-      "name": "setSparkSettings",
+      "name": "setAaveSettings",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

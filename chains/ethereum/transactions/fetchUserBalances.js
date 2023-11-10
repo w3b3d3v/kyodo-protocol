@@ -24,17 +24,6 @@ export const fetchUserBalances = async (details) => {
     }
   }
 
-  try {
-    const sparkBalance = await details.contract.getSparkBalance(
-      process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
-    )
-    const formattedBalance = ethers.utils.formatUnits(sparkBalance, 18)
-    console.log("Spark total balance: " + formattedBalance)
-  } catch (e) {
-    console.log("failed to get spark balance")
-    console.log(e)
-  }
-
   return balances
 };
   
