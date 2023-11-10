@@ -9,6 +9,7 @@ const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 describe("AgreementContract", function () {
   let agreementContract;
   let developer;
+  let skills;
 
   beforeEach(async () => {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
@@ -18,10 +19,14 @@ describe("AgreementContract", function () {
     await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);
 
     [developer, addr1] = await ethers.getSigners();
+    
+    skills = [
+      { name: "Programming", level: 50 },
+      { name: "Design", level: 50 }
+    ];
   });
 
   it("Should create a new agreement with authorized tokens", async function () {
-    const skills = ["JavaScript", "Solidity"];
     const paymentAmount = ethers.utils.parseEther("5");
 
     await agreementContract.connect(developer).createAgreement(
@@ -37,7 +42,6 @@ describe("AgreementContract", function () {
   });
 
   it("Should fail if the professional is the same as company", async function () {
-    const skills = ["JavaScript", "Solidity"];
     const paymentAmount = ethers.utils.parseEther("5");
 
     await expect(agreementContract.connect(developer).createAgreement(

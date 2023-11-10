@@ -4,8 +4,8 @@ const { ethers } = require("hardhat");
 const TOTAL_FEE = 20; // using 1000 basis points for fee calculation
 const PROTOCOL_FEE = 500; // using 1000 basis points for fee calculation
 const COMMUNITY_FEE = 500; // using 1000 basis points for fee calculation
-const KYODO_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS
-const COMMUNITY_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
+const KYODO_TREASURY_ADDRESS = ethers.Wallet.createRandom().address
+const COMMUNITY_TREASURY_ADDRESS = ethers.Wallet.createRandom().address
 const FAKE_STABLE_DECIMALS = 18;
 let = SPARK_DATA_PROVIDER = "0x0000000000000000000000000000000000000000";
 let = SPARK_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; //doesn't exist for kovan
@@ -15,6 +15,7 @@ describe("PayAgreement", function () {
   let agreementContract;
   let owner;
   let developer;
+  let skills;
 
   beforeEach(async function () {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
@@ -22,10 +23,13 @@ describe("PayAgreement", function () {
     await agreementContract.deployed();
 
     [owner, developer] = await ethers.getSigners();
+    skills = [
+      { name: "Programming", level: 50 },
+      { name: "Design", level: 50 }
+    ];
 
     const TokenContract = await ethers.getContractFactory("fakeStable");
-    tokenContract = TokenContract.attach(process.env.DAI_GOERLY)
-    // tokenContract = await TokenContract.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS);
+    tokenContract = await TokenContract.deploy(ethers.utils.parseEther("1000000"), FAKE_STABLE_DECIMALS);
 
     await agreementContract.addAcceptedPaymentToken(tokenContract.address);
     await agreementContract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
@@ -46,7 +50,7 @@ describe("PayAgreement", function () {
       "Agreement 1",
       "Description 1",
       developer.address,
-      ["Skill 1", "Skill 2"],
+      skills,
       paymentAmount
     );
 
@@ -88,7 +92,7 @@ describe("PayAgreement", function () {
         "Agreement 1",
         "Description 1",
         developer.address,
-        ["Skill 1", "Skill 2"],
+        skills,
         paymentAmount,
     )).to.emit(agreementContract, 'AgreementCreated')
     .withArgs(owner.address, developer.address, 1, paymentAmount);

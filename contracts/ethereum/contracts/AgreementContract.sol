@@ -22,6 +22,11 @@ contract AgreementContract {
         address tokenAddress;
     }
 
+    struct Skill {
+        string name;
+        uint256 level;
+    }
+
     struct Agreement {
         uint256 id;
         string title;
@@ -29,7 +34,6 @@ contract AgreementContract {
         AgreementStatus status;
         address company;
         address professional;
-        string[] skills;
         Token tokenIncentive;
         Token payment;
         uint256 totalPaid;
@@ -39,6 +43,7 @@ contract AgreementContract {
     Agreement[] public agreements;
     mapping(address => uint256[]) public userAgreements; // Mapping from user address to agreement IDs
     mapping(address => bool) public acceptedPaymentTokens; // Mapping of accepted payment tokens
+    mapping(uint => Skill[]) public agreementSkills;
 
     Token public tokenIncentive;
     IStableVault public StableVault;
@@ -83,7 +88,7 @@ contract AgreementContract {
         string memory _title,
         string memory _description,
         address _professional,
-        string[] memory _skills,
+        Skill[] memory _skills,
         uint256 _paymentAmount
     ) external {
         require(_professional != address(0), "Professional address cannot be zero");
@@ -103,11 +108,17 @@ contract AgreementContract {
             status: AgreementStatus.Active,
             company: msg.sender,
             professional: _professional,
-            skills: _skills,
             tokenIncentive: tokenIncentive, // Use fixed tokenIncentive
             payment: paymentToken,
             totalPaid: 0
         });
+
+        for (uint256 i = 0; i < _skills.length; i++) {
+            agreementSkills[nextAgreementId].push(Skill({
+                name: _skills[i].name,
+                level: _skills[i].level
+            }));
+        }
 
         agreements.push(newAgreement);
         userAgreements[msg.sender].push(nextAgreementId);
@@ -130,6 +141,10 @@ contract AgreementContract {
     function getAgreementById(uint256 _id) external view returns (Agreement memory) {
         require(_id > 0 && _id <= agreements.length, "Invalid agreement ID");
         return agreements[_id - 1];
+    }
+
+    function getSkillsByAgreementId(uint256 _agreementId) external view returns (Skill[] memory) {
+        return agreementSkills[_agreementId];
     }
 
     function updateTokenIncentive(address _newTokenAddress, uint256 _newAmount) external onlyOwner {

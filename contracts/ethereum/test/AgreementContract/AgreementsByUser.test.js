@@ -10,6 +10,7 @@ describe("AgreementsByUser", function () {
   let owner;
   let user1;
   let user2;
+  let skills;
 
   beforeEach(async function () {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
@@ -19,17 +20,19 @@ describe("AgreementsByUser", function () {
     [owner, user1, user2] = await ethers.getSigners();
 
     await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);
+    skills = [
+      { name: "Programming", level: 50 },
+      { name: "Design", level: 50 }
+    ];
   });
 
   it("Should create agreements and retrieve user-specific agreements", async function () {
-    // Use the first two allowed tokens for testing
-
     // Create agreements using different user addresses
     await agreementContract.connect(user1).createAgreement(
       "Agreement 1",
       "Description 1",
       user2.address,
-      ["Skill 1", "Skill 2"],
+      skills,
       ethers.utils.parseEther("5"),
     );
 
@@ -37,7 +40,7 @@ describe("AgreementsByUser", function () {
       "Agreement 2",
       "Description 2",
       user1.address,
-      ["Skill 3", "Skill 4"],
+      skills,
       ethers.utils.parseEther("4"),
     );
 
@@ -57,5 +60,31 @@ describe("AgreementsByUser", function () {
 
     expect(user1Agreement.professional).to.equal(user2.address);
     expect(user2Agreement.professional).to.equal(user1.address);
-  });  
+  });
+  
+  it("Should verify skills associated with user1's agreements", async function () {
+    // Criação dos agreements
+    await agreementContract.connect(user1).createAgreement(
+      "Agreement 1",
+      "Description 1",
+      user2.address,
+      skills,
+      ethers.utils.parseEther("5"),
+    );
+  
+    // Obtendo os IDs dos agreements de user1
+    const user1Agreements = await agreementContract.connect(user1).getUserAgreements(user1.address);
+  
+    // Verificando se os agreements de user1 possuem os skills corretos
+    for (let agreementId of user1Agreements) {
+      const agreementSkills = await agreementContract.getSkillsByAgreementId(agreementId);
+      
+      // Verificar se a quantidade de skills e os detalhes de cada skill estão corretos
+      expect(agreementSkills.length).to.equal(skills.length);
+      agreementSkills.forEach((skill, index) => {
+        expect(skill.name).to.equal(skills[index].name);
+        expect(skill.level).to.equal(skills[index].level);
+      });
+    }
+  });
 });

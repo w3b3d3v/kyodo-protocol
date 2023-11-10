@@ -1,6 +1,6 @@
 import ethContracts from "./ethereum/contracts"
 import solContracts from "./solana/contracts"
-import chainConfig from "./chainConfig.json";
+import chainConfig from "./chainConfig.json"
 
 class ContractManager {
   constructor() {
@@ -9,13 +9,13 @@ class ContractManager {
     this.addressValidators = {
       ethereum: /^0x[a-fA-F0-9]{40}$/,
       solana: /^[1-9A-HJ-NP-Za-km-z]{43,44}$/,
-    };
+    }
 
     // Initialize contracts based on chain type
     for (const chain of this.supportedNetworks) {
-      this.chains[chain] = ethContracts;
+      this.chains[chain] = ethContracts
     }
-    this.chains["solana"] = solContracts;
+    this.chains["solana"] = solContracts
   }
 
   verify(chain) {
