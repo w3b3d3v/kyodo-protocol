@@ -181,7 +181,10 @@ function AgreementList() {
               <div className={styles["card-desc"]}>{agreement.description}</div>
 
               <p className={styles["skills-section"]}>
-                <strong>{t("skills")}</strong> <span>{agreement.skills.join(", ")}</span>
+                <strong>{t("skills")}</strong> 
+                {agreement.skills.map((skill, index) => (
+                  <span key={index} className={styles.skill}>{skill}</span>
+                ))}
               </p>
 
               <p>

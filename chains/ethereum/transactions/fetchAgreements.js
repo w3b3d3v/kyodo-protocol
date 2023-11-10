@@ -1,13 +1,15 @@
 import { ethers } from "ethers";
 
-function transformAgreementData(agreement) {
+function transformAgreementData(agreement, skills) {
+  const skillNames = skills.map(skill => skill.name);
+
   return {
       id: agreement.id, 
       title: agreement.title,
       description: agreement.description,
       professional: agreement.professional?.toString(),
       company: agreement.company?.toString(),
-      skills: agreement.skills,
+      skills: skillNames,
       amount: ethers.utils.formatUnits(agreement.payment.amount, 18),
       totalPaid: ethers.utils.formatUnits(agreement.totalPaid, 18)
   };
@@ -25,7 +27,8 @@ export const fetchAgreements = async (details) => {
     const fetchedAgreements = await Promise.all(
       stringIds.map(async (agreementId) => {
         const agreement = await details.contract.getAgreementById(agreementId);
-        const transformedAgreement = transformAgreementData(agreement);
+        const agreementSkills = await details.contract.getSkillsByAgreementId(agreementId);
+        const transformedAgreement = transformAgreementData(agreement, agreementSkills);
         return {
             ...transformedAgreement
         };
