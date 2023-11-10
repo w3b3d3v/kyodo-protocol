@@ -119,6 +119,12 @@ ADD AGREEMENT
 .add-skill-btn {
   text-decoration: none;
   color: $medium-gray;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   img {
     float: left;
