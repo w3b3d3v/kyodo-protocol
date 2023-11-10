@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import ERC20Token from '../../../utils/ERC20Token';
+import ERC20Token from '../utils/ERC20Token';
 
 export const fetchUserBalances = async (details) => {
   // TODO: Make tokens come from accpeted tokens list

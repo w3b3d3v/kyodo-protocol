@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import ERC20_ABI from './ERC20.json';
+import ERC20_ABI from '../abis/ERC20.json';
 
 class ERC20Token {
   constructor(tokenAddress) {
