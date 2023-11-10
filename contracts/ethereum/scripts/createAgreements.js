@@ -26,7 +26,7 @@ async function main() {
   const tx = await agreementContract.connect(contractor).createAgreement(
     "Agreement 1 by cli test",
     "Description 1",
-    developer.address,
+    deployer.address,
     skills,
     paymentAmount
   );

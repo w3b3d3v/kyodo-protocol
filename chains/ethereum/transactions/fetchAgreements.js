@@ -15,11 +15,13 @@ function transformAgreementData(agreement, skills) {
   };
 }
 
-
 export const fetchAgreements = async (details) => {
   try {
-    const userAgreementIds = await details.contract.getUserAgreements(details.account);
-    
+    const contractorAgreementIds = await details.contract.getContractorAgreements(details.account);
+    const professionalAgreementIds = await details.contract.getProfessionalAgreements(details.account);
+
+    const userAgreementIds = Array.from(new Set([...contractorAgreementIds, ...professionalAgreementIds]));
+
     if (userAgreementIds.length === 0) return null;
 
     const stringIds = userAgreementIds.map((id) => id.toString());
