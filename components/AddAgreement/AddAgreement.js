@@ -18,14 +18,17 @@ function AddAgreementForm(props) {
   const [description, setDescription] = useState("")
   const [contract, setContract] = useState("")
   const [professional, setProfessional] = useState("")
-  const [skills, setSkills] = useState("")
   const [paymentAmount, setPaymentAmount] = useState("")
   const [formErrors, setFormErrors] = useState({})
   const router = useRouter()
   const { account, selectedChain, selectedNetworkId } = useAccount()
   const { publicKey, wallet } = useWallet()
   const { connection } = useConnection()
-  // const { contract } = useAgreementContract();
+  const [skillName, setSkillName] = useState('');
+  const [skillLevel, setSkillLevel] = useState('');
+  const [skillsList, setSkillsList] = useState([]);
+  const totalSkillsLevel = (skills) => skills.reduce((total, skill) => total + skill.level, 0);
+
   const { t } = useTranslation()
   const {
     isLoading,
@@ -61,6 +64,54 @@ function AddAgreementForm(props) {
     initializeContract()
   }, [selectedNetworkId, wallet, connection])
 
+  const skillSchema = Yup.object().shape({
+    skills: Yup.string()
+      .required('Skill name is required'),
+    level: Yup.number()
+      .required('Skill level is required')
+      .test(
+        'is-valid-level',
+        'Level must be a valid number between 1 and 100',
+        value => value > 0 && value <= 100
+      )
+      .test(
+        'total-level-check',
+        'Total level of skills cannot exceed 100%',
+        value => {
+          // Calculate the total level including the new skill level
+          const newTotalLevel = totalSkillsLevel(skillsList) + value;
+          return newTotalLevel <= 100;
+        }
+      ),
+  });
+
+  const handleRemoveSkill = (skillName) => {
+    const filteredSkills = skillsList.filter(skill => skill.name !== skillName);
+    setSkillsList(filteredSkills);
+  };
+
+  const handleAddSkill = async (event) => {
+    event.preventDefault();
+  
+    try {
+      await skillSchema.validate({ skills: skillName, level: skillLevel }, { abortEarly: false });
+  
+      setSkillsList([...skillsList, { name: skillName, level: parseInt(skillLevel, 10) }]);
+      setSkillName('');
+      setSkillLevel('');
+      setFormErrors({});
+    } catch (errors) {
+      console.log(errors)
+      if (errors instanceof Yup.ValidationError) {
+        const errorMessages = {}
+        errors.inner.forEach((error) => {
+          errorMessages[error.path] = error.message
+        })
+        setFormErrors(errorMessages)
+      }
+    }
+  };
+
   const AgreementSchema = Yup.object().shape({
     title: Yup.string().required(),
     description: Yup.string().required(),
@@ -81,20 +132,19 @@ function AddAgreementForm(props) {
           return value.toLowerCase() !== account.toLowerCase()
         }
       ),
-    skills: Yup.string()
-      .required()
-      .test("is-comma-separated", "Skills should be comma-separated", (value) => {
-        if (!value) return false
-        const skillsArray = value.split(",")
-        return skillsArray.every((skill) => !!skill.trim())
-      }),
     paymentAmount: Yup.number()
       .transform((value, originalValue) => {
         return originalValue === "" ? undefined : value
       })
       .required()
       .positive("Payment amount should be positive"),
-  })
+    skillsList: Yup.array()
+      .test(
+        'total-level-100',
+        'The total level must sum 100%',
+        (skillsList) => totalSkillsLevel(skillsList) === 100
+      ),
+    })
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -105,7 +155,7 @@ function AddAgreementForm(props) {
           title,
           description,
           professional,
-          skills,
+          skillsList,
           paymentAmount,
         },
         {
@@ -131,7 +181,7 @@ function AddAgreementForm(props) {
       title,
       description,
       professional,
-      skills: skills.split(","),
+      skillsList,
       paymentAmount,
       account,
       contract,
@@ -144,8 +194,10 @@ function AddAgreementForm(props) {
       setTitle("")
       setDescription("")
       setProfessional("")
-      setSkills("")
       setPaymentAmount("")
+      setSkillsList("")
+      setSkillName("")
+      setSkillLevel("")
       setTimeout(() => {
         setIsLoading(false)
         router.push("/agreements")
@@ -218,7 +270,7 @@ function AddAgreementForm(props) {
             </div>
             <label htmlFor="community-input">{t("community")}</label>
             <div className={"custom-select"}>
-              <select tabIndex={5} id="community-input">
+              <select tabIndex={4} id="community-input">
                 <option>{t("select-option")}</option>
                 <option>Phala Network</option>
                 <option>WEB3DEV</option>
@@ -247,54 +299,53 @@ function AddAgreementForm(props) {
               id="description-input"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              tabIndex={4}
+              tabIndex={5}
             ></textarea>
 
             <label htmlFor="skills-input" className={styles["skill-lv"]}>
               {t("skills")}
               <span>Lv.</span>
             </label>
+            {formErrors.skillsList && <div className={"validation-msg"}>{formErrors.skillsList}</div>}
             {formErrors.skills && <div className={"validation-msg"}>{formErrors.skills}</div>}
+            {formErrors.level && <div className="validation-msg">{formErrors.level}</div>}
             <div className={styles["skills-field"]}>
+              <input
+                type="text"
+                id="skills-input"
+                className={styles["skills-input"]}
+                value={skillName}
+                onChange={(event) => setSkillName(event.target.value)}
+                tabIndex={6}
+              />
               <i data-tooltip={t("skills-tooltip")} className="tooltip-top">
                 <input
                   type="text"
                   id="skill-value"
                   className={styles["skill-value"]}
                   placeholder="%"
-                  tabIndex={6}
+                  tabIndex={7}
+                  value={skillLevel}
+                  onChange={(event) => setSkillLevel(event.target.value)}
                 />
               </i>
-              <input
-                type="text"
-                id="skills-input"
-                className={styles["skills-input"]}
-                value={skills}
-                onChange={(event) => setSkills(event.target.value)}
-                tabIndex={5}
-              />
             </div>
-            <Link href="#" className={styles["add-skill-btn"]} tabIndex={7}>
+            <button onClick={handleAddSkill} className={styles["add-skill-btn"]} tabIndex={8}>
               <Image src="/add.svg" width={16} height={16} alt="add" />
               <span>{t("add")}</span>
-            </Link>
+            </button>
 
             <ul className={styles["skills-list"]}>
-              <li>
+              {skillsList.map((skill, index) => (
+                <li key={index}>
                 <div className={styles["skill-item"]}>
-                  <span>Dev Ops</span>
-                  <Image src="/close.svg" width={16} height={16} alt="close" />
+                  <span>{skill.name}</span>
+                  <Image src="/close.svg" width={16} height={16} alt="close" onClick={() => handleRemoveSkill(skill.name)} />
                 </div>
-                <em>30%</em>
-              </li>
-              <li>
-                <div className={styles["skill-item"]}>
-                  <span>Quality Assurance</span>
-                  <Image src="/close.svg" width={16} height={16} alt="close" />
-                </div>
-                <em>20%</em>
-              </li>
-            </ul>
+                <em>{skill.level}%</em>
+                </li>
+              ))}
+          </ul>
           </div>
         </section>
 

@@ -8,14 +8,13 @@ export const addAgreement = async (details) => {
       details.title,
       details.description,
       details.professional,
-      details.skills,
+      details.skillsList.map(item => item.name),
       paymentAmountInWei
     );
 
     return tx;
   } catch (error) {
       console.log("Error in addAgreement:", error);
-      // console.log(error);
       throw error;
   }
 };
