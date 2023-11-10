@@ -15,7 +15,7 @@ async function main() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract")
   const agreementContract = await AgreementContract.attach(await kyodoRegistry("AGREEMENT_CONTRACT"));
 
-  const [deployer, contractor, developer] = await ethers.getSigners();
+  const [deployer, developer] = await ethers.getSigners();
   const paymentAmount = ethers.utils.parseUnits("100", 18)
 
   skills = [
@@ -23,17 +23,17 @@ async function main() {
     { name: "Design", level: 50 }
   ];
 
-  const tx = await agreementContract.connect(contractor).createAgreement(
+  const tx = await agreementContract.connect(deployer).createAgreement(
     "Agreement 1 by cli test",
     "Description 1",
-    deployer.address,
+    developer.address,
     skills,
     paymentAmount
   );
 
   await tx.wait(); 
 
-  console.log(`Agreement created. User: ${contractor.address} Transaction hash: ${tx.hash}`);
+  console.log(`Agreement created. User: ${deployer.address} Transaction hash: ${tx.hash}`);
 
   const agreements = await agreementContract.getAllAgreements();   
   console.log("agreements", agreements)

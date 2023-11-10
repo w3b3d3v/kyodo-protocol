@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import ERC20Token from '../../../utils/ERC20Token';
+import ERC20Token from '../utils/ERC20Token';
 
 const handleWithdrawal = async (user, amount, asset, account) => {
   if (user.toLowerCase() == account.toLowerCase()) {
