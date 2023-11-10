@@ -41,7 +41,8 @@ contract AgreementContract {
 
     uint256 public nextAgreementId = 1;
     Agreement[] public agreements;
-    mapping(address => uint256[]) public userAgreements; // Mapping from user address to agreement IDs
+    mapping(address => uint256[]) public contractorAgreements; // Mapping from user address to agreement IDs
+    mapping(address => uint256[]) professionalAgreements;
     mapping(address => bool) public acceptedPaymentTokens; // Mapping of accepted payment tokens
     mapping(uint => Skill[]) public agreementSkills;
 
@@ -121,7 +122,8 @@ contract AgreementContract {
         }
 
         agreements.push(newAgreement);
-        userAgreements[msg.sender].push(nextAgreementId);
+        contractorAgreements[msg.sender].push(nextAgreementId);
+        professionalAgreements[_professional].push(nextAgreementId);
         emit AgreementCreated(msg.sender, _professional, nextAgreementId, _paymentAmount);
         nextAgreementId++;
     }
@@ -134,8 +136,12 @@ contract AgreementContract {
         return agreements;
     }
 
-    function getUserAgreements(address _user) external view returns (uint256[] memory) {
-        return userAgreements[_user];
+    function getContractorAgreements(address _contractor) external view returns (uint256[] memory) {
+        return contractorAgreements[_contractor];
+    }
+
+    function getProfessionalAgreements(address _professional) external view returns (uint256[] memory) {
+        return professionalAgreements[_professional];
     }
 
     function getAgreementById(uint256 _id) external view returns (Agreement memory) {

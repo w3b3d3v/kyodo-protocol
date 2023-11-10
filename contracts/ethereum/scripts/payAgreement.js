@@ -14,7 +14,7 @@ async function payUserAgreement() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
   const agreementContract = await AgreementContract.attach(kyodoRegistry("AGREEMENT_CONTRACT_ADDRESS"));
 
-  let userAgreements = await agreementContract.connect(signer).getUserAgreements(signer.address);
+  let userAgreements = await agreementContract.connect(signer).getContractorAgreements(signer.address);
   userAgreements = userAgreements.map(id => id.toString());
 
   if (userAgreements.length === 0) {

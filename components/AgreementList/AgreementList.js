@@ -203,7 +203,9 @@ function AgreementList() {
 
               <div className={styles["card-footer"]}>
                 <>
-                  <a onClick={() => handlePayClick(index)}>{t("pay-agreement")}</a>
+                  {agreement.professional.toLowerCase() !== account.toLowerCase() && (
+                    <a onClick={() => handlePayClick(index)}>{t("pay-agreement")}</a>
+                  )}
                   {showPaymentInput === index && (
                     <>
                       <div className={styles["opened-items"]}>
