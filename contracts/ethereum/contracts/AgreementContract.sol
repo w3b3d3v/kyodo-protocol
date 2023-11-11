@@ -1,38 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity ^0.8.1;
 
-import "hardhat/console.sol";
+import "./interfaces/IStableVault.sol";
+import "./interfaces/IAgreementContract.sol";
+import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "./Admin.sol";
 
-interface IERC20 {
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-    function approve(address spender, uint256 amount) external returns (bool);
-    function decimals() external view returns (uint8);
-}
-
-interface IStableVault {
-    function deposit(uint256 amount, address _asset, address _beneficiary) external;
-}
-
-contract AgreementContract is Admin {
-    enum AgreementStatus { Active, Completed }
-
-    struct Skill {
-        string name;
-        uint256 level;
-    }
-
-    struct Agreement {
-        uint256 id;
-        string title;
-        string description;
-        AgreementStatus status;
-        address company;
-        address professional;
-        uint256 paymentAmount;
-        uint256 totalPaid;
-    }
+contract AgreementContract is Admin, IAgreementContract {
 
     uint256 public nextAgreementId = 1;
     Agreement[] public agreements;
@@ -43,7 +17,6 @@ contract AgreementContract is Admin {
     address[] public tokenAddresses;
 
     IStableVault public StableVault;
-    address public owner;
     address public kyodoTreasury;
     address public communityDAO;
 
@@ -51,22 +24,7 @@ contract AgreementContract is Admin {
     uint256 public kyodoTreasuryFee;
     uint256 public communityDAOFee;
 
-    event AgreementCreated(
-        address indexed company,
-        address indexed professional, 
-        uint256 agreementId, 
-        uint256 amount
-    );
-    
-    event PaymentMade(
-        address indexed company,
-        address indexed professional, 
-        uint256 agreementId, 
-        uint256 amount
-    );
-
     constructor(address _kyodoTreasury, address _communityDAO, address admin) Admin(admin) {
-        owner = msg.sender;
         kyodoTreasury = _kyodoTreasury;
         communityDAO = _communityDAO;
     }
@@ -90,7 +48,7 @@ contract AgreementContract is Admin {
         address _professional,
         Skill[] memory _skills,
         uint256 _paymentAmount
-    ) external {
+    ) external override {
         require(_professional != address(0), "Professional address cannot be zero");
         require(_skills.length > 0, "Skills must not be empty");
         require(_paymentAmount > 0, "Payment amount must be greater than zero");
@@ -121,28 +79,28 @@ contract AgreementContract is Admin {
         nextAgreementId++;
     }
 
-    function getAgreementCount() external view returns (uint256) {
+    function getAgreementCount() external override view returns (uint256) {
         return agreements.length;
     }
 
-    function getAllAgreements() external view returns (Agreement[] memory) {
+    function getAllAgreements() external override view returns (Agreement[] memory) {
         return agreements;
     }
 
-    function getContractorAgreements(address _contractor) external view returns (uint256[] memory) {
+    function getContractorAgreements(address _contractor) external override view returns (uint256[] memory) {
         return contractorAgreements[_contractor];
     }
 
-    function getProfessionalAgreements(address _professional) external view returns (uint256[] memory) {
+    function getProfessionalAgreements(address _professional) external override view returns (uint256[] memory) {
         return professionalAgreements[_professional];
     }
 
-    function getAgreementById(uint256 _id) external view returns (Agreement memory) {
+    function getAgreementById(uint256 _id) external override view returns (Agreement memory) {
         require(_id > 0 && _id <= agreements.length, "Invalid agreement ID");
         return agreements[_id - 1];
     }
 
-    function getSkillsByAgreementId(uint256 _agreementId) external view returns (Skill[] memory) {
+    function getSkillsByAgreementId(uint256 _agreementId) external override view returns (Skill[] memory) {
         return agreementSkills[_agreementId];
     }
 

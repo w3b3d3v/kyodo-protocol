@@ -2,13 +2,11 @@
 pragma solidity 0.8.20;
 
 import "./Admin.sol";
+import "./interfaces/IKyodoRegistry.sol";
 
-contract KyodoRegistry is Admin {
+contract KyodoRegistry is Admin, IKyodoRegistry {
     mapping(bytes32 => address) private addressRegistry;
     mapping(bytes32 => uint) private blockDeployment;
-
-    event RegistryCreated(bytes32 indexed key, address value, uint blockNumber);
-    event RegistryUpdated(bytes32 indexed key, address value, uint blockNumber);
 
     constructor(address admin) Admin(admin) {}
 
@@ -28,14 +26,14 @@ contract KyodoRegistry is Admin {
         emit RegistryUpdated(key, value, blockNumber);
     }
 
-    function getRegistry(string memory registry) external view returns (address) {
+    function getRegistry(string memory registry) external override view returns (address) {
         bytes32 key = keccak256(abi.encodePacked(registry));
         address registeredAddress = addressRegistry[key];
         require(registeredAddress != address(0), 'Registry does not exists');
         return registeredAddress;
     }
 
-    function getBlockDeployment(string memory registry) external view returns (uint) {
+    function getBlockDeployment(string memory registry) external override view returns (uint) {
         bytes32 key = keccak256(abi.encodePacked(registry));
         uint blockNumber = blockDeployment[key];
         return blockNumber;

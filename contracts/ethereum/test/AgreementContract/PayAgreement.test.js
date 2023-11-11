@@ -11,7 +11,7 @@ let = AAVE_LENDING_POOL= "0x0000000000000000000000000000000000000000";
 
 describe("PayAgreement", function () {
   let agreementContract;
-  let owner;
+  let admin;
   let developer;
   let skills;
 
@@ -21,7 +21,6 @@ describe("PayAgreement", function () {
     agreementContract = await AgreementContract.deploy(kyodoTreasury, communityTreasury, deployer);
     await agreementContract.deployed();
 
-    [owner, developer] = await ethers.getSigners();
     skills = [
       { name: "Programming", level: 50 },
       { name: "Design", level: 50 }
@@ -34,7 +33,7 @@ describe("PayAgreement", function () {
     await agreementContract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE);
     
     const StableVault = await ethers.getContractFactory("StableVault");
-    vault = await StableVault.deploy(owner.address, "StableVaultToken", "STBLV");
+    vault = await StableVault.deploy(admin.address, "StableVaultToken", "STBLV");
     await vault.deployed();
     await vault.setAaveSettings(AAVE_DATA_PROVIDER, AAVE_INCENTIVES_CONTROLLER, AAVE_LENDING_POOL);
 
@@ -46,7 +45,7 @@ describe("PayAgreement", function () {
     const paymentAmount = ethers.utils.parseUnits("100", FAKE_STABLE_DECIMALS)
 
     // Create agreements using different user addresses
-    const tx = await agreementContract.connect(owner).createAgreement(
+    const tx = await agreementContract.connect(admin).createAgreement(
       "Agreement 1",
       "Description 1",
       developer.address,
@@ -58,11 +57,11 @@ describe("PayAgreement", function () {
     const initialKyodoTreasuryBalance = await vault.balanceOf(kyodoTreasury);
     const initialCommunityDAOBalance = await vault.balanceOf(communityTreasury);
   
-    const ownerAgreements = await agreementContract.connect(owner).getContractorAgreements(owner.address);
-    const ownerAgreementId = ownerAgreements[0];
+    const adminAgreements = await agreementContract.connect(admin).getContractorAgreements(admin.address);
+    const adminAgreementId = adminAgreements[0];
     await tokenContract.approve(agreementContract.address, paymentAmount);
 
-    await agreementContract.makePayment(ownerAgreementId, paymentAmount, tokenContract.address)
+    await agreementContract.makePayment(adminAgreementId, paymentAmount, tokenContract.address)
 
     const totalFeeAmount = paymentAmount.mul(TOTAL_FEE).div(1000);
     
@@ -89,14 +88,14 @@ describe("PayAgreement", function () {
     const paymentAmount = ethers.utils.parseEther("100");
     const partialPaymentAmount = ethers.utils.parseUnits("50", FAKE_STABLE_DECIMALS)
 
-    await expect(agreementContract.connect(owner).createAgreement(
+    await expect(agreementContract.connect(admin).createAgreement(
         "Agreement 1",
         "Description 1",
         developer.address,
         skills,
         paymentAmount,
     )).to.emit(agreementContract, 'AgreementCreated')
-    .withArgs(owner.address, developer.address, 1, paymentAmount);
+    .withArgs(admin.address, developer.address, 1, paymentAmount);
 
     const initialVaultBalance = await vault.vaultBalance();
 
@@ -104,14 +103,14 @@ describe("PayAgreement", function () {
     const initialKyodoTreasuryBalance = await vault.balanceOf(kyodoTreasury);
     const initialCommunityDAOBalance = await vault.balanceOf(communityTreasury);
 
-    const ownerAgreements = await agreementContract.connect(owner).getContractorAgreements(owner.address);
-    const ownerAgreementId = ownerAgreements[0];
+    const adminAgreements = await agreementContract.connect(admin).getContractorAgreements(admin.address);
+    const adminAgreementId = adminAgreements[0];
     await tokenContract.approve(agreementContract.address, paymentAmount);
-    await expect(agreementContract.makePayment(ownerAgreementId, partialPaymentAmount, tokenContract.address))
+    await expect(agreementContract.makePayment(adminAgreementId, partialPaymentAmount, tokenContract.address))
       .to.emit(agreementContract, 'PaymentMade')
-      .withArgs(owner.address, developer.address, ownerAgreementId, partialPaymentAmount);
+      .withArgs(admin.address, developer.address, adminAgreementId, partialPaymentAmount);
 
-    const updatedAgreement = await agreementContract.getAgreementById(ownerAgreementId);
+    const updatedAgreement = await agreementContract.getAgreementById(adminAgreementId);
     expect(updatedAgreement.status).to.equal(0); // Still active
 
     const totalFeeAmount = partialPaymentAmount.mul(TOTAL_FEE).div(1000);
