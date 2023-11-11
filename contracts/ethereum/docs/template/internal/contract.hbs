@@ -1,0 +1,120 @@
+# `{{name}}`
+
+{{{natspec.userdoc}}}
+
+{{{natspec.devdoc}}}
+
+---
+{{#if ownStructs}}
+## Structs
+
+{{#each ownStructs}}
+```solidity
+  {{name}} {
+    {{#each members}}
+    {{type}} {{name}}
+    {{/each}}
+  }
+```
+{{/each}}
+
+---
+{{/if}}
+
+{{#if ownEnums}}
+## Enumerators
+
+{{#each ownEnums}}
+### `{{name}}`
+```solidity
+  {{name}} {
+    {{#each members}}
+      {{.}}
+    {{/each}}
+  }
+```
+{{/each}}
+
+---
+{{/if}}
+
+{{#if ownModifiers}}
+## Modifiers
+
+{{#each ownModifiers}}
+### `{{name}}({{args}})`
+
+{{{natspec.userdoc}}}
+
+{{{natspec.devdoc}}}
+
+{{/each}}
+
+---
+{{/if}}
+
+{{#if ownFunctions}}
+## Functions
+
+{{#each ownFunctions}}
+
+### `{{name}}()`
+  {{#if natspec.userdoc}}{{natspec.userdoc}}{{/if}}
+  {{#if natspec.devdoc}}{{natspec.devdoc}}{{/if}}
+  
+{{#if natspec.params}}
+```solidity
+  {{name}}(
+    {{#natspec.params}}
+    {{#lookup ../args.types @index}}{{/lookup}} {{param}}{{#if @last}}{{else}},{{/if}}
+    {{/natspec.params}}
+  ) {{visibility}}{{#if outputs}} returns ({{outputs}}){{/if}}
+```
+
+#### Parameters list:
+
+| Name | Type | Description                                                          |
+| :--- | :--- | :------------------------------------------------------------------- |
+{{#natspec.params}}
+|`{{param}}` | {{#lookup ../args.types @index}}{{/lookup}} | {{ description }}{{/natspec.params}}
+
+{{else}}
+```solidity
+  {{name}}() {{visibility}}{{#if outputs}} returns ({{outputs}}){{/if}}
+```
+{{/if}}
+
+{{#if natspec.returns}}
+
+#### Return values:
+| Name                           | Type          | Description                                                                  |
+| :----------------------------- | :------------ | :--------------------------------------------------------------------------- |
+{{#natspec.returns}}
+|`{{param}}`| {{#lookup ../outputs.types @index}}{{/lookup}} | {{{description}}}{{/natspec.returns}}{{/if}}
+
+{{/each}}
+
+---
+{{/if}}
+
+{{#if ownEvents}}
+## Events
+
+{{#each ownEvents}}
+
+{{#if natspec.userdoc}}{{natspec.userdoc}}{{/if}}
+{{#if natspec.devdoc}}{{natspec.devdoc}}{{/if}}
+
+```solidity
+  {{name}}({{args}})
+```
+{{#if natspec.params}}
+#### Parameters:
+| Name                           | Type          | Description                                    |
+| :----------------------------- | :------------ | :--------------------------------------------- |
+{{#natspec.params}}
+|`{{param}}`| {{#lookup ../args.types @index}}{{/lookup}} | {{{description}}}{{/natspec.params}}{{/if}}
+
+{{/each}}
+
+{{/if}}

@@ -6,7 +6,7 @@ const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
 describe("AgreementsByUser", function () {
   let agreementContract;
-  let owner;
+  let admin;
   let user1;
   let user2;
   let skills;
@@ -17,7 +17,6 @@ describe("AgreementsByUser", function () {
     agreementContract = await AgreementContract.deploy(kyodoTreasury, communityTreasury, deployer);
     await agreementContract.deployed();
 
-    [owner, user1, user2] = await ethers.getSigners();
 
     await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);
     skills = [

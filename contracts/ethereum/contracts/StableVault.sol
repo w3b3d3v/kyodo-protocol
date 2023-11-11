@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.20;
+pragma solidity 0.8.1;
 
 import "hardhat/console.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
 
 import "./dependencies/interfaces/ILendingPool.sol";
 import "./dependencies/interfaces/IAaveIncentivesController.sol";
 import "./dependencies/interfaces/IDataProvider.sol";
-
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./Admin.sol";
 
 
 // TODO: Unchecked in all mathematical operations
 
-contract StableVault is ReentrancyGuard, Admin, ERC20 {
+contract StableVault is ReentrancyGuard, Admin, ERC20, IStableVault {
     uint256 private _vaultBalance;
     mapping(address => bool) public userSetCompound;
     mapping(string => mapping(uint256 => bool)) public validNetworks;
@@ -27,31 +27,16 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
     address private AAVE_INCENTIVES_CONTROLLER;
     address private AAVE_DATA_PROVIDER;
 
-    event BalanceUpdated(uint256 _vaultBalance);
-    event Withdrawal(address indexed user, uint256 amount, address indexed asset);
-    event DepositAave(address indexed user, address asset, uint256 amount);
-
     constructor(
         address admin, 
         string memory tokenName, 
         string memory tokenSymbol
     ) 
-    ERC20(tokenName, 
-    tokenSymbol) Admin(admin) 
+    ERC20(tokenName, tokenSymbol) 
+    Admin(admin) 
     {}
 
-    /**
-     * @notice Deposits an asset into the Vault and mints vault tokens for the beneficiary.
-     * @param amount The amount of the asset to deposit.
-     * @param _asset The address of the asset token being deposited.
-     * @param _beneficiary The address that will receive the minted vault tokens.
-     * 
-     * @dev This function allows a user to deposit assets into the vault. 
-     * The function first corrects the asset amount to have 18 decimal places, if it doesn't already.
-     * It then transfers the asset from the sender to the vault and mints vault tokens for the beneficiary.
-     * The vault's balance is also updated.
-     */
-    function deposit(uint256 amount, address _asset, address _beneficiary) external nonReentrant() whenNotPaused() returns(bool){
+    function deposit(uint256 amount, address _asset, address _beneficiary) external override nonReentrant() whenNotPaused() returns(bool){
         uint correctedAmount = _correctAmount(amount, _asset);
 
         IERC20(_asset).safeTransferFrom(msg.sender, address(this), amount);
@@ -71,9 +56,9 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
      * 
      * @return The amount standardized to 18 decimal places.
      * 
-     * @notice This function takes an amount of a given asset and standardizes it to have 18 decimal places.
-     * If the asset already has 18 decimal places, the original amount is returned.
-     * Otherwise, the function scales the amount up or down to make it equivalent in terms of 18 decimal places.
+     * @notice This function adjusts the amount of a certain asset to have 18 decimal places. 
+     * If the asset already uses 18 decimal places, it keeps the amount the same. 
+     * If not, it changes the amount either by increasing or decreasing it, so that it matches the standard of 18 decimal places.
      */
     function _correctAmount(uint256 amount, address asset) internal view returns(uint) {
         uint assetDecimals = IERC20Metadata(asset).decimals();
@@ -96,11 +81,10 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         unchecked {
             _vaultBalance += amount;
         }
-
         emit BalanceUpdated(amount);
     }
 
-    function vaultBalance() public view returns(uint256){
+    function vaultBalance() public view override returns(uint256){
         return _vaultBalance;
     }
 
@@ -109,21 +93,10 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         unchecked {
             _vaultBalance -= amount;
         }
-
         emit BalanceUpdated(amount);
     }
-
-    /**
-     * @notice Withdraws an asset from the Vault and burns the vault tokens.
-     * @param amount The amount of the asset to withdraw.
-     * @param _asset The address of the asset token being withdrawn.
-     * 
-     * @dev This function allows a user to withdraw assets from the vault. 
-     * The function first corrects the asset amount to have 18 decimal places, if it doesn't already.
-     * It then burns the vault tokens from the sender and transfers the asset back to the sender.
-     * The vault's balance is also updated.
-     */
-    function withdraw(uint256 amount, address _asset) external nonReentrant() whenNotPaused() returns(bool){
+    
+    function withdraw(uint256 amount, address _asset) external override nonReentrant() whenNotPaused() returns(bool){
         uint correctedAmount = _correctAmount(amount, _asset);
 
         require(balanceOf(msg.sender) >= correctedAmount, "Insufficient balance");
@@ -154,11 +127,10 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
 
         address[] memory assets = new address[](1);
         assets[0] = aToken;
-
         return IDataProvider(AAVE_DATA_PROVIDER).getRewardsBalance(assets, address(this));
     }
 
-    function getAaveBalance(address _asset) public view returns(uint){
+    function getAaveBalance(address _asset) public view override returns(uint){
         address aToken;
         (aToken,,) = IDataProvider(AAVE_DATA_PROVIDER).getReserveTokensAddresses(_asset);
         return IERC20(aToken).balanceOf(address(this));
@@ -169,19 +141,18 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         address _AAVE_INCENTIVES_CONTROLLER, 
         address _AAVE_LENDING_POOL
         ) 
-        external onlyRole(DEFAULT_ADMIN_ROLE) {
+        external onlyAdmin() {
         AAVE_DATA_PROVIDER = _AAVE_DATA_PROVIDER;
         AAVE_INCENTIVES_CONTROLLER = _AAVE_INCENTIVES_CONTROLLER;
         AAVE_LENDING_POOL = _AAVE_LENDING_POOL;
     }
 
-    function setUserCompoundPreference(bool useCompound, address wallet) external {
+    function setUserCompoundPreference(bool useCompound, address wallet) external override {
         require(hasRole(keccak256("CHANGE_PARAMETERS"), msg.sender), "Caller is not authorized");
         userSetCompound[wallet] = useCompound;
     }
 
-
-    function getChainID() public view returns (uint256) {
+    function getChainID() public view override returns (uint256) {
         uint256 chainID;
         assembly {
             chainID := chainid()
@@ -189,16 +160,14 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         return chainID;
     }
 
-    function isValidNetworkForFunction(string memory functionName) public view returns (bool) {
+    function isValidNetworkForFunction(string memory functionName) public view override returns (bool) {
         return validNetworks[functionName][getChainID()];
     }
 
-    function updateValidNetworks(string memory functionName, uint256[] memory chainIDs) external {
-        // Reset the mapping for this function name
+    function updateValidNetworks(string memory functionName, uint256[] memory chainIDs) external override {
         for (uint256 i = 0; i < 255; i++) {
             validNetworks[functionName][i] = false;
         }
-        // Set the valid networks
         for (uint256 i = 0; i < chainIDs.length; i++) {
             validNetworks[functionName][chainIDs[i]] = true;
         }
