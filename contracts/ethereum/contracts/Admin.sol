@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.1;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
@@ -10,39 +10,33 @@ contract Admin is AccessControl, Pausable {
     event RemovedAdmin(address indexed removed_admin);
     event NewProfileAdded(address indexed profile);
 
-
     bytes32 public constant CHANGE_PARAMETERS = keccak256("CHANGE_PARAMETERS");
 
     constructor(address admin) {
-        _setupRole(DEFAULT_ADMIN_ROLE, admin);
-        _setupRole(CHANGE_PARAMETERS, admin);
+        _grantRole(DEFAULT_ADMIN_ROLE, admin);
+        _grantRole(CHANGE_PARAMETERS, admin);
     }
 
-    modifier onlyAdmin() {
-        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Caller is not an Admin");
-        _;
-    }
-
-    function addAdmin(address account) external onlyAdmin() whenNotPaused() {
-        _setupRole(DEFAULT_ADMIN_ROLE, account);
+    function addAdmin(address account) external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused() {
+        _grantRole(DEFAULT_ADMIN_ROLE, account);
         emit NewAdminAdded(account);
     } 
 
-    function removeAdmin(address account) external onlyAdmin() whenNotPaused() {
+    function removeAdmin(address account) external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused() {
     	_revokeRole(DEFAULT_ADMIN_ROLE, account);
         emit RemovedAdmin(account);
     }
 
-    function pause() external onlyAdmin() whenNotPaused() {
+    function pause() external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused() {
         _pause();
     }
     
-    function unpause() external onlyAdmin() whenPaused() {
+    function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) whenPaused() {
         _unpause();
     }
 
-    function addProfile(address account) external whenNotPaused() {
-        _setupRole(CHANGE_PARAMETERS, account);
+    function addProfile(address account) external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused() {
+        _grantRole(CHANGE_PARAMETERS, account);
         emit NewProfileAdded(account);
-    } 
+    }
 }

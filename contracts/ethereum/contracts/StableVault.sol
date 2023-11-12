@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.1;
+pragma solidity 0.8.20;
 
 import "hardhat/console.sol";
-
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 import "./dependencies/interfaces/ILendingPool.sol";
 import "./dependencies/interfaces/ISparkIncentivesController.sol";
 import "./dependencies/interfaces/IDataProvider.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
 import "./Admin.sol";
+
 
 // TODO: Unchecked in all mathematical operations
 
@@ -140,7 +141,7 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         if (!validNetworks["depositSpark"][getChainID()]) {
             return;
         }
-        IERC20(_asset).safeApprove(SPARK_LENDING_POOL, _amount);
+        IERC20(_asset).approve(SPARK_LENDING_POOL, _amount);
         ILendingPool(SPARK_LENDING_POOL).deposit(_asset, _amount, address(this), 0);
         emit DepositSpark(msg.sender, _asset, _amount);
     }
@@ -170,7 +171,7 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         address _SPARK_INCENTIVES_CONTROLLER, 
         address _SPARK_LENDING_POOL
         ) 
-        external onlyAdmin() {
+        external onlyRole(DEFAULT_ADMIN_ROLE) {
         SPARK_DATA_PROVIDER = _SPARK_DATA_PROVIDER;
         SPARK_INCENTIVES_CONTROLLER = _SPARK_INCENTIVES_CONTROLLER;
         SPARK_LENDING_POOL = _SPARK_LENDING_POOL;

@@ -5,6 +5,7 @@ require("hardhat-jest-plugin");
 require("hardhat-gas-reporter");
 require('hardhat-contract-sizer');
 require('dotenv').config({ path: '../../.env' });
+require('hardhat-deploy');
 const { mnemonicToSeedSync } = require("bip39");
 const { HDNode } = require("@ethersproject/hdnode");
 
@@ -14,11 +15,18 @@ const account = masterNode.derivePath("m/44'/60'/0'/0/5");  // The last number i
 console.log("pvt address: " + account.privateKey);
 console.log("public address: " + account.address);
 
+
+const MNEMONIC = process.env["MNEMONIC"];
+const MUMBAI_RPC_URL = process.env["MUMBAI_RPC_URL"];
+
 /** @type import('hardhat/config').HardhatUserConfig */
 
 let config = {
   // defaultNetwork: "testing",
-  solidity: "0.8.1",
+  solidity: "0.8.20",
+  namedAccounts: {
+    deployer: 0,
+  },
   settings: {
     optimizer: {
       enabled: false,
@@ -36,10 +44,11 @@ let config = {
       //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     mumbai: {
-      url: "https://rpc.ankr.com/polygon_mumbai" || "",
-      accounts: [account.privateKey]
-      // accounts:
-      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      url: MUMBAI_RPC_URL !== undefined ? MUMBAI_RPC_URL : '',
+      accounts: {
+        mnemonic: MNEMONIC,
+      },
+      chainId: 80001
     },
     goerli: {
       url: "https://rpc.ankr.com/eth_goerli" || "",

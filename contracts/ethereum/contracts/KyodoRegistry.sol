@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.1;
+pragma solidity 0.8.20;
 
 import "./Admin.sol";
 
@@ -11,14 +11,14 @@ contract KyodoRegistry is Admin {
 
     constructor(address admin) Admin(admin) {}
 
-    function createRegistry(string memory registry, address value) external onlyAdmin() whenNotPaused() {
+    function createRegistry(string memory registry, address value) external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused() {
         bytes32 key = keccak256(abi.encodePacked(registry));
         require(addressRegistry[key] == address(0), 'The registry already exists');
         addressRegistry[key] = value;
         emit RegistryCreated(key, value);
     }
 
-    function updateRegistry(string memory registry, address value) external onlyAdmin() whenNotPaused() {
+    function updateRegistry(string memory registry, address value) external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused() {
         bytes32 key = keccak256(abi.encodePacked(registry));
         require(addressRegistry[key] != address(0), 'Registry does not exists');
         addressRegistry[key] = value;

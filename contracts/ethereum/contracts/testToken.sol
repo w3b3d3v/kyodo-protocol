@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.1;
+pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
@@ -12,39 +12,34 @@ contract fakeStable is ERC20, AccessControl, Pausable {
     event RemovedAdmin(address indexed removed_admin);
     
     constructor(uint256 initialSupply, uint8 decimals) ERC20("fakeStable", "TSTBL") {
-        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _mint(msg.sender, initialSupply);
         _decimals = decimals;
     }
 
-    modifier onlyAdmin() {
-        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Caller is not an contract administrator");
-        _;
-    }
-
-    function mint(address account, uint256 amount) external onlyAdmin() {
+    function mint(address account, uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _mint(account, amount);
     }
 
-    function burn(address account, uint256 amount) external onlyAdmin() {
+    function burn(address account, uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _burn(account, amount);
     }
 
-    function addAdmin(address account) external onlyAdmin() {
-        _setupRole(DEFAULT_ADMIN_ROLE, account);
+    function addAdmin(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        _grantRole(DEFAULT_ADMIN_ROLE, account);
         emit NewAdminAdded(account);
     } 
 
-    function removeAdmin(address account) external onlyAdmin() {
+    function removeAdmin(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
     	_revokeRole(DEFAULT_ADMIN_ROLE, account);
         emit RemovedAdmin(account);
     }
 
-    function pause() external onlyAdmin() whenNotPaused() {
+    function pause() external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused() {
         _pause();
     }
     
-    function unpause() external onlyAdmin() whenPaused() {
+    function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) whenPaused() {
         _unpause();
     }
     
