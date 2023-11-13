@@ -6,23 +6,13 @@ require("hardhat-gas-reporter");
 require('hardhat-contract-sizer');
 require('dotenv').config({ path: '../../.env' });
 require('hardhat-deploy');
-const { mnemonicToSeedSync } = require("bip39");
-const { HDNode } = require("@ethersproject/hdnode");
-
-const seed = mnemonicToSeedSync(process.env.MNEMONIC);
-const masterNode = HDNode.fromSeed(seed);
-const account = masterNode.derivePath("m/44'/60'/0'/0/5");  // The last number is the index. 9 gives us the 5th address.
-console.log("pvt address: " + account.privateKey);
-console.log("public address: " + account.address);
-
 
 const MNEMONIC = process.env["MNEMONIC"];
-const MUMBAI_RPC_URL = process.env["MUMBAI_RPC_URL"];
 
 /** @type import('hardhat/config').HardhatUserConfig */
 
 let config = {
-  // defaultNetwork: "testing",
+  defaultNetwork: "testing",
   solidity: "0.8.20",
   namedAccounts: {
     deployer: 0,
@@ -37,54 +27,62 @@ let config = {
     testing: {
       url: "http://127.0.0.1:8545/"
     },
-    scrollTestnet: {
-      url: "https://sepolia-rpc.scroll.io" || "",
-      accounts: [account.privateKey]
-      // accounts:
-      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    sepolia: {
+      url: process.env.SEPOLIA_RPC_URL || 'https://rpc.sepolia.org',
+      accounts: { mnemonic: MNEMONIC },
     },
-    mumbai: {
-      url: MUMBAI_RPC_URL !== undefined ? MUMBAI_RPC_URL : '',
-      accounts: {
-        mnemonic: MNEMONIC,
-      },
-      chainId: 80001
+    optimismGoerli: {
+      url: process.env.OPTIMISM_GOERLI_RPC_URL || 'https://goerli.optimism.io',
+      accounts: { mnemonic: MNEMONIC },
     },
-    goerli: {
-      url: "https://rpc.ankr.com/eth_goerli" || "",
-      accounts: [account.privateKey]
-      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    avalancheFuji: {
+      url: process.env.AVALANCHE_FUJI_RPC_URL || 'https://api.avax-test.network/ext/bc/C/rpc',
+      accounts: { mnemonic: MNEMONIC },
+    },
+    arbitrumGoerli: {
+      url: process.env.ARBITRUM_GOERLI_RPC_URL || 'https://goerli-rollup.arbitrum.io/rpc',
+      accounts: { mnemonic: MNEMONIC },
+    },
+    polygonMumbai: {
+      url: process.env.MUMBAI_RPC_URL || 'https://rpc.ankr.com/polygon_mumbai',
+      accounts: { mnemonic: MNEMONIC },
     },
     bnbTesnet: {
-      url: "https://data-seed-prebsc-1-s1.binance.org:8545" || "",
-      accounts: [account.privateKey]
-      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      url: process.env.BNB_TESTNET_RPC_URL || 'https://data-seed-prebsc-1-s1.binance.org:8545',
+      accounts: { mnemonic: MNEMONIC },
     },
-    fantomTesnet: {
-      url: "https://rpc.testnet.fantom.network" || "",
-      accounts: [account.privateKey]
-      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
-    gnosisChiado: {
-      url: "https://rpc.chiado.gnosis.gateway.fm" || "",
-      accounts: [account.privateKey]
-      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
-    neonDevnet: {
-      url: "https://devnet.neonevm.org" || "",
-      accounts: [account.privateKey]
-      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
-    CoreDaoTestnet: {
-      url: "https://rpc.test.btcs.network" || "",
-      accounts: [account.privateKey]
-      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    baseGoerli: {
+      url: process.env.BASE_GOERLI_RPC_URL || 'https://goerli.base.org',
+      accounts: { mnemonic: MNEMONIC },
     },
     polygonZkEvmTestnet: {
-      url: "https://rpc.public.zkevm-test.net" || "",
-      accounts: [account.privateKey]
-      //   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    }
+      url: process.env.POLYGON_ZKEVM_TESTNET_RPC_URL || "https://rpc.public.zkevm-test.net",
+      accounts: { mnemonic: MNEMONIC },
+    },
+    goerli: {
+      url: process.env.GOERLI_RPC_URL || "https://rpc.ankr.com/eth_goerli",
+      accounts: { mnemonic: MNEMONIC },
+    },
+    scrollTestnet: {
+      url: process.env.SCROLL_TESTNET_RPC_URL || "https://sepolia-rpc.scroll.io",
+      accounts: { mnemonic: MNEMONIC },
+    },
+    fantomTestnet: {
+      url: process.env.FANTOM_TESTNET_RPC_URL || "https://rpc.testnet.fantom.network",
+      accounts: { mnemonic: MNEMONIC },
+    },
+    gnosisChiado: {
+      url: process.env.GNOSIS_CHIADO_RPC_URL || "https://rpc.chiado.gnosis.gateway.fm",
+      accounts: { mnemonic: MNEMONIC },
+    },
+    neonDevnet: {
+      url: process.env.NEON_DEVNET_RPC_URL || "https://devnet.neonevm.org",
+      accounts: { mnemonic: MNEMONIC },
+    },
+    coreDaoTestnet: {
+      url: process.env.COREDAO_TESTNET_RPC_URL || "https://rpc.test.btcs.network",
+      accounts: { mnemonic: MNEMONIC },
+    },
   },
   contractSizer: {
     alphaSort: false,

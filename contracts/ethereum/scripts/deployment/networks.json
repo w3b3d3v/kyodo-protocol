@@ -1,8 +1,0 @@
-{
-    "rpcList" : [
-        "https://rpc.public.zkevm-test.net",
-        "https://devnet.neonevm.org",
-        "https://rpc.test.btcs.network",
-        "https://rpc.ankr.com/polygon_mumbai"
-    ]
-}

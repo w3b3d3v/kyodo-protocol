@@ -142,24 +142,9 @@ async function deployStableVault() {
   }
 }
 
-async function deployKyodoRegistry(agreementData, vaultData, tokenData) {
+async function updateRegistry(agreementData, vaultData, tokenData) {
   const KyodoRegistry = await ethers.getContractFactory("KyodoRegistry");
-  const [admin] = await ethers.getSigners();
-  
-  let kyodoRegistry;
-  // Check if a contract already exists at the specified address
-  // const codeAtAddress = await ethers.provider.getCode(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
-  // if (codeAtAddress === '0x') {
-    // Deploy if no contract exists at the address
-    kyodoRegistry = await KyodoRegistry.deploy(admin.address);
-    await kyodoRegistry.deployed()
-    await kyodoRegistry.deployTransaction.wait(1)
-  // } else {
-  //   // If a contract is already deployed, connect to it instead of redeploying
-  //   kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
-  // }
-
-  // kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+  const kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
 
   const keysToUpdate = {
     'FAKE_STABLE': tokenData,
@@ -195,6 +180,13 @@ async function deployKyodoRegistry(agreementData, vaultData, tokenData) {
 
 async function main() {
   try {
+
+    const codeAtAddress = await ethers.provider.getCode(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
+    if (codeAtAddress === '0x') {
+        console.error("No contract found at the specified address. Please deploy the registry contract on this network before proceeding.");
+        process.exit(1);
+    }
+
     const [deployer] = await hre.ethers.getSigners();
     const chainId = await deployer.getChainId();
     const nonce = await deployer.getTransactionCount();
@@ -209,13 +201,13 @@ async function main() {
     const vaultData = await deployStableVault();
     const agreementData = await deployAgreementsContract(vaultData['address'], tokenData["address"]);
 
-    const kyodoRegistry = await deployKyodoRegistry(
+    const kyodoRegistry = await updateRegistry(
       agreementData,
       vaultData,
       tokenData
     );
 
-    console.log(`\nKyodoRegistry Contract deployed at address: ${kyodoRegistry}`);
+    console.log(`\nUpdated! KyodoRegistry at address: ${kyodoRegistry}`);
     
     updateConfig(kyodoRegistry); 
     
