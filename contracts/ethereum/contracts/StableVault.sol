@@ -171,7 +171,7 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
         address _AAVE_INCENTIVES_CONTROLLER, 
         address _AAVE_LENDING_POOL
         ) 
-        external onlyAdmin() {
+        external onlyRole(DEFAULT_ADMIN_ROLE) {
         AAVE_DATA_PROVIDER = _AAVE_DATA_PROVIDER;
         AAVE_INCENTIVES_CONTROLLER = _AAVE_INCENTIVES_CONTROLLER;
         AAVE_LENDING_POOL = _AAVE_LENDING_POOL;

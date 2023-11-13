@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "compile": "hardhat compile",
-        "deploy": "npx hardhat deploy --network mumbai"
+        "deploy:multichain":"npx hardhat run scripts/deployMultichain.js"
     },
     "dependencies": {
         "@ethersproject/hdnode": "^5.7.0",

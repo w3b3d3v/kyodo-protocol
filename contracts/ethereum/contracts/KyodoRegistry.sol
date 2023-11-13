@@ -12,7 +12,7 @@ contract KyodoRegistry is Admin {
 
     constructor(address admin) Admin(admin) {}
 
-    function createRegistry(string memory registry, address value, uint blockNumber) external onlyAdmin() whenNotPaused() {
+    function createRegistry(string memory registry, address value, uint blockNumber) external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused() {
         bytes32 key = keccak256(abi.encodePacked(registry));
         require(addressRegistry[key] == address(0), 'The registry already exists');
         addressRegistry[key] = value;
@@ -20,7 +20,7 @@ contract KyodoRegistry is Admin {
         emit RegistryCreated(key, value, blockNumber);
     }
 
-    function updateRegistry(string memory registry, address value, uint blockNumber) external onlyAdmin() whenNotPaused() {
+    function updateRegistry(string memory registry, address value, uint blockNumber) external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused() {
         bytes32 key = keccak256(abi.encodePacked(registry));
         require(addressRegistry[key] != address(0), 'Registry does not exists');
         addressRegistry[key] = value;
