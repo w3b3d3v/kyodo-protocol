@@ -12,7 +12,7 @@ const MNEMONIC = process.env["MNEMONIC"];
 /** @type import('hardhat/config').HardhatUserConfig */
 
 let config = {
-  defaultNetwork: "testing",
+  // defaultNetwork: "testing",
   solidity: "0.8.20",
   namedAccounts: {
     deployer: 0,
