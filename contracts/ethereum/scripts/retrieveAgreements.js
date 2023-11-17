@@ -12,7 +12,7 @@ async function kyodoRegistry(contractName) {
 async function getAllAgreements() {
 
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
-  const agreementContract = await AgreementContract.attach(kyodoRegistry("AGREEMENT_CONTRACT_ADDRESS"));
+  const agreementContract = await AgreementContract.attach(kyodoRegistry("AGREEMENT_CONTRACT"));
 
   const agreements = await agreementContract.getAllAgreements();
   agreements.forEach((agreement) => {
@@ -22,9 +22,7 @@ async function getAllAgreements() {
       Status: ${agreement.status}
       Developer: ${agreement.professional}
       Company: ${agreement.company}
-      Skills: ${agreement.skills.join(", ")}
-      Payment Amount: ${ethers.utils.formatEther(agreement.payment.amount)} tokens
-      Payment Token: ${agreement.payment.tokenAddress}
+      Payment Amount: ${ethers.utils.formatEther(agreement.paymentAmount)} tokens
       Total Paid: ${agreement.totalPaid}
     `);
   });
@@ -48,9 +46,7 @@ async function getContractorAgreements() {
       Description: ${agreement.description}
       Status: ${agreement.status}
       Developer: ${agreement.developer}
-      Skills: ${agreement.skills.join(", ")}
-      Payment Amount: ${ethers.utils.formatEther(agreement.payment.amount)} tokens
-      Payment Token: ${agreement.payment.tokenAddress}
+      Payment Amount: ${ethers.utils.formatEther(agreement.paymentAmount)} tokens
       Total Paid: ${agreement.totalPaid}
     `);
   }

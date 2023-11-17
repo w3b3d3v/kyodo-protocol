@@ -18,11 +18,6 @@ interface IStableVault {
 contract AgreementContract is Admin {
     enum AgreementStatus { Active, Completed }
 
-    struct Token {
-        uint256 amount;
-        address tokenAddress;
-    }
-
     struct Skill {
         string name;
         uint256 level;
@@ -35,8 +30,7 @@ contract AgreementContract is Admin {
         AgreementStatus status;
         address company;
         address professional;
-        Token tokenIncentive;
-        Token payment;
+        uint256 paymentAmount;
         uint256 totalPaid;
     }
 
@@ -48,7 +42,6 @@ contract AgreementContract is Admin {
     mapping(uint => Skill[]) public agreementSkills;
     address[] public tokenAddresses;
 
-    Token public tokenIncentive;
     IStableVault public StableVault;
     address public owner;
     address public kyodoTreasury;
@@ -103,11 +96,6 @@ contract AgreementContract is Admin {
         require(_paymentAmount > 0, "Payment amount must be greater than zero");
         require(_professional != msg.sender, "Professional address cannot be the same as company");
 
-        Token memory paymentToken = Token({
-            amount: _paymentAmount,
-            tokenAddress: address(0)
-        });
-
         Agreement memory newAgreement = Agreement({
             id: nextAgreementId,
             title: _title,
@@ -115,8 +103,7 @@ contract AgreementContract is Admin {
             status: AgreementStatus.Active,
             company: msg.sender,
             professional: _professional,
-            tokenIncentive: tokenIncentive, // Use fixed tokenIncentive
-            payment: paymentToken,
+            paymentAmount: _paymentAmount,
             totalPaid: 0
         });
 
@@ -157,13 +144,6 @@ contract AgreementContract is Admin {
 
     function getSkillsByAgreementId(uint256 _agreementId) external view returns (Skill[] memory) {
         return agreementSkills[_agreementId];
-    }
-
-    function updateTokenIncentive(address _newTokenAddress, uint256 _newAmount) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        tokenIncentive = Token({
-            amount: _newAmount,
-            tokenAddress: _newTokenAddress
-        });
     }
 
     function makePayment(uint256 _agreementId, uint256 _amountToPay, address _paymentAddress) external {
