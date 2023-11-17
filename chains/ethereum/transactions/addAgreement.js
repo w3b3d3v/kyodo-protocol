@@ -8,7 +8,7 @@ export const addAgreement = async (details) => {
       details.title,
       details.description,
       details.professional,
-      details.skillsList.map(item => item.name),
+      details.skillsList,
       paymentAmountInWei
     );
 

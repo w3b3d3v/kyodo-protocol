@@ -12,7 +12,7 @@ async function kyodoRegistry(contractName) {
 async function payUserAgreement() {
   const [signer] = await ethers.getSigners();
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
-  const agreementContract = await AgreementContract.attach(kyodoRegistry("AGREEMENT_CONTRACT_ADDRESS"));
+  const agreementContract = await AgreementContract.attach(kyodoRegistry("AGREEMENT_CONTRACT"));
 
   let userAgreements = await agreementContract.connect(signer).getContractorAgreements(signer.address);
   userAgreements = userAgreements.map(id => id.toString());
@@ -25,7 +25,7 @@ async function payUserAgreement() {
   const firstAgreementId = userAgreements[0];
 
   const agreementDetails = await agreementContract.getAgreementById(firstAgreementId);
-  const paymentAmount = agreementDetails.payment.amount.toString()
+  const paymentAmount = agreementDetails.paymentAmount.toString()
 
   const TokenContract = await ethers.getContractFactory("fakeStable");
   const tokenContract = await TokenContract.attach(kyodoRegistry("FAKE_STABLE"));

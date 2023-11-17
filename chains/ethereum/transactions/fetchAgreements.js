@@ -10,7 +10,7 @@ function transformAgreementData(agreement, skills) {
       professional: agreement.professional?.toString(),
       company: agreement.company?.toString(),
       skills: skillNames,
-      amount: ethers.utils.formatUnits(agreement.payment.amount, 18),
+      amount: ethers.utils.formatUnits(agreement.paymentAmount, 18),
       totalPaid: ethers.utils.formatUnits(agreement.totalPaid, 18)
   };
 }
