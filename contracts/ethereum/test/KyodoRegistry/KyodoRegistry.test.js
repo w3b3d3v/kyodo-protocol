@@ -16,7 +16,8 @@ describe("KyodoRegistry", function () {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
     const contract = await AgreementContract.deploy(
       kyodoTreasureContract.address,
-      communityTreasureContract.address
+      communityTreasureContract.address,
+      admin.address
       )
     await contract.deployed();
     deployReceipt = await contract.deployTransaction.wait()
@@ -29,9 +30,10 @@ describe("KyodoRegistry", function () {
   });
 
   it("Should revert if not admin try do add an admin", async function () {
+    const notAdminAddress = await notAdmin.getAddress();
     await expect(
-      kyodoRegistry.connect(notAdmin).addAdmin(notAdmin.address)
-    ).to.be.revertedWith("Caller is not an Admin");
+      kyodoRegistry.connect(notAdmin).addAdmin(notAdminAddress)
+    ).to.be.revertedWith(`AccessControl: account ${notAdminAddress.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`);
   });
 
   it("Should save a new registry", async function () {
@@ -62,7 +64,7 @@ describe("KyodoRegistry", function () {
   it("Should revert if not admin try do add or modify an variable", async function () {
     await expect(
       kyodoRegistry.connect(notAdmin).createRegistry('KYODO_TREASURY_CONTRACT_ADDRESS', kyodoTreasureContract.address, deployReceipt.blockNumber)
-        ).to.be.revertedWith("Caller is not an Admin");
+      ).to.be.revertedWith(`AccessControl: account ${notAdmin.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`);
   });
 
   it("Should revert if trying to update a non-existent registry", async function () {

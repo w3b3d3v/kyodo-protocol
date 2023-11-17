@@ -2,6 +2,7 @@
 pragma solidity 0.8.20;
 
 import "hardhat/console.sol";
+import "./Admin.sol";
 
 interface IERC20 {
     function transfer(address recipient, uint256 amount) external returns (bool);
@@ -14,7 +15,7 @@ interface IStableVault {
     function deposit(uint256 amount, address _asset, address _beneficiary) external;
 }
 
-contract AgreementContract {
+contract AgreementContract is Admin {
     enum AgreementStatus { Active, Completed }
 
     struct Token {
@@ -45,6 +46,7 @@ contract AgreementContract {
     mapping(address => uint256[]) professionalAgreements;
     mapping(address => bool) public acceptedPaymentTokens; // Mapping of accepted payment tokens
     mapping(uint => Skill[]) public agreementSkills;
+    address[] public tokenAddresses;
 
     Token public tokenIncentive;
     IStableVault public StableVault;
@@ -70,19 +72,23 @@ contract AgreementContract {
         uint256 amount
     );
 
-    constructor(address _kyodoTreasury, address _communityDAO) {
+    constructor(address _kyodoTreasury, address _communityDAO, address admin) Admin(admin) {
         owner = msg.sender;
         kyodoTreasury = _kyodoTreasury;
         communityDAO = _communityDAO;
     }
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only the owner can call this function");
-        _;
+    function addAcceptedPaymentToken(address _tokenAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        acceptedPaymentTokens[_tokenAddress] = true;
+        tokenAddresses.push(_tokenAddress);
     }
 
-    function addAcceptedPaymentToken(address _tokenAddress) external onlyOwner {
-        acceptedPaymentTokens[_tokenAddress] = true;
+    function removePaymentToken(address token) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        acceptedPaymentTokens[token] = false;
+    }
+
+    function getAcceptedPaymentTokens() public view returns (address) {
+        return tokenAddresses[0];
     }
 
     function createAgreement(
@@ -153,7 +159,7 @@ contract AgreementContract {
         return agreementSkills[_agreementId];
     }
 
-    function updateTokenIncentive(address _newTokenAddress, uint256 _newAmount) external onlyOwner {
+    function updateTokenIncentive(address _newTokenAddress, uint256 _newAmount) external onlyRole(DEFAULT_ADMIN_ROLE) {
         tokenIncentive = Token({
             amount: _newAmount,
             tokenAddress: _newTokenAddress
@@ -198,7 +204,7 @@ contract AgreementContract {
         emit PaymentMade(msg.sender, agreement.professional, _agreementId, _amountToPay);
     }
 
-    function setFees(uint256 _feePercentage, uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external onlyOwner {
+    function setFees(uint256 _feePercentage, uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(_feePercentage >= 0 && _feePercentage <= 1000, "Invalid fee percentage");
 
         feePercentage = _feePercentage;
@@ -206,7 +212,7 @@ contract AgreementContract {
         communityDAOFee = _communityDAOFee;
     }
 
-    function setStableVaultAddress(address _StableVaultAddress) external onlyOwner {
+    function setStableVaultAddress(address _StableVaultAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
         StableVault = IStableVault(_StableVaultAddress);
     }
 }

@@ -35,7 +35,7 @@ contract Admin is AccessControl, Pausable {
         _unpause();
     }
 
-    function addProfile(address account) external onlyRole(DEFAULT_ADMIN_ROLE) whenNotPaused() {
+    function addProfile(address account) external whenNotPaused() {
         _grantRole(CHANGE_PARAMETERS, account);
         emit NewProfileAdded(account);
     }

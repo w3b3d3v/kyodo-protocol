@@ -2,8 +2,6 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 require('dotenv').config({ path: '../../.env.development.local' });
 
-const KYODO_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS
-const COMMUNITY_TREASURY_ADDRESS = process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
 const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
 describe("AgreementContract", function () {
@@ -13,7 +11,8 @@ describe("AgreementContract", function () {
 
   beforeEach(async () => {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
-    agreementContract = await AgreementContract.deploy(KYODO_TREASURY_ADDRESS, COMMUNITY_TREASURY_ADDRESS);
+    const {deployer, kyodoTreasury, communityTreasury} = await getNamedAccounts();
+    agreementContract = await AgreementContract.deploy(kyodoTreasury, communityTreasury, deployer);
     await agreementContract.deployed();
 
     await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);
