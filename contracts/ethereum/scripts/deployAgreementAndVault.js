@@ -65,9 +65,11 @@ function updateConfig(kyodoRegistryAddress) {
 async function deployAgreementsContract(vaultAddress, tokenAddress) {
   console.log(`\nDeploying AgreementsContract...`)
   const AgreementContract = await ethers.getContractFactory("AgreementContract")
+  const {deployer, kyodoTreasury, communityTreasury} = await getNamedAccounts();
   const contract = await AgreementContract.deploy(
-    process.env.NEXT_PUBLIC_KYODO_TREASURY_CONTRACT_ADDRESS,
-    process.env.NEXT_PUBLIC_COMMUNITY_TREASURY_CONTRACT_ADDRESS
+    kyodoTreasury,
+    communityTreasury,
+    deployer
   )
 
   await contract.deployed()
@@ -112,8 +114,8 @@ async function deployToken() {
 async function deployStableVault() {
   console.log(`\nDeploying StableVault...`)
   const StableVault = await ethers.getContractFactory("StableVault")
-  const [admin] = await ethers.getSigners()
-  const vault = await StableVault.deploy(admin.address, "StableVaultToken", "STBLV")
+  const {deployer} = await getNamedAccounts();
+  const vault = await StableVault.deploy(deployer, "StableVaultToken", "STBLV")
   await vault.deployed()
 
   // Wait for the deployment transaction to be mined

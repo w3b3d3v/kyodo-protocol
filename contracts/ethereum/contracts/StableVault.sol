@@ -53,8 +53,6 @@ contract StableVault is ReentrancyGuard, Admin, ERC20 {
      */
     function deposit(uint256 amount, address _asset, address _beneficiary) external nonReentrant() whenNotPaused() returns(bool){
         uint correctedAmount = _correctAmount(amount, _asset);
-        console.log("Deposit amount: ", amount);
-        console.log("Deposit correctedAmount: ", correctedAmount);
 
         IERC20(_asset).safeTransferFrom(msg.sender, address(this), amount);
         _mint(_beneficiary, correctedAmount);
