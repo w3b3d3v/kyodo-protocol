@@ -1,26 +1,57 @@
----
+## Requirements
 
-**Testing Suite Configuration:**
+Before starting, ensure you have your mnemonic phrase set in the `.env` file. It should be formatted as follows:
 
-Currently, the full test suite is configured to run on a fork of the Goerli network. To execute the tests, you will need to initiate a local node using the following command:
-
-```bash
-npx hardhat node --fork https://rpc.ankr.com/eth_goerli
+```
+MNEMONIC=your_mnemonic_phrase_here
 ```
 
-However, if you are solely interested in testing the "Agreement" section on your local network, the following commands will suffice:
+## Running Tests
 
-```bash
-npx hardhat node
-npx hardhat test --network testing
-```
+To run tests, follow these steps:
 
-Please note: Tests concerning payment processing with Aave are expected to fail in this local setup.
+1. Start a local node:
 
-**Utilizing Your Own Account for Testing:**
+   ```
+   npx hardhat node
+   ```
 
-If you wish to conduct tests using your own account, you'll require some mock DAI for processing deposits on Aave. The accepted mock DAI address by Aave is `0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844`. Acquire mock DAI by swapping your Goerli ETH for mock DAI on [Uniswap](https://app.uniswap.org/swap).
+2. Then, execute the tests:
 
-Acquiring ETH on the Goerli network can be challenging. It's recommended to obtain mock ETH from the [Balancer Faucet](https://app.balancer.fi/#/goerli/faucet).
+   ```
+   npx hardhat test
+   ```
 
----
+## Deploying to Individual Networks
+
+To deploy contracts to a specific network, follow these steps:
+
+1. Deploy the Registry:
+
+   ```
+   npx hardhat deploy --network "network_name"
+   ```
+
+   Replace `"network_name"` with the name of your target network.
+
+2. Deploy the AgreementContract and the Vault:
+
+   ```
+   npx hardhat run scripts/deployAgreementAndVault.js --network "network_name"
+   ```
+
+   Again, replace `"network_name"` with your chosen network.
+
+## Deploying the Registry to Multiple Networks
+
+To deploy the Registry to multiple networks:
+
+1. Run the multichain deployment:
+
+   ```
+   npx hardhat deploy:multichain
+   ```
+
+   This will deploy to all networks configured in `hardhat.config.js` and listed in the `deployMultichain.js` file.
+
+2. Next, deploy the AgreementContract and the Vault individually on each chain. Repeat the deployment command for each network as described in the "Deploying to Individual Networks" section.
