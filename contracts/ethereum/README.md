@@ -12,7 +12,7 @@ However, if you are solely interested in testing the "Agreement" section on your
 
 ```bash
 npx hardhat node
-npx hardhat test --network localhost
+npx hardhat test --network testing
 ```
 
 Please note: Tests concerning payment processing with Aave are expected to fail in this local setup.
