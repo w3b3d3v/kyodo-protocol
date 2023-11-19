@@ -12,7 +12,7 @@ const MNEMONIC = process.env["MNEMONIC"];
 /** @type import('hardhat/config').HardhatUserConfig */
 
 let config = {
-  solidity: "0.8.20",
+  solidity: "0.8.23",
   namedAccounts: {
     deployer: 0,
     kyodoTreasury: 0,

@@ -6,7 +6,7 @@ const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
 
 describe("AgreementContract", function () {
   let agreementContract;
-  let admin;
+  let developer;
   let skills;
 
   beforeEach(async () => {
@@ -17,6 +17,7 @@ describe("AgreementContract", function () {
 
     await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);
 
+    [developer, addr1] = await ethers.getSigners();
     
     skills = [
       { name: "Programming", level: 50 },
@@ -27,7 +28,7 @@ describe("AgreementContract", function () {
   it("Should create a new agreement with authorized tokens", async function () {
     const paymentAmount = ethers.utils.parseEther("5");
 
-    await agreementContract.connect(admin).createAgreement(
+    await agreementContract.connect(developer).createAgreement(
       "Test Agreement",
       "This is a test agreement",
       addr1.address,
@@ -42,10 +43,10 @@ describe("AgreementContract", function () {
   it("Should fail if the professional is the same as company", async function () {
     const paymentAmount = ethers.utils.parseEther("5");
 
-    await expect(agreementContract.connect(admin).createAgreement(
+    await expect(agreementContract.connect(developer).createAgreement(
       "Test Agreement",
       "This is a test agreement",
-      admin.address,
+      developer.address,
       skills,
       paymentAmount,
     )).to.be.revertedWith("Professional address cannot be the same as company")

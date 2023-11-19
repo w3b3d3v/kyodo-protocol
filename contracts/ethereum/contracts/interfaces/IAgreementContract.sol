@@ -90,13 +90,6 @@ interface IAgreementContract {
     function getSkillsByAgreementId(uint256 _agreementId) external view returns (Skill[] memory);
 
     /**
-     * @notice Updates the token incentive for agreements.
-     * @param _newTokenAddress The address of the new token to be set as an incentive.
-     * @param _newAmount The amount of the new incentive token.
-     */
-    function updateTokenIncentive(address _newTokenAddress, uint256 _newAmount) external;
-
-    /**
      * @notice Makes a payment for a specific agreement.
      * @param _agreementId The ID of the agreement for which the payment is being made.
      * @param _amountToPay The amount of the payment.

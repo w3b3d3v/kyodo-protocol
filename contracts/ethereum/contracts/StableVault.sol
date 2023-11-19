@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.1;
+pragma solidity 0.8.23;
 
 import "hardhat/console.sol";
 
 
-import "./dependencies/interfaces/ILendingPool.sol";
-import "./dependencies/interfaces/IAaveIncentivesController.sol";
-import "./dependencies/interfaces/IDataProvider.sol";
+import "./interfaces/ILendingPool.sol";
+import "./interfaces/IAaveIncentivesController.sol";
+import "./interfaces/IDataProvider.sol";
+import "./interfaces/IStableVault.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
@@ -141,7 +142,7 @@ contract StableVault is ReentrancyGuard, Admin, ERC20, IStableVault {
         address _AAVE_INCENTIVES_CONTROLLER, 
         address _AAVE_LENDING_POOL
         ) 
-        external onlyAdmin() {
+        external onlyRole(DEFAULT_ADMIN_ROLE) {
         AAVE_DATA_PROVIDER = _AAVE_DATA_PROVIDER;
         AAVE_INCENTIVES_CONTROLLER = _AAVE_INCENTIVES_CONTROLLER;
         AAVE_LENDING_POOL = _AAVE_LENDING_POOL;

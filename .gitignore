@@ -54,3 +54,4 @@ contracts/ethereum/yarn.lock
 contracts/ethereum/deployments
 
 TODO
+.vscode/
