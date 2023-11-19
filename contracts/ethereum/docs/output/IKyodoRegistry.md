@@ -1,5 +1,4 @@
 [Admin]: ../Admin.md#Admin
-[Admin-onlyAdmin--]: ../Admin.md#Admin-onlyAdmin--
 [Admin-CHANGE_PARAMETERS-bytes32]: ../Admin.md#Admin-CHANGE_PARAMETERS-bytes32
 [Admin-constructor-address-]: ../Admin.md#Admin-constructor-address-
 [Admin-addAdmin-address-]: ../Admin.md#Admin-addAdmin-address-
@@ -17,7 +16,7 @@
 [AgreementContract-professionalAgreements-mapping-address----uint256---]: ../AgreementContract.md#AgreementContract-professionalAgreements-mapping-address----uint256---
 [AgreementContract-acceptedPaymentTokens-mapping-address----bool-]: ../AgreementContract.md#AgreementContract-acceptedPaymentTokens-mapping-address----bool-
 [AgreementContract-agreementSkills-mapping-uint256----struct-IAgreementContract-Skill---]: ../AgreementContract.md#AgreementContract-agreementSkills-mapping-uint256----struct-IAgreementContract-Skill---
-[AgreementContract-tokenIncentive-struct-IAgreementContract-Token]: ../AgreementContract.md#AgreementContract-tokenIncentive-struct-IAgreementContract-Token
+[AgreementContract-tokenAddresses-address--]: ../AgreementContract.md#AgreementContract-tokenAddresses-address--
 [AgreementContract-StableVault-contract-IStableVault]: ../AgreementContract.md#AgreementContract-StableVault-contract-IStableVault
 [AgreementContract-kyodoTreasury-address]: ../AgreementContract.md#AgreementContract-kyodoTreasury-address
 [AgreementContract-communityDAO-address]: ../AgreementContract.md#AgreementContract-communityDAO-address
@@ -26,6 +25,8 @@
 [AgreementContract-communityDAOFee-uint256]: ../AgreementContract.md#AgreementContract-communityDAOFee-uint256
 [AgreementContract-constructor-address-address-address-]: ../AgreementContract.md#AgreementContract-constructor-address-address-address-
 [AgreementContract-addAcceptedPaymentToken-address-]: ../AgreementContract.md#AgreementContract-addAcceptedPaymentToken-address-
+[AgreementContract-removePaymentToken-address-]: ../AgreementContract.md#AgreementContract-removePaymentToken-address-
+[AgreementContract-getAcceptedPaymentTokens--]: ../AgreementContract.md#AgreementContract-getAcceptedPaymentTokens--
 [AgreementContract-createAgreement-string-string-address-struct-IAgreementContract-Skill---uint256-]: ../AgreementContract.md#AgreementContract-createAgreement-string-string-address-struct-IAgreementContract-Skill---uint256-
 [AgreementContract-getAgreementCount--]: ../AgreementContract.md#AgreementContract-getAgreementCount--
 [AgreementContract-getAllAgreements--]: ../AgreementContract.md#AgreementContract-getAllAgreements--
@@ -33,7 +34,6 @@
 [AgreementContract-getProfessionalAgreements-address-]: ../AgreementContract.md#AgreementContract-getProfessionalAgreements-address-
 [AgreementContract-getAgreementById-uint256-]: ../AgreementContract.md#AgreementContract-getAgreementById-uint256-
 [AgreementContract-getSkillsByAgreementId-uint256-]: ../AgreementContract.md#AgreementContract-getSkillsByAgreementId-uint256-
-[AgreementContract-updateTokenIncentive-address-uint256-]: ../AgreementContract.md#AgreementContract-updateTokenIncentive-address-uint256-
 [AgreementContract-makePayment-uint256-uint256-address-]: ../AgreementContract.md#AgreementContract-makePayment-uint256-uint256-address-
 [AgreementContract-setFees-uint256-uint256-uint256-]: ../AgreementContract.md#AgreementContract-setFees-uint256-uint256-uint256-
 [AgreementContract-setStableVaultAddress-address-]: ../AgreementContract.md#AgreementContract-setStableVaultAddress-address-
@@ -57,6 +57,8 @@
 [StableVault-getChainID--]: ../StableVault.md#StableVault-getChainID--
 [StableVault-isValidNetworkForFunction-string-]: ../StableVault.md#StableVault-isValidNetworkForFunction-string-
 [StableVault-updateValidNetworks-string-uint256---]: ../StableVault.md#StableVault-updateValidNetworks-string-uint256---
+[IAaveIncentivesController]: IAaveIncentivesController.md#IAaveIncentivesController
+[IAaveIncentivesController-claimRewards-address---uint256-address-]: IAaveIncentivesController.md#IAaveIncentivesController-claimRewards-address---uint256-address-
 [IAgreementContract]: IAgreementContract.md#IAgreementContract
 [IAgreementContract-addAcceptedPaymentToken-address-]: IAgreementContract.md#IAgreementContract-addAcceptedPaymentToken-address-
 [IAgreementContract-createAgreement-string-string-address-struct-IAgreementContract-Skill---uint256-]: IAgreementContract.md#IAgreementContract-createAgreement-string-string-address-struct-IAgreementContract-Skill---uint256-
@@ -66,7 +68,6 @@
 [IAgreementContract-getProfessionalAgreements-address-]: IAgreementContract.md#IAgreementContract-getProfessionalAgreements-address-
 [IAgreementContract-getAgreementById-uint256-]: IAgreementContract.md#IAgreementContract-getAgreementById-uint256-
 [IAgreementContract-getSkillsByAgreementId-uint256-]: IAgreementContract.md#IAgreementContract-getSkillsByAgreementId-uint256-
-[IAgreementContract-updateTokenIncentive-address-uint256-]: IAgreementContract.md#IAgreementContract-updateTokenIncentive-address-uint256-
 [IAgreementContract-makePayment-uint256-uint256-address-]: IAgreementContract.md#IAgreementContract-makePayment-uint256-uint256-address-
 [IAgreementContract-setFees-uint256-uint256-uint256-]: IAgreementContract.md#IAgreementContract-setFees-uint256-uint256-uint256-
 [IAgreementContract-setStableVaultAddress-address-]: IAgreementContract.md#IAgreementContract-setStableVaultAddress-address-
@@ -109,7 +110,6 @@
 [IStableVault-Withdrawal-address-uint256-address-]: IStableVault.md#IStableVault-Withdrawal-address-uint256-address-
 [IStableVault-DepositAave-address-address-uint256-]: IStableVault.md#IStableVault-DepositAave-address-address-uint256-
 [fakeStable]: ../fakeStable.md#fakeStable
-[fakeStable-onlyAdmin--]: ../fakeStable.md#fakeStable-onlyAdmin--
 [fakeStable-constructor-uint256-uint8-]: ../fakeStable.md#fakeStable-constructor-uint256-uint8-
 [fakeStable-mint-address-uint256-]: ../fakeStable.md#fakeStable-mint-address-uint256-
 [fakeStable-burn-address-uint256-]: ../fakeStable.md#fakeStable-burn-address-uint256-
