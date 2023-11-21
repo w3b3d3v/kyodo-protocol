@@ -55,3 +55,30 @@ To deploy the Registry to multiple networks:
    This will deploy to all networks configured in `hardhat.config.js` and listed in the `deployMultichain.js` file.
 
 2. Next, deploy the AgreementContract and the Vault individually on each chain. Repeat the deployment command for each network as described in the "Deploying to Individual Networks" section.
+
+---
+
+### Automated Documentation Generation
+
+To enhance understanding and collaboration on our project, we provide tools to automatically generate documentation for our Solidity contracts. Here's how you can generate UML diagrams and detailed documentation for individual contracts:
+
+1. **Generate UML Diagrams for Individual Contracts:**
+   - For `StableVault.sol`:
+     ```
+     npx sol2uml ./contracts/StableVault.sol -o ./docs/diagram/StableVault.svg
+     ```
+   - For `AgreementContract.sol`:
+     ```
+     npx sol2uml ./contracts/AgreementContract.sol -o ./docs/diagram/AgreementContract.svg
+     ```
+
+   The `sol2uml` utility will generate UML diagrams, providing a visual representation of the contract structure, including inherited contracts and dependencies.
+
+2. **Generate Detailed Documentation for Public and External Functions:**
+   ```
+   npx solidity-docgen --solc-module solc-0.8 -t ./docs/template/external -o ./docs/output/external
+   ```
+
+   The `solidity-docgen` tool will produce documentation focusing on public and external functions, giving you a clear view of the contract's interfaces and functionalities.
+
+Make sure you have the necessary environment set up to run these commands. The generated UML diagrams and documentation can be found in the directories specified in the commands above.
