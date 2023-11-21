@@ -66,14 +66,14 @@ interface IAgreementContract {
      * @param _contractor The address of the contractor.
      * @return uint256[] An array of agreement IDs.
      */
-    function getContractorAgreements(address _contractor) external view returns (uint256[] memory);
+    function getContractorAgreementIds(address _contractor) external view returns (uint256[] memory);
 
     /**
      * @notice Returns a list of agreement IDs associated with a professional.
      * @param _professional The address of the professional.
      * @return uint256[] An array of agreement IDs.
      */
-    function getProfessionalAgreements(address _professional) external view returns (uint256[] memory);
+    function getProfessionalAgreementIds(address _professional) external view returns (uint256[] memory);
 
     /**
      * @notice Retrieves an agreement by its ID.

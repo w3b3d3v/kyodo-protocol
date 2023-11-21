@@ -87,11 +87,11 @@ contract AgreementContract is Admin, IAgreementContract {
         return agreements;
     }
 
-    function getContractorAgreements(address _contractor) external override view returns (uint256[] memory) {
+    function getContractorAgreementIds(address _contractor) external override view returns (uint256[] memory) {
         return contractorAgreements[_contractor];
     }
 
-    function getProfessionalAgreements(address _professional) external override view returns (uint256[] memory) {
+    function getProfessionalAgreementIds(address _professional) external override view returns (uint256[] memory) {
         return professionalAgreements[_professional];
     }
 

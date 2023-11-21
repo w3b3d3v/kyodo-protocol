@@ -17,8 +17,8 @@ function transformAgreementData(agreement, skills) {
 
 export const fetchAgreements = async (details) => {
   try {
-    const contractorAgreementIds = await details.contract.getContractorAgreements(details.account);
-    const professionalAgreementIds = await details.contract.getProfessionalAgreements(details.account);
+    const contractorAgreementIds = await details.contract.getContractorAgreementIds(details.account);
+    const professionalAgreementIds = await details.contract.getProfessionalAgreementIds(details.account);
 
     const userAgreementIds = Array.from(new Set([...contractorAgreementIds, ...professionalAgreementIds]));
 
