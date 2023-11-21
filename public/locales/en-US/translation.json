@@ -59,7 +59,15 @@
   "terms-use": "Terms of use",
 
   "validation": {
-    "required": "{{field}} is required"
+    "required": "{{field}} is a required field",
+    "valid-chain-address": "Professional must be a valid {{chain}} address",
+    "is-not-company": "Professional address cannot be the same as the agreement owner or company",
+    "positive": "{{field}} must be a positive value",
+    "total-level-100": "The total level must sum 100%",
+    "skill-required": "Skill name is required",
+    "level-required": "Skill level is required",
+    "is-valid-level": "Level must be a valid number between 1 and 100",
+    "total-level-check": "Total level of skills cannot exceed 100%"
   },
 
   "all-tab": "All",

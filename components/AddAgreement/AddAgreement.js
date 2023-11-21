@@ -66,19 +66,18 @@ function AddAgreementForm(props) {
 
   const skillSchema = Yup.object().shape({
     skills: Yup.string()
-      .required('Skill name is required'),
+      .required(t('validation.skill-required')),
     level: Yup.number()
-      .required('Skill level is required')
+      .required(t('validation.level-required'))
       .test(
         'is-valid-level',
-        'Level must be a valid number between 1 and 100',
+        t('validation.is-valid-level'),
         value => value > 0 && value <= 100
       )
       .test(
         'total-level-check',
-        'Total level of skills cannot exceed 100%',
+        t('validation.total-level-check'),
         value => {
-          // Calculate the total level including the new skill level
           const newTotalLevel = totalSkillsLevel(skillsList) + value;
           return newTotalLevel <= 100;
         }
@@ -113,13 +112,13 @@ function AddAgreementForm(props) {
   };
 
   const AgreementSchema = Yup.object().shape({
-    title: Yup.string().required(),
-    description: Yup.string().required(),
+    title: Yup.string().required(t('validation.required', { field: 'Title' })),
+    description: Yup.string().required(t('validation.required', { field: 'Description' })),
     professional: Yup.string()
-      .required()
+      .required(t('validation.required', { field: 'Professional' }))
       .test(
         "valid-chain-address",
-        `Professional must be a valid ${selectedChain} address`,
+        t('validation.valid-chain-address', { chain: selectedChain }),
         function (value) {
           const validator = contractManager.getAddressValidator(selectedChain)
           return validator && validator.test(value)
@@ -127,7 +126,7 @@ function AddAgreementForm(props) {
       )
       .test(
         "is-not-company",
-        "Professional address cannot be the same as the agreement owner or company",
+        t('validation.is-not-company'),
         function (value) {
           return value.toLowerCase() !== account.toLowerCase()
         }
@@ -136,15 +135,15 @@ function AddAgreementForm(props) {
       .transform((value, originalValue) => {
         return originalValue === "" ? undefined : value
       })
-      .required()
-      .positive("Payment amount should be positive"),
+      .required(t('validation.required', { field: 'Payment amount' }))
+      .positive(t('validation.positive', { field: 'Payment amount' })),
     skillsList: Yup.array()
       .test(
         'total-level-100',
-        'The total level must sum 100%',
+        t('validation.total-level-100'),
         (skillsList) => totalSkillsLevel(skillsList) === 100
       ),
-    })
+  });
 
   async function handleSubmit(event) {
     event.preventDefault()
