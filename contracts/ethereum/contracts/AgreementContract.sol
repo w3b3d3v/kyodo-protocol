@@ -53,6 +53,13 @@ contract AgreementContract is Admin, IAgreementContract {
         require(_skills.length > 0, "Skills must not be empty");
         require(_paymentAmount > 0, "Payment amount must be greater than zero");
         require(_professional != msg.sender, "Professional address cannot be the same as company");
+      
+        uint256 totalSkillLevel = 0;
+        for (uint256 i = 0; i < _skills.length; i++) {
+            totalSkillLevel += _skills[i].level;
+        }
+
+        require(totalSkillLevel <= 100, "Total skill level cannot exceed 100");
 
         Agreement memory newAgreement = Agreement({
             id: nextAgreementId,
