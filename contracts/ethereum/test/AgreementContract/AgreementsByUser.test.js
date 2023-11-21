@@ -63,7 +63,6 @@ describe("AgreementsByUser", function () {
   });
   
   it("Should verify skills associated with user1's agreements", async function () {
-    // Criação dos agreements
     await agreementContract.connect(user1).createAgreement(
       "Agreement 1",
       "Description 1",
@@ -72,19 +71,34 @@ describe("AgreementsByUser", function () {
       ethers.utils.parseEther("5"),
     );
   
-    // Obtendo os IDs dos agreements de user1
     const user1Agreements = await agreementContract.connect(user1).getContractorAgreementIds(user1.address);
   
-    // Verificando se os agreements de user1 possuem os skills corretos
     for (let agreementId of user1Agreements) {
       const agreementSkills = await agreementContract.getSkillsByAgreementId(agreementId);
       
-      // Verificar se a quantidade de skills e os detalhes de cada skill estão corretos
       expect(agreementSkills.length).to.equal(skills.length);
       agreementSkills.forEach((skill, index) => {
         expect(skill.name).to.equal(skills[index].name);
         expect(skill.level).to.equal(skills[index].level);
       });
     }
+  });
+  
+  it("Should not create agreements with total skill level exceeding 100", async function () {
+    const invalidSkills = [
+        { name: "Skill A", level: 60 },
+        { name: "Skill B", level: 50 }
+    ];
+
+    await expect(agreementContract.connect(user1).createAgreement(
+        "Invalid Agreement",
+        "Description Invalid",
+        user2.address,
+        invalidSkills,
+        ethers.utils.parseEther("5")
+    )).to.be.revertedWith("Total skill level cannot exceed 100");
+
+    const user1Agreements = await agreementContract.connect(user1).getContractorAgreementIds(user1.address);
+    expect(user1Agreements.length).to.equal(0);
   });
 });
