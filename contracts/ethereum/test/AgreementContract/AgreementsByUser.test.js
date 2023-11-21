@@ -45,10 +45,10 @@ describe("AgreementsByUser", function () {
     );
 
     // Get user agreements
-    const user1Agreements = await agreementContract.connect(user1).getContractorAgreements(user1.address);
+    const user1Agreements = await agreementContract.connect(user1).getContractorAgreementIds(user1.address);
     expect(user1Agreements.length).to.equal(1);
 
-    const user2Agreements = await agreementContract.connect(user2).getContractorAgreements(user2.address);
+    const user2Agreements = await agreementContract.connect(user2).getContractorAgreementIds(user2.address);
     expect(user2Agreements.length).to.equal(1);
 
     // Get agreement details using agreement IDs
@@ -73,7 +73,7 @@ describe("AgreementsByUser", function () {
     );
   
     // Obtendo os IDs dos agreements de user1
-    const user1Agreements = await agreementContract.connect(user1).getContractorAgreements(user1.address);
+    const user1Agreements = await agreementContract.connect(user1).getContractorAgreementIds(user1.address);
   
     // Verificando se os agreements de user1 possuem os skills corretos
     for (let agreementId of user1Agreements) {

@@ -58,7 +58,7 @@ describe("PayAgreement", function () {
     const initialKyodoTreasuryBalance = await vault.balanceOf(kyodoTreasury);
     const initialCommunityDAOBalance = await vault.balanceOf(communityTreasury);
   
-    const ownerAgreements = await agreementContract.connect(owner).getContractorAgreements(owner.address);
+    const ownerAgreements = await agreementContract.connect(owner).getContractorAgreementIds(owner.address);
     const ownerAgreementId = ownerAgreements[0];
     await tokenContract.approve(agreementContract.address, paymentAmount);
 
@@ -104,7 +104,7 @@ describe("PayAgreement", function () {
     const initialKyodoTreasuryBalance = await vault.balanceOf(kyodoTreasury);
     const initialCommunityDAOBalance = await vault.balanceOf(communityTreasury);
 
-    const ownerAgreements = await agreementContract.connect(owner).getContractorAgreements(owner.address);
+    const ownerAgreements = await agreementContract.connect(owner).getContractorAgreementIds(owner.address);
     const ownerAgreementId = ownerAgreements[0];
     await tokenContract.approve(agreementContract.address, paymentAmount);
     await expect(agreementContract.makePayment(ownerAgreementId, partialPaymentAmount, tokenContract.address))

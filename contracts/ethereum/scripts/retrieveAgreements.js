@@ -28,14 +28,14 @@ async function getAllAgreements() {
   });
 }
 
-async function getContractorAgreements() {
+async function getContractorAgreementIds() {
   const AgreementContract = await ethers.getContractFactory("AgreementContract");
   const agreementContract = await AgreementContract.attach(kyodoRegistry("AGREEMENT_CONTRACT_ADDRESS"));
 
   const accounts = await ethers.getSigners();
   const userAddress = accounts[0].address
   console.log(`Agreements for user at address ${userAddress}:`);
-  const userAgreementIds = await agreementContract.getContractorAgreements(userAddress);
+  const userAgreementIds = await agreementContract.getContractorAgreementIds(userAddress);
 
 
   for (const agreementId of userAgreementIds) {
