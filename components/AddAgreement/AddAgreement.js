@@ -65,18 +65,18 @@ function AddAgreementForm(props) {
   }, [selectedNetworkId, wallet, connection])
 
   const skillSchema = Yup.object().shape({
-    skills: Yup.string()
-      .required(t('validation.skill-required')),
+    skills: Yup.string().required(),
     level: Yup.number()
-      .required(t('validation.level-required'))
+      .transform((value, originalValue) => originalValue.trim() === "" ? undefined : value)
+      .required()
       .test(
         'is-valid-level',
-        t('validation.is-valid-level'),
+        t('validation.level-validation'),
         value => value > 0 && value <= 100
       )
       .test(
         'total-level-check',
-        t('validation.total-level-check'),
+        t('validation.level-validation'),
         value => {
           const newTotalLevel = totalSkillsLevel(skillsList) + value;
           return newTotalLevel <= 100;
@@ -112,10 +112,10 @@ function AddAgreementForm(props) {
   };
 
   const AgreementSchema = Yup.object().shape({
-    title: Yup.string().required(t('validation.required', { field: 'Title' })),
-    description: Yup.string().required(t('validation.required', { field: 'Description' })),
+    title: Yup.string().required(),
+    description: Yup.string().required(),
     professional: Yup.string()
-      .required(t('validation.required', { field: 'Professional' }))
+      .required()
       .test(
         "valid-chain-address",
         t('validation.valid-chain-address', { chain: selectedChain }),
@@ -135,14 +135,20 @@ function AddAgreementForm(props) {
       .transform((value, originalValue) => {
         return originalValue === "" ? undefined : value
       })
-      .required(t('validation.required', { field: 'Payment amount' }))
+      .required()
       .positive(t('validation.positive', { field: 'Payment amount' })),
     skillsList: Yup.array()
-      .test(
-        'total-level-100',
-        t('validation.total-level-100'),
-        (skillsList) => totalSkillsLevel(skillsList) === 100
-      ),
+    .min(1, t('validation.required', { field: 'Skills' }))
+    .test(
+      'total-level-100',
+      t('validation.level-validation'),
+      (skillsList) => {
+        if (skillsList && skillsList.length > 0) {
+          return totalSkillsLevel(skillsList) === 100;
+        }
+        return true; 
+      }
+    ),
   });
 
   async function handleSubmit(event) {
@@ -194,7 +200,7 @@ function AddAgreementForm(props) {
       setDescription("")
       setProfessional("")
       setPaymentAmount("")
-      setSkillsList("")
+      setSkillsList([])
       setSkillName("")
       setSkillLevel("")
       setTimeout(() => {
