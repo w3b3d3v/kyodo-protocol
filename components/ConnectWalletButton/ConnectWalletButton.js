@@ -41,10 +41,11 @@ function ConnectWalletButton(props) {
   }  
 
   async function connectSolanaWallet() {
-    setShowModal(false);
-    setVisible(true)
-    props.value.setSelectedChain("solana")
-    localStorage.setItem('selectedChain', "solana");
+    alert("Coming soon!")
+    // setShowModal(false);
+    // setVisible(true)
+    // props.value.setSelectedChain("solana")
+    // localStorage.setItem('selectedChain', "solana");
   }
 
   return (
@@ -74,9 +75,9 @@ function ConnectWalletButton(props) {
                     <p>A solid, well-defined foundation for Web3</p>
                   </a>
                 </li>
-                <li>
+                <li className={styles["disabled"]}>
                   <a onClick={connectSolanaWallet}>
-                    <Image src="/solana-icon.svg" width={60} height={60} alt="Solana" />
+                    <Image src="/solana-icon.svg" width={60} height={60} alt="Solana"/>
                     <h4>Solana</h4>
                     <p>Web3 Infrastructure for Everyone</p>
                   </a>
