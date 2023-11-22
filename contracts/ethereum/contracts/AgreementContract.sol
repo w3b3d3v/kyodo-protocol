@@ -20,11 +20,11 @@ contract AgreementContract is Admin, IAgreementContract {
     address public kyodoTreasury;
 
     uint256 public feePercentage; // Fee percentage in basis points (1 basis point = 0.01%)
-    uint256 public kyodoTreasuryFee;
+    uint256 public kyodoProtocolFee;
 
-    constructor(address _kyodoTreasury, uint _kyodoTreasuryFee, address admin) Admin(admin) {
+    constructor(address _kyodoTreasury, uint _kyodoProtocolFee, address admin) Admin(admin) {
         kyodoTreasury = _kyodoTreasury;
-        kyodoTreasuryFee = _kyodoTreasuryFee;
+        kyodoProtocolFee = _kyodoProtocolFee;
     }
 
     function addAcceptedPaymentToken(address _tokenAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -67,7 +67,8 @@ contract AgreementContract is Admin, IAgreementContract {
             company: msg.sender,
             professional: _professional,
             paymentAmount: _paymentAmount,
-            totalPaid: 0
+            totalPaid: 0,
+            fee: getFee()
         });
 
         for (uint256 i = 0; i < _skills.length; i++) {
@@ -120,7 +121,7 @@ contract AgreementContract is Admin, IAgreementContract {
         IERC20 token = IERC20(_paymentAddress);
 
         unchecked {
-            kyodoTreasuryShare = (_amountToPay * kyodoTreasuryFee) / 1000;
+            kyodoTreasuryShare = (_amountToPay * getFee()) / 1000;
             totalAmountIncludingFee = _amountToPay + kyodoTreasuryShare;
         }
 
@@ -141,8 +142,12 @@ contract AgreementContract is Admin, IAgreementContract {
         emit PaymentMade(msg.sender, agreement.professional, _agreementId, _amountToPay);
     }
 
-    function updateFee(uint256 _kyodoTreasuryFee) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(_kyodoTreasuryFee >= 0 && _kyodoTreasuryFee <= 1000, "Invalid kyodo treasury fee");
-        kyodoTreasuryFee = _kyodoTreasuryFee;
+    function updateFee(uint256 _kyodoProtocolFee) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(_kyodoProtocolFee >= 0 && _kyodoProtocolFee <= 1000, "Invalid kyodo treasury fee");
+        kyodoProtocolFee = _kyodoProtocolFee;
+    }
+
+    function getFee() public view returns(uint256) {
+        return kyodoProtocolFee;
     }
 }

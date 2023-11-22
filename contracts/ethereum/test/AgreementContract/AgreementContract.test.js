@@ -52,4 +52,10 @@ describe("AgreementContract", function () {
       paymentAmount,
     )).to.be.revertedWith("Professional address cannot be the same as company")
   });
+
+  it("Should correctly return the protocol fee", async function () {
+    // Chamando a função getFee e verificando o resultado
+    const fee = await agreementContract.getFee();
+    expect(fee).to.equal(PROTOCOL_FEE);
+  });
 });

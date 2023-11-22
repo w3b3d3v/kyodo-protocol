@@ -11,43 +11,46 @@ const checkAllowance = async (userAddress, contractAddress, selectedToken) => {
     }
 }
 
-const handleApprove = async (amount, spender, selectedPaymentToken) => {
+const handleApprove = async (totalAmountInWei, spender, selectedPaymentToken) => {
     try {
-        const amountInWei = ethers.utils.parseUnits(amount.toString(), selectedPaymentToken.decimals)
-        const tokenContract = new ERC20Token(selectedPaymentToken.address)
-        const tx = await tokenContract.approve(spender, amountInWei)
-        await tx.wait()
+        const tokenContract = new ERC20Token(selectedPaymentToken.address);
+        const tx = await tokenContract.approve(spender, totalAmountInWei);
+        await tx.wait();
 
-        console.log(`Approval successful for amount: ${amount}`)
+        console.log(`Approval successful for total amount: ${ethers.utils.formatUnits(totalAmountInWei, selectedPaymentToken.decimals)}`);
     } catch (error) {
-        console.error("Error approving token:", error)
+        console.error("Error approving token:", error);
     }
 }
+
 
 export const payAgreement = async (details) => {
     try {
         const paymentAmountInWei = ethers.utils.parseUnits(
             details.paymentValue.toString(),
             details.selectedPaymentToken.decimals
-        )
-        
-        const userAllowance = await checkAllowance(details.account, details.contract.address, details.selectedPaymentToken.address)
-        if (!userAllowance.gte(paymentAmountInWei)) {
-            await handleApprove(details.paymentValue, details.contract.address, details.selectedPaymentToken)
+        );
+        const feePercentage = details.agreement.fee;
+        const feeAmountInWei = paymentAmountInWei.mul(feePercentage).div(1000);
+        const totalAmountIncludingFeeInWei = paymentAmountInWei.add(feeAmountInWei);
+
+        const userAllowance = await checkAllowance(details.account, details.contract.address, details.selectedPaymentToken.address);
+        if (!userAllowance.gte(totalAmountIncludingFeeInWei)) {
+            await handleApprove(totalAmountIncludingFeeInWei, details.contract.address, details.selectedPaymentToken);
         }
-  
+
         const tx = await details.contract.makePayment(
             details.agreement.id,
             paymentAmountInWei,
             details.selectedPaymentToken.address
-        )
+        );
 
-        // const receipt = await tx.wait();
         return tx;
     } catch (error) {
         console.error("Error in payAgreement:", error);
         throw error;
     }
 };
+
     
 export default payAgreement;

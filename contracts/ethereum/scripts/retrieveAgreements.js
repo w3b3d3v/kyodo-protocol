@@ -24,6 +24,7 @@ async function getAllAgreements() {
       Company: ${agreement.company}
       Payment Amount: ${ethers.utils.formatEther(agreement.paymentAmount)} tokens
       Total Paid: ${agreement.totalPaid}
+      Fee: ${agreement.fee}
     `);
   });
 }
