@@ -104,10 +104,4 @@ interface IAgreementContract {
      * @param _communityDAOFee The portion of the fee allocated to the Community DAO.
      */
     function setFees(uint256 _feePercentage, uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external;
-
-    /**
-     * @notice Sets the address of the StableVault contract.
-     * @param _StableVaultAddress The address of the StableVault contract.
-     */
-    function setStableVaultAddress(address _StableVaultAddress) external;
 }

@@ -7,11 +7,6 @@ const TOTAL_FEE = 20;
 const PROTOCOL_FEE = 500;
 const COMMUNITY_FEE = 500;
 const FAKE_STABLE_DECIMALS = 18;
-const AAVE_VALID_CHAIN_IDS = [31337, 1, 5];
-
-let = AAVE_DATA_PROVIDER = "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
-let = AAVE_INCENTIVES_CONTROLLER= "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
-let = AAVE_LENDING_POOL= "0x0000000000000000000000000000000000000000"; // GOERLY_ADDRESS
 
 function copyABI() {
   const sourcePath = path.join(
@@ -23,15 +18,6 @@ function copyABI() {
   const sourceData = fs.readFileSync(sourcePath, "utf8")
   fs.writeFileSync(destinationPath, sourceData)
   console.log(`Copied AgreementContract ABI to ${destinationPath}`)
-}
-
-function copyVaultABI() {
-  const sourcePath = path.join(__dirname, "../artifacts/contracts/StableVault.sol/StableVault.json")
-  const destinationPath = path.join(__dirname, "../../../chains/ethereum/abis/StableVault.json")
-
-  const sourceData = fs.readFileSync(sourcePath, "utf8")
-  fs.writeFileSync(destinationPath, sourceData)
-  console.log(`Copied StableVault ABI to ${destinationPath}`)
 }
 
 function updateConfig(kyodoRegistryAddress) {
@@ -62,7 +48,7 @@ function updateConfig(kyodoRegistryAddress) {
   console.log(`Updated contract addresses in ${envPath}`)
 }
 
-async function deployAgreementsContract(vaultAddress, tokenAddress) {
+async function deployAgreementsContract(tokenAddress) {
   console.log(`\nDeploying AgreementsContract...`)
   const AgreementContract = await ethers.getContractFactory("AgreementContract")
   const {deployer, kyodoTreasury, communityTreasury} = await getNamedAccounts();
@@ -86,9 +72,6 @@ async function deployAgreementsContract(vaultAddress, tokenAddress) {
   const tx2 = await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE)
   await tx2.wait(1) // Wait for the transaction to be mined
   console.log("setFees transaction hash: ", tx2.hash)
-
-  const tx3 = await contract.setStableVaultAddress(vaultAddress)
-  await tx3.wait(1) // Wait for the transaction to be mined
   
   copyABI()
 
@@ -111,47 +94,13 @@ async function deployToken() {
   }
 }
 
-async function deployStableVault() {
-  console.log(`\nDeploying StableVault...`)
-  const StableVault = await ethers.getContractFactory("StableVault")
-  const {deployer} = await getNamedAccounts();
-  const vault = await StableVault.deploy(deployer, "StableVaultToken", "STBLV")
-  await vault.deployed()
-
-  // Wait for the deployment transaction to be mined
-  const deployReceipt = await vault.deployTransaction.wait(1)
-  console.log(`Deployed setStableVaultAddress ${vault.address} | Block ${deployReceipt.blockNumber}: `)
-
-  // const tx = await vault.setAaveSettings(
-  //   AAVE_DATA_PROVIDER,
-  //   AAVE_INCENTIVES_CONTROLLER,
-  //   AAVE_LENDING_POOL
-  // )
-  // await tx.wait(1) // Wait for the transaction to be mined
-  // console.log("setAaveSettings transaction hash: ", tx.hash)
-
-  // await vault.updateValidNetworks("depositAave", AAVE_VALID_CHAIN_IDS)
-  // await vault.addProfile(admin.address)
-  // // await vault.setUserCompoundPreference(true)
-  // // FIXME add real address or way to user set its own wallet.
-  // // this wallet is the second hardhat wallet
-  // await vault.setUserCompoundPreference(false, admin.address) // LOCALNETWORK: False, otherwise will fail because Aave/AAve does not exist in local network
-  
-  copyVaultABI()
-  return {
-    address: vault.address,
-    deploymentBlock: deployReceipt.blockNumber,
-  }
-}
-
-async function updateRegistry(agreementData, vaultData, tokenData) {
+async function updateRegistry(agreementData, tokenData) {
   const KyodoRegistry = await ethers.getContractFactory("KyodoRegistry");
   const kyodoRegistry = KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
 
   const keysToUpdate = {
     'FAKE_STABLE': tokenData,
-    'AGREEMENT_CONTRACT': agreementData,
-    'VAULT_CONTRACT': vaultData
+    'AGREEMENT_CONTRACT': agreementData
   };
 
   for (const [key, data] of Object.entries(keysToUpdate)) {
@@ -200,12 +149,10 @@ async function main() {
     console.log(`Balance: ${hre.ethers.utils.formatEther(balance)} ETH\n`); 
     
     const tokenData = await deployToken();
-    const vaultData = await deployStableVault();
-    const agreementData = await deployAgreementsContract(vaultData['address'], tokenData["address"]);
+    const agreementData = await deployAgreementsContract(tokenData["address"]);
 
     const kyodoRegistry = await updateRegistry(
       agreementData,
-      vaultData,
       tokenData
     );
 
