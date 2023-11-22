@@ -116,8 +116,6 @@ contract AgreementContract is Admin, IAgreementContract {
         require(acceptedPaymentTokens[_paymentAddress], "Invalid payment token");
         Agreement storage agreement = agreements[_agreementId - 1];
 
-        uint256 totalFeeBasisPoints;
-        uint256 totalFee;
         uint256 kyodoTreasuryShare;
         uint256 communityDAOShare;
         uint256 totalAmountIncludingFee;
@@ -125,19 +123,14 @@ contract AgreementContract is Admin, IAgreementContract {
         IERC20 token = IERC20(_paymentAddress);
 
         unchecked {
-            totalFeeBasisPoints = feePercentage * 1000;
-            totalFee = (totalFeeBasisPoints * _amountToPay) / (10**6);
-            kyodoTreasuryShare = (totalFee * kyodoTreasuryFee) / 1000;
-            communityDAOShare = totalFee - kyodoTreasuryShare;
-            totalAmountIncludingFee = _amountToPay + totalFee;
+            kyodoTreasuryShare = (_amountToPay * kyodoTreasuryFee) / 1000;
+            communityDAOShare = (_amountToPay * communityDAOFee) / 1000;
+            totalAmountIncludingFee = _amountToPay + kyodoTreasuryShare + communityDAOShare;
         }
 
         uint allowance_ = token.allowance(msg.sender, address(this));
-        console.log("allowance_", allowance_);
-        console.log("totalAmountIncludingFee", totalAmountIncludingFee);
-
         require(
-             allowance_ >= totalAmountIncludingFee,
+            allowance_ >= totalAmountIncludingFee,
             "User must approve the amount of the agreement"
         );
         
@@ -153,10 +146,10 @@ contract AgreementContract is Admin, IAgreementContract {
         emit PaymentMade(msg.sender, agreement.professional, _agreementId, _amountToPay);
     }
 
-    function setFees(uint256 _feePercentage, uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(_feePercentage >= 0 && _feePercentage <= 1000, "Invalid fee percentage");
+    function setFees(uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(_kyodoTreasuryFee >= 0 && _kyodoTreasuryFee <= 1000, "Invalid kyodo treasury fee");
+        require(_communityDAOFee >= 0 && _communityDAOFee <= 1000, "Invalid community DAO fee");
 
-        feePercentage = _feePercentage;
         kyodoTreasuryFee = _kyodoTreasuryFee;
         communityDAOFee = _communityDAOFee;
     }

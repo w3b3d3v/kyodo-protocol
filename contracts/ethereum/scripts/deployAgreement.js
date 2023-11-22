@@ -3,9 +3,8 @@ const fs = require("fs");
 const path = require("path");
 require('dotenv').config({ path: '../../.env.development.local' });
 
-const TOTAL_FEE = 20;
-const PROTOCOL_FEE = 500;
-const COMMUNITY_FEE = 500;
+const PROTOCOL_FEE = 10;
+const COMMUNITY_FEE = 10;
 const FAKE_STABLE_DECIMALS = 18;
 
 function copyABI() {
@@ -69,7 +68,7 @@ async function deployAgreementsContract(tokenAddress) {
   await tx.wait(1) // Wait for the transaction to be mined
   console.log("addAcceptedPaymentToken transaction hash: ", tx.hash)
 
-  const tx2 = await contract.setFees(TOTAL_FEE, PROTOCOL_FEE, COMMUNITY_FEE)
+  const tx2 = await contract.setFees(PROTOCOL_FEE, COMMUNITY_FEE)
   await tx2.wait(1) // Wait for the transaction to be mined
   console.log("setFees transaction hash: ", tx2.hash)
   

@@ -99,9 +99,8 @@ interface IAgreementContract {
 
     /**
      * @notice Sets the fee structure for the agreement transactions.
-     * @param _feePercentage The percentage of the transaction amount to be taken as a fee.
      * @param _kyodoTreasuryFee The portion of the fee allocated to the Kyodo Treasury.
      * @param _communityDAOFee The portion of the fee allocated to the Community DAO.
      */
-    function setFees(uint256 _feePercentage, uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external;
+    function setFees(uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external;
 }
