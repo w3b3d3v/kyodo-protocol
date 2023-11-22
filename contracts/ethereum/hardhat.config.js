@@ -1,11 +1,12 @@
 require("@nomicfoundation/hardhat-toolbox");
-require("@nomiclabs/hardhat-etherscan");
+require("@nomicfoundation/hardhat-ethers");
 require('dotenv').config();
 require("hardhat-jest-plugin");
 require("hardhat-gas-reporter");
 require('hardhat-contract-sizer');
 require('dotenv').config({ path: '../../.env' });
 require('hardhat-deploy');
+require('hardhat-deploy-ethers');
 
 const MNEMONIC = process.env["MNEMONIC"];
 

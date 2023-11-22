@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "compile": "hardhat compile",
-        "deploy:multichain":"npx hardhat run scripts/deployMultichain.js"
+        "deploy:multichain": "npx hardhat run scripts/deployMultichain.js"
     },
     "dependencies": {
         "dotenv": "^16.0.3",
@@ -13,20 +13,23 @@
         "solidity-docgen": "^0.5.16"
     },
     "devDependencies": {
-        "hardhat": "^2.19.0",
+        "@chainlink/contracts": "^0.8.0",
+        "@chainlink/contracts-ccip": "^0.7.6",
+        "@openzeppelin/contracts": "^5.0.0",
+        "@nomicfoundation/hardhat-ethers": "^3.0.5",
         "@nomicfoundation/hardhat-toolbox": "^4.0.0",
         "@nomiclabs/hardhat-etherscan": "^3.1.7",
-        "@openzeppelin/contracts": "^4.9.3",
         "@types/chai": "^4.3.6",
         "@types/mocha": "^10.0.2",
         "chai": "^4.3.9",
+        "hardhat": "^2.19.0",
         "hardhat-contract-sizer": "^2.10.0",
         "hardhat-deploy": "^0.11.43",
         "hardhat-deploy-ethers": "^0.4.1",
         "hardhat-gas-reporter": "^1.0.9",
+        "hardhat-jest-plugin": "^0.0.6",
         "slc-0.8": "npm:solc@^0.8.1",
         "solc-0.8": "npm:solc@^0.8.23",
-        "typechain": "^8.3.1",
-        "hardhat-jest-plugin": "^0.0.6"
+        "typechain": "^8.3.1"
     }
 }

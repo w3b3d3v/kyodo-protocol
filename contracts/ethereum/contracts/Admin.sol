@@ -3,7 +3,7 @@
 pragma solidity ^0.8.23;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 contract Admin is AccessControl, Pausable {
     event NewAdminAdded(address indexed new_admin);

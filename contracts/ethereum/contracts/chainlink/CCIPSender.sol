@@ -6,11 +6,11 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
-import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 
 contract CCIPSender is Ownable {
     IRouterClient router;
-    LinkTokenInterface linkToken;
+    IERC20 linkToken;
+    uint64 chainSelector;
 
     mapping(uint64 => bool) public whitelistedChains;
 
@@ -35,12 +35,14 @@ contract CCIPSender is Ownable {
     }
 
     constructor(
+        uint64 _chainSelector,
         address _router,
         address _link,
         address initialOwner
     ) Ownable(initialOwner) {
         router = IRouterClient(_router);
-        linkToken = LinkTokenInterface(_link);
+        linkToken = IERC20(_link);
+        _chainSelector = chainSelector;
     }
 
     function whitelistChain(uint64 _destinationChainSelector)
