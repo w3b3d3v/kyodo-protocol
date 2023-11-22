@@ -18,6 +18,8 @@ let config = {
     deployer: 0,
     kyodoTreasury: 0,
     communityTreasury: 3,
+    user1: 5,
+    user2: 6,
   },
   settings: {
     optimizer: {

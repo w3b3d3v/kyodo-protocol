@@ -5,7 +5,7 @@ const {chainConfigs, chainIdList, chainSelectorList} = require('../scripts/utils
 module.exports = async ({getNamedAccounts, deployments, ethers, network}) => {
   const {deploy} = deployments;
   const {deployer, kyodoTreasury, communityTreasury} = await getNamedAccounts();
-  console.log(`Deployer: ${deployer}`);
+  console.log(`Deployer: ${deployer} KyodoTreasury: ${kyodoTreasury} CommunityTreasury: ${communityTreasury}`);
   
   const salt = '0x';
 
@@ -13,7 +13,7 @@ module.exports = async ({getNamedAccounts, deployments, ethers, network}) => {
   const {linkAddress, routerAddress, chainSelector} = chainConfigs[networkName];
 
   const stableVaultInstance = await ethers.getContract('StableVault');
-  console.log("StableVault ", stableVaultInstance);
+
   const deployedContract = await deploy('AgreementContract', {
     from: deployer,
     args: [kyodoTreasury, communityTreasury, deployer, routerAddress, linkAddress, chainSelector, stableVaultInstance.target, chainIdList, chainSelectorList],
