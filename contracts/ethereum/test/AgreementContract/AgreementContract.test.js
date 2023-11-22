@@ -3,6 +3,7 @@ const { ethers } = require("hardhat");
 require('dotenv').config({ path: '../../.env.development.local' });
 
 const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
+const PROTOCOL_FEE = 10; // 1% in 1000 basis points
 
 describe("AgreementContract", function () {
   let agreementContract;
@@ -11,8 +12,8 @@ describe("AgreementContract", function () {
 
   beforeEach(async () => {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
-    const {deployer, kyodoTreasury, communityTreasury} = await getNamedAccounts();
-    agreementContract = await AgreementContract.deploy(kyodoTreasury, communityTreasury, deployer);
+    const {deployer, kyodoTreasury} = await getNamedAccounts();
+    agreementContract = await AgreementContract.deploy(kyodoTreasury, PROTOCOL_FEE, deployer);
     await agreementContract.deployed();
 
     await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);

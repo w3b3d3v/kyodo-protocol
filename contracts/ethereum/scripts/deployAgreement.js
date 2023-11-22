@@ -4,7 +4,6 @@ const path = require("path");
 require('dotenv').config({ path: '../../.env.development.local' });
 
 const PROTOCOL_FEE = 10;
-const COMMUNITY_FEE = 10;
 const FAKE_STABLE_DECIMALS = 18;
 
 function copyABI() {
@@ -50,10 +49,10 @@ function updateConfig(kyodoRegistryAddress) {
 async function deployAgreementsContract(tokenAddress) {
   console.log(`\nDeploying AgreementsContract...`)
   const AgreementContract = await ethers.getContractFactory("AgreementContract")
-  const {deployer, kyodoTreasury, communityTreasury} = await getNamedAccounts();
+  const {deployer, kyodoTreasury} = await getNamedAccounts();
   const contract = await AgreementContract.deploy(
     kyodoTreasury,
-    communityTreasury,
+    PROTOCOL_FEE,
     deployer
   )
 
@@ -67,10 +66,6 @@ async function deployAgreementsContract(tokenAddress) {
   const tx = await contract.addAcceptedPaymentToken(tokenAddress)
   await tx.wait(1) // Wait for the transaction to be mined
   console.log("addAcceptedPaymentToken transaction hash: ", tx.hash)
-
-  const tx2 = await contract.setFees(PROTOCOL_FEE, COMMUNITY_FEE)
-  await tx2.wait(1) // Wait for the transaction to be mined
-  console.log("setFees transaction hash: ", tx2.hash)
   
   copyABI()
 
