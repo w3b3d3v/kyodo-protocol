@@ -63,11 +63,7 @@
     "valid-chain-address": "O endereço profissional deve ser um endereço {{chain}} válido",
     "is-not-company": "O endereço profissional não pode ser o mesmo que o proprietário do contrato ou da empresa",
     "positive": "{{field}} deve ser um valor positivo",
-    "total-level-100": "O nível total deve somar 100%",
-    "skill-required": "Nome da habilidade é obrigatório",
-    "level-required": "Nível da habilidade é obrigatório",
-    "is-valid-level": "O nível deve ser um número válido entre 1 e 100",
-    "total-level-check": "O nível total das habilidades não pode exceder 100%"
+    "level-validation": "A lista de habilidades não pode estar vazia e a soma total dos níveis deve ser 100%"
   },
 
   "all-tab": "Todos",
