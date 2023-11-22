@@ -13,10 +13,10 @@ module.exports = async ({getNamedAccounts, deployments, ethers, network}) => {
   const {linkAddress, routerAddress, chainSelector} = chainConfigs[networkName];
 
   const stableVaultInstance = await ethers.getContract('StableVault');
-
+  console.log("StableVault ", stableVaultInstance);
   const deployedContract = await deploy('AgreementContract', {
     from: deployer,
-    args: [kyodoTreasury, communityTreasury, deployer, routerAddress, linkAddress, chainSelector, stableVaultInstance.address, chainIdList, chainSelectorList],
+    args: [kyodoTreasury, communityTreasury, deployer, routerAddress, linkAddress, chainSelector, stableVaultInstance.target, chainIdList, chainSelectorList],
     log: true,
     deterministicDeployment: salt
   });

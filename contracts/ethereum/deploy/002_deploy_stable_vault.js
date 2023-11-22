@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const chainConfigs = require('../scripts/utils/chain_config');
+const {chainConfigs} = require('../scripts/utils/chain_config');
 
 module.exports = async ({getNamedAccounts, deployments}) => {
   const {deploy} = deployments;
@@ -12,6 +12,7 @@ module.exports = async ({getNamedAccounts, deployments}) => {
   const tokenName = "Kyodo Token";
   const tokenSymbol = "KYO";
   const networkName = hre.network.name;
+
   const {routerAddress} = chainConfigs[networkName];
 
   const deployedContract = await deploy('StableVault', {
