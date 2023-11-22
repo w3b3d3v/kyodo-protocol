@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.1;
+pragma solidity ^0.8.23;
 
 interface IAgreementContract {
 
@@ -23,6 +23,7 @@ interface IAgreementContract {
         address professional;
         uint256 paymentAmount;
         uint256 totalPaid;
+        uint64 chainSelector;
     }
 
     // Enums
