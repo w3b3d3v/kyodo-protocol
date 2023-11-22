@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.1;
 
-import "./interfaces/IStableVault.sol";
 import "./interfaces/IAgreementContract.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "./Admin.sol";
@@ -18,7 +17,6 @@ contract AgreementContract is Admin, IAgreementContract {
     mapping(uint => Skill[]) public agreementSkills;
     address[] public tokenAddresses;
 
-    IStableVault public StableVault;
     address public kyodoTreasury;
     address public communityDAO;
 
@@ -144,10 +142,9 @@ contract AgreementContract is Admin, IAgreementContract {
         );
         
         token.transferFrom(msg.sender, address(this), totalAmountIncludingFee);
-        token.approve(address(StableVault), totalAmountIncludingFee);
-        StableVault.deposit(_amountToPay, address(token), agreement.professional);
-        StableVault.deposit(kyodoTreasuryShare, address(token), kyodoTreasury);
-        StableVault.deposit(communityDAOShare, address(token), communityDAO);
+        token.transfer(agreement.professional, _amountToPay);
+        token.transfer(kyodoTreasury, kyodoTreasuryShare);
+        token.transfer(communityDAO, communityDAOShare);
 
         unchecked {
             agreement.totalPaid += _amountToPay;
@@ -162,9 +159,5 @@ contract AgreementContract is Admin, IAgreementContract {
         feePercentage = _feePercentage;
         kyodoTreasuryFee = _kyodoTreasuryFee;
         communityDAOFee = _communityDAOFee;
-    }
-
-    function setStableVaultAddress(address _StableVaultAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        StableVault = IStableVault(_StableVaultAddress);
     }
 }
