@@ -1,54 +1,72 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-require('dotenv').config({ path: '../../.env.development.local' });
+const { ethers, deployments, getNamedAccounts } = require("hardhat");
+const { expect, assert } = require("chai");
 
-const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
-
-describe("AgreementContract", function () {
-  let agreementContract;
-  let developer;
-  let skills;
-
-  beforeEach(async () => {
-    const AgreementContract = await ethers.getContractFactory("AgreementContract");
-    const {deployer, kyodoTreasury, communityTreasury} = await getNamedAccounts();
-    agreementContract = await AgreementContract.deploy(kyodoTreasury, communityTreasury, deployer);
-    await agreementContract.deployed();
-
-    await agreementContract.addAcceptedPaymentToken(FAKE_STABLE_ADDRESS);
-
-    [developer, addr1] = await ethers.getSigners();
-    
-    skills = [
-      { name: "Programming", level: 50 },
-      { name: "Design", level: 50 }
+const setup = deployments.createFixture(async () => {
+    await deployments.fixture(['AgreementContract']);
+    const { deployer, user1, user2 } = await getNamedAccounts();
+    const skills = [
+        { name: "Programming", level: 50 },
+        { name: "Design", level: 50 }
     ];
-  });
 
-  it("Should create a new agreement with authorized tokens", async function () {
-    const paymentAmount = ethers.utils.parseEther("5");
+    return {
+        DeployerUser: {
+            address: deployer,
+            AgreementContract: await ethers.getContract('AgreementContract', deployer),
+        },
+        Company: {
+            address: user1,
+            AgreementContract: await ethers.getContract('AgreementContract', user1),
+        },
+        Employee: {
+            address: user2,
+            AgreementContract: await ethers.getContract('AgreementContract', user2),
+        },
+        skills,
+        FAKE_TOKEN_1: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
+        FAKE_TOKEN_2: "0x779877A7B0D9E8603169DdbD7836e478b4624780",
+    }
+});
 
-    await agreementContract.connect(developer).createAgreement(
-      "Test Agreement",
-      "This is a test agreement",
-      addr1.address,
-      skills,
-      paymentAmount,
-    );
+describe('AgreementContract', () => {
+    it('Add acceptedPaymentToken should only set using owner', async function () {
+        const { DeployerUser, Company, FAKE_TOKEN_1, FAKE_TOKEN_2 } = await setup();
+        await DeployerUser.AgreementContract.addAcceptedPaymentToken(FAKE_TOKEN_1);
+        let address = await DeployerUser.AgreementContract.getAcceptedPaymentTokens();
+        assert(address == FAKE_TOKEN_1);
+        try {
+            await Company.AgreementContract.addAcceptedPaymentToken(FAKE_TOKEN_2);
+        } catch (err) {
+            assert(err);
+        }
 
-    const agreementCount = await agreementContract.getAgreementCount();
-    expect(agreementCount).to.equal(1);
-  });
+        address = await DeployerUser.AgreementContract.getAcceptedPaymentTokens();
+        assert(address != FAKE_TOKEN_2);
+    });
 
-  it("Should fail if the professional is the same as company", async function () {
-    const paymentAmount = ethers.utils.parseEther("5");
+    it('Should create a new agreement with authorized tokens', async function () {
+        const { Company, Employee, skills } = await setup();
+        const paymentAmount = ethers.parseEther("5");
+        await Company.AgreementContract.createAgreement(
+            "Test Agreement",
+            "This is a test agreement",
+            Employee.address,
+            skills,
+            paymentAmount
+        )
+        const agreementCount = await Company.AgreementContract.getAgreementCount();
+        expect(agreementCount).to.equal(1);
+    });
 
-    await expect(agreementContract.connect(developer).createAgreement(
-      "Test Agreement",
-      "This is a test agreement",
-      developer.address,
-      skills,
-      paymentAmount,
-    )).to.be.revertedWith("Professional address cannot be the same as company")
-  });
+    it('Should fail if the professional is the same as company', async function () {
+        const { Company, Employee, skills } = await setup();
+        const paymentAmount = ethers.parseEther("5");
+        await expect(Company.AgreementContract.createAgreement(
+            "Test Agreement",
+            "This is a test agreement",
+            Company.address,
+            skills,
+            paymentAmount
+        )).to.be.revertedWith("Professional address cannot be the same as company");
+    });
 });

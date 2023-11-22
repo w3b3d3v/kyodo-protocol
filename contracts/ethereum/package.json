@@ -5,7 +5,7 @@
     "scripts": {
         "compile": "hardhat compile",
         "deploy:multichain": "npx hardhat run scripts/deployMultichain.js",
-        "test": "npx hardhat test ./test/AgreementContract/AgreementContract_v2.test.js --deploy-fixture"
+        "test": "npx hardhat test ./test/AgreementContract/AgreementsByUser.test.js --deploy-fixture"
     },
     "dependencies": {
         "dotenv": "^16.0.3",

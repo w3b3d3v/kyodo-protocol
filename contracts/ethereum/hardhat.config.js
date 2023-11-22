@@ -20,6 +20,8 @@ let config = {
     communityTreasury: 3,
     user1: 5,
     user2: 6,
+    user3: 7,
+    user4: 8,
   },
   settings: {
     optimizer: {
