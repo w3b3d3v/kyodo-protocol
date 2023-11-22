@@ -175,9 +175,10 @@ function AgreementList() {
             <div key={index} className={styles["card"]}>
               <div key={index} className={styles["card-heading"]}>
                 <h2>{agreement.title}</h2>
-                <div className={styles["wallet-key"]}>{agreement.professional}</div>
+                <div className={styles["wallet-key"]}>
+                  {account.toLowerCase() === agreement.professional.toLowerCase() ? agreement.company : agreement.professional}
+                </div>
               </div>
-
               <div className={styles["card-desc"]}>{agreement.description}</div>
 
               <p className={styles["skills-section"]}>
