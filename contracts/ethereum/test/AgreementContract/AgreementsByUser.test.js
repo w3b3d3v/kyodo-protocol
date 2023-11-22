@@ -3,6 +3,7 @@ const { ethers, getNamedAccounts } = require("hardhat");
 require('dotenv').config({ path: '../../.env.development.local' });
 
 const FAKE_STABLE_ADDRESS = process.env.NEXT_PUBLIC_FAKE_STABLE_ADDRESS
+const PROTOCOL_FEE = 10; // 1% in 1000 basis points
 
 describe("AgreementsByUser", function () {
   let agreementContract;
@@ -13,8 +14,8 @@ describe("AgreementsByUser", function () {
 
   beforeEach(async function () {
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
-    const {deployer, kyodoTreasury, communityTreasury} = await getNamedAccounts();
-    agreementContract = await AgreementContract.deploy(kyodoTreasury, communityTreasury, deployer);
+    const {deployer, kyodoTreasury} = await getNamedAccounts();
+    agreementContract = await AgreementContract.deploy(kyodoTreasury, PROTOCOL_FEE, deployer);
     await agreementContract.deployed();
 
     [owner, user1, user2] = await ethers.getSigners();

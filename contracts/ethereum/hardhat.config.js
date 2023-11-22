@@ -15,8 +15,7 @@ let config = {
   solidity: "0.8.23",
   namedAccounts: {
     deployer: 0,
-    kyodoTreasury: 4,
-    communityTreasury: 3,
+    kyodoTreasury: 4
   },
   settings: {
     optimizer: {

@@ -1,6 +1,7 @@
 // const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const { expect } = require("chai");
+const PROTOCOL_FEE = 10; // 1% in 1000 basis points
 
 describe("KyodoRegistry", function () {
   let kyodoRegistry;
@@ -10,13 +11,13 @@ describe("KyodoRegistry", function () {
     const KyodoRegistryContract = await ethers.getContractFactory(
       "KyodoRegistry"
     );
-    [admin, newAdmin, notAdmin, kyodoTreasureContract, communityTreasureContract] = await ethers.getSigners();
+    [admin, newAdmin, notAdmin, kyodoTreasureContract] = await ethers.getSigners();
     kyodoRegistry = await KyodoRegistryContract.deploy(admin.address);
 
     const AgreementContract = await ethers.getContractFactory("AgreementContract");
     const contract = await AgreementContract.deploy(
       kyodoTreasureContract.address,
-      communityTreasureContract.address,
+      PROTOCOL_FEE,
       admin.address
       )
     await contract.deployed();
@@ -38,18 +39,16 @@ describe("KyodoRegistry", function () {
 
   it("Should save a new registry", async function () {
     await kyodoRegistry.connect(admin).createRegistry('KYODO_TREASURY_CONTRACT_ADDRESS', kyodoTreasureContract.address, deployReceipt.blockNumber)
-    await kyodoRegistry.connect(admin).createRegistry('COMMUNITY_TREASURY_CONTRACT_ADDRESS', communityTreasureContract.address, deployReceipt.blockNumber)
     const kyodoStoredAddr = await kyodoRegistry.getRegistry('KYODO_TREASURY_CONTRACT_ADDRESS')
-    const communityStoredAddr = await kyodoRegistry.getRegistry('COMMUNITY_TREASURY_CONTRACT_ADDRESS')
     expect(kyodoStoredAddr).to.be.equal(kyodoTreasureContract.address)
-    expect(communityStoredAddr).to.be.equal(communityTreasureContract.address)
   });
 
   it("Should update a registry", async function () {
+    const newAddress = ethers.Wallet.createRandom()
     await kyodoRegistry.connect(admin).createRegistry('KYODO_TREASURY_CONTRACT_ADDRESS', kyodoTreasureContract.address, deployReceipt.blockNumber)
-    await kyodoRegistry.connect(admin).updateRegistry('KYODO_TREASURY_CONTRACT_ADDRESS', communityTreasureContract.address, deployReceipt.blockNumber)
+    await kyodoRegistry.connect(admin).updateRegistry('KYODO_TREASURY_CONTRACT_ADDRESS', newAddress.address, deployReceipt.blockNumber)
     const newAddr = await kyodoRegistry.getRegistry('KYODO_TREASURY_CONTRACT_ADDRESS')
-    expect(newAddr).to.be.equal(communityTreasureContract.address)
+    expect(newAddr).to.be.equal(newAddress.address)
   });
 
   it("Should not throw error if registry exists", async function () {
@@ -109,7 +108,8 @@ describe("KyodoRegistry", function () {
   it("Should update a registry with a new deployment block number", async function () {
     let tx = await kyodoRegistry.connect(admin).createRegistry('KYODO_TREASURY_CONTRACT_ADDRESS', kyodoTreasureContract.address, 123456);
     await tx.wait();
-    tx = await kyodoRegistry.connect(admin).updateRegistry('KYODO_TREASURY_CONTRACT_ADDRESS', communityTreasureContract.address, 654321);
+    const newAddress = ethers.Wallet.createRandom()
+    tx = await kyodoRegistry.connect(admin).updateRegistry('KYODO_TREASURY_CONTRACT_ADDRESS', newAddress.address, 654321);
     await tx.wait();
     const blockNumber = await kyodoRegistry.getBlockDeployment('KYODO_TREASURY_CONTRACT_ADDRESS');
     expect(blockNumber).to.equal(654321);
@@ -118,6 +118,7 @@ describe("KyodoRegistry", function () {
   it("Should not allow creation of a registry with the same key", async function () {
     const tx = await kyodoRegistry.connect(admin).createRegistry('KYODO_TREASURY_CONTRACT_ADDRESS', kyodoTreasureContract.address, 123456);
     await tx.wait();
-    await expect(kyodoRegistry.connect(admin).createRegistry('KYODO_TREASURY_CONTRACT_ADDRESS', communityTreasureContract.address, 123457)).to.be.revertedWith("The registry already exists");
+    const newAddress = ethers.Wallet.createRandom()
+    await expect(kyodoRegistry.connect(admin).createRegistry('KYODO_TREASURY_CONTRACT_ADDRESS', newAddress.address, 123457)).to.be.revertedWith("The registry already exists");
   });
 });

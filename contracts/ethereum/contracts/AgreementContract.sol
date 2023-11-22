@@ -18,15 +18,13 @@ contract AgreementContract is Admin, IAgreementContract {
     address[] public tokenAddresses;
 
     address public kyodoTreasury;
-    address public communityDAO;
 
     uint256 public feePercentage; // Fee percentage in basis points (1 basis point = 0.01%)
     uint256 public kyodoTreasuryFee;
-    uint256 public communityDAOFee;
 
-    constructor(address _kyodoTreasury, address _communityDAO, address admin) Admin(admin) {
+    constructor(address _kyodoTreasury, uint _kyodoTreasuryFee, address admin) Admin(admin) {
         kyodoTreasury = _kyodoTreasury;
-        communityDAO = _communityDAO;
+        kyodoTreasuryFee = _kyodoTreasuryFee;
     }
 
     function addAcceptedPaymentToken(address _tokenAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -117,15 +115,13 @@ contract AgreementContract is Admin, IAgreementContract {
         Agreement storage agreement = agreements[_agreementId - 1];
 
         uint256 kyodoTreasuryShare;
-        uint256 communityDAOShare;
         uint256 totalAmountIncludingFee;
 
         IERC20 token = IERC20(_paymentAddress);
 
         unchecked {
             kyodoTreasuryShare = (_amountToPay * kyodoTreasuryFee) / 1000;
-            communityDAOShare = (_amountToPay * communityDAOFee) / 1000;
-            totalAmountIncludingFee = _amountToPay + kyodoTreasuryShare + communityDAOShare;
+            totalAmountIncludingFee = _amountToPay + kyodoTreasuryShare;
         }
 
         uint allowance_ = token.allowance(msg.sender, address(this));
@@ -137,7 +133,6 @@ contract AgreementContract is Admin, IAgreementContract {
         token.transferFrom(msg.sender, address(this), totalAmountIncludingFee);
         token.transfer(agreement.professional, _amountToPay);
         token.transfer(kyodoTreasury, kyodoTreasuryShare);
-        token.transfer(communityDAO, communityDAOShare);
 
         unchecked {
             agreement.totalPaid += _amountToPay;
@@ -146,11 +141,8 @@ contract AgreementContract is Admin, IAgreementContract {
         emit PaymentMade(msg.sender, agreement.professional, _agreementId, _amountToPay);
     }
 
-    function setFees(uint256 _kyodoTreasuryFee, uint256 _communityDAOFee) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function updateFee(uint256 _kyodoTreasuryFee) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(_kyodoTreasuryFee >= 0 && _kyodoTreasuryFee <= 1000, "Invalid kyodo treasury fee");
-        require(_communityDAOFee >= 0 && _communityDAOFee <= 1000, "Invalid community DAO fee");
-
         kyodoTreasuryFee = _kyodoTreasuryFee;
-        communityDAOFee = _communityDAOFee;
     }
 }
