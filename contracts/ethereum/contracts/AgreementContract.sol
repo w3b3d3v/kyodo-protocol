@@ -6,6 +6,8 @@ import "./interfaces/IAgreementContract.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "./Admin.sol";
 
+import "hardhat/console.sol";
+
 contract AgreementContract is Admin, IAgreementContract {
 
     uint256 public nextAgreementId = 1;
@@ -120,7 +122,7 @@ contract AgreementContract is Admin, IAgreementContract {
         uint256 totalFee;
         uint256 kyodoTreasuryShare;
         uint256 communityDAOShare;
-        uint256 professionalPayment;
+        uint256 totalAmountIncludingFee;
 
         IERC20 token = IERC20(_paymentAddress);
 
@@ -129,16 +131,21 @@ contract AgreementContract is Admin, IAgreementContract {
             totalFee = (totalFeeBasisPoints * _amountToPay) / (10**6);
             kyodoTreasuryShare = (totalFee * kyodoTreasuryFee) / 1000;
             communityDAOShare = totalFee - kyodoTreasuryShare;
-            professionalPayment = _amountToPay - totalFee;
+            totalAmountIncludingFee = _amountToPay + totalFee;
         }
 
+        uint allowance_ = token.allowance(msg.sender, address(this));
+        console.log("allowance_", allowance_);
+        console.log("totalAmountIncludingFee", totalAmountIncludingFee);
+
         require(
-            token.transferFrom(msg.sender, address(this), _amountToPay),
+             allowance_ >= totalAmountIncludingFee,
             "User must approve the amount of the agreement"
         );
         
-        token.approve(address(StableVault), _amountToPay);
-        StableVault.deposit(professionalPayment, address(token), agreement.professional);
+        token.transferFrom(msg.sender, address(this), totalAmountIncludingFee);
+        token.approve(address(StableVault), totalAmountIncludingFee);
+        StableVault.deposit(_amountToPay, address(token), agreement.professional);
         StableVault.deposit(kyodoTreasuryShare, address(token), kyodoTreasury);
         StableVault.deposit(communityDAOShare, address(token), communityDAO);
 
