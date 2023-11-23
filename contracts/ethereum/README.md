@@ -1,84 +1,66 @@
-## Requirements
+## Foundry
 
-Before starting, ensure you have your mnemonic phrase set in the `.env` file. It should be formatted as follows:
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
+Foundry consists of:
+
+-   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+-   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+-   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+-   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+
+## Documentation
+
+https://book.getfoundry.sh/
+
+## Usage
+
+### Build
+
+```shell
+$ forge build
 ```
-MNEMONIC=your_mnemonic_phrase_here
+
+### Test
+
+```shell
+$ forge test
 ```
 
-## Running Tests
+### Format
 
-To run tests, follow these steps:
+```shell
+$ forge fmt
+```
 
-1. Start a local node:
+### Gas Snapshots
 
-   ```
-   npx hardhat node
-   ```
+```shell
+$ forge snapshot
+```
 
-2. Then, execute the tests:
+### Anvil
 
-   ```
-   npx hardhat test
-   ```
+```shell
+$ anvil
+```
 
-## Deploying to Individual Networks
+### Deploy
 
-To deploy contracts to a specific network, follow these steps:
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
 
-1. Deploy the Registry:
+### Cast
 
-   ```
-   npx hardhat deploy --network "network_name"
-   ```
+```shell
+$ cast <subcommand>
+```
 
-   Replace `"network_name"` with the name of your target network.
+### Help
 
-2. Deploy the AgreementContract and the Vault:
-
-   ```
-   npx hardhat run scripts/deployAgreementAndVault.js --network "network_name"
-   ```
-
-   Again, replace `"network_name"` with your chosen network.
-
-## Deploying the Registry to Multiple Networks
-
-To deploy the Registry to multiple networks:
-
-1. Run the multichain deployment:
-
-   ```
-   npx hardhat deploy:multichain
-   ```
-
-   This will deploy to all networks configured in `hardhat.config.js` and listed in the `deployMultichain.js` file.
-
-2. Next, deploy the AgreementContract and the Vault individually on each chain. Repeat the deployment command for each network as described in the "Deploying to Individual Networks" section.
-
----
-
-### Automated Documentation Generation
-
-To enhance understanding and collaboration on our project, we provide tools to automatically generate documentation for our Solidity contracts. Here's how you can generate UML diagrams and detailed documentation for individual contracts:
-
-1. **Generate UML Diagrams for Individual Contracts:**
-   - For `StableVault.sol`:
-     ```
-     npx sol2uml ./contracts/StableVault.sol -o ./docs/diagram/StableVault.svg
-     ```
-   - For `AgreementContract.sol`:
-     ```
-     npx sol2uml ./contracts/AgreementContract.sol -o ./docs/diagram/AgreementContract.svg
-     ```
-
-   The `sol2uml` utility will generate UML diagrams, providing a visual representation of the contract structure, including inherited contracts and dependencies.
-
-2. **Generate Detailed Documentation for Public and External Functions:**
-   ```
-   npx solidity-docgen --solc-module solc-0.8 -t ./docs/template/external -o ./docs/output/external
-   ```
-
-   The `solidity-docgen` tool will produce documentation focusing on public and external functions, giving you a clear view of the contract's interfaces and functionalities.
-
-Make sure you have the necessary environment set up to run these commands. The generated UML diagrams and documentation can be found in the directories specified in the commands above.
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
+```
