@@ -5,7 +5,6 @@ const {chainConfigs} = require('../scripts/utils/chain_config');
 module.exports = async ({getNamedAccounts, deployments}) => {
   const {deploy} = deployments;
   const {deployer} = await getNamedAccounts();
-  console.log(`Deployer: ${deployer}`);
   
   const salt = '0x';
 
@@ -21,6 +20,8 @@ module.exports = async ({getNamedAccounts, deployments}) => {
     log: true,
     deterministicDeployment: salt
   });
+
+  console.log(`StableVault Address: ${deployedContract.address}`);
 
 //   const envPath = path.join(__dirname, '../../../.env.development.local');
 //   const envContent = fs.readFileSync(envPath, { encoding: 'utf8' });

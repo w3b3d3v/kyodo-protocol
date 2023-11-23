@@ -204,6 +204,7 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
             "User must approve the amount of the agreement"
         );
 
+        token.approve(address(StableVault), _amountToPay);
         StableVault.deposit(kyodoTreasuryShare, address(token), kyodoTreasury);
         StableVault.deposit(communityDAOShare, address(token), communityDAO);
 
@@ -233,7 +234,7 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
         uint256 _feePercentage,
         uint256 _kyodoTreasuryFee,
         uint256 _communityDAOFee
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         require(
             _feePercentage >= 0 && _feePercentage <= 1000,
             "Invalid fee percentage"

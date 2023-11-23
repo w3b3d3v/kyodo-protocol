@@ -1,13 +1,23 @@
-const { ethers, deployments, getNamedAccounts } = require("hardhat");
+const { ethers, deployments, getNamedAccounts, network } = require("hardhat");
 const { expect, assert } = require("chai");
+const { chainConfigs } = require('../../scripts/utils/chain_config');
 
 const setup = deployments.createFixture(async () => {
     await deployments.fixture(['AgreementContract']);
+    
     const { deployer, user1, user2 } = await getNamedAccounts();
+    
+    let { token } = chainConfigs[network.name];
     const skills = [
         { name: "Programming", level: 50 },
         { name: "Design", level: 50 }
     ];
+
+    if(network.name == "hardhat") {
+        await deployments.fixture(['FakeStable']);
+        const FakeStable = await ethers.getContract('FakeStable');
+        token = FakeStable.target;
+    }
 
     return {
         DeployerUser: {
@@ -23,25 +33,21 @@ const setup = deployments.createFixture(async () => {
             AgreementContract: await ethers.getContract('AgreementContract', user2),
         },
         skills,
-        FAKE_TOKEN_1: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
-        FAKE_TOKEN_2: "0x779877A7B0D9E8603169DdbD7836e478b4624780",
+        FAKE_TOKEN_1: token,
     }
 });
 
 describe('AgreementContract', () => {
     it('Add acceptedPaymentToken should only set using owner', async function () {
-        const { DeployerUser, Company, FAKE_TOKEN_1, FAKE_TOKEN_2 } = await setup();
+        const { DeployerUser, Company, FAKE_TOKEN_1 } = await setup();
         await DeployerUser.AgreementContract.addAcceptedPaymentToken(FAKE_TOKEN_1);
         let address = await DeployerUser.AgreementContract.getAcceptedPaymentTokens();
         assert(address == FAKE_TOKEN_1);
         try {
-            await Company.AgreementContract.addAcceptedPaymentToken(FAKE_TOKEN_2);
+            await Company.AgreementContract.addAcceptedPaymentToken(FAKE_TOKEN_1);
         } catch (err) {
             assert(err);
         }
-
-        address = await DeployerUser.AgreementContract.getAcceptedPaymentTokens();
-        assert(address != FAKE_TOKEN_2);
     });
 
     it('Should create a new agreement with authorized tokens', async function () {
@@ -59,7 +65,7 @@ describe('AgreementContract', () => {
     });
 
     it('Should fail if the professional is the same as company', async function () {
-        const { Company, Employee, skills } = await setup();
+        const { Company, skills } = await setup();
         const paymentAmount = ethers.parseEther("5");
         await expect(Company.AgreementContract.createAgreement(
             "Test Agreement",

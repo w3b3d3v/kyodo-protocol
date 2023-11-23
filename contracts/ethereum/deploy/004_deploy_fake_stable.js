@@ -1,20 +1,23 @@
 const fs = require('fs');
 const path = require('path');
 
-module.exports = async ({getNamedAccounts, deployments}) => {
+module.exports = async ({getNamedAccounts, deployments, ethers}) => {
   const {deploy} = deployments;
   const {deployer} = await getNamedAccounts();
 
   const salt = '0x';
+  const inititalSupply = ethers.parseEther("100000");
+  const decimals = 18;
 
-  const deployedContract = await deploy('KyodoRegistry', {
+  const deployedContract = await deploy('FakeStable', {
     from: deployer,
-    args: [deployer],
+    args: [deployer, inititalSupply, decimals],
     log: true,
     deterministicDeployment: salt
   });
 
-  console.log(`KyodoRegistry Address: ${deployedContract.address}`);
+  console.log(`Deployer: ${deployer}`);
+  console.log(`FakeStable Address: ${deployedContract.address}`);
 
   // const envPath = path.join(__dirname, '../../../.env.development.local');
   // const envContent = fs.readFileSync(envPath, { encoding: 'utf8' });
@@ -23,4 +26,4 @@ module.exports = async ({getNamedAccounts, deployments}) => {
   // console.log(`Updated NEXT_PUBLIC_KYODO_REGISTRY in env.development.local to ${deployedContract.address}`);
 };
 
-module.exports.tags = ['KyodoRegistry'];
+module.exports.tags = ['FakeStable'];

@@ -1,5 +1,5 @@
 const { ethers, deployments, getNamedAccounts } = require("hardhat");
-const { expect, assert } = require("chai");
+const { expect } = require("chai");
 
 const setup = deployments.createFixture(async () => {
     await deployments.fixture(['AgreementContract']);
@@ -31,8 +31,6 @@ const setup = deployments.createFixture(async () => {
             AgreementContract: await ethers.getContract('AgreementContract', user3),
         },
         skills,
-        FAKE_TOKEN_1: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
-        FAKE_TOKEN_2: "0x779877A7B0D9E8603169DdbD7836e478b4624780",
     }
 });
 
