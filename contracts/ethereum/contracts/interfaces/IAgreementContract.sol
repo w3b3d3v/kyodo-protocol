@@ -91,12 +91,15 @@ interface IAgreementContract {
     function getSkillsByAgreementId(uint256 _agreementId) external view returns (Skill[] memory);
 
     /**
-     * @notice Makes a payment for a specific agreement.
-     * @param _agreementId The ID of the agreement for which the payment is being made.
-     * @param _amountToPay The amount of the payment.
-     * @param _paymentAddress The address of the token in which payment is made.
-     */
-    function makePayment(uint256 _agreementId, uint256 _amountToPay, address _paymentAddress) external;
+    * @notice Makes payments for one or more agreements.
+    * @dev This function allows for multiple agreements to be paid in one transaction.
+    *      It requires that the length of _agreementIds and _amountsToPay arrays be equal.
+    *      Each index in the arrays corresponds to a specific agreement and its respective payment amount.
+    * @param _agreementIds An array of IDs of the agreements for which the payments are being made.
+    * @param _amountsToPay An array of payment amounts, each corresponding to the agreement ID at the same index.
+    * @param _paymentAddress The address of the token in which payments are made.
+    */
+    function makePayment(uint256[] memory _agreementIds, uint256[] memory _amountsToPay, address _paymentAddress) external;
 
     /**
      * @notice Sets the fee structure for the agreement transactions.

@@ -110,36 +110,42 @@ contract AgreementContract is Admin, IAgreementContract {
         return agreementSkills[_agreementId];
     }
 
-    function makePayment(uint256 _agreementId, uint256 _amountToPay, address _paymentAddress) external {
-        require(_agreementId > 0 && _agreementId <= agreements.length, "Invalid agreement ID");
+    function makePayment(uint256[] memory _agreementIds, uint256[] memory _amountsToPay, address _paymentAddress) external {
+        require(_agreementIds.length == _amountsToPay.length, "Arrays length mismatch");
         require(acceptedPaymentTokens[_paymentAddress], "Invalid payment token");
-        Agreement storage agreement = agreements[_agreementId - 1];
-
-        uint256 kyodoTreasuryShare;
-        uint256 totalAmountIncludingFee;
 
         IERC20 token = IERC20(_paymentAddress);
 
-        unchecked {
-            kyodoTreasuryShare = (_amountToPay * getFee()) / 1000;
-            totalAmountIncludingFee = _amountToPay + kyodoTreasuryShare;
-        }
+        for (uint256 i = 0; i < _agreementIds.length; i++) {
+            uint256 _agreementId = _agreementIds[i];
+            uint256 _amountToPay = _amountsToPay[i];
 
-        uint allowance_ = token.allowance(msg.sender, address(this));
-        require(
-            allowance_ >= totalAmountIncludingFee,
-            "User must approve the amount of the agreement"
-        );
-        
-        token.transferFrom(msg.sender, address(this), totalAmountIncludingFee);
-        token.transfer(agreement.professional, _amountToPay);
-        token.transfer(kyodoTreasury, kyodoTreasuryShare);
+            require(_agreementId > 0 && _agreementId <= agreements.length, "Invalid agreement ID");
+            Agreement storage agreement = agreements[_agreementId - 1];
+            uint256 kyodoTreasuryShare;
+            uint256 totalAmountIncludingFee;
 
-        unchecked {
-            agreement.totalPaid += _amountToPay;
+            unchecked {
+                kyodoTreasuryShare = (_amountToPay * getFee()) / 1000;
+                totalAmountIncludingFee = _amountToPay + kyodoTreasuryShare;
+            }
+
+            uint allowance_ = token.allowance(msg.sender, address(this));
+            require(
+                allowance_ >= totalAmountIncludingFee,
+                "User must approve the amount of the agreement"
+            );
+            
+            token.transferFrom(msg.sender, address(this), totalAmountIncludingFee);
+            token.transfer(agreement.professional, _amountToPay);
+            token.transfer(kyodoTreasury, kyodoTreasuryShare);
+
+            unchecked {
+                agreement.totalPaid += _amountToPay;
+            }
+            
+            emit PaymentMade(msg.sender, agreement.professional, _agreementId, _amountToPay);
         }
-        
-        emit PaymentMade(msg.sender, agreement.professional, _agreementId, _amountToPay);
     }
 
     function updateFee(uint256 _kyodoProtocolFee) external onlyRole(DEFAULT_ADMIN_ROLE) {

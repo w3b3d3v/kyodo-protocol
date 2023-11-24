@@ -26,21 +26,17 @@ async function payUserAgreement() {
   const agreementDetails = await agreementContract.getAgreementById(firstAgreementId);
   const paymentAmount = ethers.BigNumber.from(agreementDetails.paymentAmount);
 
-  // Obter a taxa do protocolo
   const protocolFee = await agreementContract.getFee();
   const totalFeeAmount = paymentAmount.mul(protocolFee).div(1000);
 
-  // Calcular o valor total incluindo a taxa
   const totalAmountIncludingFee = paymentAmount.add(totalFeeAmount);
 
   const TokenContract = await ethers.getContractFactory("fakeStable");
   const tokenContract = await TokenContract.attach(kyodoRegistry("FAKE_STABLE"));
 
-  // Aprovar o valor total incluindo a taxa
   await tokenContract.connect(signer).approve(agreementContract.address, totalAmountIncludingFee);
 
-  // Fazer o pagamento
-  await agreementContract.connect(signer).makePayment(firstAgreementId, paymentAmount, tokenContract.address);
+  await agreementContract.connect(signer).makePayment([firstAgreementId], [paymentAmount], tokenContract.address);
 
   console.log(`Pagamento de ${totalAmountIncludingFee} tokens feito para o acordo com ID ${firstAgreementId}.`);
 }

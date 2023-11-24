@@ -40,8 +40,8 @@ export const payAgreement = async (details) => {
         }
 
         const tx = await details.contract.makePayment(
-            details.agreement.id,
-            paymentAmountInWei,
+            [details.agreement.id],
+            [paymentAmountInWei],
             details.selectedPaymentToken.address
         );
 
