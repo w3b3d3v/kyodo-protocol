@@ -27,20 +27,24 @@ To run tests, follow these steps:
 To deploy contracts to a specific network, follow these steps:
 
 1. Deploy the Registry:
-
+   
+   For a local Hardhat node (default network name is "testing"):
    ```
-   npx hardhat deploy --network "network_name"
+   npx hardhat deploy --network testing
    ```
-
-   Replace `"network_name"` with the name of your target network.
+   
+   For other networks, replace `testing` with the name of your target network.
 
 2. Deploy the AgreementContract and the Vault:
-
+   
+   For the local Hardhat node:
    ```
-   npx hardhat run scripts/deployAgreementAndVault.js --network "network_name"
+   npx hardhat run scripts/deployAgreementAndVault.js --network testing
    ```
+   
+   For deployment to other networks, again replace `testing` with your chosen network name.
 
-   Again, replace `"network_name"` with your chosen network.
+*Note: "testing" is the default network name used when running a local Hardhat node.*
 
 ## Deploying the Registry to Multiple Networks
 
