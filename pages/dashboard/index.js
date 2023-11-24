@@ -6,6 +6,7 @@ function Dashboard() {
   return (
     <div>
       <section className={"user-home"}>
+        {/* <Balances /> */}
         <Cards />
         <Payments limit={2} />
       </section>
