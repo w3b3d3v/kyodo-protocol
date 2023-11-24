@@ -176,11 +176,15 @@ DASHBOARD
 // Home calls
 
 .home-calls {
+  max-width: 615px;
   display: flex;
   justify-content: space-between;
   flex-direction: row;
+  padding-top: 60px;
+  margin: auto;
 
   @media #{$smartphones-1} {
+    width: 90%;
     display: block;
     margin-bottom: 45px;
   }
