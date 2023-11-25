@@ -10,7 +10,6 @@ abstract contract CCIPTokenAndDataReceiver is CCIPReceiver, Ownable {
 
     mapping(uint64 => bool) public whitelistedSourceChains;
     mapping(address => bool) public whitelistedSenders;
-    mapping(address => mapping (address=>uint256)) public balances;
 
     event DepositCallSuccessfull(address indexed receiver, uint256 value);
 
@@ -51,6 +50,4 @@ abstract contract CCIPTokenAndDataReceiver is CCIPReceiver, Ownable {
     function denySender(address _sender) external onlyOwner {
         whitelistedSenders[_sender] = false;
     }
-
-    function _ccipReceive(Client.Any2EVMMessage memory message) override internal virtual;
 }

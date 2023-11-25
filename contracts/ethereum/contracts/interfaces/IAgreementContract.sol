@@ -23,7 +23,12 @@ interface IAgreementContract {
         address professional;
         uint256 paymentAmount;
         uint256 totalPaid;
+        uint256 preferredChain;
+    }
+
+    struct CrossChainCCIP {
         uint64 chainSelector;
+        address vaultAddress;
     }
 
     // Enums

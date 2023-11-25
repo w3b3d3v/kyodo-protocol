@@ -12,7 +12,8 @@ import "./chainlink/CCIPSender.sol";
 contract AgreementContract is Admin, IAgreementContract, CCIPSender {
     uint256 public nextAgreementId = 1;
     Agreement[] public agreements;
-    mapping(uint256 => uint64) public chainSelectors;
+    // CrossChain Temporary Configs
+    mapping(uint256 => CrossChainCCIP) public crossChainCCIPConfigs;
     mapping(address => uint256) public preferredChains;
     mapping(address => uint256[]) public contractorAgreements; // Mapping from user address to agreement IDs
     mapping(address => uint256[]) professionalAgreements;
@@ -49,7 +50,7 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
         communityDAO = _communityDAO;
 
         for (uint i = 0; i < chainList.length; i++) {
-            chainSelectors[chainList[i]] = _chainSelectors[i];
+            crossChainCCIPConfigs[chainList[i]].chainSelector = _chainSelectors[i];
         }
     }
 
@@ -95,9 +96,9 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
 
         require(totalSkillLevel <= 100, "Total skill level cannot exceed 100");
 
-        uint64 _chainSelector = chainSelectors[preferredChains[_professional]];
-        if (_chainSelector == 0) {
-            _chainSelector = chainSelectors[getChainID()];
+        uint256 preferredChain = preferredChains[_professional];
+        if (preferredChain == 0) {
+            preferredChain = getChainID();
         }
 
         Agreement memory newAgreement = Agreement({
@@ -109,7 +110,7 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
             professional: _professional,
             paymentAmount: _paymentAmount,
             totalPaid: 0,
-            chainSelector: _chainSelector
+            preferredChain: preferredChains[_professional]
         });
 
         for (uint256 i = 0; i < _skills.length; i++) {
@@ -208,14 +209,16 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
         StableVault.deposit(kyodoTreasuryShare, address(token), kyodoTreasury);
         StableVault.deposit(communityDAOShare, address(token), communityDAO);
 
-        if (agreement.chainSelector == chainSelector) {
+        if (agreement.preferredChain == getChainID()) {
             StableVault.deposit(
                 professionalPayment,
                 address(token),
                 agreement.professional
             );
         } else {
-            this.transferTokens(agreement.chainSelector, address(StableVault), agreement.professional, _paymentAddress, professionalPayment);         
+            uint64 _chainSelector = crossChainCCIPConfigs[agreement.preferredChain].chainSelector;
+            address _stableVault = crossChainCCIPConfigs[agreement.preferredChain].vaultAddress;
+            transferTokens(_chainSelector, _stableVault, agreement.professional, _paymentAddress, professionalPayment);         
         }
 
         unchecked {
@@ -251,11 +254,13 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
         StableVault = IStableVault(_StableVaultAddress);
     }
 
-    function setChainSelectors(
+    function setCrossChainConfigs(
         uint256 chainId,
-        uint64 chainSelector
+        uint64 chainSelector,
+        address vaultAddress
     ) external onlyOwner {
-        chainSelectors[chainId] = chainSelector;
+        crossChainCCIPConfigs[chainId].chainSelector = chainSelector;
+        crossChainCCIPConfigs[chainId].vaultAddress = vaultAddress;
     }
 
     function getChainID() public view returns (uint256) {

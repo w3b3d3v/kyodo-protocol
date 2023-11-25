@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { exec } = require('child_process');
 
 module.exports = async ({getNamedAccounts, deployments, ethers}) => {
   const {deploy} = deployments;
@@ -18,6 +19,13 @@ module.exports = async ({getNamedAccounts, deployments, ethers}) => {
 
   console.log(`Deployer: ${deployer}`);
   console.log(`FakeStable Address: ${deployedContract.address}`);
+  exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${deployer} ${inititalSupply} ${decimals}`, (err, stdout, stderr) => {
+    if (err) {
+      console.error(`Erro ao verificar na rede ${network.name}: ${err}`);
+      return;
+    }
+    console.log(stdout);
+  });
 
   // const envPath = path.join(__dirname, '../../../.env.development.local');
   // const envContent = fs.readFileSync(envPath, { encoding: 'utf8' });

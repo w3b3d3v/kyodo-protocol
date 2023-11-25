@@ -66,8 +66,7 @@ contract CCIPSender is Ownable {
         address _token,
         uint256 _amount
     )
-        external
-        onlyOwner
+        internal
         onlyWhitelistedChain(_destinationChainSelector)
         returns (bytes32 messageId)
     {

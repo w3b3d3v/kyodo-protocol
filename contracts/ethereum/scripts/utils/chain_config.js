@@ -7,6 +7,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
+        live: false,
     },
     optimismGoerli: {
         linkAddress: "0xdc2CC710e42857672E7907CF474a69B63B93089f",
@@ -16,6 +17,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
+        live: false,
     },
     polygonMumbai: {
         linkAddress: "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
@@ -25,6 +27,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
+        live: true,
     },
     bnbTesnet: {
         linkAddress: "0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06",
@@ -34,6 +37,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
+        live: false,
     },
     baseGoerli: {
         linkAddress: "0xd886e2286fd1073df82462ea1822119600af80b6",
@@ -43,6 +47,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
+        live: false,
     },
     avalancheFuji: {
         linkAddress: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
@@ -52,6 +57,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
+        live: true,
     },
     hardhat: {
         linkAddress: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
@@ -61,6 +67,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
+        live: false,
     },
 }
 

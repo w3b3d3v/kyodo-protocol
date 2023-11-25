@@ -5,7 +5,11 @@
     "scripts": {
         "compile": "hardhat compile",
         "deploy:multichain": "npx hardhat run scripts/deployMultichain.js",
-        "test": "npx hardhat test ./test/AgreementContract/PayAgreement_v2.test.js --deploy-fixture"
+        "test": "npx hardhat test ./test/AgreementContract/PayAgreement_v2.test.js --deploy-fixture",
+        "chainlink_fuji": "npx hardhat run ./scripts/chainLinkInit.js --network avalancheFuji",
+        "chainlinktest_fuji": "npx hardhat run ./scripts/chainLinkTests.js --network avalancheFuji",
+        "chainlink_mumbai": "npx hardhat run ./scripts/chainLinkInit.js --network polygonMumbai",
+        "chainlinktest_mumbai": "npx hardhat run ./scripts/chainLinkTests.js --network polygonMumbai"
     },
     "dependencies": {
         "dotenv": "^16.0.3",

@@ -19,7 +19,7 @@ let config = {
     kyodoTreasury: 0,
     communityTreasury: 3,
     user1: 5,
-    user2: 6,
+    user2: 1,
     user3: 7,
     user4: 8,
   },
@@ -42,7 +42,7 @@ let config = {
       accounts: { mnemonic: MNEMONIC },
     },
     avalancheFuji: {
-      url: process.env.AVALANCHE_FUJI_RPC_URL || 'https://api.avax-test.network/ext/bc/C/rpc',
+      url: process.env.AVALANCHE_FUJI_RPC_URL || 'https://rpc.ankr.com/avalanche_fuji',
       accounts: { mnemonic: MNEMONIC },
     },
     arbitrumGoerli: {
@@ -98,6 +98,31 @@ let config = {
   },
   gasReporter: {
     enabled: false,
+  },
+  etherscan: {
+    // Your API key for Etherscan
+    // Obtain one at https://etherscan.io/
+    apiKey: {
+      sepolia: process.env.VERIFY_APIKEY_SEPOLIA || "",
+      optimismGoerli: process.env.VERIFY_APIKEY_OPTMINSM_GOERLI || "",
+      avalancheFujiTestnet: process.env.VERIFY_APIKEY_AVALANCHE_FUJI || "",
+      arbitrumGoerli: process.env.VERIFY_APIKEY_ARBITRUM_GOERLI || "",
+      polygonMumbai: process.env.VERIFY_APIKEY_POLYGON_MUMBAI || "",
+      bnbTesnet: process.env.VERIFY_APIKEY_BNB_TESTNET || "",
+      baseGoerli: process.env.VERIFY_APIKEY_BASE_GOERLI || "",
+      polygonZkEvmTestnet: process.env.VERIFY_POLYGON_ZK_TESTNET || "",
+      goerli: process.env.VERIFY_APIKEY_GOERLI || "",
+      scrollTestnet: process.env.VERIFY_APIKEY_SCROLL_TESTNET || "",
+      fantomTestnet: process.env.VERIFY_APIKEY_FANTOM_TESTNET || "",
+      gnosisChiado: process.env.VERIFY_APIKEY_GNOSIS_CHIADO || "",
+      neonDevnet: process.env.VERIFY_APIKEY_NEON_DEVNET || "",
+      coreDaoTestnet: process.env.VERIFY_APIKEY_COREDAO_TESTNET || "",   
+    }
+  },
+  sourcify: {
+    // Disabled by default
+    // Doesn't need an API key
+    enabled: true
   }
 };
 

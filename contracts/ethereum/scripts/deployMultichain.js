@@ -1,6 +1,6 @@
 const { exec } = require('child_process');
 
-const networks = ["sepolia", "avalancheFuji", "arbitrumGoerli", "polygonMumbai", "bnbTesnet", "baseGoerli"];
+const networks = ["avalancheFuji", "polygonMumbai"];
 
 networks.forEach(network => {
   exec(`npx hardhat deploy --network ${network}`, (err, stdout, stderr) => {
