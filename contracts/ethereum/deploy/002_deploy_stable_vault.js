@@ -19,8 +19,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const deployedContract = await deploy('StableVault', {
     from: deployer,
     args: [deployer, tokenName, tokenSymbol, routerAddress],
-    log: true,
-    deterministicDeployment: salt
+    log: true
   });
 
   console.log(`StableVault Address: ${deployedContract.address}`);

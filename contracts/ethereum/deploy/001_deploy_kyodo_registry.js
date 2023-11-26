@@ -13,8 +13,7 @@ module.exports = async ({getNamedAccounts, deployments, network}) => {
   const deployedContract = await deploy('KyodoRegistry', {
     from: deployer,
     args: args,
-    log: true,
-    deterministicDeployment: salt
+    log: true
   });
 
   console.log(`KyodoRegistry Address: ${deployedContract.address}`);

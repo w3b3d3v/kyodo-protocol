@@ -84,7 +84,7 @@ contract CCIPSender is Ownable {
             data: abi.encode(_depositAddress),
             tokenAmounts: tokenAmounts,
             extraArgs: Client._argsToBytes(
-                Client.EVMExtraArgsV1({gasLimit: 200_000, strict: false})
+                Client.EVMExtraArgsV1({gasLimit: 300_000, strict: false})
             ),
             feeToken: address(linkToken)
         });

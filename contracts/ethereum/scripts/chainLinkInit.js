@@ -5,8 +5,10 @@ const linkTokenABI = require("@chainlink/contracts/abi/v0.8/LinkToken.json");
 const burnMintCCIPHelperABI = require("@chainlink/contracts-ccip/abi/v0.8/BurnMintERC677Helper.json");
 const VaultAddressAvalanche = require("../deployments/avalancheFuji/StableVault.json");
 const VaultAddressMumbai = require("../deployments/polygonMumbai/StableVault.json");
+const AgreementContractAvalance = require("../deployments/avalancheFuji/AgreementContract.json");
+const AgreementContractMumbai = require("../deployments/polygonMumbai/AgreementContract.json");
 
-async function configureStableVault(stableVaultInstance, agreementContractAddress) {
+async function configureStableVault(stableVaultInstance) {
   console.log(`Configuring [StableVault] on ${network.name} at ${stableVaultInstance.target}`)
   console.log(`Whitelisting Sourced Chains for [StableVault]...`);
 
@@ -19,6 +21,12 @@ async function configureStableVault(stableVaultInstance, agreementContractAddres
   }
 
   console.log(`Whitelisting Senders for StableVault...`);
+  let agreementContractAddress;
+  if (network.name == "avalancheFuji") {
+    agreementContractAddress = AgreementContractMumbai.address;
+  } else if (network.name == "polygonMumbai") {
+    agreementContractAddress = AgreementContractAvalance.address;
+  }
   await stableVaultInstance.whitelistSender(agreementContractAddress);
 }
 

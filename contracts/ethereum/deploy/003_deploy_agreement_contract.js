@@ -26,8 +26,7 @@ module.exports = async ({ getNamedAccounts, deployments, ethers, network }) => {
       stableVaultInstance.target,
       chainIdList,
       chainSelectorList],
-    log: true,
-    deterministicDeployment: salt
+    log: true
   });
 
   console.log(`AgreementContract Address: ${deployedContract.address}`);

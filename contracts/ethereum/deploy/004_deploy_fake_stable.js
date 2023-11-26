@@ -13,8 +13,7 @@ module.exports = async ({getNamedAccounts, deployments, ethers}) => {
   const deployedContract = await deploy('FakeStable', {
     from: deployer,
     args: [deployer, inititalSupply, decimals],
-    log: true,
-    deterministicDeployment: salt
+    log: true
   });
 
   console.log(`Deployer: ${deployer}`);

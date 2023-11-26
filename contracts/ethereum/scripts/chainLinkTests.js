@@ -4,11 +4,6 @@ const { chainConfigs } = require('./utils/chain_config');
 const linkTokenABI = require("@chainlink/contracts/abi/v0.8/LinkToken.json");
 const burnMintCCIPHelperABI = require("@chainlink/contracts-ccip/abi/v0.8/BurnMintERC677Helper.json");
 
-
-async function configureAgreementContract(agreementContractInstance) {
-
-}
-
 async function main() {
   let transaction;
   const { deployer, user1, user2 } = await getNamedAccounts();
@@ -51,7 +46,8 @@ async function main() {
   console.log("MakePayment -using Company Address");
   const company1Agreements = await companyAgreementInstance.getContractorAgreementIds(user1);
   transaction = await companyAgreementInstance.makePayment(company1Agreements[0], ethers.parseEther("0.1"), token);
-
+  await transaction.wait();
+  console.log(transaction);
   console.log("Check Vault Token balance -using Dev");
 }
 
