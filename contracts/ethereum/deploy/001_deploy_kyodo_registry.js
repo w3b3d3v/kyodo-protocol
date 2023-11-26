@@ -1,29 +1,30 @@
 const fs = require('fs');
 const path = require('path');
-const { exec } = require('child_process');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
-module.exports = async ({getNamedAccounts, deployments, network}) => {
-  const {deploy} = deployments;
-  const {deployer} = await getNamedAccounts();
+module.exports = async ({ getNamedAccounts, deployments, network }) => {
+  const { deploy } = deployments;
+  const { deployer } = await getNamedAccounts();
 
-  const salt = '0x';
+  // const salt = '0x';
 
-  args = [deployer];
+  // args = [deployer];
 
-  const deployedContract = await deploy('KyodoRegistry', {
-    from: deployer,
-    args: args,
-    log: true
-  });
+  // const deployedContract = await deploy('KyodoRegistry', {
+  //   from: deployer,
+  //   args: args,
+  //   log: true
+  // });
 
-  console.log(`KyodoRegistry Address: ${deployedContract.address}`);
-  exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${deployer}`, (err, stdout, stderr) => {
-    if (err) {
-      console.error(`Erro ao verificar na rede ${network.name}: ${err}`);
-      return;
-    }
-    console.log(stdout);
-  });
+  // console.log(`KyodoRegistry Address: ${deployedContract.address}`);
+  // try {
+  //   const { stdout, stderr } = await exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${deployer}`);
+  //   console.log('stdout:', stdout);
+  // } catch (e) {
+  //   console.error(e);
+  // }
+
 
   // const envPath = path.join(__dirname, '../../../.env.development.local');
   // const envContent = fs.readFileSync(envPath, { encoding: 'utf8' });

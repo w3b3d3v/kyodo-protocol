@@ -71,7 +71,7 @@ const chainConfigs = {
     },
 }
 
-const chainIdList = [11155111, 420, 80001, 97, 84531, 43113, 31337];
+const chainIdList = ["11155111", "420", "80001", "97", "84531", "43113", "31337"];
 const chainSelectorList = ["16015286601757825753", "2664363617261496610", "12532609583862916517", "13264668187771770619", "5790810961207155433", "14767482510784806043", "0"];
 
 module.exports = { chainConfigs, chainIdList, chainSelectorList }

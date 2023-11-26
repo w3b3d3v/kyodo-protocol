@@ -1,8 +1,24 @@
 const fs = require('fs');
 const path = require('path');
-const { exec } = require('child_process');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 const { chainConfigs, chainIdList, chainSelectorList } = require('../scripts/utils/chain_config');
+
+
+function printArray(_array) {
+  let returnedValue;
+
+  _array.forEach(item => {
+    if(returnedValue) {
+      returnedValue += `"${item}",`
+    } else {
+      returnedValue = `"${item}",`
+    }
+  });
+
+  return returnedValue.substring(0, returnedValue.length-1);
+}
 
 module.exports = async ({ getNamedAccounts, deployments, ethers, network }) => {
   const { deploy } = deployments;
@@ -11,7 +27,7 @@ module.exports = async ({ getNamedAccounts, deployments, ethers, network }) => {
   const salt = '0x';
 
   const networkName = network.name;
-  const { linkAddress, routerAddress, chainSelector, feePercentage, kyodoTreasuryFee, communityDAOFee } = chainConfigs[networkName];
+  const { linkAddress, routerAddress, chainSelector } = chainConfigs[networkName];
 
   const stableVaultInstance = await ethers.getContract('StableVault');
 
@@ -30,13 +46,15 @@ module.exports = async ({ getNamedAccounts, deployments, ethers, network }) => {
   });
 
   console.log(`AgreementContract Address: ${deployedContract.address}`);
-  exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${kyodoTreasury} ${communityTreasury} ${deployer} ${routerAddress} ${linkAddress} ${chainSelector} ${stableVaultInstance.target} ${chainIdList} ${chainSelectorList}`, (err, stdout, stderr) => {
-    if (err) {
-      console.error(`Erro ao verificar na rede ${network.name}: ${err}`);
-      return;
-    }
-    console.log(stdout);
-  });
+  const argsPath = path.join(__dirname, `../deployments/${network.name}/args.js`);
+  fs.writeFileSync(argsPath, `module.exports = ["${kyodoTreasury}", "${communityTreasury}", "${deployer}", "${routerAddress}", "${linkAddress}", "${chainSelector}", "${stableVaultInstance.target}", [${printArray(chainIdList)}], [${printArray(chainSelectorList)}]];`);
+
+  try {
+    const { stdout, stderr } = await exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} --constructor-args ./deployments/${network.name}/args.js`);
+    console.log('stdout:', stdout);
+  } catch (e) {
+    console.error(e);
+  }
 
   //   const envPath = path.join(__dirname, '../../../.env.development.local');
   //   const envContent = fs.readFileSync(envPath, { encoding: 'utf8' });

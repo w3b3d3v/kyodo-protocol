@@ -1,30 +1,30 @@
 const fs = require('fs');
 const path = require('path');
-const { exec } = require('child_process');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
-module.exports = async ({getNamedAccounts, deployments, ethers}) => {
-  const {deploy} = deployments;
-  const {deployer} = await getNamedAccounts();
+module.exports = async ({ getNamedAccounts, deployments, ethers }) => {
+  const { deploy } = deployments;
+  const { deployer } = await getNamedAccounts();
 
-  const salt = '0x';
-  const inititalSupply = ethers.parseEther("100000");
-  const decimals = 18;
+  // const salt = '0x';
+  // const inititalSupply = ethers.parseEther("100000");
+  // const decimals = 18;
 
-  const deployedContract = await deploy('FakeStable', {
-    from: deployer,
-    args: [deployer, inititalSupply, decimals],
-    log: true
-  });
+  // const deployedContract = await deploy('FakeStable', {
+  //   from: deployer,
+  //   args: [deployer, inititalSupply, decimals],
+  //   log: true
+  // });
 
-  console.log(`Deployer: ${deployer}`);
-  console.log(`FakeStable Address: ${deployedContract.address}`);
-  exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${deployer} ${inititalSupply} ${decimals}`, (err, stdout, stderr) => {
-    if (err) {
-      console.error(`Erro ao verificar na rede ${network.name}: ${err}`);
-      return;
-    }
-    console.log(stdout);
-  });
+  // console.log(`Deployer: ${deployer}`);
+  // console.log(`FakeStable Address: ${deployedContract.address}`);
+  // try {
+  //   const { stdout, stderr } = await exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${deployer} ${inititalSupply} ${decimals}`);
+  //   console.log('stdout:', stdout);
+  // } catch (e) {
+  //   console.error(e);
+  // }
 
   // const envPath = path.join(__dirname, '../../../.env.development.local');
   // const envContent = fs.readFileSync(envPath, { encoding: 'utf8' });
