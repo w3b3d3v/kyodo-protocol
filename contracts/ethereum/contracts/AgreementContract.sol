@@ -15,6 +15,7 @@ contract AgreementContract is Admin, IAgreementContract {
     mapping(address => uint256[]) professionalAgreements;
     mapping(address => bool) public acceptedPaymentTokens; // Mapping of accepted payment tokens
     mapping(uint => Skill[]) public agreementSkills;
+    mapping(address => UserInfo) private userInfos;
     address[] public tokenAddresses;
 
     address public kyodoTreasury;
@@ -38,6 +39,25 @@ contract AgreementContract is Admin, IAgreementContract {
 
     function getAcceptedPaymentTokens() public view returns (address) {
         return tokenAddresses[0];
+    }
+
+    function storeUserInfo(string memory _name, string memory _taxDocument) public {
+        require(bytes(_name).length > 0, "Name is required");
+        require(bytes(_taxDocument).length > 0, "Tax document is required");
+
+        UserInfo storage userInfo = userInfos[msg.sender];
+        userInfo.name = _name;
+        userInfo.taxDocument = _taxDocument;
+        emit UserInfoStored(msg.sender, _name, _taxDocument);
+    }
+
+    function getUserInfo(address userAddress) public view returns (string memory, string memory) {
+        require(userAddress != address(0), "Invalid address");
+
+        UserInfo memory userInfo = userInfos[userAddress];
+        require(bytes(userInfo.name).length > 0 && bytes(userInfo.taxDocument).length > 0, "User does not exist");
+        
+        return (userInfo.name, userInfo.taxDocument);
     }
 
     function createAgreement(
