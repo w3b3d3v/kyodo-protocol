@@ -45,6 +45,10 @@ class TransactionManager {
   async fetchPaidAgreements(chain, ...args) {
     return this.chains[chain].fetchPaidAgreements(...args);
   }
+
+  async fetchUserInfo(chain, ...args) {
+    return this.chains[chain].fetchUserInfo(...args);
+  }
 }
 
 const manager = new TransactionManager();

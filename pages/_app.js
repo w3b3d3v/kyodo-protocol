@@ -10,6 +10,9 @@ import "../i18n" // Adjust the path based on where you placed i18n.js
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import Head from "next/head"
 import contractManager from "../chains/ContractManager"
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import transactionManager from '../chains/transactionManager'
+import useTransactionHandler from '../hooks/useTransactionHandler';
 
 function formatAddress(address) {
   return address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : ""
@@ -20,14 +23,79 @@ function PageContent({ Component, pageProps }) {
   const { 
     account, 
     setAccount, 
-    setSelectedChain, 
-    isOnboardingComplete 
+    setSelectedChain,
+    selectedNetworkId
   } = useAccount()
+  const { wallet } = useWallet()
+  const { connection } = useConnection()
+  const [contract, setContract] = useState(null)
+  const {
+    setIsLoading
+  } = useTransactionHandler();
 
-  if (account && !isOnboardingComplete && !router.pathname.startsWith("/onboarding")) {
-    router.push("/onboarding")
-    return null
-  }
+  useEffect(() => {
+    async function initializeContract() {
+      try {
+        setIsLoading(true);
+        const details = {
+          wallet,
+          connection
+        }
+  
+        const agreementContract = await contractManager.chains[selectedNetworkId].agreementContract(
+          details
+        )
+        setContract(agreementContract);
+
+      } catch (error) {
+        console.error("Error initializing the agreements contract", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  
+    initializeContract();
+  }, [selectedNetworkId, wallet, connection]);
+
+  const checkOnboarding = async () => {
+    if (!account) {
+      return false;
+    }
+
+    try {
+      const details = {
+        account,
+        contract
+      };
+
+      await transactionManager["fetchUserInfo"](selectedNetworkId, details);
+      return true;
+    } catch (error) {
+      if (error.message.includes("User does not exist")) {
+        return false;
+      }
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    if (!account || !contract) {
+      return;
+    }
+  
+    if (router.pathname.startsWith("/onboarding")) {
+      return;
+    }
+  
+    const checkAndRedirect = async () => {
+      const isComplete = await checkOnboarding();
+      if (!isComplete) {
+        router.push("/onboarding");
+      }
+    };
+  
+    checkAndRedirect();
+  }, [account, contract, router]); 
 
   return (
     <>
