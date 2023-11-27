@@ -102,4 +102,34 @@ describe("AgreementsByUser", function () {
     const user1Agreements = await agreementContract.connect(user1).getContractorAgreementIds(user1.address);
     expect(user1Agreements.length).to.equal(0);
   });
+
+  it("Should store and retrieve user information correctly", async function () {
+    await agreementContract.connect(user1).storeUserInfo("Alice", "123-45-6789");
+    await agreementContract.connect(user2).storeUserInfo("Bob", "987-65-4321");
+
+    const userInfo1 = await agreementContract.getUserInfo(user1.address);
+    expect(userInfo1[0]).to.equal("Alice");
+    expect(userInfo1[1]).to.equal("123-45-6789");
+
+    const userInfo2 = await agreementContract.getUserInfo(user2.address);
+    expect(userInfo2[0]).to.equal("Bob");
+    expect(userInfo2[1]).to.equal("987-65-4321");
+  });
+
+  it("Should fail to retrieve information for a non-existent user", async function () {
+    await expect(agreementContract.getUserInfo(owner.address)).to.be.revertedWith("User does not exist");
+  });
+
+  it("Should emit an event when storing user information", async function () {
+    const [owner] = await ethers.getSigners();
+    const name = "Alice";
+    const taxDocument = "123-45-6789";
+  
+    const tx = await agreementContract.storeUserInfo(name, taxDocument);
+  
+    await tx.wait();
+  
+    await expect(tx).to.emit(agreementContract, 'UserInfoStored')
+      .withArgs(owner.address, name, taxDocument);
+  });
 });

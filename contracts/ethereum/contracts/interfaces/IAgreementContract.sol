@@ -2,13 +2,6 @@
 pragma solidity ^0.8.1;
 
 interface IAgreementContract {
-
-    // Structs
-    struct Token {
-        uint256 amount;
-        address tokenAddress;
-    }
-
     struct Skill {
         string name;
         uint256 level;
@@ -26,10 +19,16 @@ interface IAgreementContract {
         uint256 fee;
     }
 
+    struct UserInfo {
+        string name;
+        string taxDocument; // Assuming this is a string like a tax ID
+    }
+
     // Enums
     enum AgreementStatus { Active, Completed }
 
     // Events
+    event UserInfoStored(address indexed user, string name, string taxDocument);
     event AgreementCreated(address indexed company, address indexed professional, uint256 agreementId, uint256 amount);
     event PaymentMade(address indexed company, address indexed professional, uint256 agreementId, uint256 amount);
 
