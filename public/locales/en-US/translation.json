@@ -19,6 +19,8 @@
 
   "basic-info": "Basic info",
   "personal-info": "Personal info",
+  "tax-document": "Tax Document",
+  "create-profile": "Create Profile",
 
   "name": "Name",
   "company-name": "Company name",

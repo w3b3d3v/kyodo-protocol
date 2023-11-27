@@ -38,6 +38,10 @@ class TransactionManager {
     return this.chains[chain].withdrawFromVault(...args);
   }
 
+  async saveUserInfo(chain, ...args) {
+    return this.chains[chain].saveUserInfo(...args);
+  }
+
   async fetchPaidAgreements(chain, ...args) {
     return this.chains[chain].fetchPaidAgreements(...args);
   }
