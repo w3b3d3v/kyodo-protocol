@@ -1,9 +1,9 @@
-import OnboardingProfileSelection from "../../components/Onboarding/OnboardingProfileSelection.js"
+import Onboarding from "../../components/Onboarding"
 
 export default function Home() {
   return (
     <div>
-      <OnboardingProfileSelection />
+      <Onboarding />
     </div>
   )
 }

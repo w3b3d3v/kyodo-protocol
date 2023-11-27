@@ -7,7 +7,7 @@
 
   "connect-wallet": "Conectar carteira",
   "profile-selection": "Seleção de perfil",
-  "initial-setup": "Setup inicial",
+  "initial-setup": "Informações Básicas",
   "terms-conditions": "Termos & Condições",
 
   "community-call": "Implemente o protocolo",
@@ -19,6 +19,8 @@
 
   "basic-info": "Informações básicas",
   "personal-info": "Informações pessoais",
+  "tax-document": "Documento Fiscal",
+  "create-profile": "Criar Perfil",
 
   "name": "Nome",
   "company-name": "Nome da empresa",
