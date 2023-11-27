@@ -8,7 +8,9 @@ function useTransactionHandler() {
   const [transactionPending, setTransactionPending] = useState(false)
   const [transactionFail, setTransactionFail] = useState(false);
   const [transactionHash, setTransactionHash] = useState(null);
+  const [warning, setWarning] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
+  const [warningMessage, setWarningMessage] = useState('');
   const { account, selectedNetworkId } = useAccount()
 
   const sendTransaction = useCallback(async (functionName, details, eventName, onConfirmation) => {
@@ -16,6 +18,7 @@ function useTransactionHandler() {
     setTransactionFail(false);
     setTransactionPending(false);
     setTransactionSuccess(false);
+    setWarning(false);
 
     try {
         const TRANSACTION_TIMEOUT = 30000;
@@ -72,6 +75,10 @@ function useTransactionHandler() {
     setErrorMessage,
     errorMessage,
     sendTransaction,
+    warning,
+    setWarning,
+    setWarningMessage,
+    warningMessage,
     transactionHash
   }
 }

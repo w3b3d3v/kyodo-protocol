@@ -12,6 +12,8 @@ function Toast({
   transactionFail,
   errorMessage,
   transactionHash,
+  warning,
+  warningMessage
 }) {
   const { t } = useTranslation()
   const { account, selectedChain, selectedNetworkId} = useAccount();
@@ -27,10 +29,10 @@ function Toast({
   }, [visible])
 
   useEffect(() => {
-    if (transactionSuccess || transactionFail || transactionPending) {
+    if (transactionSuccess || transactionFail || transactionPending || warning ) {
       setVisible(true) // <-- Show the toast when transaction succeeds or fails
     }
-  }, [transactionSuccess, transactionPending, transactionFail])
+  }, [transactionSuccess, transactionPending, transactionFail, warning])
 
   if (!visible) return null // <-- Don't render the component if it's not visible
 
@@ -67,6 +69,18 @@ function Toast({
         >
           Check the status here
         </Link>
+      </div>
+    )
+  }
+
+  if (warning) {
+    let displayMessage = warningMessage
+    return (
+      <div className="flash-alert transaction-info">
+        <p>
+          <Image src="/pending-icon.svg" width={20} height={20} alt="Pending icon" />
+          {displayMessage}
+        </p>
       </div>
     )
   }

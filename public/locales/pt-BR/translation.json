@@ -89,5 +89,6 @@
   "agreement-created": "Acordo criado com sucesso!",
   "agreement-pending": "Transação pendente. Aguarde um instante...",
   "no-agreements": "Nenhum acordo encontrado. Click no link de adicionar acima",
-  "notifications": "Notificações"
+  "notifications": "Notificações",
+  "professional-not-registered": "O endereço desse profissional não está registrado. Você pode continuar, mas verifique se está correto."
 }

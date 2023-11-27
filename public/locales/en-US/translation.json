@@ -89,5 +89,6 @@
   "transaction-success": "Transaction successful!",
   "agreement-pending": "Transaction is still pending, please wait.",
   "no-agreements": "No agreements found. Click on the add icon above.",
-  "notifications": "Notifications"
+  "notifications": "Notifications",
+  "professional-not-registered": "This professional address is not registered. You can continue, but make sure it's correct."
 }
