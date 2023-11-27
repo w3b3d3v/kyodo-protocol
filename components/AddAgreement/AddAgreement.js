@@ -7,6 +7,7 @@ import Link from "next/link"
 import Loader from '../utils/Loader';
 import Toast from '../utils/Toast';
 import useTransactionHandler from '../../hooks/useTransactionHandler';
+import transactionManager from '../../chains/transactionManager'
 import { useTranslation } from "react-i18next"
 import * as Yup from "yup"
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
@@ -39,6 +40,10 @@ function AddAgreementForm(props) {
     errorMessage,
     sendTransaction,
     transactionHash,
+    setWarning,
+    warning,
+    setWarningMessage,
+    warningMessage,
   } = useTransactionHandler()
 
   useEffect(() => {
@@ -111,6 +116,30 @@ function AddAgreementForm(props) {
     }
   };
 
+  const handleProfessionalChange = (event) => {
+    const userAddress = event.target.value;
+    setProfessional(userAddress); 
+    checkUser(userAddress);
+  };
+
+  const checkUser = async (userAddress) => {
+    try {
+      const details = {
+        account: userAddress,
+        contract
+      };
+  
+      await transactionManager["fetchUserInfo"](selectedNetworkId, details);
+      setWarningMessage("");
+      setWarning(false);
+    } catch (error) {
+      if (error.message.includes("User does not exist")) {
+        setWarningMessage(t("professional-not-registered"));
+        setWarning(true);
+      }
+    }
+  };
+
   const AgreementSchema = Yup.object().shape({
     title: Yup.string().required(),
     description: Yup.string().required(),
@@ -122,6 +151,13 @@ function AddAgreementForm(props) {
         function (value) {
           const validator = contractManager.getAddressValidator(selectedChain)
           return validator && validator.test(value)
+        }
+      )
+      .test(
+        "check-professional-registered",
+        async function (value) {
+          checkUser(value);
+          return true; // Retorne true para que o teste não falhe independentemente do resultado
         }
       )
       .test(
@@ -220,6 +256,8 @@ function AddAgreementForm(props) {
         transactionPending={transactionPending}
         transactionFail={transactionFail}
         errorMessage={errorMessage}
+        warningMessage={warningMessage}
+        warning={warning}
         transactionHash={transactionHash}
       />
 
@@ -254,7 +292,7 @@ function AddAgreementForm(props) {
                 type="text"
                 id="professional-input"
                 value={professional}
-                onChange={(event) => setProfessional(event.target.value)}
+                onChange={handleProfessionalChange}
                 tabIndex={2}
               />
             </div>
