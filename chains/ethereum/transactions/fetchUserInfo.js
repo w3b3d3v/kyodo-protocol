@@ -1,6 +1,6 @@
 export const fetchUserInfo = async (details) => {
   try {
-    const userInfo = await details.contract.getUserInfo(details.userAddress);
+    const userInfo = await details.contract.getUserInfo(details.account);
 
     return {
       name: userInfo[0],
