@@ -149,8 +149,25 @@ function Onboarding() {
           />
         </div>
 
+        <div className={styles["form-group"]}>
+          <div className={styles["terms-checkbox"]}>
+            <input
+              type="checkbox"
+              id="terms-checkbox"
+              tabIndex={3}
+              required
+            />
+            <label htmlFor="terms-checkbox">
+            {t("i-agree")}
+              <a href="https://www.kyodoprotocol.xyz/code-of-conduct.html" target="_blank" rel="noopener noreferrer">{t("code-conduct")}</a>, 
+              <a href="https://www.kyodoprotocol.xyz/privacy-policy.html" target="_blank" rel="noopener noreferrer">{t("privacy-policy")}</a>, and 
+              <a href="https://www.kyodoprotocol.xyz/terms-of-use.html" target="_blank" rel="noopener noreferrer">{t("terms-use")}</a>.
+            </label>
+          </div>
+        </div>
+
         <section className={styles["form-footer"]}>
-          <button type="submit" className={styles["next-btn"]} tabIndex={3}>
+          <button type="submit" className={styles["next-btn"]} tabIndex={4}>
               {t("create-profile")}
           </button>
         </section>
