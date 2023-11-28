@@ -20,6 +20,9 @@ function AgreementList() {
   const [paymentValue, setPaymentValue] = useState("")
   const [showPaymentInput, setShowPaymentInput] = useState(null)
   const [selectedPaymentToken, setSelectedPaymentToken] = useState(null)
+  const [selectedAgreements, setSelectedAgreements] = useState([]);
+  const [showPaySelected, setShowPaySelected] = useState(null);
+  const [showBulkPayment, setShowBulkPayment] = useState(null);
   const router = useRouter()
   const { t } = useTranslation()
   const { publicKey, wallet } = useWallet()
@@ -42,6 +45,21 @@ function AgreementList() {
   const handleNewAgreement = () => {
     router.push("/agreements/new")
   }
+
+  const handleCheckboxChange = (index, isChecked) => {
+    if (isChecked) {
+      setShowPaySelected(true)
+      setSelectedAgreements([...selectedAgreements, agreements[index]]);
+    } else {
+      setShowPaySelected(false)
+      setSelectedAgreements(selectedAgreements.filter(agreement => agreement !== agreements[index]));
+    }
+  };
+
+  const handlePaySelected = () => {
+    setShowBulkPayment(true);
+    // logic to handle bulk payment
+  };
 
   const handlePaymentValueChange = async (e) => {
     const value = parseFloat(e.target.value)
@@ -173,6 +191,11 @@ function AgreementList() {
           agreements.map((agreement, index) => {
           return (
             <div key={index} className={styles["card"]}>
+              <input
+                type="checkbox"
+                checked={selectedAgreements.includes(agreement)}
+                onChange={(e) => handleCheckboxChange(index, e.target.checked)}
+              />
               <div key={index} className={styles["card-heading"]}>
                 <h2>{agreement.title}</h2>
                 <div className={styles["wallet-key"]}>
@@ -202,60 +225,73 @@ function AgreementList() {
                 : "wrong number of format"}
               </p>
 
-              <div className={styles["card-footer"]}>
-                <>
-                  {agreement.professional.toLowerCase() !== account.toLowerCase() && (
-                    <a onClick={() => handlePayClick(index)}>{t("pay-agreement")}</a>
-                  )}
-                  {showPaymentInput === index && (
-                    <>
-                      <div className={styles["opened-items"]}>
-                        <div className={styles["min-select"]}>
-                          <select
-                            value={selectedPaymentToken ? selectedPaymentToken.address : ""}
-                            onChange={(event) => {
-                              const selectedTokenAddress = event.target.value
-                              const selectedToken = tokens.find(
-                                (token) => token.address === selectedTokenAddress
+              {!showPaySelected && (
+                <div className={styles["card-footer"]}>
+                  <>
+                    {agreement.professional.toLowerCase() !== account.toLowerCase() && (
+                      <a onClick={() => handlePayClick(index)}>{t("pay-agreement")}</a>
+                    )}
+                    {showPaymentInput === index && (
+                      <>
+                        <div className={styles["opened-items"]}>
+                          <div className={styles["min-select"]}>
+                            <select
+                              value={selectedPaymentToken ? selectedPaymentToken.address : ""}
+                              onChange={(event) => {
+                                const selectedTokenAddress = event.target.value
+                                const selectedToken = tokens.find(
+                                  (token) => token.address === selectedTokenAddress
+                                )
+                                setSelectedPaymentToken(selectedToken)
+                              }}
+                              className={styles["select-input"]}
+                            >
+                              <option value="">{t("select-token")}</option>
+                              {tokens.map((token) => (
+                                <option
+                                  key={token.address}
+                                  value={token.address}
+                                >
+                                  {token.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <input
+                            type="number"
+                            value={paymentValue}
+                            onChange={(e) => handlePaymentValueChange(e)}
+                          />
+                          <button
+                            onClick={() =>
+                              handleMakePayment(
+                                agreement
                               )
-                              setSelectedPaymentToken(selectedToken)
-                            }}
-                            className={styles["select-input"]}
+                            }
+                            className={styles["confirm-btn"]}
                           >
-                            <option value="">{t("select-token")}</option>
-                            {tokens.map((token) => (
-                              <option
-                                key={token.address}
-                                value={token.address}
-                              >
-                                {token.name}
-                              </option>
-                            ))}
-                          </select>
+                            {t("confirm")}
+                          </button>
                         </div>
-                        <input
-                          type="number"
-                          value={paymentValue}
-                          onChange={(e) => handlePaymentValueChange(e)}
-                        />
-                        <button
-                          onClick={() =>
-                            handleMakePayment(
-                              agreement
-                            )
-                          }
-                          className={styles["confirm-btn"]}
-                        >
-                          {t("confirm")}
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </>
-              </div>
+                      </>
+                    )}
+                  </>
+                </div>
+              )}
             </div>
-          )
-        }))}
+        )}))
+      }
+      {selectedAgreements.length > 0 && (
+        <div className={styles["footer"]}>
+          <button onClick={handlePaySelected}>{t("pay-selected")}</button>
+        </div>
+      )}
+
+      {showPaySelected && (
+        <div className={styles["sidebar"]}>
+          {/* Code for displaying selected agreements and payment input */}
+        </div>
+      )}
       </div>
     </div>
   )
