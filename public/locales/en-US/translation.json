@@ -73,7 +73,9 @@
 
   "total-paid": "Total paid",
   "pay-agreement": "Pay agreement",
+  "pay-agreements": "Pay agreements",
   "select-token": "Select a token",
+  "pay-selected": "Pay selected agreements",
 
   "onboarding-success": "Onboarding successfully completed!",
 
