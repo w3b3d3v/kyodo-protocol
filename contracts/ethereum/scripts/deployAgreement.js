@@ -82,6 +82,7 @@ async function deployToken() {
   await token.deployed()
   const deployReceipt = await token.deployTransaction.wait(1)
   console.log(`Deployed Token ${token.address} | Block ${deployReceipt.blockNumber}: `)
+  await token.transfer("0xf9aD3D930AB5df972558636A2B8749e772aC9297", ethers.utils.parseEther("100000"))
   return {
     address: token.address,
     deploymentBlock: deployReceipt.blockNumber,
