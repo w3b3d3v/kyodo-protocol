@@ -404,3 +404,20 @@ a.i-agree-btn {
     }
   }
 }
+
+.terms-checkbox {
+
+  input[type="checkbox"] {
+    float: left;
+    margin: -10px 5px 0 0;
+  }
+
+  label {
+    font-weight: normal;
+
+    a {
+      color: $medium-gray;
+      text-decoration: none;
+    }
+  }
+}

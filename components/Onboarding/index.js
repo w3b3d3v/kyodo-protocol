@@ -158,10 +158,7 @@ function Onboarding() {
               required
             />
             <label htmlFor="terms-checkbox">
-            {t("i-agree")}
-              <a href="https://www.kyodoprotocol.xyz/code-of-conduct.html" target="_blank" rel="noopener noreferrer">{t("code-conduct")}</a>, 
-              <a href="https://www.kyodoprotocol.xyz/privacy-policy.html" target="_blank" rel="noopener noreferrer">{t("privacy-policy")}</a>, and 
-              <a href="https://www.kyodoprotocol.xyz/terms-of-use.html" target="_blank" rel="noopener noreferrer">{t("terms-use")}</a>.
+            {t("i-agree")} <a href="https://www.kyodoprotocol.xyz/code-of-conduct.html" target="_blank" rel="noopener noreferrer">{t("code-conduct")}</a>, <a href="https://www.kyodoprotocol.xyz/privacy-policy.html" target="_blank" rel="noopener noreferrer">{t("privacy-policy")}</a> and <a href="https://www.kyodoprotocol.xyz/terms-of-use.html" target="_blank" rel="noopener noreferrer">{t("terms-use")}</a>.
             </label>
           </div>
         </div>

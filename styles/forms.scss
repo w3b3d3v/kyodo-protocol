@@ -29,6 +29,10 @@ textarea,
   height: 40px;
 }
 
+input[type="checkbox"] {
+  width: auto;
+}
+
 .custom-select {
   padding: 0 10px;
   line-height: 38px;
