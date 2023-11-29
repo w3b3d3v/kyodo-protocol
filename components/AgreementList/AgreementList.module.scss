@@ -340,6 +340,26 @@ AGREEMENT LIST
 }
 
 
+/* Sidebar */
+
+.sidebar {
+
+  .card {
+    padding-top: 7px;
+    padding-bottom: 25px;
+    border: none;
+  }
+
+  h2 {
+    font-size: $font-medium-2;
+  }
+
+  input {
+    margin: 5px 0 0 0;
+  }
+}
+
+
 /* Mobile */
 
 @media only screen and (max-width: 800px) {

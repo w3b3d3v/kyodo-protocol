@@ -310,13 +310,10 @@ function AgreementList() {
           {
             selectedAgreements.map((agreement, index) => (
               <div key={index} className={styles["card"]}>
-                <div className={styles["card-heading"]}>
-                  <h2>{agreement.title}</h2>
-                  <div className={styles["wallet-key"]}>
-                    {account.toLowerCase() === agreement.professional.toLowerCase() ? agreement.company : agreement.professional}
-                  </div>
+                <h2>{agreement.title}</h2>
+                <div className={styles["wallet-key"]}>
+                  {account.toLowerCase() === agreement.professional.toLowerCase() ? agreement.company : agreement.professional}
                 </div>
-
                 <input
                   type="number"
                   value={agreement.paymentValue || ""}
@@ -360,6 +357,7 @@ function AgreementList() {
           >
             {t("pay-agreements")}
           </button>
+
         </div>
       )}
       </div>
