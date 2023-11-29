@@ -120,6 +120,13 @@ AGREEMENT LIST
     margin: 15px 0 5px 0;
     color: $white;
   }
+
+  input[type="checkbox"] {
+    position: absolute;
+    right: 10px;
+    top: -10px;
+    z-index: 500;
+  }
 }
 
 .card-heading {
