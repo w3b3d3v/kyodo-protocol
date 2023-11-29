@@ -8,15 +8,29 @@ import contractManager from "../chains/ContractManager"
 import { useWeb3ModalState, useWeb3Modal } from '@web3modal/wagmi/react'
 import useTransactionHandler from '../hooks/useTransactionHandler';
 
-import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
-import { WagmiConfig } from 'wagmi'
-import { sepolia, optimismGoerli, avalancheFuji, arbitrumGoerli, polygonMumbai, bscTestnet, baseGoerli, polygonZkEvmTestnet, hardhat } from 'wagmi/chains'
+import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react';
+import { WagmiConfig } from 'wagmi';
+import {
+  sepolia, optimismGoerli, avalancheFuji, arbitrumGoerli, polygonMumbai,
+  bscTestnet, baseGoerli, polygonZkEvmTestnet, hardhat
+} from 'wagmi/chains';
 
-const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
-const chains = [sepolia, optimismGoerli, avalancheFuji, arbitrumGoerli, polygonMumbai, bscTestnet, baseGoerli, polygonZkEvmTestnet, hardhat]
-const wagmiConfig = defaultWagmiConfig({ chains, projectId })
+const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
 
-createWeb3Modal({ 
+let chains = [
+  sepolia, optimismGoerli, avalancheFuji, arbitrumGoerli, polygonMumbai,
+  bscTestnet, baseGoerli, polygonZkEvmTestnet, hardhat
+];
+
+if (!process.env.NODE_ENV === 'development') {
+  chains = chains.filter(chain => chain.id !== hardhat.id);
+}
+
+console.log("env: ", process.env.NODE_ENV)
+
+const wagmiConfig = defaultWagmiConfig({ chains, projectId });
+
+createWeb3Modal({
   wagmiConfig, 
   projectId, 
   chains,
@@ -31,7 +45,7 @@ createWeb3Modal({
     1442: "/chains/polygon-zk-evm.png",
     31337: "/chains/hardhat.svg",
   }
-})
+});
 
 const AccountContext = createContext({
   account: null,
