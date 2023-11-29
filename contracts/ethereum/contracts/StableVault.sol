@@ -29,6 +29,13 @@ contract StableVault is ReentrancyGuard, Admin, ERC20, IStableVault, CCIPTokenAn
     address private AAVE_INCENTIVES_CONTROLLER;
     address private AAVE_DATA_PROVIDER;
 
+    event MessageReceived(
+        bytes32 indexed messageId, // The unique ID of the message.
+        uint64 indexed sourceChainSelector, // The chain selector of the source chain.
+        address sender, // The address of the sender from the source chain.
+        address text // The text that was received.
+    );
+    
     constructor(
         address admin,
         string memory tokenName,
@@ -61,8 +68,6 @@ contract StableVault is ReentrancyGuard, Admin, ERC20, IStableVault, CCIPTokenAn
     )
         internal
         override
-        onlyWhitelistedSourceChain(message.sourceChainSelector)
-        onlyWhitelistedSenders(abi.decode(message.sender, (address)))
     {
         uint256 amount = message.destTokenAmounts[0].amount;
         address _asset = message.destTokenAmounts[0].token;
@@ -74,6 +79,13 @@ contract StableVault is ReentrancyGuard, Admin, ERC20, IStableVault, CCIPTokenAn
         if (userSetCompound[_beneficiary]) {
             depositAave(_asset, amount);
         }
+
+        emit MessageReceived(
+            message.messageId,
+            message.sourceChainSelector, // fetch the source chain identifier (aka selector)
+            abi.decode(message.sender, (address)), // abi-decoding of the sender address,
+            _beneficiary
+        );
     }
 
     /**

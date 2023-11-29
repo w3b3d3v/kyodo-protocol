@@ -11,8 +11,6 @@ abstract contract CCIPTokenAndDataReceiver is CCIPReceiver, Ownable {
     mapping(uint64 => bool) public whitelistedSourceChains;
     mapping(address => bool) public whitelistedSenders;
 
-    event DepositCallSuccessfull(address indexed receiver, uint256 value);
-
     error SourceChainNotWhitelisted(uint64 sourceChainSelector);
     error SenderNotWhitelisted(address sender);
 

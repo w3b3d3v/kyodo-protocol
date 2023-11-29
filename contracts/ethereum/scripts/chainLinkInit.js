@@ -80,14 +80,7 @@ async function main() {
   const agreementContractInstance = await ethers.getContract('AgreementContract', deployer);
 
   await configureAgreementContract(agreementContractInstance, token, feePercentage, kyodoTreasuryFee, communityDAOFee);
-  await configureStableVault(stableVaultInstance, agreementContractInstance.target);
-
-  console.log(`Generating CCIPBNM Tokens...`);
-  let tx = await ccipBnMContractInstance.drip(user1);
-  await tx.wait();
-
-  const ccipBnMBalance = await ccipBnMContractInstance.balanceOf(user1);
-  console.log(`Company has ${ccipBnMBalance.toString()} CCIPBnM Tokens on ${network.name}`);
+  await configureStableVault(stableVaultInstance, agreementContractInstance.target);  
 
   const linkTokenBalance = await linkTokenInstance.balanceOf(deployer);
   if (parseInt(linkTokenBalance.toString()) >= parseInt(ethers.parseEther("1").toString())) {
@@ -96,6 +89,16 @@ async function main() {
     const contractBalance = await linkTokenInstance.balanceOf(agreementContractInstance.target);
     console.log(`Contract has ${contractBalance.toString()} Link Tokens on ${network.name}`);
   }
+
+  const ccipBnMTokenBalance = await ccipBnMContractInstance.balanceOf(user1);
+  if (parseInt(ccipBnMTokenBalance.toString()) < parseInt(ethers.parseEther("1").toString())) {
+    console.log(`Generating CCIPBNM Tokens...`);
+    let tx = await ccipBnMContractInstance.drip(user1);
+    await tx.wait();
+  }
+
+  console.log(`Company has ${ccipBnMTokenBalance.toString()} CCIPBnM Tokens on ${network.name}`);
+
 }
 
 main()

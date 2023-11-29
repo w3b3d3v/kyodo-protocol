@@ -42,7 +42,7 @@ contract CCIPSender is Ownable {
     ) Ownable(initialOwner) {
         router = IRouterClient(_router);
         linkToken = IERC20(_link);
-        _chainSelector = chainSelector;
+        chainSelector = _chainSelector;
     }
 
     function whitelistChain(uint64 _destinationChainSelector)
@@ -84,7 +84,7 @@ contract CCIPSender is Ownable {
             data: abi.encode(_depositAddress),
             tokenAmounts: tokenAmounts,
             extraArgs: Client._argsToBytes(
-                Client.EVMExtraArgsV1({gasLimit: 300_000, strict: false})
+                Client.EVMExtraArgsV1({gasLimit: 900_000, strict: false})
             ),
             feeToken: address(linkToken)
         });
