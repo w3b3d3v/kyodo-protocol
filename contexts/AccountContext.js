@@ -10,30 +10,10 @@ import useTransactionHandler from '../hooks/useTransactionHandler';
 
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
-import { gnosisChiado, neonDevnet, polygonMumbai, polygonZkEvmTestnet, hardhat } from 'wagmi/chains'
-import { defineChain } from 'viem'
-
-const coreDaoTestnet = defineChain({
-  id: 1115,
-  name: 'Core Chain TestNet',
-  network: 'coreDaoTestnet',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Test Core',
-    symbol: 'tCORE',
-  },
-  rpcUrls: {
-    public: { http: ['https://rpc.test.btcs.network'] },
-    default: { http: ['https://rpc.test.btcs.network'] },
-  },
-  blockExplorers: {
-    default: { name: 'CoreDao Testnet', url: 'https://scan.test.btcs.network' },
-  },
-  testnet: true,
-})
+import { sepolia, optimismGoerli, avalancheFuji, arbitrumGoerli, polygonMumbai, bscTestnet, baseGoerli, polygonZkEvmTestnet, hardhat } from 'wagmi/chains'
 
 const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
-const chains = [gnosisChiado, neonDevnet, coreDaoTestnet, polygonMumbai, polygonZkEvmTestnet, hardhat]
+const chains = [sepolia, optimismGoerli, avalancheFuji, arbitrumGoerli, polygonMumbai, bscTestnet, baseGoerli, polygonZkEvmTestnet, hardhat]
 const wagmiConfig = defaultWagmiConfig({ chains, projectId })
 
 createWeb3Modal({ 
@@ -41,12 +21,15 @@ createWeb3Modal({
   projectId, 
   chains,
   chainImages: {
-    1442: "/chains/polygon-zk-evm.png",
-    1115: "/chains/core-dao.png",
-    10_200: "/chains/gnosis-chain.png",
-    245_022_926: "/chains/neonevm-logo.png",
+    11155111: "/chains/ethereum.svg",
+    420: "/chains/optimism.svg",
+    43113: "/chains/avalanche.svg",
+    421613: "/chains/arbitrum.svg",
     80001: "/chains/polygon-matic-logo.svg",
-    31_337: "/chains/hardhat.svg",
+    97: "/chains/bsc.svg",
+    84531: "/chains/base.svg",
+    1442: "/chains/polygon-zk-evm.png",
+    31337: "/chains/hardhat.svg",
   }
 })
 

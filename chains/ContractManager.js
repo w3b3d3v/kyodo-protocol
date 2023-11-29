@@ -5,7 +5,7 @@ import chainConfig from "./chainConfig.json"
 class ContractManager {
   constructor() {
     this.chains = {}
-    this.supportedNetworks = [1115, 10200, 245022926, 31337, 80001, 1442]
+    this.supportedNetworks = [11155111, 420, 43113, 421613, 80001, 97, 84531, 1442, 31337]
     this.addressValidators = {
       ethereum: /^0x[a-fA-F0-9]{40}$/,
       solana: /^[1-9A-HJ-NP-Za-km-z]{43,44}$/,
@@ -47,6 +47,7 @@ class ContractManager {
     let tokenList = [...(config.tokens || [])];
     
     if (process.env.NODE_ENV !== 'production') {
+      console.log("here")
       const developmentToken = {
         name: 'fakeStable',
         address: chain === 'solana' 

@@ -208,8 +208,6 @@ async function main() {
       vaultData,
       tokenData
     );
-
-    console.log(`\nUpdated! KyodoRegistry at address: ${kyodoRegistry}`);
     
     updateConfig(kyodoRegistry); 
     
