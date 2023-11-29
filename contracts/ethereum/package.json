@@ -5,6 +5,7 @@
     "scripts": {
         "compile": "hardhat compile",
         "deploy:multichain":"npx hardhat run scripts/deployMultichain.js",
+        "deploy:multichain:agreement":"npx hardhat run scripts/deployMultichain_Agreement.js",
         "deploy:agreement:local":"npx hardhat run scripts/deployAgreement.js --network testing"
     },
     "dependencies": {

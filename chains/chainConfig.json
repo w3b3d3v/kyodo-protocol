@@ -1,76 +1,8 @@
 {
-  "1": {
-    "name":"Ethereum",
-    "logo":"",
-    "tokens": [
-        {
-          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", 
-          "logo": "/public/coins/usdc-icon.svg",
-          "name": "USDC",
-          "decimals": 6
-        },
-        {
-          "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F", 
-          "logo": "/public/coins/dai-icon.svg",
-          "name": "DAI",
-          "decimals": 18
-        },
-        {
-          "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7", 
-          "logo": "/public/coins/usdt-icon.svg",
-          "name": "USDT",
-          "decimals": 6 
-        }
-    ],
-    "blockExplorer": {
-      "name": "Etherscan",
-      "url": "/chains/ethereum-eth-logo.svg"
-    }
-  },
-  "1115": {
-    "name":"CoreDaoTestnet",
-    "logo":"/chains/core-dao.png",
-    "tokens": [
-        {
-          "address": "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3", 
-          "logo": "/public/coins/usdt-icon.svg",
-          "name": "USDT",
-          "decimals": 6 
-        }
-    ],
-    "blockExplorer": {
-      "name": "Core Explorer",
-      "url": "https://scan.test.btcs.network/"
-    }
-  },
-  "10200": {
-    "name":"GnosisChiado",
-    "logo":"/chains/gnosis-chain.png",
-    "tokens": [
-        
-    ],
-    "blockExplorer": {
-      "name": "Blockscout",
-      "url": "https://blockscout.chiadochain.net/"
-    }
-  },
-  "245022926": {
-    "name":"NeonDevnet",
-    "logo":"/chains/neonevm-logo.png",
-    "tokens": [
-        
-    ],
-    "blockExplorer": {
-      "name": "Neonscan",
-      "url": "https://devnet.neonscan.org/"
-    }
-  },
   "80001": {
     "name":"Mumbai",
     "logo":"/chains/polygon-matic-logo.svg",
-    "tokens": [
-        
-    ],
+    "tokens": [],
     "blockExplorer": {
       "name": "PolygonScan",
       "url": "https://mumbai.polygonscan.com/"
@@ -79,9 +11,7 @@
   "31337": {
     "name":"Hardhat",
     "logo":"/chains/hardhat.svg",
-    "tokens": [
-        
-    ],
+    "tokens": [],
     "blockExplorer": {
       "name": "LocalNetwork",
       "url": "/"
@@ -90,12 +20,64 @@
   "1442": {
     "name":"ZkEvmTestnet",
     "logo":"/chains/polygon-zk-evm.png",
-    "tokens": [
-        
-    ],
+    "tokens": [],
     "blockExplorer": {
       "name": "polygonZkEvmTestnet",
       "url": "https://testnet-zkevm.polygonscan.com/"
+    }
+  },
+  "420": {
+    "name": "Optimism Goerli",
+    "logo": "/chains/optimism.svg",
+    "tokens": [],
+    "blockExplorer": {
+      "name": "Optimism Explorer",
+      "url": "https://goerli-optimism.etherscan.io/"
+    }
+  },
+  "43113": {
+    "name": "Avalanche Fuji",
+    "logo": "/chains/avalanche.svg",
+    "tokens": [],
+    "blockExplorer": {
+      "name": "Avalanche Explorer",
+      "url": "https://testnet.avascan.info/"
+    }
+  },
+  "421613": {
+    "name": "Arbitrum Goerli",
+    "logo": "/chains/arbitrum.svg",
+    "tokens": [],
+    "blockExplorer": {
+      "name": "Arbitrum Explorer",
+      "url": "https://goerli.arbiscan.io"
+    }
+  },
+  "11155111": {
+    "name": "Sepolia",
+    "logo": "/chains/ethereum.svg",
+    "tokens": [],
+    "blockExplorer": {
+      "name": "Sepolia Etherscan",
+      "url": "https://sepolia.etherscan.io/"
+    }
+  },
+  "97": {
+    "name": "BSC Testnet",
+    "logo": "/chains/bsc.svg",
+    "tokens": [],
+    "blockExplorer": {
+      "name": "BSC Testnet Explorer",
+      "url": "https://testnet.bscscan.com/"
+    }
+  },
+  "84531": {
+    "name": "Base Goerli",
+    "logo": "/chains/base.svg",
+    "tokens": [],
+    "blockExplorer": {
+      "name": "Base Goerli Explorer",
+      "url": "https://goerli.basescan.org"
     }
   },
   "solana": {

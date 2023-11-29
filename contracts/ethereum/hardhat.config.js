@@ -27,8 +27,8 @@ let config = {
     testing: {
       url: "http://127.0.0.1:8545/"
     },
-    sepolia: {
-      url: process.env.SEPOLIA_RPC_URL || 'https://rpc.sepolia.org',
+    ETHSepolia: {
+      url: process.env.SEPOLIA_RPC_URL || 'https://eth-sepolia-public.unifra.io',
       accounts: { mnemonic: MNEMONIC },
     },
     optimismGoerli: {

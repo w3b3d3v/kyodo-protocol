@@ -149,8 +149,6 @@ async function main() {
       agreementData,
       tokenData
     );
-
-    console.log(`\nUpdated! KyodoRegistry at address: ${kyodoRegistry}`);
     
     updateConfig(kyodoRegistry); 
     
