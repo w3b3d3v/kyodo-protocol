@@ -297,11 +297,11 @@ function AgreementList() {
       }
 
       {selectedAgreements.length > 0 && showPaySelected && (
-        <div className={styles["footer"]}>
+        <div className={styles["footer-btns"]}>
           <button onClick={() => {
             setShowBulkPayment(true)
             setShowPaySelected(false)
-          }}>{t("pay-selected")}</button>
+          }} className={styles["pay-btn"]}>{t("pay-selected")}</button>
         </div>
       )}
 
