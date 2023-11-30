@@ -324,39 +324,41 @@ function AgreementList() {
             ))
           }
 
-          <div className={styles["token-select"]}>
-          <select
-            value={selectedPaymentToken ? selectedPaymentToken.address : ""}
-            onChange={(event) => {
-              const selectedTokenAddress = event.target.value
-              const selectedToken = tokens.find(
-                (token) => token.address === selectedTokenAddress
-              )
-              setSelectedPaymentToken(selectedToken)
-            }}
-            className={styles["select-input"]}
-          >
-            <option value="">{t("select-token")}</option>
-            {tokens.map((token) => (
-              <option
-                key={token.address}
-                value={token.address}
+          <div className={styles["card-footer"]}>
+            <div className={styles["min-select"]}>
+              <select
+                value={selectedPaymentToken ? selectedPaymentToken.address : ""}
+                onChange={(event) => {
+                  const selectedTokenAddress = event.target.value
+                  const selectedToken = tokens.find(
+                    (token) => token.address === selectedTokenAddress
+                  )
+                  setSelectedPaymentToken(selectedToken)
+                }}
+                className={styles["select-input"]}
               >
-                {token.name}
-              </option>
-            ))}
-          </select>
+                <option value="">{t("select-token")}</option>
+                {tokens.map((token) => (
+                  <option
+                    key={token.address}
+                    value={token.address}
+                  >
+                    {token.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              onClick={() =>
+                handleMakePayment(
+                  selectedAgreements
+                )
+              }
+              className={styles["confirm-btn"]}
+            >
+              {t("pay-agreements")}
+            </button>
           </div>
-          <button
-            onClick={() =>
-              handleMakePayment(
-                selectedAgreements
-              )
-            }
-            className={styles["confirm-btn"]}
-          >
-            {t("pay-agreements")}
-          </button>
 
         </div>
       )}

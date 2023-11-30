@@ -357,6 +357,16 @@ AGREEMENT LIST
   input {
     margin: 5px 0 0 0;
   }
+
+  .card-footer {
+    background: none;
+    height: auto;
+    position: inherit;
+    bottom: none;
+    left: none;
+    right: none;
+    padding: 0
+  }
 }
 
 
