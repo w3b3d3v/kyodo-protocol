@@ -313,10 +313,16 @@ AGREEMENT LIST
 }
 
 .footer-btns {
-  border-top: 1px solid $dark-blue-2;
+  background-color: $dark-gray-2;
   padding-top: 20px;
+  padding-bottom: 20px;
   margin-top: 45px;
   text-align: center;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 700;
 }
 
 .pay-btn {
