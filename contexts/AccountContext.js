@@ -21,15 +21,15 @@ createWeb3Modal({
   projectId, 
   chains,
   chainImages: {
-    11155111: "/chains/ethereum.svg",
+    11_155_111: "/chains/ethereum.svg",
     420: "/chains/optimism.svg",
-    43113: "/chains/avalanche.svg",
-    421613: "/chains/arbitrum.svg",
-    80001: "/chains/polygon-matic-logo.svg",
+    43_113: "/chains/avalanche.svg",
+    421_613: "/chains/arbitrum.svg",
+    80_001: "/chains/polygon-matic-logo.svg",
     97: "/chains/bsc.svg",
     84531: "/chains/base.svg",
     1442: "/chains/polygon-zk-evm.png",
-    31337: "/chains/hardhat.svg",
+    31_337: "/chains/hardhat.svg",
   }
 })
 

@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 
 export const fetchPaidAgreements = async (details) => {
   try {
-    const startBlock = parseInt(details.KyodoRegistry.getRegistry("AGREEMENT_CONTRACT"));
+    const startBlock = parseInt(await details.KyodoRegistry.getBlockDeployment("AGREEMENT_CONTRACT"));
     const latestBlock = await details.contract.provider.getBlockNumber(); // get the latest block number
     
     const companyFilter = details.contract.filters.PaymentMade(details.account, null);
