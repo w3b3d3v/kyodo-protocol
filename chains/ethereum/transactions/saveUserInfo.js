@@ -1,5 +1,4 @@
 export const saveUserInfo = async (details) => {
-  console.log("details", details)
   try {
     const tx = await details.contract.storeUserInfo(
       details.name,

@@ -47,7 +47,6 @@ class ContractManager {
     let tokenList = [...(config.tokens || [])];
     
     if (process.env.NODE_ENV !== 'production') {
-      console.log("here")
       const developmentToken = {
         name: 'fakeStable',
         address: chain === 'solana' 

@@ -47,7 +47,7 @@ let config = {
       url: process.env.MUMBAI_RPC_URL || 'https://rpc.ankr.com/polygon_mumbai',
       accounts: { mnemonic: MNEMONIC },
     },
-    bnbTesnet: {
+    bnbTestnet: {
       url: process.env.BNB_TESTNET_RPC_URL || 'https://data-seed-prebsc-1-s1.binance.org:8545',
       accounts: { mnemonic: MNEMONIC },
     },
