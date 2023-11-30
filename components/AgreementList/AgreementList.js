@@ -11,6 +11,8 @@ import useTransactionHandler from '../../hooks/useTransactionHandler';
 import Loader from '../utils/Loader';
 import Toast from '../utils/Toast';
 import { ethers } from "ethers"
+import Drawer from '@jahlgren/react-drawer';
+import '@jahlgren/react-drawer/dist/index.css';
 
 function AgreementList() {
   const { account, selectedChain, selectedNetworkId } = useAccount()
@@ -163,7 +165,10 @@ function AgreementList() {
     }
   }, [account, isLoading, contract]);
 
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
+
     <div className={styles["agreement-list"]}>
       <Loader isLoading={isLoading} />
       <Toast
@@ -306,64 +311,68 @@ function AgreementList() {
       )}
 
       {showBulkPayment && (
-        <div className={styles["sidebar"]}>
-          {
-            selectedAgreements.map((agreement, index) => (
-              <div key={index} className={styles["card"]}>
-                <h2>{agreement.title}</h2>
-                <div className={styles["wallet-key"]}>
-                  {account.toLowerCase() === agreement.professional.toLowerCase() ? agreement.company : agreement.professional}
+        <Drawer open={isOpen} onClose={() => setIsOpen(false)} className={styles["drawer-styles"]}>
+          <div className={styles["aside"]}>
+
+            <h1>Pay selected agreements</h1>
+            {
+              selectedAgreements.map((agreement, index) => (
+                <div key={index} className={styles["card"]}>
+                  <h2>{agreement.title}</h2>
+                  <div className={styles["wallet-key"]}>
+                    {account.toLowerCase() === agreement.professional.toLowerCase() ? agreement.company : agreement.professional}
+                  </div>
+                  <input
+                    type="number"
+                    value={agreement.paymentValue || ""}
+                    onChange={(e) => handlePaymentValueChange(index, e)}
+                    className={styles["amount-input"]}
+                  />
                 </div>
-                <input
-                  type="number"
-                  value={agreement.paymentValue || ""}
-                  onChange={(e) => handlePaymentValueChange(index, e)}
-                  className={styles["amount-input"]}
-                />
+              ))
+            }
+
+            <div className={styles["card-footer"]}>
+              <div className={styles["min-select"]}>
+                <select
+                  value={selectedPaymentToken ? selectedPaymentToken.address : ""}
+                  onChange={(event) => {
+                    const selectedTokenAddress = event.target.value
+                    const selectedToken = tokens.find(
+                      (token) => token.address === selectedTokenAddress
+                    )
+                    setSelectedPaymentToken(selectedToken)
+                  }}
+                  className={styles["select-input"]}
+                >
+                  <option value="">{t("select-token")}</option>
+                  {tokens.map((token) => (
+                    <option
+                      key={token.address}
+                      value={token.address}
+                    >
+                      {token.name}
+                    </option>
+                  ))}
+                </select>
               </div>
-            ))
-          }
-
-          <div className={styles["card-footer"]}>
-            <div className={styles["min-select"]}>
-              <select
-                value={selectedPaymentToken ? selectedPaymentToken.address : ""}
-                onChange={(event) => {
-                  const selectedTokenAddress = event.target.value
-                  const selectedToken = tokens.find(
-                    (token) => token.address === selectedTokenAddress
+              <button
+                onClick={() =>
+                  handleMakePayment(
+                    selectedAgreements
                   )
-                  setSelectedPaymentToken(selectedToken)
-                }}
-                className={styles["select-input"]}
+                }
+                className={styles["confirm-btn"]}
               >
-                <option value="">{t("select-token")}</option>
-                {tokens.map((token) => (
-                  <option
-                    key={token.address}
-                    value={token.address}
-                  >
-                    {token.name}
-                  </option>
-                ))}
-              </select>
+                {t("pay-agreements")}
+              </button>
             </div>
-            <button
-              onClick={() =>
-                handleMakePayment(
-                  selectedAgreements
-                )
-              }
-              className={styles["confirm-btn"]}
-            >
-              {t("pay-agreements")}
-            </button>
-          </div>
-
-        </div>
+          </div> 
+        </Drawer>
       )}
       </div>
     </div>
+    
   )
 }
 
