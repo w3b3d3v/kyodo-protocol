@@ -57,7 +57,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
-        live: false,
+        live: true,
     },
     hardhat: {
         linkAddress: "0x779877A7B0D9E8603169DdbD7836e478b4624789",

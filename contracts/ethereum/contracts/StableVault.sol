@@ -5,6 +5,7 @@ pragma solidity 0.8.23;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "hardhat/console.sol";
 
@@ -12,16 +13,25 @@ import "./interfaces/ILendingPool.sol";
 import "./interfaces/IAaveIncentivesController.sol";
 import "./interfaces/IDataProvider.sol";
 import "./interfaces/IStableVault.sol";
-
-import "./chainlink/CCIPTokenAndDataReceiver.sol";
 import "./Admin.sol";
+
+import {CCIPReceiver} from "./chainlink/CCIPReceiver.sol";
+import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 
 // TODO: Unchecked in all mathematical operations
 
-contract StableVault is ReentrancyGuard, Admin, ERC20, IStableVault, CCIPTokenAndDataReceiver {
+contract StableVault is
+    ReentrancyGuard,
+    Admin,
+    ERC20,
+    IStableVault,
+    CCIPReceiver
+{
     uint256 private _vaultBalance;
     mapping(address => bool) public userSetCompound;
     mapping(string => mapping(uint256 => bool)) public validNetworks;
+    mapping(uint64 => bool) public whitelistedSourceChains;
+    mapping(address => bool) public whitelistedSenders;
 
     using SafeERC20 for IERC20;
 
@@ -29,23 +39,33 @@ contract StableVault is ReentrancyGuard, Admin, ERC20, IStableVault, CCIPTokenAn
     address private AAVE_INCENTIVES_CONTROLLER;
     address private AAVE_DATA_PROVIDER;
 
+    error SourceChainNotWhitelisted(uint64 sourceChainSelector);
+    error SenderNotWhitelisted(address sender);
+
     event MessageReceived(
         bytes32 indexed messageId, // The unique ID of the message.
         uint64 indexed sourceChainSelector, // The chain selector of the source chain.
         address sender, // The address of the sender from the source chain.
         address text // The text that was received.
     );
-    
+
     constructor(
         address admin,
         string memory tokenName,
         string memory tokenSymbol,
         address router
-    )
-        ERC20(tokenName, tokenSymbol)
-        Admin(admin)
-        CCIPTokenAndDataReceiver(router, admin)
-    {}
+    ) ERC20(tokenName, tokenSymbol) Admin(admin) CCIPReceiver(router) {}
+
+    modifier onlyWhitelistedSourceChain(uint64 _sourceChainSelector) {
+        if (!whitelistedSourceChains[_sourceChainSelector])
+            revert SourceChainNotWhitelisted(_sourceChainSelector);
+        _;
+    }
+
+    modifier onlyWhitelistedSenders(address _sender) {
+        if (!whitelistedSenders[_sender]) revert SenderNotWhitelisted(_sender);
+        _;
+    }
 
     function deposit(
         uint256 amount,
@@ -65,10 +85,7 @@ contract StableVault is ReentrancyGuard, Admin, ERC20, IStableVault, CCIPTokenAn
 
     function _ccipReceive(
         Client.Any2EVMMessage memory message
-    )
-        internal
-        override
-    {
+    ) internal override {
         uint256 amount = message.destTokenAmounts[0].amount;
         address _asset = message.destTokenAmounts[0].token;
         address _beneficiary = abi.decode(message.data, (address));
@@ -252,12 +269,31 @@ contract StableVault is ReentrancyGuard, Admin, ERC20, IStableVault, CCIPTokenAn
         }
     }
 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(AccessControl, CCIPReceiver)
-        returns (bool)
-    {
+    function whitelistSourceChain(
+        uint64 _sourceChainSelector
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        whitelistedSourceChains[_sourceChainSelector] = true;
+    }
+
+    function denylistSourceChain(
+        uint64 _sourceChainSelector
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        whitelistedSourceChains[_sourceChainSelector] = false;
+    }
+
+    function whitelistSender(
+        address _sender
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        whitelistedSenders[_sender] = true;
+    }
+
+    function denySender(address _sender) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        whitelistedSenders[_sender] = false;
+    }
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view override(AccessControl, CCIPReceiver) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 }
