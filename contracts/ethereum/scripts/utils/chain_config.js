@@ -7,7 +7,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
-        live: false,
+        live: true,
     },
     optimismGoerli: {
         linkAddress: "0xdc2CC710e42857672E7907CF474a69B63B93089f",
@@ -57,7 +57,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
-        live: true,
+        live: false,
     },
     hardhat: {
         linkAddress: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
@@ -69,6 +69,16 @@ const chainConfigs = {
         communityDAOFee: "500",
         live: false,
     },
+    localhost: {
+        linkAddress: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
+        routerAddress: "0xd0daae2231e9cb96b94c8512223533293c3693bf",
+        chainSelector: "0",
+        token: "0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05",
+        feePercentage: "500",
+        kyodoTreasuryFee: "500",
+        communityDAOFee: "500",
+        live: false,
+    }
 }
 
 const chainIdList = ["11155111", "420", "80001", "97", "84531", "43113", "31337"];

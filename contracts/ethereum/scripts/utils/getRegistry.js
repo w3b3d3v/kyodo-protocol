@@ -4,7 +4,7 @@ async function getKyodoRegistry() {
     try {
         const KyodoRegistry = await ethers.getContractFactory("KyodoRegistry");
         const kyodoRegistry = await KyodoRegistry.attach(process.env.NEXT_PUBLIC_KYODO_REGISTRY);
-        const address = await kyodoRegistry.getRegistry("AGREEMENT_CONTRACT_ADDRESS");
+        const address = await kyodoRegistry.getRegistry("AGREEMENT_CONTRACT");
         console.log("address", address)
 
 

@@ -14,7 +14,7 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
     Agreement[] public agreements;
     // CrossChain Temporary Configs
     mapping(uint256 => CrossChainCCIP) public crossChainCCIPConfigs;
-    mapping(address => uint256) public preferredChains;
+    mapping(address => uint256) public userPreferredChain;
     mapping(address => uint256[]) public contractorAgreements; // Mapping from user address to agreement IDs
     mapping(address => uint256[]) professionalAgreements;
     mapping(address => bool) public acceptedPaymentTokens; // Mapping of accepted payment tokens
@@ -96,11 +96,6 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
 
         require(totalSkillLevel <= 100, "Total skill level cannot exceed 100");
 
-        uint256 preferredChain = preferredChains[_professional];
-        if (preferredChain == 0) {
-            preferredChain = getChainID();
-        }
-
         Agreement memory newAgreement = Agreement({
             id: nextAgreementId,
             title: _title,
@@ -109,8 +104,7 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
             company: msg.sender,
             professional: _professional,
             paymentAmount: _paymentAmount,
-            totalPaid: 0,
-            preferredChain: preferredChains[_professional]
+            totalPaid: 0
         });
 
         for (uint256 i = 0; i < _skills.length; i++) {
@@ -209,15 +203,20 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
         StableVault.deposit(kyodoTreasuryShare, address(token), kyodoTreasury);
         StableVault.deposit(communityDAOShare, address(token), communityDAO);
 
-        if (agreement.preferredChain == getChainID()) {
+        uint256 userPreferredChain_ = userPreferredChain[agreement.professional];
+        if (userPreferredChain_ == 0) {
+            userPreferredChain_ = getChainID();
+        }
+
+        if (userPreferredChain_ == getChainID()) {
             StableVault.deposit(
                 professionalPayment,
                 address(token),
                 agreement.professional
             );
         } else {
-            uint64 _chainSelector = crossChainCCIPConfigs[agreement.preferredChain].chainSelector;
-            address _stableVault = crossChainCCIPConfigs[agreement.preferredChain].vaultAddress;
+            uint64 _chainSelector = crossChainCCIPConfigs[userPreferredChain_].chainSelector;
+            address _stableVault = crossChainCCIPConfigs[userPreferredChain_].vaultAddress;
             transferTokens(_chainSelector, _stableVault, agreement.professional, _paymentAddress, professionalPayment);         
         }
 
@@ -272,6 +271,6 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
     }
 
     function setPreferredChain(uint256 chainId) external {
-        preferredChains[msg.sender] = chainId;
+        userPreferredChain[msg.sender] = chainId;
     }
 }

@@ -16,7 +16,7 @@ async function main() {
   const agreementContract = await AgreementContract.attach(await kyodoRegistry("AGREEMENT_CONTRACT"));
 
   const [deployer, developer] = await ethers.getSigners();
-  const paymentAmount = ethers.utils.parseUnits("100", 18)
+  const paymentAmount = ethers.parseUnits("100", 18)
 
   skills = [
     { name: "Programming", level: 50 },

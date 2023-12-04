@@ -3,10 +3,15 @@ const { ethers, getNamedAccounts, network } = require("hardhat");
 const { chainConfigs } = require('./utils/chain_config');
 const linkTokenABI = require("@chainlink/contracts/abi/v0.8/LinkToken.json");
 const burnMintCCIPHelperABI = require("@chainlink/contracts-ccip/abi/v0.8/BurnMintERC677Helper.json");
-const VaultAddressAvalanche = require("../deployments/avalancheFuji/StableVault.json");
-const VaultAddressMumbai = require("../deployments/polygonMumbai/StableVault.json");
-const AgreementContractAvalance = require("../deployments/avalancheFuji/AgreementContract.json");
-const AgreementContractMumbai = require("../deployments/polygonMumbai/AgreementContract.json");
+// const VaultAddressAvalanche = require("../deployments/avalancheFuji/StableVault.json");
+// const VaultAddressMumbai = require("../deployments/polygonMumbai/StableVault.json");
+// const AgreementContractAvalance = require("../deployments/avalancheFuji/AgreementContract.json");
+// const AgreementContractMumbai = require("../deployments/polygonMumbai/AgreementContract.json");
+// const VaultAddressSepolia = require("../deployments/sepolia/StableVault.json");
+// const AgreementContractSepolia = require("../deployments/sepolia/AgreementContract.json");
+const VaultAddressHardhat = require("../deployments/localhost/StableVault.json");
+const AgreementContractHardhat = require("../deployments/localhost/AgreementContract.json");
+console.log("network.name", network.name);
 
 async function configureStableVault(stableVaultInstance) {
   console.log(`Configuring [StableVault] on ${network.name} at ${stableVaultInstance.target}`)
@@ -16,7 +21,7 @@ async function configureStableVault(stableVaultInstance) {
     if (chainConfigs[config].live) {
       console.log(`Whitelisting ${config}...`);
       const tx = await stableVaultInstance.whitelistSourceChain(chainConfigs[config].chainSelector);
-      await tx.wait();
+      await tx.wait(1);
     }
   }
 
@@ -26,6 +31,10 @@ async function configureStableVault(stableVaultInstance) {
     agreementContractAddress = AgreementContractMumbai.address;
   } else if (network.name == "polygonMumbai") {
     agreementContractAddress = AgreementContractAvalance.address;
+  } else if (network.name == "sepolia") {
+    agreementContractAddress = AgreementContractSepolia.address;
+  } else if (network.name == "testing") {
+    agreementContractAddress = AgreementContractHardhat.address;
   }
   await stableVaultInstance.whitelistSender(agreementContractAddress);
 }
@@ -34,11 +43,11 @@ async function configureAgreementContract(agreementContractInstance, token, feeP
   console.log(`Configuring [AgreementContract] on ${network.name} at ${agreementContractInstance.target}`);
   console.log(`Configuring Fees for [AgreementContract]...`);
   let transaction = await agreementContractInstance.setFees(feePercentage, kyodoTreasuryFee, communityDAOFee);
-  await transaction.wait();
+  await transaction.wait(1);
 
   console.log(`Configuring Accepted Payment Tokens for [AgreementContract]...`);
   transaction = await agreementContractInstance.addAcceptedPaymentToken(token);
-  await transaction.wait();
+  await transaction.wait(1);
 
   console.log(`Configuring [StableVault] for crosschain on [AgreementContract]...`);
   let chainSelector;
@@ -53,17 +62,25 @@ async function configureAgreementContract(agreementContractInstance, token, feeP
     chainSelector = chainConfigs["avalancheFuji"].chainSelector;
     chainId = "43113"
     vaultAddress = VaultAddressAvalanche.address;
+  } else if (network.name == "sepolia") {
+    chainSelector = chainConfigs["sepolia"].chainSelector;
+    chainId = "11155111"
+    vaultAddress = VaultAddressSepolia.address;
+  } else if (network.name == "testing") {
+    chainSelector = chainConfigs["testing"].chainSelector;
+    chainId = "000000000" // CCIP will not work, it is only to test in the same chain
+    vaultAddress = VaultAddressHardhat.address;
   }
 
   transaction = await agreementContractInstance.setCrossChainConfigs(chainId, chainSelector, vaultAddress);
-  await transaction.wait();
+  await transaction.wait(1);
 
   console.log(`Whitelisting Chains for [AgreementContract]...`);
   for (const config of Object.keys(chainConfigs)) {
     if (chainConfigs[config].live) {
       console.log(`Whitelisting ${config}...`);
       const tx = await agreementContractInstance.whitelistChain(chainConfigs[config].chainSelector);
-      await tx.wait();
+      await tx.wait(1);
     }
   }
 }
@@ -71,7 +88,8 @@ async function configureAgreementContract(agreementContractInstance, token, feeP
 async function main() {
   const { deployer, user1 } = await getNamedAccounts();
   const [signer] = await ethers.getSigners();
-  let { token, linkAddress, feePercentage, kyodoTreasuryFee, communityDAOFee } = chainConfigs[network.name];
+  let { linkAddress, feePercentage, kyodoTreasuryFee, communityDAOFee } = chainConfigs[network.name];
+  const token = await ethers.getContract('FakeStable', deployer);
 
   const ccipBnMContractInstance = new ethers.Contract(token, burnMintCCIPHelperABI, signer);
   const linkTokenInstance = new ethers.Contract(linkAddress, linkTokenABI, signer);
@@ -85,7 +103,7 @@ async function main() {
   const linkTokenBalance = await linkTokenInstance.balanceOf(deployer);
   if (parseInt(linkTokenBalance.toString()) >= parseInt(ethers.parseEther("1").toString())) {
     tx = await linkTokenInstance.transfer(agreementContractInstance.target, ethers.parseEther("1").toString());
-    await tx.wait();
+    await tx.wait(1);
     const contractBalance = await linkTokenInstance.balanceOf(agreementContractInstance.target);
     console.log(`Contract has ${contractBalance.toString()} Link Tokens on ${network.name}`);
   }
@@ -94,7 +112,7 @@ async function main() {
   if (parseInt(ccipBnMTokenBalance.toString()) < parseInt(ethers.parseEther("1").toString())) {
     console.log(`Generating CCIPBNM Tokens...`);
     let tx = await ccipBnMContractInstance.drip(user1);
-    await tx.wait();
+    await tx.wait(1);
   }
 
   console.log(`Company has ${ccipBnMTokenBalance.toString()} CCIPBnM Tokens on ${network.name}`);

@@ -9,7 +9,7 @@ async function main() {
   const { deployer, user1, user2 } = await getNamedAccounts();
   let { token } = chainConfigs[network.name];
   const accounts = await ethers.getSigners();
-  const companyAgreementInstance = await ethers.getContract('AgreementContract', user1);
+  const companyAgreementInstance = await ethers.getContract('AgreementContract', deployer);
   const userAgreementInstance = await ethers.getContract('AgreementContract', user2);
 
   const stableVaultInstance = await ethers.getContract('StableVault', deployer);
@@ -22,10 +22,13 @@ async function main() {
   ];
   if (network.name == "avalancheFuji") {
     const tx = await userAgreementInstance.setPreferredChain(80001);
-    await tx.wait();
+    await tx.wait(1);
   } else if (network.name == "polygonMumbai") {
     const tx = await userAgreementInstance.setPreferredChain(43113);
-    await tx.wait();
+    await tx.wait(1);
+  } else if (network.name == "sepolia") {
+    const tx = await userAgreementInstance.setPreferredChain(11155111);
+    await tx.wait(1);
   }
 
   console.log("CreateAgreement -using Company Address");
@@ -37,16 +40,16 @@ async function main() {
     ethers.parseEther("1")
   );
 
-  await transaction.wait();
+  await transaction.wait(1);
 
   console.log("Approve CCIPBnM token (Company => Agreement) -using Company Address");
   transaction = await companyCCIPMnBInstance.approve(companyAgreementInstance.target, ethers.parseEther("2"));
-  await transaction.wait();
+  await transaction.wait(1);
 
   console.log("MakePayment -using Company Address");
   const company1Agreements = await companyAgreementInstance.getContractorAgreementIds(user1);
   transaction = await companyAgreementInstance.makePayment(company1Agreements[0], ethers.parseEther("0.1"), token);
-  await transaction.wait();
+  await transaction.wait(1);
   console.log(transaction);
   console.log("Check Vault Token balance -using Dev");
 }

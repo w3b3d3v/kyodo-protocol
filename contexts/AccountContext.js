@@ -10,10 +10,10 @@ import useTransactionHandler from '../hooks/useTransactionHandler';
 
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
-import { sepolia, optimismGoerli, avalancheFuji, arbitrumGoerli, polygonMumbai, bscTestnet, baseGoerli, polygonZkEvmTestnet, hardhat } from 'wagmi/chains'
+import { sepolia, optimismGoerli, avalancheFuji, polygonMumbai, bscTestnet, baseGoerli, hardhat } from 'wagmi/chains'
 
 const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
-const chains = [sepolia, optimismGoerli, avalancheFuji, arbitrumGoerli, polygonMumbai, bscTestnet, baseGoerli, polygonZkEvmTestnet, hardhat]
+const chains = [sepolia, optimismGoerli, avalancheFuji, polygonMumbai, bscTestnet, baseGoerli, hardhat]
 const wagmiConfig = defaultWagmiConfig({ chains, projectId })
 
 createWeb3Modal({ 
