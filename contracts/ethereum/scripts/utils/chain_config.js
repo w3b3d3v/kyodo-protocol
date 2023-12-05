@@ -44,6 +44,7 @@ const chainConfigs = {
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
         live: true,
+        subgraphPathSchema: "../graphs/subgraphs/bnb_bruno_kyodo_agreements/subgraph.yaml",
     },
     baseGoerli: {
         chainId: "84531",
@@ -65,7 +66,8 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
-        live: true,
+        live: false,
+        subgraphPathSchema: "../graphs/subgraphs/fuji_kyodo_agreements/subgraph.yaml",
     },
     hardhat: {
         chainId: "1",

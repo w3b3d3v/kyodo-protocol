@@ -1,0 +1,22 @@
+{
+  "name": "bnb_bruno_kyodo_agreements",
+  "license": "UNLICENSED",
+  "version": "1.0.0",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/bnb_bruno_kyodo_agreements",
+    "create-local": "graph create --node http://localhost:8020/ bnb_bruno_kyodo_agreements",
+    "remove-local": "graph remove --node http://localhost:8020/ bnb_bruno_kyodo_agreements",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 bnb_bruno_kyodo_agreements",
+    "test": "graph test",
+    "auth": "graph auth --studio"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.60.0",
+    "@graphprotocol/graph-ts": "0.30.0"
+  },
+  "devDependencies": {
+    "matchstick-as": "0.5.0"
+  }
+}
