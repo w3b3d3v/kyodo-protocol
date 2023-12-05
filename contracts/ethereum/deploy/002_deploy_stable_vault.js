@@ -24,19 +24,12 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
 
   console.log(`StableVault Address: ${deployedContract.address}`);
-  try {
-    const { stdout, stderr } = exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${deployer} "${tokenName}" "${tokenSymbol}" ${routerAddress}`);
-    console.log('stdout:', stdout);
-  } catch (e) {
-    console.error(e);
-  }
-  
-
-  //   const envPath = path.join(__dirname, '../../../.env.development.local');
-  //   const envContent = fs.readFileSync(envPath, { encoding: 'utf8' });
-  //   const newEnvContent = envContent.replace(/NEXT_PUBLIC_KYODO_REGISTRY=.*/, `NEXT_PUBLIC_KYODO_REGISTRY=${deployedContract.address}`);
-  //   fs.writeFileSync(envPath, newEnvContent);
-  //   console.log(`Updated NEXT_PUBLIC_KYODO_REGISTRY in env.development.local to ${deployedContract.address}`);
+  // try {
+  //   const { stdout, stderr } = exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${deployer} "${tokenName}" "${tokenSymbol}" ${routerAddress}`);
+  //   console.log('stdout:', stdout);
+  // } catch (e) {
+  //   console.error(e);
+  // }
 };
 
 module.exports.tags = ['StableVault'];

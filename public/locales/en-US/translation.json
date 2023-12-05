@@ -87,5 +87,5 @@
   "transaction-success": "Transaction successful!",
   "agreement-pending": "Transaction is still pending, please wait.",
   "no-agreements": "No agreements found. Click on the add icon above.",
-  "notifications": "Notifications"
+  "no-payments": "No payments found."
 }

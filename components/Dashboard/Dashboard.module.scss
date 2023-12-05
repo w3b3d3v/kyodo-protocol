@@ -336,6 +336,27 @@ DASHBOARD
     }
   }
 
+  .payment-origin {
+    border-radius: 25px;
+    width: 50px;
+    height: 50px;
+    background: rgba($white, .03);
+    margin-right: 20px;
+    text-align: center;
+    padding-top: 11px;
+    box-sizing: border-box;
+    float: left;
+
+    @media #{$smartphones-1} {
+      margin-right: 15px;
+    }
+
+    img {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
   h3 {
     font-size: $font-medium-2;
     padding: 3px 0 8px 0;
@@ -408,3 +429,16 @@ DASHBOARD
   }
 }
 
+.no-payment-message {
+  padding: 70px 20px;
+  text-align: center;
+  border: 1px solid $dark-blue-2;
+  border-radius: 6px;
+  font-size: $font-medium;
+  font-weight: 500;
+  color: $light-gray;
+
+  img {
+    margin-bottom: 10px;
+  }
+}

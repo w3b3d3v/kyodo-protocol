@@ -5,7 +5,6 @@ import KyodoGraph from "../graphs";
 export const fetchPaidAgreements = async (details) => {
   try {
     const allAgreements = await KyodoGraph.fetchPaidAgreements(
-      details.chainId,
       details.account
     );
     

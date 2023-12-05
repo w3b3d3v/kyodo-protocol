@@ -8,6 +8,7 @@ const chainConfigs = {
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
         live: true,
+        subgraphPathSchema: "../graphs/subgraphs/sepolia_kyodo_agreements/subgraph.yaml",
     },
     optimismGoerli: {
         linkAddress: "0xdc2CC710e42857672E7907CF474a69B63B93089f",
@@ -28,6 +29,7 @@ const chainConfigs = {
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
         live: true,
+        
     },
     bnbTesnet: {
         linkAddress: "0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06",

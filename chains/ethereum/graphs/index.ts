@@ -1,7 +1,18 @@
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-
-import * as dto from "./dto";
 import * as queries from "./queries";
+
+type ChainKey = keyof typeof KyodoGraph.clients;
+
+interface Agreement {
+  id: string;
+  company: string;
+  professional: string;
+  amount: number;
+  transactionHash: string;
+  agreementId: string;
+  blockNumber: number;
+  blockTimestamp: number;
+}
 
 class KyodoGraph {
   private static _getApolloClient(uri?: string) {
@@ -13,26 +24,38 @@ class KyodoGraph {
     return client;
   }
 
-  private static readonly clients: {
-    [k in dto.TGraphChainIds]: ApolloClient<any>;
-  } = {
+  public static readonly clients = {
     "80001": this._getApolloClient(
       process.env.NEXT_PUBLIC_KYODO_MUMBAI_SUBGRAPH_URI
+    ), 
+    "11155111": this._getApolloClient(
+      process.env.NEXT_PUBLIC_KYODO_SEPOLIA_SUBGRAPH_URI
     ),
   };
 
-  static async fetchPaidAgreements(chain: dto.TGraphChainIds, wallet: string) {
-    const response = await this.clients[chain].query({
-      query: queries.GET_PAID_AGREEMENTS_QUERY,
-      variables: {
-        wallet,
-      },
-      fetchPolicy: "cache-first",
-    });
+  private static readonly chains: ChainKey[] = ["80001", "11155111"];
 
-    // console.log("response",response);
+  static async fetchPaidAgreements(wallet: string) {
+    let allAgreements: (Agreement & { originChain: string })[] = [];
 
-    return response?.data.paymentMades ?? [];
+    for (const chain of this.chains) {
+      const client = this.clients[chain];
+      const response = await client.query({
+        query: queries.GET_PAID_AGREEMENTS_QUERY,
+        variables: { wallet },
+        fetchPolicy: "cache-first",
+      });
+
+      const agreements: Agreement[] = response?.data.paymentMades ?? [];
+      const agreementsWithOrigin = agreements.map((agreement: Agreement) => ({
+        ...agreement,
+        originChain: chain
+      }));
+
+      allAgreements = [...allAgreements, ...agreementsWithOrigin];
+    }
+
+    return allAgreements;
   }
 }
 

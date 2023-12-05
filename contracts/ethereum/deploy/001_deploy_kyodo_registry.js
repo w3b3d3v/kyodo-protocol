@@ -19,12 +19,12 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   });
 
   console.log(`KyodoRegistry Address: ${deployedContract.address}`);
-  try {
-    const { stdout, stderr } = await exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${deployer}`);
-    console.log('stdout:', stdout);
-  } catch (e) {
-    console.error(e);
-  }
+  // try {
+  //   const { stdout, stderr } = await exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${deployer}`);
+  //   console.log('stdout:', stdout);
+  // } catch (e) {
+  //   console.error(e);
+  // }
 
   const envPath = path.join(__dirname, '../../../.env.development.local');
   let envContent = fs.readFileSync(envPath, { encoding: 'utf8' });

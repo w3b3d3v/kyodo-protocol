@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
+const yaml = require('js-yaml');
 const exec = util.promisify(require('child_process').exec);
 
 const { chainConfigs, chainIdList, chainSelectorList } = require('../scripts/utils/chain_config');
@@ -27,7 +28,7 @@ module.exports = async ({ getNamedAccounts, deployments, ethers, network }) => {
   const salt = '0x';
 
   const networkName = network.name;
-  const { linkAddress, routerAddress, chainSelector } = chainConfigs[networkName];
+  const { linkAddress, routerAddress, chainSelector, subgraphPathSchema } = chainConfigs[networkName];
 
   const stableVaultInstance = await ethers.getContract('StableVault');
 
@@ -49,18 +50,26 @@ module.exports = async ({ getNamedAccounts, deployments, ethers, network }) => {
   const argsPath = path.join(__dirname, `../deployments/${network.name}/args.js`);
   fs.writeFileSync(argsPath, `module.exports = ["${kyodoTreasury}", "${communityTreasury}", "${deployer}", "${routerAddress}", "${linkAddress}", "${chainSelector}", "${stableVaultInstance.target}", [${printArray(chainIdList)}], [${printArray(chainSelectorList)}]];`);
 
-  try {
-    const { stdout, stderr } = await exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} --constructor-args ./deployments/${network.name}/args.js`);
-    console.log('stdout:', stdout);
-  } catch (e) {
-    console.error(e);
-  }
+  // try {
+  //   const { stdout, stderr } = await exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} --constructor-args ./deployments/${network.name}/args.js`);
+  //   console.log('stdout:', stdout);
+  // } catch (e) {
+  //   console.error(e);
+  // }
 
-  //   const envPath = path.join(__dirname, '../../../.env.development.local');
-  //   const envContent = fs.readFileSync(envPath, { encoding: 'utf8' });
-  //   const newEnvContent = envContent.replace(/NEXT_PUBLIC_KYODO_REGISTRY=.*/, `NEXT_PUBLIC_KYODO_REGISTRY=${deployedContract.address}`);
-  //   fs.writeFileSync(envPath, newEnvContent);
-  //   console.log(`Updated NEXT_PUBLIC_KYODO_REGISTRY in env.development.local to ${deployedContract.address}`);
+  const yamlPath = path.join(__dirname, subgraphPathSchema);
+  let yamlContent = yaml.load(fs.readFileSync(yamlPath, 'utf8'));
+  console.log("yamlContent", yamlContent)
+  
+  yamlContent.dataSources.forEach(source => {
+    if (source.name === 'AgreementContract') {
+      source.source.address = deployedContract.address;
+      source.source.startBlock = deployedContract.receipt.blockNumber;
+    }
+  });
+
+  fs.writeFileSync(yamlPath, yaml.dump(yamlContent));
+  console.log(`Updated address in YAML file to ${deployedContract.address}`);
 };
 
 module.exports.tags = ['AgreementContract'];
