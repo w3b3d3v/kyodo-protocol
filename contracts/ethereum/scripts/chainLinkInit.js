@@ -100,7 +100,7 @@ async function main() {
   const agreementContractInstance = await ethers.getContract('AgreementContract', deployer);
 
   if(network.name == "testing") {
-    token = testToken;
+    token = testToken.target;
   }
 
   await configureAgreementContract(agreementContractInstance, token, feePercentage, kyodoTreasuryFee, communityDAOFee);
