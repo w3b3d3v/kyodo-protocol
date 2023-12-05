@@ -1,17 +1,18 @@
+const path = require('path');
+const fs = require('fs')
+
 const { ethers, getNamedAccounts, network } = require("hardhat");
 
 const { chainConfigs } = require('./utils/chain_config');
 const linkTokenABI = require("@chainlink/contracts/abi/v0.8/LinkToken.json");
 const burnMintCCIPHelperABI = require("@chainlink/contracts-ccip/abi/v0.8/BurnMintERC677Helper.json");
-const VaultAddressAvalanche = require("../deployments/avalancheFuji/StableVault.json");
-const VaultAddressMumbai = require("../deployments/polygonMumbai/StableVault.json");
-const AgreementContractAvalance = require("../deployments/avalancheFuji/AgreementContract.json");
-const AgreementContractMumbai = require("../deployments/polygonMumbai/AgreementContract.json");
-const VaultAddressSepolia = require("../deployments/sepolia/StableVault.json");
-const AgreementContractSepolia = require("../deployments/sepolia/AgreementContract.json");
-// const VaultAddressHardhat = require("../deployments/localhost/StableVault.json");
-// const AgreementContractHardhat = require("../deployments/localhost/AgreementContract.json");
 console.log("network.name", network.name);
+
+function getContractAddress(network, contractName) {
+  const envPath = path.join(__dirname, '../deployments');
+  let ContractJSON = fs.readFileSync(`${envPath}/${network}/${contractName}.json`, { encoding: 'utf8' });
+  return JSON.parse(ContractJSON).address;
+}
 
 async function configureStableVault(stableVaultInstance) {
   console.log(`Configuring [StableVault] on ${network.name} at ${stableVaultInstance.target}`)
@@ -28,13 +29,13 @@ async function configureStableVault(stableVaultInstance) {
   console.log(`Whitelisting Senders for StableVault...`);
   let agreementContractAddress;
   if (network.name == "avalancheFuji") {
-    agreementContractAddress = AgreementContractMumbai.address;
+    agreementContractAddress = getContractAddress("polygonMumbai", "AgreementContract");
   } else if (network.name == "polygonMumbai") {
-    agreementContractAddress = AgreementContractAvalance.address;
+    agreementContractAddress = getContractAddress("avalancheFuji", "AgreementContract");
   } else if (network.name == "sepolia") {
-    agreementContractAddress = AgreementContractSepolia.address;
+    agreementContractAddress = getContractAddress("sepolia", "AgreementContract");
   } else if (network.name == "testing") {
-    agreementContractAddress = AgreementContractHardhat.address;
+    agreementContractAddress = getContractAddress("testing", "AgreementContract");
   }
   await stableVaultInstance.whitelistSender(agreementContractAddress);
 }
@@ -58,19 +59,19 @@ async function configureAgreementContract(agreementContractInstance, token, feeP
   if (network.name == "avalancheFuji") {
     chainSelector = chainConfigs["polygonMumbai"].chainSelector;
     chainId = "80001"
-    vaultAddress = VaultAddressMumbai.address;
+    vaultAddress = getContractAddress("polygonMumbai", "StableVault");
   } else if (network.name == "polygonMumbai") {
     chainSelector = chainConfigs["avalancheFuji"].chainSelector;
     chainId = "43113"
-    vaultAddress = VaultAddressAvalanche.address;
+    vaultAddress = getContractAddress("avalancheFuji", "StableVault");
   } else if (network.name == "sepolia") {
     chainSelector = chainConfigs["sepolia"].chainSelector;
     chainId = "11155111"
-    vaultAddress = VaultAddressSepolia.address;
+    vaultAddress = getContractAddress("sepolia", "StableVault");
   } else if (network.name == "testing") {
     chainSelector = chainConfigs["testing"].chainSelector;
     chainId = "000000000" // CCIP will not work, it is only to test in the same chain
-    vaultAddress = VaultAddressHardhat.address;
+    vaultAddress = getContractAddress("testing", "StableVault");
   }
 
   transaction = await agreementContractInstance.setCrossChainConfigs(chainId, chainSelector, vaultAddress);
