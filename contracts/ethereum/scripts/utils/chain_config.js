@@ -39,7 +39,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
-        live: false,
+        live: true,
         subgraphPathSchema: "../graphs/subgraphs/bnb_bruno_kyodo_agreements/subgraph.yaml",
     },
     baseGoerli: {
@@ -50,7 +50,8 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
-        live: false,
+        live: true,
+        subgraphPathSchema: "../graphs/subgraphs/base_testnet_bruno_kyodo_agreements/subgraph.yaml",
     },
     avalancheFuji: {
         linkAddress: "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846",
@@ -60,7 +61,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
-        live: false,
+        live: true,
         subgraphPathSchema: "../graphs/subgraphs/fuji_kyodo_agreements/subgraph.yaml",
     },
     hardhat: {

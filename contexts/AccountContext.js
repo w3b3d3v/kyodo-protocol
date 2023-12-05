@@ -10,10 +10,10 @@ import useTransactionHandler from '../hooks/useTransactionHandler';
 
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react'
 import { WagmiConfig } from 'wagmi'
-import { sepolia, optimismGoerli, avalancheFuji, polygonMumbai, bscTestnet, baseGoerli, hardhat } from 'wagmi/chains'
+import { sepolia, avalancheFuji, polygonMumbai, bscTestnet, baseGoerli, hardhat } from 'wagmi/chains'
 
 const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID
-const chains = [sepolia, optimismGoerli, avalancheFuji, polygonMumbai, bscTestnet, baseGoerli, hardhat]
+const chains = [sepolia, avalancheFuji, polygonMumbai, bscTestnet, baseGoerli, hardhat]
 const wagmiConfig = defaultWagmiConfig({ chains, projectId })
 
 createWeb3Modal({ 
@@ -22,7 +22,6 @@ createWeb3Modal({
   chains,
   chainImages: {
     11_155_111: "/chains/ethereum.svg",
-    420: "/chains/optimism.svg",
     43_113: "/chains/avalanche.svg",
     421_613: "/chains/arbitrum.svg",
     80_001: "/chains/polygon-matic-logo.svg",

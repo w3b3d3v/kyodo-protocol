@@ -52,7 +52,7 @@
     "tokens": [],
     "blockExplorer": {
       "name": "Arbitrum Explorer",
-      "url": "https://goerli.arbiscan.io"
+      "url": "https://goerli.arbiscan.io/"
     }
   },
   "11155111": {
@@ -77,10 +77,11 @@
   "84531": {
     "name": "Base Goerli",
     "logo": "/chains/base.svg",
+    "subgraphUrl": "https://api.studio.thegraph.com/query/56519/base_testnet_bruno_kyodo_agree/v0.0.1",
     "tokens": [],
     "blockExplorer": {
       "name": "Base Goerli Explorer",
-      "url": "https://goerli.basescan.org"
+      "url": "https://goerli.basescan.org/"
     }
   },
   "solana": {
