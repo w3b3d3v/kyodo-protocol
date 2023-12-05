@@ -30,6 +30,8 @@
   "company-document": "Registration number",
   "community-fee": "Community fee",
   "select-option": "Select an option",
+  "select-option-networks": "Prefered Networks",
+  "payment-network": "Receiving Network",
   "token-tooltip": "It can be used as a governance token if the community become a DAO",
 
   "back": "Back",

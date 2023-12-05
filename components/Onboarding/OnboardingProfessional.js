@@ -2,8 +2,15 @@ import styles from "./Onboarding.module.scss"
 import Image from 'next/image'
 import Link from "next/link"
 import { useTranslation } from "react-i18next"
-import { useState } from 'react';
+import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
+import Select from 'react-select'
+import contractManager from '../../chains/ContractManager';
+import { useAccount } from "../../contexts/AccountContext"
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import useTransactionHandler from '../../hooks/useTransactionHandler';
+import Loader from '../utils/Loader';
+import Toast from '../utils/Toast';
 
 function saveToCache(data) {
   const dataString = JSON.stringify(data)
@@ -17,7 +24,101 @@ function OnboardingProfessional() {
   const [avatarProfessional, setAvatar] = useState("")
   const [websiteProfessional, setWebsite] = useState("")
   const [communityProfessional, setCommunity] = useState("")
-  const { router } = useRouter()
+  const [contract, setContract] = useState("")
+  const [paymentsChain, setPaymentsChain] = useState("")
+  const router = useRouter()
+  const { account, selectedChain, selectedNetworkId, completeOnboarding } = useAccount()
+  const { publicKey, wallet } = useWallet()
+  const { connection } = useConnection()
+  const {
+    isLoading,
+    setIsLoading,
+    transactionSuccess,
+    transactionPending,
+    transactionFail,
+    errorMessage,
+    sendTransaction,
+    transactionHash,
+  } = useTransactionHandler()
+
+  useEffect(() => {
+    async function initializeContract() {
+      try {
+        setIsLoading(true)
+        const details = {
+          wallet,
+          connection,
+        }
+
+        const agreementContract = await contractManager.chains[selectedNetworkId].agreementContract(
+          details
+        )
+        setContract(agreementContract)
+      } catch (error) {
+        console.error("Error when getting the contract", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    initializeContract()
+  }, [selectedNetworkId, wallet, connection])
+
+  const SelectPaymentsChain = ({ handleChainChange }) => {
+    const chainIds = contractManager.getSupportedChains();
+    const options = chainIds.map(chainId => {
+      const metadata = contractManager.chainMetadata(chainId);
+      return {
+        chainId: chainId,
+        label: metadata.name, 
+        icon: metadata.logo  
+      };
+    });
+  
+    const formatOptionLabel = ({ label, icon }) => (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <img src={icon} alt={label} style={{ marginRight: 10, width: 20 }} />
+        {label}
+      </div>
+    );
+  
+    return (
+      <Select
+        options={options}
+        formatOptionLabel={formatOptionLabel}
+        onChange={handleChainChange}
+        isSearchable={false}
+      />
+    );
+  };
+
+  const handleSaveUserData = async (event) => {
+    event.preventDefault();
+
+    try {
+      const details = {
+        contract,
+        paymentsChain
+      }
+
+      const onConfirmation = () => {
+        setTimeout(() => {
+          completeOnboarding();
+          setIsLoading(false)
+          router.push("/onboarding/complete")
+        }, 3000)
+      }
+
+      await sendTransaction("savePreferedChain", details, "", onConfirmation)
+    } catch (error) {
+      console.log(error)
+      console.error('Erro ao definir a chain preferida:', error);
+    }
+  };
+
+  const handleChainChange = (e) => {
+    setPaymentsChain(e)
+  }
 
   const handleNameChange = (e) => {
     setName(e.target.value)
@@ -47,6 +148,14 @@ function OnboardingProfessional() {
 
   return (
     <div className={styles["onboarding"]}>
+      <Loader isLoading={isLoading} />
+      <Toast
+        transactionSuccess={transactionSuccess}
+        transactionPending={transactionPending}
+        transactionFail={transactionFail}
+        errorMessage={errorMessage}
+        transactionHash={transactionHash}
+      />
       <div className={styles["onboarding-steps"]}>
         <h1>{t("welcome")}</h1>
         <ul>
@@ -88,36 +197,20 @@ function OnboardingProfessional() {
               id="professional-name-input"
               tabIndex={1}
             />
-            <label htmlFor="professional-bio-input">
-              {t("bio")} <span>*</span>
-            </label>
-            <textarea
-              type="text"
-              onChange={handleBioChange}
-              id="professional-bio-input"
-              tabIndex={2}
-            ></textarea>
           </div>
 
           <div className={"col-02"}>
-            <label htmlFor="professional-avatar-input">{t("avatar")}</label>
-            <input
-              type="text"
-              onChange={handleAvatarChange}
-              id="professional-avatar-input"
-              tabIndex={3}
-            />
-            <label htmlFor="professional-website-input">{t("website")}</label>
-            <input
-              type="text"
-              onChange={handleWebsiteChange}
-              id="professional-website-input"
-              tabIndex={4}
-            />
-            <label htmlFor="professional-community-input">
-              {t("community")} <span>*</span>
+          <label htmlFor="professional-community-input">
+              {t("payment-network")} <span>*</span>
             </label>
             <div className={"custom-select"}>
+            <SelectPaymentsChain handleChainChange={handleChainChange} />
+            </div>
+
+            {/* <label htmlFor="professional-community-input">
+              {t("community")} <span>*</span>
+            </label> */}
+            {/* <div className={"custom-select"}>
               <select
                 tabIndex={5}
                 onChange={handleCommunityChange}
@@ -139,16 +232,16 @@ function OnboardingProfessional() {
                 <option>SmartWebSociety</option>
                 <option>DeFiDragons</option>
               </select>
-            </div>
+            </div> */}
           </div>
         </section>
         <section className={styles["form-footer"]}>
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </Link>
-          <Link href="/onboarding/terms" className={styles["next-btn"]} tabIndex={6}>
+          <button onClick={(event) => handleSaveUserData(event)}>
             {t("next-step")}
-          </Link>
+          </button>
         </section>
       </form>
     </div>
