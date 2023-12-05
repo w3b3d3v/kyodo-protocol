@@ -3,6 +3,7 @@
     "name":"Mumbai",
     "logo":"/chains/polygon-matic-logo.svg",
     "tokens": [],
+    "subgraphUrl": "https://api.studio.thegraph.com/query/56519/mumbai_kyodo_agreements/v0.0.1",
     "blockExplorer": {
       "name": "PolygonScan",
       "url": "https://mumbai.polygonscan.com/"
@@ -57,6 +58,7 @@
     "name": "Sepolia",
     "logo": "/chains/ethereum.svg",
     "tokens": [],
+    "subgraphUrl": "https://api.studio.thegraph.com/query/56519/sepolia_kyodo_agreements/v0.0.1",
     "blockExplorer": {
       "name": "Sepolia Etherscan",
       "url": "https://sepolia.etherscan.io/"

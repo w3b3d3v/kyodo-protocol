@@ -18,7 +18,7 @@ dataSources:
         - PaymentMade
       abis:
         - name: AgreementContract
-          file: ../../../../../chains/ethereum/contracts/AgreementContract.json
+          file: ../../../../../chains/ethereum/abis/AgreementContract.json
       eventHandlers:
         - event: AgreementCreated(indexed address,indexed address,uint256,uint256)
           handler: handleAgreementCreated
@@ -50,7 +50,7 @@ dataSources:
         - Withdrawal
       abis:
         - name: StableVaultContract
-          file: ../../../../../chains/ethereum/contracts/StableVault.json
+          file: ../../../../../chains/ethereum/abis/StableVault.json
       eventHandlers:
         - event: Approval(indexed address,indexed address,uint256)
           handler: handleApproval

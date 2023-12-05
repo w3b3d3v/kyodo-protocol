@@ -9,7 +9,6 @@ import { useTranslation } from "react-i18next"
 import useTransactionHandler from '../../hooks/useTransactionHandler';
 import transactionManager from '../../chains/transactionManager'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
-import { ethers } from "ethers";
 
 function Payments ({ limit }) {
   const [contract, setContract] = useState(null)
@@ -24,46 +23,27 @@ function Payments ({ limit }) {
   } = useTransactionHandler();
 
   useEffect(() => {
-    async function initializeContract() {
+    async function loadAgreements() {
+      setIsLoading(true);
+
       try {
-        setIsLoading(true);
-        const details = {
-          wallet,
-          connection
-        }
-  
-        const agreementContract = await contractManager.chains[selectedNetworkId].agreementContract(details);
-        setContract(agreementContract);
+        await fetchPaidAgreements();
       } catch (error) {
-        console.error("Error initializing the agreements contract", error);
+        console.error("Error when fetching agreements:", error);
       } finally {
         setIsLoading(false);
       }
     }
-  
-    initializeContract();
-  }, [selectedNetworkId, wallet, connection]);
 
-  useEffect(() => {
-    if (!isLoading && contract) {
-      fetchPaidAgreements();
-    }
-  }, [account, isLoading, contract]);
-
-  if (paidAgreements.length === 0) {
-    return null;
-  }
+    loadAgreements();
+  }, [account, selectedChain]);
 
   async function fetchPaidAgreements() {
-    const KyodoRegistry = await contractManager.chains[selectedNetworkId].kyodoRegistry;
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const network = await provider.getNetwork();
-
       const details = {
         account,
         contract,
-        chainId: network.chainId
+        chainId: selectedNetworkId
       };
 
       const agreements = await transactionManager["fetchPaidAgreements"](selectedNetworkId, details)
@@ -84,26 +64,39 @@ function Payments ({ limit }) {
 
     return displayedAgreements.map((agreement, index) => (
       <div key={index} className={styles["payment-item"]}>
+        <div className={styles["payment-origin"]}>
+          <Image
+            src={contractManager.chainMetadata(agreement.originChain).logo}
+            width={40}
+            height={40}
+            alt={`Chain ${agreement.originChain}`}
+          />
+        </div>
         <div className={styles["payment-avatar"]}>
           <Image src="/coins/usdc-icon.svg" width={40} height={40} alt="USDC" />
         </div>
         <h3>
-          {t("agreement")} ID:{" "}
-          {!isNaN(agreement.agreementId) && Number.isInteger(Number(agreement.agreementId))
-            ? agreement.agreementId.toString()
-            : `${agreement.agreementId.substring(0, 4)}...${agreement.agreementId.substring(
-                agreement.agreementId.length - 4
-              )}`}
+          Agreement ID: {
+            (!isNaN(agreement.agreementId) && Number.isInteger(Number(agreement.agreementId)))
+              ? agreement.agreementId.toString()
+              : `${agreement.agreementId.substring(0, 4)}...${agreement.agreementId.substring(agreement.agreementId.length - 4)}`
+          }
         </h3>
+                
         <Link
-          href={explorerLink + "tx/" + agreement.transactionHash}
+          href={explorerLink + agreement.transactionHash}
           target="_blank"
           rel="noopener noreferrer"
         >
           {t("view-on")}
-        </Link>
+      </Link>
         <p className={styles["value-status"]}>
-          <em>{parseFloat(agreement.amount).toFixed(2).replace(/\.00$/, "")} USD</em>
+          <em>
+            {parseFloat(agreement.amount)
+              .toFixed(2)
+              .replace(/\.00$/, "")}{" "}
+            USD
+          </em>
           <span>
             {account.trim().toLowerCase() === agreement.company.trim().toLowerCase() ? (
               <>
@@ -127,15 +120,22 @@ function Payments ({ limit }) {
       <Loader isLoading={isLoading} />
       <h2>{t("payments")}</h2>
       <div>
-        {renderPaidAgreements()}
+        {paidAgreements.length === 0 ? (
+          <div className={styles["no-payment-message"]}>
+            <Image src="/no-agreement-icon.svg" width={58} height={58} alt="No agreement" />
+            <p>{t("no-payments")}</p>
+          </div>
+        ) : 
+          renderPaidAgreements()
+        }
         {limit && paidAgreements.length > limit && (
-          <Link href="/payments" className="view-all">
+          <a onClick={() => window.location.href='/payments'} className={"view-all"}>
             {t("view-all")}
-          </Link>
+          </a>
         )}
       </div>
     </div>
-  )
+  );
 }
 
 export default Payments;

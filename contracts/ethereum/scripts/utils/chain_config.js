@@ -9,6 +9,7 @@ const chainConfigs = {
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
         live: true,
+        subgraphPathSchema: "../graphs/subgraphs/sepolia_kyodo_agreements/subgraph.yaml",
     },
     optimismGoerli: {
         chainId: "420",
@@ -31,6 +32,7 @@ const chainConfigs = {
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
         live: true,
+        
     },
     bnbTestnet: {
         chainId: "97",
