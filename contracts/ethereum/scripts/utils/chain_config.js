@@ -56,6 +56,7 @@ const chainConfigs = {
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
         live: true,
+        subgraphPathSchema: "../graphs/subgraphs/base_testnet_bruno_kyodo_agreements/subgraph.yaml",
     },
     avalancheFuji: {
         chainId: "43113",
@@ -66,7 +67,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
-        live: false,
+        live: true,
         subgraphPathSchema: "../graphs/subgraphs/fuji_kyodo_agreements/subgraph.yaml",
     },
     hardhat: {

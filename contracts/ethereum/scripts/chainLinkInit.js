@@ -28,17 +28,18 @@ async function configureStableVault(stableVaultInstance) {
 
   console.log(`Whitelisting Senders for StableVault...`);
   let agreementContractAddress;
-  if (network.name == "avalancheFuji") {
-    agreementContractAddress = getContractAddress("polygonMumbai", "AgreementContract");
-  } else if (network.name == "polygonMumbai") {
-    agreementContractAddress = getContractAddress("avalancheFuji", "AgreementContract");
-  } else if (network.name == "sepolia") {
-    agreementContractAddress = getContractAddress("sepolia", "AgreementContract");
-  } else if (network.name == "testing") {
-    agreementContractAddress = getContractAddress("testing", "AgreementContract");
-  } else if (network.name == "bnbTestnet") {
-    agreementContractAddress = getContractAddress("bnbTestnet", "AgreementContract");
+
+  try {
+      agreementContractAddress = getContractAddress(network.name, "AgreementContract");
+
+      if (!agreementContractAddress) {
+          throw new Error(`Contract not found`);
+      }
+  } catch (error) {
+      console.error(`Contract not found on the ${network.name} network.`);
+      process.exit(1); 
   }
+
   await stableVaultInstance.whitelistSender(agreementContractAddress);
 }
 
@@ -78,6 +79,10 @@ async function configureAgreementContract(agreementContractInstance, token, feeP
     chainSelector = chainConfigs["bnbTestnet"].chainSelector;
     chainId = "97"
     vaultAddress = getContractAddress("bnbTestnet", "StableVault");
+  } else if (network.name == "baseGoerli") {
+    chainSelector = chainConfigs["baseGoerli"].chainSelector;
+    chainId = "84531"
+    vaultAddress = getContractAddress("baseGoerli", "StableVault");
   }
 
   transaction = await agreementContractInstance.setCrossChainConfigs(chainId, chainSelector, vaultAddress);
