@@ -18,7 +18,7 @@ let config = {
     deployer: 0,
     kyodoTreasury: 0,
     communityTreasury: 3,
-    user1: 5,
+    user1: 0,
     user2: 1,
     user3: 7,
     user4: 8,

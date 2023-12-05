@@ -39,10 +39,11 @@
   "43113": {
     "name": "Avalanche Fuji",
     "logo": "/chains/avalanche.svg",
+    "subgraphUrl": "https://api.studio.thegraph.com/query/56519/fuji_kyodo_agreements/v0.0.1",
     "tokens": [],
     "blockExplorer": {
       "name": "Avalanche Explorer",
-      "url": "https://testnet.avascan.info/"
+      "url": "https://testnet.snowtrace.io/"
     }
   },
   "421613": {

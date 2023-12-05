@@ -36,6 +36,8 @@ async function configureStableVault(stableVaultInstance) {
     agreementContractAddress = getContractAddress("sepolia", "AgreementContract");
   } else if (network.name == "testing") {
     agreementContractAddress = getContractAddress("testing", "AgreementContract");
+  } else if (network.name == "bnbTestnet") {
+    agreementContractAddress = getContractAddress("bnbTestnet", "AgreementContract");
   }
   await stableVaultInstance.whitelistSender(agreementContractAddress);
 }
@@ -72,6 +74,10 @@ async function configureAgreementContract(agreementContractInstance, token, feeP
     chainSelector = chainConfigs["testing"].chainSelector;
     chainId = "000000000" // CCIP will not work, it is only to test in the same chain
     vaultAddress = getContractAddress("testing", "StableVault");
+  } else if (network.name == "bnbTestnet") {
+    chainSelector = chainConfigs["bnbTestnet"].chainSelector;
+    chainId = "97"
+    vaultAddress = getContractAddress("bnbTestnet", "StableVault");
   }
 
   transaction = await agreementContractInstance.setCrossChainConfigs(chainId, chainSelector, vaultAddress);
@@ -114,13 +120,14 @@ async function main() {
     console.log(`Contract has ${contractBalance.toString()} Link Tokens on ${network.name}`);
   }
 
-  const ccipBnMTokenBalance = await ccipBnMContractInstance.balanceOf(user1);
+  let ccipBnMTokenBalance = await ccipBnMContractInstance.balanceOf(user1);
   if (parseInt(ccipBnMTokenBalance.toString()) < parseInt(ethers.parseEther("1").toString())) {
     console.log(`Generating CCIPBNM Tokens...`);
     let tx = await ccipBnMContractInstance.drip(user1);
     await tx.wait(1);
   }
 
+  ccipBnMTokenBalance = await ccipBnMContractInstance.balanceOf(user1);
   console.log(`Company has ${ccipBnMTokenBalance.toString()} CCIPBnM Tokens on ${network.name}`);
 
 }

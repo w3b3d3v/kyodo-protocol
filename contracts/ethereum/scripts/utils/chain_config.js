@@ -31,7 +31,7 @@ const chainConfigs = {
         live: true,
         
     },
-    bnbTesnet: {
+    bnbTestnet: {
         linkAddress: "0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06",
         routerAddress: "0x9527e2d01a3064ef6b50c1da1c0cc523803bcff2",
         chainSelector: "13264668187771770619",
@@ -40,6 +40,7 @@ const chainConfigs = {
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
         live: false,
+        subgraphPathSchema: "../graphs/subgraphs/bnb_bruno_kyodo_agreements/subgraph.yaml",
     },
     baseGoerli: {
         linkAddress: "0xd886e2286fd1073df82462ea1822119600af80b6",
@@ -59,7 +60,8 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
-        live: true,
+        live: false,
+        subgraphPathSchema: "../graphs/subgraphs/fuji_kyodo_agreements/subgraph.yaml",
     },
     hardhat: {
         linkAddress: "0x779877A7B0D9E8603169DdbD7836e478b4624789",

@@ -59,7 +59,6 @@ module.exports = async ({ getNamedAccounts, deployments, ethers, network }) => {
 
   const yamlPath = path.join(__dirname, subgraphPathSchema);
   let yamlContent = yaml.load(fs.readFileSync(yamlPath, 'utf8'));
-  console.log("yamlContent", yamlContent)
   
   yamlContent.dataSources.forEach(source => {
     if (source.name === 'AgreementContract') {

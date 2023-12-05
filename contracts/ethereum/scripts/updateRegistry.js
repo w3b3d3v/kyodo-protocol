@@ -29,11 +29,11 @@ async function main() {
         process.exit(1);
     }
 
-    // const stableVaultInstance = await ethers.getContract('StableVault', deployer);
-    // await storeAtKyodoRegistry("VAULT_CONTRACT", stableVaultInstance.target)
+    const stableVaultInstance = await ethers.getContract('StableVault', deployer);
+    await storeAtKyodoRegistry("VAULT_CONTRACT", stableVaultInstance.target)
   
-    // const agreementContractInstance = await ethers.getContract('AgreementContract', deployer);
-    // await storeAtKyodoRegistry("AGREEMENT_CONTRACT", agreementContractInstance.target)
+    const agreementContractInstance = await ethers.getContract('AgreementContract', deployer);
+    await storeAtKyodoRegistry("AGREEMENT_CONTRACT", agreementContractInstance.target)
   
     let { token } = chainConfigs[network.name];
     // const token = await ethers.getContract('FakeStable', deployer);
