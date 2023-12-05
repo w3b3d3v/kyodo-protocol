@@ -4,12 +4,11 @@
     "private": true,
     "scripts": {
         "compile": "hardhat compile",
-        "deploy:multichain": "npx hardhat run scripts/deployMultichain.js",
         "test": "npx hardhat test ./test/AgreementContract/PayAgreement_v2.test.js --deploy-fixture",
-        "chainlink_fuji": "npx hardhat run ./scripts/chainLinkInit.js --network avalancheFuji",
-        "chainlink_mumbai": "npx hardhat run ./scripts/chainLinkInit.js --network polygonMumbai",
-        "chainlinktest_fuji": "npx hardhat run ./scripts/chainLinkTests.js --network avalancheFuji",
-        "chainlinktest_mumbai": "npx hardhat run ./scripts/chainLinkTests.js --network polygonMumbai"
+        "deploy:multichain": "npx hardhat run scripts/deployMultichain.js",
+        "chainlink:multichain": "npx hardhat run scripts/chainlink/chainlink_multichain.js",
+        "chainlink_test:multichain": "npx hardhat run scripts/chainlink/chainlink_test_multichain.js",
+        "chainlink": "npx hardhat run ./scripts/chainlink/chainLinkTests.js --network bnbTestnet"
     },
     "dependencies": {
         "dotenv": "^16.0.3",

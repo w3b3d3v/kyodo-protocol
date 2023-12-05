@@ -1,43 +1,35 @@
 const path = require('path');
-const fs = require('fs')
+const fs = require('fs');
 
 const { ethers, getNamedAccounts, network } = require("hardhat");
 
-const { chainConfigs } = require('./utils/chain_config');
+const { chainConfigs } = require('../utils/chain_config');
 const linkTokenABI = require("@chainlink/contracts/abi/v0.8/LinkToken.json");
 const burnMintCCIPHelperABI = require("@chainlink/contracts-ccip/abi/v0.8/BurnMintERC677Helper.json");
 console.log("network.name", network.name);
 
 function getContractAddress(network, contractName) {
-  const envPath = path.join(__dirname, '../deployments');
+  const envPath = path.join(__dirname, '../../deployments');
   let ContractJSON = fs.readFileSync(`${envPath}/${network}/${contractName}.json`, { encoding: 'utf8' });
   return JSON.parse(ContractJSON).address;
 }
 
 async function configureStableVault(stableVaultInstance) {
   console.log(`Configuring [StableVault] on ${network.name} at ${stableVaultInstance.target}`)
-  console.log(`Whitelisting Sourced Chains for [StableVault]...`);
-
+  console.log(`Whitelisting Sourced Chains and Senders for [StableVault]...`);
+  
   for (const config of Object.keys(chainConfigs)) {
-    if (chainConfigs[config].live) {
-      console.log(`Whitelisting ${config}...`);
-      const tx = await stableVaultInstance.whitelistSourceChain(chainConfigs[config].chainSelector);
+    if (config != network.name && chainConfigs[config].live) {
+      console.log(`Whitelisting Sourced Chain: ${config}...`);
+      let tx = await stableVaultInstance.whitelistSourceChain(chainConfigs[config].chainSelector);
+      await tx.wait(1);
+
+      console.log(`Whitelisting Senders from ${config} for StableVault...`);
+      const agreementContractAddress = getContractAddress(config, "AgreementContract");
+      tx = await stableVaultInstance.whitelistSender(agreementContractAddress);
       await tx.wait(1);
     }
   }
-
-  console.log(`Whitelisting Senders for StableVault...`);
-  let agreementContractAddress;
-  if (network.name == "avalancheFuji") {
-    agreementContractAddress = getContractAddress("polygonMumbai", "AgreementContract");
-  } else if (network.name == "polygonMumbai") {
-    agreementContractAddress = getContractAddress("avalancheFuji", "AgreementContract");
-  } else if (network.name == "sepolia") {
-    agreementContractAddress = getContractAddress("sepolia", "AgreementContract");
-  } else if (network.name == "testing") {
-    agreementContractAddress = getContractAddress("testing", "AgreementContract");
-  }
-  await stableVaultInstance.whitelistSender(agreementContractAddress);
 }
 
 async function configureAgreementContract(agreementContractInstance, token, feePercentage, kyodoTreasuryFee, communityDAOFee) {
@@ -47,42 +39,39 @@ async function configureAgreementContract(agreementContractInstance, token, feeP
   await transaction.wait(1);
 
   console.log(`Configuring Accepted Payment Tokens for [AgreementContract]...`);
-  
+
   transaction = await agreementContractInstance.addAcceptedPaymentToken(token);
   await transaction.wait(1);
 
-  console.log(`Configuring [StableVault] for crosschain on [AgreementContract]...`);
-  let chainSelector;
-  let chainId;
-  let vaultAddress;
-  // TODO This is just a temporary way to get the different StableVault address, but in the future this is gonna be deployed with the same address
-  if (network.name == "avalancheFuji") {
-    chainSelector = chainConfigs["polygonMumbai"].chainSelector;
-    chainId = "80001"
-    vaultAddress = getContractAddress("polygonMumbai", "StableVault");
-  } else if (network.name == "polygonMumbai") {
-    chainSelector = chainConfigs["avalancheFuji"].chainSelector;
-    chainId = "43113"
-    vaultAddress = getContractAddress("avalancheFuji", "StableVault");
-  } else if (network.name == "sepolia") {
-    chainSelector = chainConfigs["sepolia"].chainSelector;
-    chainId = "11155111"
-    vaultAddress = getContractAddress("sepolia", "StableVault");
-  } else if (network.name == "testing") {
-    chainSelector = chainConfigs["testing"].chainSelector;
-    chainId = "000000000" // CCIP will not work, it is only to test in the same chain
-    vaultAddress = getContractAddress("testing", "StableVault");
+  if (network.name == "testing") {
+    console.log(`Configuring [StableVault] for localhost on [AgreementContract]...`);
+    const chainSelector = chainConfigs["testing"].chainSelector;
+    const chainId = "000000000" // CCIP will not work, it is only to test in the same chain
+    const vaultAddress = getContractAddress("testing", "StableVault");
+    const transaction = await agreementContractInstance.setCrossChainConfigs(chainId, chainSelector, vaultAddress);
+    await transaction.wait(1);
+  } else {
+    console.log(`Configuring [StableVault] for crosschain on [AgreementContract]...`);
+    await configureCrossChain(agreementContractInstance);
   }
-
-  transaction = await agreementContractInstance.setCrossChainConfigs(chainId, chainSelector, vaultAddress);
-  await transaction.wait(1);
 
   console.log(`Whitelisting Chains for [AgreementContract]...`);
   for (const config of Object.keys(chainConfigs)) {
-    if (chainConfigs[config].live) {
+    if (config != network.name && chainConfigs[config].live) {
       console.log(`Whitelisting ${config}...`);
       const tx = await agreementContractInstance.whitelistChain(chainConfigs[config].chainSelector);
       await tx.wait(1);
+    }
+  }
+}
+
+async function configureCrossChain(agreementContractInstance) {
+  for (const config of Object.keys(chainConfigs)) {
+    if (config != network.name && chainConfigs[config].live) {
+      console.log(`Configuring [StableVault] for ${config} on ${network.name}>[AgreementContract]...`);
+      const vaultAddress = getContractAddress(config, "StableVault");
+      transaction = await agreementContractInstance.setCrossChainConfigs(chainConfigs[config].chainId, chainConfigs[config].chainSelector, vaultAddress);
+      await transaction.wait(1);
     }
   }
 }
@@ -99,12 +88,12 @@ async function main() {
   const stableVaultInstance = await ethers.getContract('StableVault', deployer);
   const agreementContractInstance = await ethers.getContract('AgreementContract', deployer);
 
-  if(network.name == "testing") {
+  if (network.name == "testing") {
     token = testToken.target;
   }
 
   await configureAgreementContract(agreementContractInstance, token, feePercentage, kyodoTreasuryFee, communityDAOFee);
-  await configureStableVault(stableVaultInstance, agreementContractInstance.target);  
+  await configureStableVault(stableVaultInstance, agreementContractInstance.target);
 
   const linkTokenBalance = await linkTokenInstance.balanceOf(deployer);
   if (parseInt(linkTokenBalance.toString()) >= parseInt(ethers.parseEther("1").toString())) {

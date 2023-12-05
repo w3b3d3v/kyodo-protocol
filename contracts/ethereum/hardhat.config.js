@@ -108,7 +108,7 @@ let config = {
       avalancheFujiTestnet: process.env.VERIFY_APIKEY_AVALANCHE_FUJI || "",
       arbitrumGoerli: process.env.VERIFY_APIKEY_ARBITRUM_GOERLI || "",
       polygonMumbai: process.env.VERIFY_APIKEY_POLYGON_MUMBAI || "",
-      bnbTesnet: process.env.VERIFY_APIKEY_BNB_TESTNET || "",
+      bscTestnet: process.env.VERIFY_APIKEY_BNB_TESTNET || "",
       baseGoerli: process.env.VERIFY_APIKEY_BASE_GOERLI || "",
       polygonZkEvmTestnet: process.env.VERIFY_POLYGON_ZK_TESTNET || "",
       goerli: process.env.VERIFY_APIKEY_GOERLI || "",
