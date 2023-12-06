@@ -52,7 +52,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
-        live: false,
+        live: true,
     },
     avalancheFuji: {
         chainId: "43113",

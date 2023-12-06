@@ -34,17 +34,6 @@ async function main() {
     { name: "Design", level: 50 }
   ];
 
-  // if (network.name == "avalancheFuji") {
-  //   const tx = await userAgreementInstance.setPreferredChain(80001);
-  //   await tx.wait();
-  // } else if (network.name == "polygonMumbai") {
-  //   const tx = await userAgreementInstance.setPreferredChain(43113);
-  //   await tx.wait();
-  // } else if (network.name == "sepolia") {
-  //   const tx = await userAgreementInstance.setPreferredChain(11155111);
-  //   await tx.wait();
-  // }
-
   console.log("CreateAgreement -using Company Address");
   transaction = await companyAgreementInstance.createAgreement(
     "Agreement 1",

@@ -71,7 +71,7 @@ async function configureCrossChain(agreementContractInstance) {
       console.log(`Configuring [StableVault] for ${config} on ${network.name}>[AgreementContract]...`);
       const vaultAddress = getContractAddress(config, "StableVault");
       transaction = await agreementContractInstance.setCrossChainConfigs(chainConfigs[config].chainId, chainConfigs[config].chainSelector, vaultAddress);
-      await transaction.wait(1);
+      await transaction.wait();
     }
   }
 }
@@ -97,17 +97,21 @@ async function main() {
 
   const linkTokenBalance = await linkTokenInstance.balanceOf(deployer);
   if (parseInt(linkTokenBalance.toString()) >= parseInt(ethers.parseEther("1").toString())) {
+    console.log(`Sending LINK tokens to the AgreementContract...`);
     tx = await linkTokenInstance.transfer(agreementContractInstance.target, ethers.parseEther("1").toString());
-    await tx.wait(1);
-    const contractBalance = await linkTokenInstance.balanceOf(agreementContractInstance.target);
-    console.log(`Contract has ${contractBalance.toString()} Link Tokens on ${network.name}`);
+    await tx.wait();
+  } else {
+    console.log(`There's no Link balance to send it to the AgreementContract...`);
   }
+
+  const contractBalance = await linkTokenInstance.balanceOf(agreementContractInstance.target);
+  console.log(`Contract has ${contractBalance.toString()} Link Tokens on ${network.name}`);
 
   const ccipBnMTokenBalance = await ccipBnMContractInstance.balanceOf(user1);
   if (parseInt(ccipBnMTokenBalance.toString()) < parseInt(ethers.parseEther("1").toString())) {
     console.log(`Generating CCIPBNM Tokens...`);
     let tx = await ccipBnMContractInstance.drip(user1);
-    await tx.wait(1);
+    await tx.wait();
   }
 
   console.log(`Company has ${ccipBnMTokenBalance.toString()} CCIPBnM Tokens on ${network.name}`);
