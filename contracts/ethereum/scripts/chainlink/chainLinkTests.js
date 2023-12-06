@@ -54,6 +54,9 @@ async function main() {
 
   for(config of Object.keys(chainConfigs)) {
     if(config != network.name && chainConfigs[config].live) {
+      if(network.name == "baseGoerli" && config == "polygonMumbai") continue;
+      if(network.name == "polygonMumbai" && config == "baseGoerli") continue;
+
       await setPreferredChain(userAgreementInstance, chainConfigs[config].chainId);
       await makePayment(companyAgreementInstance, company1Agreements[0], ethers.parseEther("0.1"), token);
     }

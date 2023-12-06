@@ -45,7 +45,7 @@ const chainConfigs = {
     },
     baseGoerli: {
         chainId: "84531",
-        linkAddress: "0xd886e2286fd1073df82462ea1822119600af80b6",
+        linkAddress: "0x4200000000000000000000000000000000000006",
         routerAddress: "0xa8c0c11bf64af62cdca6f93d3769b88bdd7cb93d",
         chainSelector: "5790810961207155433",
         token: "0xbf9036529123de264bfa0fc7362fe25b650d4b16",

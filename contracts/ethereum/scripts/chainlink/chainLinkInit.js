@@ -5,7 +5,9 @@ const { ethers, getNamedAccounts, network } = require("hardhat");
 
 const { chainConfigs } = require('../utils/chain_config');
 const linkTokenABI = require("@chainlink/contracts/abi/v0.8/LinkToken.json");
+const weth9ABI = require("../../abis/WETH9.json");
 const burnMintCCIPHelperABI = require("@chainlink/contracts-ccip/abi/v0.8/BurnMintERC677Helper.json");
+
 console.log("network.name", network.name);
 
 function getContractAddress(network, contractName) {
@@ -95,22 +97,42 @@ async function main() {
   await configureAgreementContract(agreementContractInstance, token, feePercentage, kyodoTreasuryFee, communityDAOFee);
   await configureStableVault(stableVaultInstance, agreementContractInstance.target);
 
-  const linkTokenBalance = await linkTokenInstance.balanceOf(deployer);
-  if (parseInt(linkTokenBalance.toString()) >= parseInt(ethers.parseEther("1").toString())) {
-    console.log(`Sending LINK tokens to the AgreementContract...`);
-    tx = await linkTokenInstance.transfer(agreementContractInstance.target, ethers.parseEther("1").toString());
+  // Chainlink has a problem with LINK TOKEN on baseGoerli so we had to use WETH9 to pay fees on this chain.
+  if(network.name == "baseGoerli") {
+    console.log(`Configuring base Goerli to receive WETH9...`);
+    const WETH9Instance = new ethers.Contract(linkAddress, weth9ABI, signer);
+    
+    let tx = await WETH9Instance.deposit({value: ethers.parseEther("0.01")});
     await tx.wait();
-  } else {
-    console.log(`There's no Link balance to send it to the AgreementContract...`);
-  }
 
-  const contractBalance = await linkTokenInstance.balanceOf(agreementContractInstance.target);
-  console.log(`Contract has ${contractBalance.toString()} Link Tokens on ${network.name}`);
+    console.log(`Getting WETH9 tokens using ${deployer}...`);
+
+    tx = await WETH9Instance.transfer(agreementContractInstance.target, ethers.parseEther("0.01").toString());
+    await tx.wait();
+
+    console.log(`Transfering WETH9 token to the AgreementContract at ${agreementContractInstance.target}`);
+
+    const contractBalance = await WETH9Instance.balanceOf(agreementContractInstance.target);
+    console.log(`Contract has ${contractBalance.toString()} WETH9 Tokens on ${network.name}`);
+
+  } else {
+    const linkTokenBalance = await linkTokenInstance.balanceOf(deployer);
+    if (parseInt(linkTokenBalance.toString()) >= parseInt(ethers.parseEther("1").toString())) {
+      console.log(`Sending LINK tokens to the AgreementContract...`);
+      const tx = await linkTokenInstance.transfer(agreementContractInstance.target, ethers.parseEther("1").toString());
+      await tx.wait();
+    } else {
+      console.log(`There's no Link balance to send it to the AgreementContract...`);
+    }
+
+    const contractBalance = await linkTokenInstance.balanceOf(agreementContractInstance.target);
+    console.log(`Contract has ${contractBalance.toString()} Link Tokens on ${network.name}`);
+  }
 
   const ccipBnMTokenBalance = await ccipBnMContractInstance.balanceOf(user1);
   if (parseInt(ccipBnMTokenBalance.toString()) < parseInt(ethers.parseEther("1").toString())) {
     console.log(`Generating CCIPBNM Tokens...`);
-    let tx = await ccipBnMContractInstance.drip(user1);
+    const tx = await ccipBnMContractInstance.drip(user1);
     await tx.wait();
   }
 
