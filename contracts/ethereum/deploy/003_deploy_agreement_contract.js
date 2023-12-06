@@ -10,14 +10,14 @@ function printArray(_array) {
   let returnedValue;
 
   _array.forEach(item => {
-    if(returnedValue) {
+    if (returnedValue) {
       returnedValue += `"${item}",`
     } else {
       returnedValue = `"${item}",`
     }
   });
 
-  return returnedValue.substring(0, returnedValue.length-1);
+  return returnedValue.substring(0, returnedValue.length - 1);
 }
 
 module.exports = async ({ getNamedAccounts, deployments, ethers, network }) => {
@@ -30,6 +30,7 @@ module.exports = async ({ getNamedAccounts, deployments, ethers, network }) => {
   const { linkAddress, routerAddress, chainSelector } = chainConfigs[networkName];
 
   const stableVaultInstance = await ethers.getContract('StableVault');
+  const kyodoRegistryInstance = await ethers.getContract('KyodoRegistry', deployer);
 
   const deployedContract = await deploy('AgreementContract', {
     from: deployer,
@@ -46,12 +47,19 @@ module.exports = async ({ getNamedAccounts, deployments, ethers, network }) => {
   });
 
   console.log(`AgreementContract Address: ${deployedContract.address}`);
-  const argsPath = path.join(__dirname, `../deployments/${network.name}/args.js`);
-  fs.writeFileSync(argsPath, `module.exports = ["${kyodoTreasury}", "${communityTreasury}", "${deployer}", "${routerAddress}", "${linkAddress}", "${chainSelector}", "${stableVaultInstance.target}", [${printArray(chainIdList)}], [${printArray(chainSelectorList)}]];`);
+  const blockNumber = await ethers.provider.getBlockNumber();
+  const tx = await kyodoRegistryInstance.createRegistry("AGREEMENT_CONTRACT", deployedContract.address, blockNumber);
+  await tx.wait();
 
   try {
-    const { stdout, stderr } = await exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} --constructor-args ./deployments/${network.name}/args.js`);
-    console.log('stdout:', stdout);
+    if (network.name != "hardhat" && network.name != "testing" && network.name != "localhost") {
+      
+      const argsPath = path.join(__dirname, `../deployments/${network.name}/args.js`);
+      fs.writeFileSync(argsPath, `module.exports = ["${kyodoTreasury}", "${communityTreasury}", "${deployer}", "${routerAddress}", "${linkAddress}", "${chainSelector}", "${stableVaultInstance.target}", [${printArray(chainIdList)}], [${printArray(chainSelectorList)}]];`);
+    
+      const { stdout, stderr } = await exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} --constructor-args ./deployments/${network.name}/args.js`);
+      console.log('stdout:', stdout);
+    }
   } catch (e) {
     console.error(e);
   }
