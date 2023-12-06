@@ -12,6 +12,7 @@
         "chainlink_test": "npx hardhat run ./scripts/chainlink/chainLinkTests.js --network baseGoerli"
     },
     "dependencies": {
+        "@graphprotocol/graph-ts": "^0.31.0",
         "dotenv": "^16.0.3",
         "sol2uml": "^2.4.3",
         "solc": "^0.8.1",
@@ -20,10 +21,10 @@
     "devDependencies": {
         "@chainlink/contracts": "^0.8.0",
         "@chainlink/contracts-ccip": "^0.7.6",
-        "@openzeppelin/contracts": "^5.0.0",
         "@nomicfoundation/hardhat-ethers": "^3.0.5",
         "@nomicfoundation/hardhat-toolbox": "^4.0.0",
         "@nomiclabs/hardhat-etherscan": "^3.1.7",
+        "@openzeppelin/contracts": "^5.0.0",
         "@types/chai": "^4.3.6",
         "@types/mocha": "^10.0.2",
         "chai": "^4.3.9",
