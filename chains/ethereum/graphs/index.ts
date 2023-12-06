@@ -1,6 +1,25 @@
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import * as queries from "./queries";
 
+const chainsConfig = require('../../chainConfig.json');
+
+type ChainConfig = {
+  name: string;
+  logo: string;
+  tokens: any[]; // Substitua por um tipo mais específico se necessário
+  subgraphUrl: string;
+  blockExplorer: {
+    name: string;
+    url: string;
+  };
+};
+
+type ChainsConfig = {
+  [chainId: string]: ChainConfig;
+};
+
+const config: ChainsConfig = chainsConfig;
+
 type ChainKey = keyof typeof KyodoGraph.clients;
 
 interface Agreement {
@@ -24,25 +43,13 @@ class KyodoGraph {
     return client;
   }
 
-  public static readonly clients = {
-    "80001": this._getApolloClient(
-      process.env.NEXT_PUBLIC_KYODO_MUMBAI_SUBGRAPH_URI
-    ), 
-    "11155111": this._getApolloClient(
-      process.env.NEXT_PUBLIC_KYODO_SEPOLIA_SUBGRAPH_URI
-    ),
-    "43113": this._getApolloClient(
-      process.env.NEXT_PUBLIC_KYODO_FUJI_SUBGRAPH_URI
-    ),
-    "97": this._getApolloClient(
-      process.env.NEXT_PUBLIC_KYODO_BNB_BRUNO_SUBGRAPH_URI
-    ),
-    "84531": this._getApolloClient(
-      process.env.NEXT_PUBLIC_KYODO_BASE_TEST_SUBGRAPH_URI
-    ),
-  };
+  public static readonly clients = Object.fromEntries(
+    Object.entries(chainsConfig).map(([chainId, config]) => [
+      chainId, this._getApolloClient((config as ChainConfig).subgraphUrl)
+    ])
+  );
 
-  private static readonly chains: ChainKey[] = ["80001", "11155111", "43113", "97", "84531"];
+  private static readonly chains: ChainKey[] = ["80001", "11155111", "43113", "97"];
 
   static async fetchPaidAgreements(wallet: string) {
     let allAgreements: (Agreement & { originChain: string })[] = [];
@@ -58,7 +65,7 @@ class KyodoGraph {
       const agreements: Agreement[] = response?.data.paymentMades ?? [];
       const agreementsWithOrigin = agreements.map((agreement: Agreement) => ({
         ...agreement,
-        originChain: chain
+        originChain: chain.toString()
       }));
 
       allAgreements = [...allAgreements, ...agreementsWithOrigin];

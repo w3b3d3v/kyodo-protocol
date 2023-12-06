@@ -17,6 +17,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
   const kyodoRegistryInstance = await ethers.getContract('KyodoRegistry', deployer);
 
+  console.log("networkName", networkName)
   const { routerAddress } = chainConfigs[networkName];
 
   const deployedContract = await deploy('StableVault', {

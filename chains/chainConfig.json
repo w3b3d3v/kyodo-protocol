@@ -3,7 +3,7 @@
     "name":"Mumbai",
     "logo":"/chains/polygon-matic-logo.svg",
     "tokens": [],
-    "subgraphUrl": "https://api.studio.thegraph.com/query/56519/mumbai_kyodo_agreements/v0.0.1",
+    "subgraphUrl": "https://api.studio.thegraph.com/query/56519/mumbai_kyodo_agreements/v1.0",
     "blockExplorer": {
       "name": "PolygonScan",
       "url": "https://mumbai.polygonscan.com/"
@@ -39,7 +39,7 @@
   "43113": {
     "name": "Avalanche Fuji",
     "logo": "/chains/avalanche.svg",
-    "subgraphUrl": "https://api.studio.thegraph.com/query/56519/fuji_kyodo_agreements/v0.0.1",
+    "subgraphUrl": "https://api.studio.thegraph.com/query/56519/fuji_kyodo_agreements/v1.0",
     "tokens": [],
     "blockExplorer": {
       "name": "Avalanche Explorer",
@@ -59,7 +59,7 @@
     "name": "Sepolia",
     "logo": "/chains/ethereum.svg",
     "tokens": [],
-    "subgraphUrl": "https://api.studio.thegraph.com/query/56519/sepolia_kyodo_agreements/v0.0.1",
+    "subgraphUrl": "https://api.studio.thegraph.com/query/56519/sepolia_kyodo_agreements/v1.0",
     "blockExplorer": {
       "name": "Sepolia Etherscan",
       "url": "https://sepolia.etherscan.io/"
@@ -69,6 +69,7 @@
     "name": "BSC Testnet",
     "logo": "/chains/bsc.svg",
     "tokens": [],
+    "subgraphUrl": "https://api.studio.thegraph.com/query/56519/bnb_bruno_kyodo_agreements/v1.0",
     "blockExplorer": {
       "name": "BSC Testnet Explorer",
       "url": "https://testnet.bscscan.com/"
