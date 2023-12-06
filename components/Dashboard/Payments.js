@@ -64,16 +64,14 @@ function Payments ({ limit }) {
 
     return displayedAgreements.map((agreement, index) => (
       <div key={index} className={styles["payment-item"]}>
-        <div className={styles["payment-origin"]}>
+        <div className={styles["payment-avatar"]}>
           <Image
             src={contractManager.chainMetadata(agreement.originChain).logo}
             width={40}
             height={40}
             alt={`Chain ${agreement.originChain}`}
+            className={styles["avatar-pic"]}
           />
-        </div>
-        <div className={styles["payment-avatar"]}>
-          <Image src="/coins/usdc-icon.svg" width={40} height={40} alt="USDC" />
         </div>
         <h3>
           Agreement ID: {
