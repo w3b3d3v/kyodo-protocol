@@ -6,9 +6,9 @@ dataSources:
     name: AgreementContract
     network: mumbai
     source:
-      address: "0x9dBb5874481Fa6B265d2fC68e52d5B4ae1Ffe94c"
+      address: '0x6d079c44D35403d03756445a98A88d9816A7eA7B'
       abi: AgreementContract
-      startBlock: 41450478
+      startBlock: 43189278
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -20,16 +20,16 @@ dataSources:
         - name: AgreementContract
           file: ../../../../../chains/ethereum/abis/AgreementContract.json
       eventHandlers:
-        - event: AgreementCreated(indexed address,indexed address,uint256,uint256)
+        - event: 'AgreementCreated(indexed address,indexed address,uint256,uint256)'
           handler: handleAgreementCreated
-        - event: PaymentMade(indexed address,indexed address,uint256,uint256)
+        - event: 'PaymentMade(indexed address,indexed address,uint256,uint256)'
           handler: handlePaymentMade
       file: ../../handlers/index.ts
   - kind: ethereum
     name: StableVaultContract
     network: mumbai
     source:
-      address: "0xEA7dC554607Bfc913fD5120b95DD6392376581AA"
+      address: '0xEA7dC554607Bfc913fD5120b95DD6392376581AA'
       abi: StableVaultContract
       startBlock: 41597692
     mapping:
@@ -52,7 +52,7 @@ dataSources:
         - name: StableVaultContract
           file: ../../../../../chains/ethereum/abis/StableVault.json
       eventHandlers:
-        - event: Approval(indexed address,indexed address,uint256)
+        - event: 'Approval(indexed address,indexed address,uint256)'
           handler: handleApproval
         - event: BalanceUpdated(uint256)
           handler: handleBalanceUpdated
@@ -62,16 +62,16 @@ dataSources:
           handler: handlePaused
         - event: RemovedAdmin(indexed address)
           handler: handleRemovedAdmin
-        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
+        - event: 'RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)'
           handler: handleRoleAdminChanged
-        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
+        - event: 'RoleGranted(indexed bytes32,indexed address,indexed address)'
           handler: handleRoleGranted
-        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
+        - event: 'RoleRevoked(indexed bytes32,indexed address,indexed address)'
           handler: handleRoleRevoked
-        - event: Transfer(indexed address,indexed address,uint256)
+        - event: 'Transfer(indexed address,indexed address,uint256)'
           handler: handleTransfer
         - event: Unpaused(address)
           handler: handleUnpaused
-        - event: Withdrawal(indexed address,uint256,indexed address)
+        - event: 'Withdrawal(indexed address,uint256,indexed address)'
           handler: handleWithdrawal
       file: ../../handlers/index.ts
