@@ -29,6 +29,9 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
     uint256 public kyodoTreasuryFee;
     uint256 public communityDAOFee;
 
+    event PaymentMade(address indexed company, address indexed professional, uint256 agreementId, uint256 amount);
+    event ChainPreferenceDefined(address indexed user, uint chainId);
+
     constructor(
         address _kyodoTreasury,
         address _communityDAO,
@@ -272,5 +275,6 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
 
     function setPreferredChain(uint256 chainId) external {
         userPreferredChain[msg.sender] = chainId;
+        emit ChainPreferenceDefined(msg.sender, chainId);
     }
 }

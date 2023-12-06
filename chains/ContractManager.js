@@ -5,7 +5,7 @@ import chainConfig from "./chainConfig.json"
 class ContractManager {
   constructor() {
     this.chains = {}
-    this.supportedNetworks = [11155111, 420, 43113, 421613, 80001, 97, 84531, 1442, 31337]
+    this.supportedNetworks = [11155111, 43113, 80001, 97, 84531]
     this.addressValidators = {
       ethereum: /^0x[a-fA-F0-9]{40}$/,
       solana: /^[1-9A-HJ-NP-Za-km-z]{43,44}$/,
