@@ -171,10 +171,6 @@ function OnboardingProfessional() {
             <Image src="/onboarding/current-icon.svg" width={20} height={23} alt="Current step" />
             <p>{t("initial-setup")}</p>
           </li>
-          <li>
-            <Image src="/onboarding/next-step-icon.svg" width={20} height={23} alt="Next step" />
-            <p>{t("terms-conditions")}</p>
-          </li>
         </ul>
       </div>
 
