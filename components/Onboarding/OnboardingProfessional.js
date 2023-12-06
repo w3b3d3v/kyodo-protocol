@@ -198,48 +198,20 @@ function OnboardingProfessional() {
               tabIndex={1}
             />
           </div>
-
           <div className={"col-02"}>
-          <label htmlFor="professional-community-input">
+            <label htmlFor="professional-community-input">
               {t("payment-network")} <span>*</span>
             </label>
             <div className={"custom-select"}>
-            <SelectPaymentsChain handleChainChange={handleChainChange} />
+              <SelectPaymentsChain handleChainChange={handleChainChange} />
             </div>
-
-            {/* <label htmlFor="professional-community-input">
-              {t("community")} <span>*</span>
-            </label> */}
-            {/* <div className={"custom-select"}>
-              <select
-                tabIndex={5}
-                onChange={handleCommunityChange}
-                id="professional-community-input"
-              >
-                <option>{t("select-option")}</option>
-                <option>Phala Network</option>
-                <option>WEB3DEV</option>
-                <option>Web3Garden</option>
-                <option>DecentralizeTech</option>
-                <option>CryptoCollective</option>
-                <option>NFTCreatorsDAO</option>
-                <option>DeFiAlliance</option>
-                <option>MetaMakersDAO</option>
-                <option>BlockchainBuilders</option>
-                <option>EtherGovernance</option>
-                <option>DecentralizedDreamers</option>
-                <option>TokenTorch</option>
-                <option>SmartWebSociety</option>
-                <option>DeFiDragons</option>
-              </select>
-            </div> */}
           </div>
         </section>
         <section className={styles["form-footer"]}>
           <Link href="/onboarding/profile-selection" className={styles["back-link"]}>
             {t("back")}
           </Link>
-          <button onClick={(event) => handleSaveUserData(event)}>
+          <button onClick={(event) => handleSaveUserData(event)} className={styles["next-btn"]}>
             {t("next-step")}
           </button>
         </section>
