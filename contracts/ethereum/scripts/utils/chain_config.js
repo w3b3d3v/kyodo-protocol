@@ -31,6 +31,7 @@ const chainConfigs = {
         feePercentage: "500",
         kyodoTreasuryFee: "500",
         communityDAOFee: "500",
+        subgraphPathSchema: "../graphs/subgraphs/mumbai_kyodo_agreements/subgraph.yaml",
         live: true,
         
     },
