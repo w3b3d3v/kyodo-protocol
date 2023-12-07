@@ -276,11 +276,16 @@ function AgreementList() {
                               ))}
                             </select>
                           </div>
-                          <input
-                            type="number"
-                            value={agreement.paymentValue || ""}
-                            onChange={(e) => handlePaymentValueChange(index, e)}
-                          />
+                          <div className={styles["value-and-fee"]}>
+                            <input
+                              type="number"
+                              value={agreement.paymentValue || ""}
+                              onChange={(e) => handlePaymentValueChange(index, e)}
+                            />
+                            <div className={styles["agreement-fee"]}>
+                              Fee: <strong>0.7%</strong>
+                            </div>
+                          </div>
                           <button
                             onClick={() =>
                               handleMakePayment(
@@ -322,12 +327,17 @@ function AgreementList() {
                   <div className={styles["wallet-key"]}>
                     {account.toLowerCase() === agreement.professional.toLowerCase() ? agreement.company : agreement.professional}
                   </div>
-                  <input
-                    type="number"
-                    value={agreement.paymentValue || ""}
-                    onChange={(e) => handlePaymentValueChange(index, e)}
-                    className={styles["amount-input"]}
-                  />
+                  <div className={styles["value-and-fee"]}>
+                    <input
+                      type="number"
+                      value={agreement.paymentValue || ""}
+                      onChange={(e) => handlePaymentValueChange(index, e)}
+                      className={styles["amount-input"]}
+                    />
+                    <div className={styles["agreement-fee"]}>
+                      Fee: <strong>0.7%</strong>
+                    </div>
+                  </div>
                 </div>
               ))
             }

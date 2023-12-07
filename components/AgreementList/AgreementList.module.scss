@@ -312,6 +312,28 @@ AGREEMENT LIST
   z-index: 300;
 }
 
+.value-and-fee {
+  display: inline-block;
+  position: relative;
+
+  input {
+    border-color: $medium-gray;
+  }
+}
+
+.agreement-fee {
+  position: absolute;
+  text-align: right;
+  right: 10px;
+  top: 7px;
+  font-size: $font-verysmall;
+  color: $medium-gray;
+
+  strong {
+    color: $light-gray;
+  }
+}
+
 .footer-btns {
   background-color: $dark-gray-2;
   padding-top: 20px;
@@ -397,8 +419,16 @@ AGREEMENT LIST
     padding: 40px 20px;
     box-sizing: border-box;
   }
-}
 
+  .value-and-fee {
+    display: block;
+  }
+
+  .agreement-fee {
+    top: 15px;
+    right: 15px;
+  }
+}
 
 
 /* Mobile */

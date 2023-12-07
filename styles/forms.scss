@@ -82,3 +82,31 @@ textarea {
   color: $red;
   margin-top: 5px;
 }
+
+
+// Number
+
+input[type="number"] {
+  /* Zerar as setas de incremento e decremento */
+  -moz-appearance: textfield;
+}
+
+/* Estilos específicos para o Firefox */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Estilos específicos para o Chrome, Safari e Edge */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Estilos específicos para o Internet Explorer 10-11 */
+input[type="number"] {
+  -ms-inner-appearance: none;
+}
+
