@@ -3,6 +3,8 @@ const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
+const { chainConfigs } = require('../scripts/utils/chain_config');
+
 module.exports = async ({ getNamedAccounts, deployments, ethers }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -19,9 +21,18 @@ module.exports = async ({ getNamedAccounts, deployments, ethers }) => {
     log: true
   });
 
+  let tokenAddress;
+
   console.log(`FakeStable Address: ${deployedContract.address}`);
   const blockNumber = await ethers.provider.getBlockNumber();
-  const tx = await kyodoRegistryInstance.updateRegistry("FAKE_STABLE", deployedContract.address, blockNumber);
+
+  if (network.name != "hardhat" && network.name != "testing" && network.name != "localhost") {
+    tokenAddress = chainConfigs[network.name].token;
+  } else {
+    tokenAddress = deployedContract.address;
+  }
+
+  const tx = await kyodoRegistryInstance.updateRegistry("FAKE_STABLE", tokenAddress, blockNumber);
   await tx.wait();
 
   try {
