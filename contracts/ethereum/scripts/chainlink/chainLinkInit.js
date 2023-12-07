@@ -24,12 +24,12 @@ async function configureStableVault(stableVaultInstance) {
     if (config != network.name && chainConfigs[config].live) {
       console.log(`Whitelisting Sourced Chain: ${config}...`);
       let tx = await stableVaultInstance.whitelistSourceChain(chainConfigs[config].chainSelector);
-      await tx.wait(1);
+      await tx.wait();
 
       console.log(`Whitelisting Senders from ${config} for StableVault...`);
       const agreementContractAddress = getContractAddress(config, "AgreementContract");
       tx = await stableVaultInstance.whitelistSender(agreementContractAddress);
-      await tx.wait(1);
+      await tx.wait();
     }
   }
 }
@@ -38,12 +38,12 @@ async function configureAgreementContract(agreementContractInstance, token, feeP
   console.log(`Configuring [AgreementContract] on ${network.name} at ${agreementContractInstance.target}`);
   console.log(`Configuring Fees for [AgreementContract]...`);
   let transaction = await agreementContractInstance.setFees(feePercentage, kyodoTreasuryFee, communityDAOFee);
-  await transaction.wait(1);
+  await transaction.wait();
 
   console.log(`Configuring Accepted Payment Tokens for [AgreementContract]...`);
 
   transaction = await agreementContractInstance.addAcceptedPaymentToken(token);
-  await transaction.wait(1);
+  await transaction.wait();
 
   if (network.name == "testing") {
     console.log(`Configuring [StableVault] for localhost on [AgreementContract]...`);
@@ -51,7 +51,7 @@ async function configureAgreementContract(agreementContractInstance, token, feeP
     const chainId = "000000000" // CCIP will not work, it is only to test in the same chain
     const vaultAddress = getContractAddress("testing", "StableVault");
     const transaction = await agreementContractInstance.setCrossChainConfigs(chainId, chainSelector, vaultAddress);
-    await transaction.wait(1);
+    await transaction.wait();
   } else {
     console.log(`Configuring [StableVault] for crosschain on [AgreementContract]...`);
     await configureCrossChain(agreementContractInstance);
@@ -62,7 +62,7 @@ async function configureAgreementContract(agreementContractInstance, token, feeP
     if (config != network.name && chainConfigs[config].live) {
       console.log(`Whitelisting ${config}...`);
       const tx = await agreementContractInstance.whitelistChain(chainConfigs[config].chainSelector);
-      await tx.wait(1);
+      await tx.wait();
     }
   }
 }

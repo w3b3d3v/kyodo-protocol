@@ -225,7 +225,7 @@ contract AgreementContract is Admin, IAgreementContract, CCIPSender {
         }
 
         emit PaymentMade(
-            getChainID(),
+            userPreferredChain_,
             msg.sender,
             agreement.professional,
             _agreementId,

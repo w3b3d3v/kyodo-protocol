@@ -27,7 +27,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
   console.log(`StableVault Address: ${deployedContract.address}`);
   const blockNumber = await ethers.provider.getBlockNumber();
-  const tx = await kyodoRegistryInstance.createRegistry("VAULT_CONTRACT", deployedContract.address, blockNumber);
+  const tx = await kyodoRegistryInstance.updateRegistry("VAULT_CONTRACT", deployedContract.address, blockNumber);
   await tx.wait();
 
   try {

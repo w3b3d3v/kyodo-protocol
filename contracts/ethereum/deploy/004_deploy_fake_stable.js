@@ -21,7 +21,7 @@ module.exports = async ({ getNamedAccounts, deployments, ethers }) => {
 
   console.log(`FakeStable Address: ${deployedContract.address}`);
   const blockNumber = await ethers.provider.getBlockNumber();
-  const tx = await kyodoRegistryInstance.createRegistry("FAKE_STABLE", deployedContract.address, blockNumber);
+  const tx = await kyodoRegistryInstance.updateRegistry("FAKE_STABLE", deployedContract.address, blockNumber);
   await tx.wait();
 
   try {
