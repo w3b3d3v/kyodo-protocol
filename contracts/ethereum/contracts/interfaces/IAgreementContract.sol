@@ -35,7 +35,7 @@ interface IAgreementContract {
 
     // Events
     event AgreementCreated(address indexed company, address indexed professional, uint256 agreementId, uint256 amount);
-    event PaymentMade(address indexed company, address indexed professional, uint256 agreementId, uint256 amount);
+    event PaymentMade(uint256 originChain, address indexed company, address indexed professional, uint256 agreementId, uint256 amount);
 
     // Functions
     /**
