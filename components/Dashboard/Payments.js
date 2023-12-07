@@ -60,7 +60,6 @@ function Payments ({ limit }) {
 
   function renderPaidAgreements() {
     const displayedAgreements = limit ? paidAgreements.slice(0, limit) : paidAgreements;
-    const explorerLink = contractManager.blockExplorer(selectedChain, selectedNetworkId)
 
     return displayedAgreements.map((agreement, index) => (
       <div key={index} className={styles["payment-item"]}>
@@ -82,7 +81,7 @@ function Payments ({ limit }) {
         </h3>
                 
         <Link
-          href={explorerLink + agreement.transactionHash}
+          href={(contractManager.blockExplorer(selectedChain, agreement.originChain)) + "tx/" + agreement.transactionHash}
           target="_blank"
           rel="noopener noreferrer"
         >
