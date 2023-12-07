@@ -46,7 +46,7 @@ class ContractManager {
     
     let tokenList = [...(config.tokens || [])];
     
-    if (process.env.NODE_ENV !== 'production') {
+    // if (process.env.NODE_ENV !== 'production') {
       const developmentToken = {
         name: 'fakeStable',
         address: chain === 'solana' 
@@ -55,7 +55,7 @@ class ContractManager {
         decimals: chain === 'solana' ? 8 : 18,
       };
       tokenList.push(developmentToken);
-    }
+    // }
     return tokenList;
   }
   
