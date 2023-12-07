@@ -31,14 +31,14 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const tx = await kyodoRegistryInstance.createRegistry("VAULT_CONTRACT", deployedContract.address, blockNumber);
   await tx.wait();
 
-  try {
-    if (network.name != "hardhat" && network.name != "testing" && network.name != "localhost") {
-      const { stdout, stderr } = exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${deployer} "${tokenName}" "${tokenSymbol}" ${routerAddress}`);
-      console.log('stdout:', stdout);
-    }
-  } catch (e) {
-    console.error(e);
-  }
+  // try {
+  //   if (network.name != "hardhat" && network.name != "testing" && network.name != "localhost") {
+  //     const { stdout, stderr } = exec(`npx hardhat verify --network ${network.name} ${deployedContract.address} ${deployer} "${tokenName}" "${tokenSymbol}" ${routerAddress}`);
+  //     console.log('stdout:', stdout);
+  //   }
+  // } catch (e) {
+  //   console.error(e);
+  // }
 };
 
 module.exports.tags = ['StableVault'];

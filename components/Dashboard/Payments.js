@@ -65,7 +65,7 @@ function Payments ({ limit }) {
       <div key={index} className={styles["payment-item"]}>
         <div className={styles["payment-avatar"]}>
           <Image
-            src={contractManager.chainMetadata(agreement.originChain).logo}
+            src={contractManager.chainMetadata(agreement.targetChain).logo}
             width={40}
             height={40}
             alt={`Chain ${agreement.originChain}`}

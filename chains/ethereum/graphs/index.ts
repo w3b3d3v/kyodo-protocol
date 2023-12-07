@@ -6,7 +6,7 @@ const chainsConfig = require('../../chainConfig.json');
 type ChainConfig = {
   name: string;
   logo: string;
-  tokens: any[]; // Substitua por um tipo mais específico se necessário
+  tokens: any[];
   subgraphUrl: string;
   blockExplorer: {
     name: string;
@@ -24,6 +24,7 @@ type ChainKey = keyof typeof KyodoGraph.clients;
 
 interface Agreement {
   id: string;
+  targetChain: string;
   company: string;
   professional: string;
   amount: number;
@@ -49,12 +50,14 @@ class KyodoGraph {
     ])
   );
 
-  private static readonly chains: ChainKey[] = ["80001", "11155111", "43113", "97"];
+  // private static readonly chains: ChainKey[] = ["80001", "11155111", "43113", "97"];
+  private static readonly chains: ChainKey[] = ["80001", "43113", "97"];
 
   static async fetchPaidAgreements(wallet: string) {
     let allAgreements: (Agreement & { originChain: string })[] = [];
 
     for (const chain of this.chains) {
+      console.log("chain: ", chain)
       const client = this.clients[chain];
       const response = await client.query({
         query: queries.GET_PAID_AGREEMENTS_QUERY,
