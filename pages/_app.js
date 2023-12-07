@@ -183,9 +183,9 @@ function Header() {
             ) : (
               <div className={"user-wallet"}>
                 <button className={"select-chain"} onClick={handleSelectChain}>
-                  <Image src={chainMetadata?.logo} width={22} height={19} />
+                  <Image src={chainMetadata?.logo} width={19} height={19} />
                   {chainMetadata?.name || "Select chain"}
-                  <Image src="/arrow-down.svg" alt="Select chain" width={22} height={19} />
+                  <Image src="/arrow-down.svg" alt="Select chain" width={12} height={12} className={"chain-arrow"} />
                 </button>
                 <div>
                   <button className={"wallet-on"} onClick={handleSelectWallet}>
