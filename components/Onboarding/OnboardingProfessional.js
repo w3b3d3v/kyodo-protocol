@@ -30,6 +30,7 @@ function OnboardingProfessional() {
   const { account, selectedChain, selectedNetworkId, completeOnboarding } = useAccount()
   const { publicKey, wallet } = useWallet()
   const { connection } = useConnection()
+  const [selectedOption, setSelectedOption] = useState(null);
   const {
     isLoading,
     setIsLoading,
@@ -64,30 +65,63 @@ function OnboardingProfessional() {
     initializeContract()
   }, [selectedNetworkId, wallet, connection])
 
+  const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+      backgroundColor: 'black',
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isFocused ? 'grey' : 'black',
+      color: 'white',
+    }),
+    control: (provided) => ({
+      ...provided,
+      backgroundColor: 'black',
+      color: 'white',
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: 'white',
+    }),
+  };
+
   const SelectPaymentsChain = ({ handleChainChange }) => {
+    
+
     const chainIds = contractManager.getSupportedChains();
     const options = chainIds.map(chainId => {
       const metadata = contractManager.chainMetadata(chainId);
       return {
-        chainId: chainId,
-        label: metadata.name, 
+        value: chainId,
+        label: metadata.name,
         icon: metadata.logo  
       };
     });
-  
+
     const formatOptionLabel = ({ label, icon }) => (
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', color: 'white' }}>
         <img src={icon} alt={label} style={{ marginRight: 10, width: 20 }} />
         {label}
       </div>
     );
-  
+
+    const handleChange = (option) => {
+      setSelectedOption(option.label);
+    };
+
+    
+    const currentPlaceholder = selectedOption ? selectedOption : "Select...";
+
     return (
       <Select
         options={options}
         formatOptionLabel={formatOptionLabel}
+        value={selectedOption} // Define a opção selecionada atualmente
         onChange={handleChainChange}
+        styles={customStyles} // Os estilos customizados
         isSearchable={false}
+        placeholder={currentPlaceholder} // Exibe o placeholder atualizado
       />
     );
   };
@@ -117,7 +151,9 @@ function OnboardingProfessional() {
   };
 
   const handleChainChange = (e) => {
+    console.log("e: ", e)
     setPaymentsChain(e)
+    setSelectedOption(e.label);
   }
 
   const handleNameChange = (e) => {
@@ -198,7 +234,7 @@ function OnboardingProfessional() {
             <label htmlFor="professional-community-input">
               {t("payment-network")} <span>*</span>
             </label>
-            <div className={"custom-select"}>
+            <div>
               <SelectPaymentsChain handleChainChange={handleChainChange} />
             </div>
           </div>
